@@ -7,22 +7,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRegion implements Serializable {
+public class UserRegion {
 
-    @Id
-    @JoinColumn(name = "User_id")
+    @EmbeddedId
+    private CompositeUserRegion id;
+
+    @MapsId("user")
     @ManyToOne
     private User user;
 
-    @Id
-    @JoinColumn(name = "Region_id")
+    @MapsId("region")
     @ManyToOne
     private Region region;
 }

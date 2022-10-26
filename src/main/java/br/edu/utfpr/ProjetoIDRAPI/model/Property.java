@@ -24,7 +24,7 @@ public class Property {
     @ManyToOne
     private User user;
 
-    private String areaOcupation;
+    private String ocupationArea;
 
     private BigDecimal totalArea;
 

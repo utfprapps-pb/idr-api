@@ -13,15 +13,16 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PropertyTechnician implements Serializable {
+public class PropertyTechnician {
 
-    @Id
-    @JoinColumn(name = "User_id")
+    @EmbeddedId
+    private CompositePropertyTechnician id;
+
+    @MapsId("user")
     @ManyToOne
     private User user;
 
-    @Id
-    @JoinColumn(name = "Property_id")
+    @MapsId("property")
     @ManyToOne
     private Property property;
 }
