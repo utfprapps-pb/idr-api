@@ -1,12 +1,9 @@
 package br.edu.utfpr.ProjetoIDRAPI.model;
 
-import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
@@ -18,10 +15,12 @@ public class UserRegion {
     @EmbeddedId
     private CompositeUserRegion id;
 
+    @NotNull
     @MapsId("user")
     @ManyToOne
     private User user;
 
+    @NotNull
     @MapsId("region")
     @ManyToOne
     private Region region;

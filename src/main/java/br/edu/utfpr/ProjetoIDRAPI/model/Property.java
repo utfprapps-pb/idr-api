@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -20,6 +21,7 @@ public class Property {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @JoinColumn(name = "User_id")
     @ManyToOne
     private User user;
@@ -37,5 +39,6 @@ public class Property {
 
     private BigInteger longitude;
 
+    @NotNull
     private Boolean leased;
 }

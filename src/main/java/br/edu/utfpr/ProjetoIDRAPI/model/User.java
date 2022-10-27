@@ -1,7 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +10,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 @Entity(name = "users")
@@ -24,8 +24,11 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @NotNull
     private String username;
 
+    @NotNull
     private String cpf;
 
     private String county;
@@ -36,10 +39,12 @@ public class User implements UserDetails {
 
     private Integer number;
 
+    @NotNull
     private String phone;
 
     private String email;
 
+    @NotNull
     private String professionalRegister;
 
     private String graduationYear;
