@@ -42,7 +42,7 @@ public class WebSecurity {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/users/**").permitAll()
-                .antMatchers(HttpMethod.GET,"/error/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/error/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .authenticationManager(authenticationManager)
