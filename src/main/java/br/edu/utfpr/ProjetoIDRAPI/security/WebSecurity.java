@@ -46,8 +46,8 @@ public class WebSecurity {
                 .anyRequest().authenticated()
                 .and()
                 .authenticationManager(authenticationManager)
-                .addFilter(new JWTAuthenticationFilter(authenticationManager, authService) )
-                .addFilter(new JWTAuthorizationFilter(authenticationManager, authService) )
+                .addFilter(new JWTAuthenticationFilter(authenticationManager, authService))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager, authService))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         return http.build();

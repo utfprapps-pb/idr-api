@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
@@ -22,9 +23,12 @@ public class PropertyCollaborator {
     @ManyToOne
     private Property propertyCollaborator;
 
+    @NotNull
     private String collaboratorName;
 
+    @NotNull
     private Integer workHours;
 
+    @NotNull
     private Integer workDays;
 }

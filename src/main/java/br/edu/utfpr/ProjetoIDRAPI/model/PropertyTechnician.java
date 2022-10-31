@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
@@ -18,10 +18,12 @@ public class PropertyTechnician {
     @EmbeddedId
     private CompositePropertyTechnician id;
 
+    @NotNull
     @MapsId("user")
     @ManyToOne
     private User user;
 
+    @NotNull
     @MapsId("property")
     @ManyToOne
     private Property property;

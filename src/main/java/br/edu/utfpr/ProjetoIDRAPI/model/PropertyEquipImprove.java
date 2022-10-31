@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -23,10 +24,13 @@ public class PropertyEquipImprove {
     @ManyToOne
     private Property propertyEquipImprove;
 
+    @NotNull
     private String type;
 
+    @NotNull
     private String name;
 
+    @NotNull
     private Integer quantity;
 
     private BigDecimal unityValue;
