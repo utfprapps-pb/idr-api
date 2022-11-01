@@ -25,10 +25,6 @@ public class UserController {
         this.userService = userService;
         this.modelMapper = modelMapper;
     }
-    //update put
-    //get pegar info
-    //post para inserir informações novas
-    //são 4 maps aqui atualizar, encontrar um, encontrar varios e deletar
     
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
