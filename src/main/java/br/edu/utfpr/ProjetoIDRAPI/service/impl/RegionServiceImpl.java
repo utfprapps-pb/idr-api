@@ -22,7 +22,7 @@ public class RegionServiceImpl implements RegionService{
 	}
 
 	@Override
-	public Region findOneByNome(String name) {
+	public Region findOneByName(String name) {
 		return regionRepository.findByName(name);
 	}
 

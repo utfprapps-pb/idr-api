@@ -23,17 +23,17 @@ public class RegionController {
 		this.modelMapper = modelMapper;
 	}
 	
-	@GetMapping("/findId/{id}")
-	public ResponseEntity<Region> findOneRegionById(@PathVariable Long id){
+	@GetMapping("{id}")
+	public ResponseEntity<Region> findOne(@PathVariable Long id){
 		return ResponseEntity.ok(regionService.findOneById(id));
 	}
 	
 	@GetMapping("/findName/{name}")
-	public ResponseEntity<Region> findOneRegionById(@PathVariable String name){
-		return ResponseEntity.ok(regionService.findOneByNome(name));
+	public ResponseEntity<Region> findOneByName(@PathVariable String name){
+		return ResponseEntity.ok(regionService.findOneByName(name));
 	}
 	
-	@GetMapping("/listRegions")
+	@GetMapping
 	public ResponseEntity<List<Region>> listAllRegions(){
 		return ResponseEntity.ok(regionService.findAll());
 	}

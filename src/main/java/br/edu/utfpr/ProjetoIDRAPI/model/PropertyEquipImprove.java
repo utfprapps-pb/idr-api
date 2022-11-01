@@ -22,7 +22,7 @@ public class PropertyEquipImprove {
     private Long id;
 
     @ManyToOne
-    private Property propertyEquipImprove;
+    private Property property;
 
     @NotNull
     private String type;

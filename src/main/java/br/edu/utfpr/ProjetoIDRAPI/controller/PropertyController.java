@@ -35,13 +35,13 @@ public class PropertyController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public GenericResponse createProperty(@RequestBody @Valid Property property) {
+	public GenericResponse createRegister(@RequestBody @Valid Property property) {
 		propertyService.save(property);
-		return new GenericResponse("Propriedade criada com sucesso!");
+		return new GenericResponse("Registro inserido com sucesso");
 	}
 	
-	@GetMapping("/{id}")
-	public ResponseEntity<PropertyDto> findOneProperty(@PathVariable Long id){
+	@GetMapping("{id}")
+	public ResponseEntity<PropertyDto> findOne(@PathVariable Long id){
 		Property property = propertyService.findOne(id);
 		
 		if(property != null) {
@@ -51,23 +51,33 @@ public class PropertyController {
 		}
 	}
 	
-	@GetMapping("/listProperties")
-	public ResponseEntity<List<PropertyDto>> listAllProperties(){
+	@GetMapping
+	public ResponseEntity<List<PropertyDto>> listAll(){
 		return ResponseEntity.ok(propertyService.findAll().stream()
 				.map(this::convertToDto)
 				.collect(Collectors.toList()));
 	}
-	
-	@PutMapping("/{id}")
-	public GenericResponse updateAProperty(@RequestBody @Valid Property property) {
-		propertyService.save(property);
-		return new GenericResponse("Propriedade foi atualizado!");
+
+	@GetMapping("/userProperty/{id}")
+	public ResponseEntity<List<PropertyDto>> findByUserId(@PathVariable Long id) {
+		return ResponseEntity.ok(
+				propertyService.findByUserId(id)
+						.stream()
+						.map(this::convertToDto)
+						.collect(Collectors.toList())
+		);
 	}
 	
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Property> removeAProperty(@PathVariable Long id){
+	@PutMapping("{id}")
+	public GenericResponse updateRegister(@RequestBody @Valid Property property) {
+		propertyService.save(property);
+		return new GenericResponse("Registro alterado com sucesso");
+	}
+	
+	@DeleteMapping("{id}")
+	public GenericResponse deleteRegister(@PathVariable Long id){
 		propertyService.delete(id);
-		return ResponseEntity.noContent().build();
+		return new GenericResponse("Registro excluido com sucesso");
 	}
 	
 	private PropertyDto convertToDto(Property property) {

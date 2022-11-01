@@ -32,6 +32,11 @@ public class PropertyCollaboratorServiceImpl implements PropertyCollaboratorServ
     }
 
     @Override
+    public List<PropertyCollaborator> findByPropertyId(Long id) {
+        return repository.findAllByPropertyId(id);
+    }
+
+    @Override
     public void delete(Long id) {
         repository.deleteById(id);
     }

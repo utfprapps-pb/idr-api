@@ -39,7 +39,7 @@ public class PropertyEquipImproveController {
     }
 
     @DeleteMapping("{id}")
-    public GenericResponse delete(@PathVariable Long id) {
+    public GenericResponse deleteRegister(@PathVariable Long id) {
         service.delete(id);
         return new GenericResponse("Registro excluido com sucesso");
     }
@@ -48,6 +48,16 @@ public class PropertyEquipImproveController {
     public ResponseEntity<List<PropertyEquipImproveDto>> findAll() {
         return ResponseEntity.ok(
                 service.findAll()
+                        .stream()
+                        .map(this::convertEntityToDto)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    @GetMapping("/propertyEquips/{id}")
+    public ResponseEntity<List<PropertyEquipImproveDto>> findAllByPropertyId(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                service.findByPropertyId(id)
                         .stream()
                         .map(this::convertEntityToDto)
                         .collect(Collectors.toList())

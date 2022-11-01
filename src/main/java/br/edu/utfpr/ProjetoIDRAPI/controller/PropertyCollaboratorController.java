@@ -39,7 +39,7 @@ public class PropertyCollaboratorController {
     }
 
     @DeleteMapping("{id}")
-    public GenericResponse delete(@PathVariable Long id) {
+    public GenericResponse deleteRegister(@PathVariable Long id) {
         service.delete(id);
         return new GenericResponse("Registro excluido com sucesso");
     }
@@ -53,6 +53,17 @@ public class PropertyCollaboratorController {
                         .collect(Collectors.toList())
         );
     }
+
+    @GetMapping("/collabProperty/{id}")
+    public ResponseEntity<List<PropertyCollaboratorDto>> findAllByPropertyId(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                service.findByPropertyId(id)
+                        .stream()
+                        .map(this::convertEntityToDto)
+                        .collect(Collectors.toList())
+        );
+    }
+
 
     @GetMapping("{id}")
     public ResponseEntity<PropertyCollaboratorDto> findOne(@PathVariable Long id) {

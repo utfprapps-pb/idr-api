@@ -12,5 +12,7 @@ public interface PropertyEquipImproveService {
 
     List<PropertyEquipImprove> findAll();
 
+    List<PropertyEquipImprove> findByPropertyId(Long id);
+
     void delete(Long id);
 }

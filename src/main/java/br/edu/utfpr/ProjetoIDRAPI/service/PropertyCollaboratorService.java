@@ -12,5 +12,7 @@ public interface PropertyCollaboratorService {
 
     List<PropertyCollaborator> findAll();
 
+    List<PropertyCollaborator> findByPropertyId(Long id);
+
     void delete(Long id);
 }

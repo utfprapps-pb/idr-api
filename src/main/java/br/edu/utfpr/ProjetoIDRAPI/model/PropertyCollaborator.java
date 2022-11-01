@@ -21,7 +21,7 @@ public class PropertyCollaborator {
 
     @JoinColumn(name = "Property_id")
     @ManyToOne
-    private Property propertyCollaborator;
+    private Property property;
 
     @NotNull
     private String collaboratorName;

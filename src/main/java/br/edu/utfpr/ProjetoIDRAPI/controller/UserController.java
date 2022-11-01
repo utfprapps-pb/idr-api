@@ -28,13 +28,13 @@ public class UserController {
     
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public GenericResponse createUser(@RequestBody @Valid User user) {
+    public GenericResponse createRegister(@RequestBody @Valid User user) {
         userService.save(user);
-        return new GenericResponse("Usuário inserido com sucesso");
+        return new GenericResponse("Registro inserido com sucesso");
     }
     
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDto> findOneUser(@PathVariable Long id){
+    @GetMapping("{id}")
+    public ResponseEntity<UserDto> findOne(@PathVariable Long id){
     	User user = userService.findOne(id);
     	
     	if(user != null) {
@@ -44,23 +44,23 @@ public class UserController {
     	}
     }
     
-    @GetMapping("/listUsers")
-    public ResponseEntity<List<UserDto>> listAllRegisters(){
+    @GetMapping
+    public ResponseEntity<List<UserDto>> listAll(){
     	return ResponseEntity.ok(userService.findAll().stream()
     			.map(this::convertToDto)
     			.collect(Collectors.toList()));
     }
     
-    @PutMapping("/{id}")
-    public GenericResponse updateAResgister(@RequestBody @Valid User user) {
+    @PutMapping("{id}")
+    public GenericResponse updateResgister(@RequestBody @Valid User user) {
     	userService.save(user);
-    	return new GenericResponse("Usuário foi atualizado!");
+    	return new GenericResponse("Registro atualizado com sucesso");
     }
     
-    @DeleteMapping("/{id}")
-    public ResponseEntity<User> removeOneRegister(@PathVariable Long id){
+    @DeleteMapping("{id}")
+    public GenericResponse deleteRegister(@PathVariable Long id){
     	userService.delete(id);
-    	return ResponseEntity.noContent().build();
+        return new GenericResponse("Registro excluido com sucesso");
     }
     
     private UserDto convertToDto(User user) {

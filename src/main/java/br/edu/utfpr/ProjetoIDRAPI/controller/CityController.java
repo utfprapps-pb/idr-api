@@ -24,17 +24,17 @@ public class CityController {
 	}
 	
 	@GetMapping("/findId/{id}")
-	public ResponseEntity<City> findOneCityById(@PathVariable Long id){
+	public ResponseEntity<City> findOneById(@PathVariable Long id){
 		return ResponseEntity.ok(cityService.findOneById(id));
 	}
 	
 	@GetMapping("/findName/{name}")
-	public ResponseEntity<City> findOneCityByName(@PathVariable String name){
+	public ResponseEntity<City> findOneByName(@PathVariable String name){
 		return ResponseEntity.ok(cityService.findOneByNome(name));
 	}
 	
 	@GetMapping("/listCities")
-	public ResponseEntity<List<City>> listAllCities(){
+	public ResponseEntity<List<City>> listAll(){
 		return ResponseEntity.ok(cityService.findAll());
 	}
 }

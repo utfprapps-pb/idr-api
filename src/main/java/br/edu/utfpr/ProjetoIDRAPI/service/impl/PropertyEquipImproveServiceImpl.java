@@ -32,6 +32,11 @@ public class PropertyEquipImproveServiceImpl implements PropertyEquipImproveServ
     }
 
     @Override
+    public List<PropertyEquipImprove> findByPropertyId(Long id) {
+        return repository.findAllByPropertyId(id);
+    }
+
+    @Override
     public void delete(Long id) {
         repository.deleteById(id);
     }
