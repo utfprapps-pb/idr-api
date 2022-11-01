@@ -7,6 +7,9 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
+import br.edu.utfpr.ProjetoIDRAPI.model.City;
+import br.edu.utfpr.ProjetoIDRAPI.model.Region;
+
 @SpringBootApplication
 public class ProjetoIdrApiApplication {
 	
