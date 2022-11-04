@@ -23,8 +23,8 @@ public class CityController {
 		this.modelMapper = modelMapper;
 	}
 	
-	@GetMapping("/findId/{id}")
-	public ResponseEntity<City> findOneById(@PathVariable Long id){
+	@GetMapping("{id}")
+	public ResponseEntity<City> findOne(@PathVariable Long id){
 		return ResponseEntity.ok(cityService.findOneById(id));
 	}
 	
@@ -33,7 +33,7 @@ public class CityController {
 		return ResponseEntity.ok(cityService.findOneByNome(name));
 	}
 	
-	@GetMapping("/listCities")
+	@GetMapping
 	public ResponseEntity<List<City>> listAll(){
 		return ResponseEntity.ok(cityService.findAll());
 	}
