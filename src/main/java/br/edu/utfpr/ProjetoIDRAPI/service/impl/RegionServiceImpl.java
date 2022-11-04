@@ -17,17 +17,28 @@ public class RegionServiceImpl implements RegionService{
 	}
 
 	@Override
-	public Region findOneById(Long id) {
+	public Region findOne(Long id) {
 		return regionRepository.findById(id).orElse(null);
 	}
 
 	@Override
-	public Region findOneByName(String name) {
+	public Region findByName(String name) {
 		return regionRepository.findByName(name);
 	}
 
 	@Override
 	public List<Region> findAll() {
 		return regionRepository.findAll();
+	}
+
+	@Override
+	public Region save(Region entity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void delete(Long id) {
+		// TODO Auto-generated method stub
 	}
 }

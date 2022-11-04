@@ -17,10 +17,10 @@ public class CityServiceImpl implements CityService{
 	}
 
 	@Override
-	public City findOneById(Long id) {
+	public City findOne(Long id) {
 		return cityRepository.findById(id).orElse(null);
 	}
-
+	
 	@Override
 	public City findOneByNome(String name) {
 		return cityRepository.findByName(name);
@@ -29,5 +29,17 @@ public class CityServiceImpl implements CityService{
 	@Override
 	public List<City> findAll() {
 		return cityRepository.findAll();
+	}
+
+	@Override
+	public City save(City entity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void delete(Long id) {
+		// TODO Auto-generated method stub
+		
 	}
 }
