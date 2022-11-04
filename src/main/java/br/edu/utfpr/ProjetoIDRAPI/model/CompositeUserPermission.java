@@ -7,8 +7,8 @@ import java.io.Serializable;
 
 @Data
 @Embeddable
-public class CompositePropertyTechnician implements Serializable {
-    private long user;
+public class CompositeUserPermission implements Serializable {
+    private Long user;
 
-    private long property;
+    private Long permission;
 }
