@@ -22,7 +22,7 @@ public class CityServiceImpl implements CityService{
 	}
 	
 	@Override
-	public City findOneByNome(String name) {
+	public City findByName(String name) {
 		return cityRepository.findByName(name);
 	}
 

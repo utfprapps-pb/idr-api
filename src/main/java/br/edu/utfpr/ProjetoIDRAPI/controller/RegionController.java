@@ -34,7 +34,7 @@ public class RegionController extends CrudController<Region, Region, Long> {
 	}
 	
 	@GetMapping("/findName/{name}")
-	public ResponseEntity<Region> findOneByName(@PathVariable String name){
+	public ResponseEntity<Region> findByName(@PathVariable String name){
 		return ResponseEntity.ok(regionService.findByName(name));
 	}
 }

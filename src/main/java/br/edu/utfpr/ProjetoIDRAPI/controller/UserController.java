@@ -5,6 +5,7 @@ import br.edu.utfpr.ProjetoIDRAPI.model.User;
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
 import br.edu.utfpr.ProjetoIDRAPI.service.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,4 +30,13 @@ public class UserController extends CrudController<User, UserDto, Long>{
 	protected ModelMapper getModelMapper() {
 		return this.modelMapper;
 	}
+	
+	@GetMapping("/findName/{username}")
+	public ResponseEntity<UserDto> findByName(@PathVariable String username){
+		return ResponseEntity.ok(convertToDto(userService.findByName(username)));
+	}
+	
+	private UserDto convertToDto(User user) {
+    	return modelMapper.map(user, UserDto.class);
+    }
 }
