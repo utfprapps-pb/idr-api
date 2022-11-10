@@ -11,7 +11,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @Entity(name = "users")
 @Data
@@ -48,10 +51,20 @@ public class User implements UserDetails {
 
     private String graduationYear;
 
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "users_permission",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "permission_id", referencedColumnName = "id"))
+    private Set<Permission> userPermissions;
+
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return AuthorityUtils.createAuthorityList("Role_USER");
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.addAll(this.userPermissions);
+        return authorities;
     }
 
     @Override
