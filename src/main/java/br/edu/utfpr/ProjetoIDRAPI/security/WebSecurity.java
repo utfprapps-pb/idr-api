@@ -43,6 +43,8 @@ public class WebSecurity {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/users/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/error/**").permitAll()
+                .antMatchers("/swagger-resources/**", "swagger-ui.html", "/swagger-ui/**", "/v2/api-docs"
+                		,"/webjars/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .authenticationManager(authenticationManager)
