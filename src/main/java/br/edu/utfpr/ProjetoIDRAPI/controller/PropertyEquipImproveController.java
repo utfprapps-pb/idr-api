@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("propertyEquipImproves")
 public class PropertyEquipImproveController extends CrudController<PropertyEquipImprove, PropertyEquipImproveDto, Long>{
-
     private final PropertyEquipImproveService service;
     private ModelMapper modelMapper;
 

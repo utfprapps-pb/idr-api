@@ -13,7 +13,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("users")
 public class UserController extends CrudController<User, UserDto, Long>{
-
     private final UserService userService;
     private ModelMapper modelMapper;
 

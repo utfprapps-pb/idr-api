@@ -28,7 +28,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         this.authService = authService;
         this.authenticationManager = authenticationManager;
     }
-
+    
+    //neste o cpf irá ser utilizado como senha
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
