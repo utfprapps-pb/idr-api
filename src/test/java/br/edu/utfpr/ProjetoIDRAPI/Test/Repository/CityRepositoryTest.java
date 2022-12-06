@@ -49,8 +49,16 @@ public class CityRepositoryTest {
 	}
 	
 	@Test
-	public void whenFindById_returnRegionObject() {
+	public void whenFindById_returnCityObject() {
 		City cityFind = repository.findById(city.getId()).get();
+		System.out.println(cityFind);
+		
+		assertThat(cityFind).isNotNull();
+	}
+	
+	@Test
+	public void whenFindByName_returnCityObject() {
+		City cityFind = repository.findByName(city.getName());
 		System.out.println(cityFind);
 		
 		assertThat(cityFind).isNotNull();

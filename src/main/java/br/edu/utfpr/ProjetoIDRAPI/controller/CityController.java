@@ -14,6 +14,8 @@ import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
 @RestController
 @RequestMapping("cities")
 public class CityController extends CrudController<City, City, Long>{
+//Como cidade não tem um dto definido, quando chamado o extends do crud 
+//foi passado para ele duas cidade no lugar de uma city e um dto
 	private final CityService cityService;
 	private ModelMapper modelMapper;
 

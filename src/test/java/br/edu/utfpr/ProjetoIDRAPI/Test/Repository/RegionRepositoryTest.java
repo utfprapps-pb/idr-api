@@ -48,4 +48,12 @@ public class RegionRepositoryTest {
 		
 		assertThat(regFind).isNotNull();
 	}
+	
+	@Test
+	public void whenFindByName_returnRegionObject() {
+		Region regFind = repository.findByName(region.getName());
+		System.out.println(regFind);
+		
+		assertThat(regFind).isNotNull();
+	}
 }
