@@ -2,17 +2,16 @@ package br.edu.utfpr.ProjetoIDRAPI.controller;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import br.edu.utfpr.ProjetoIDRAPI.model.Region;
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
 import br.edu.utfpr.ProjetoIDRAPI.service.RegionService;
 
+import javax.validation.Valid;
+
 @RestController
-@RequestMapping("Regions")
+@RequestMapping("regions")
 public class RegionController extends CrudController<Region, Region, Long> {
 	private final RegionService regionService;
 	private ModelMapper modelMapper;
@@ -33,8 +32,8 @@ public class RegionController extends CrudController<Region, Region, Long> {
 		return this.modelMapper;
 	}
 	
-	@GetMapping("/findName/{name}")
-	public ResponseEntity<Region> findByName(@PathVariable String name){
+	@GetMapping("/findName")
+	public ResponseEntity<Region> findByName(@RequestBody @Valid String name){
 		return ResponseEntity.ok(regionService.findByName(name));
 	}
 }

@@ -2,14 +2,13 @@ package br.edu.utfpr.ProjetoIDRAPI.controller;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import br.edu.utfpr.ProjetoIDRAPI.model.City;
 import br.edu.utfpr.ProjetoIDRAPI.service.CityService;
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("cities")
@@ -33,8 +32,8 @@ public class CityController extends CrudController<City, City, Long>{
 		return this.modelMapper;
 	}
 
-	@GetMapping("/findName/{name}")
-	public ResponseEntity<City> findByName(@PathVariable String name){
+	@GetMapping("/findName")
+	public ResponseEntity<City> findByName(@RequestBody @Valid String name){
 		return ResponseEntity.ok(cityService.findByName(name));
 	}
 }
