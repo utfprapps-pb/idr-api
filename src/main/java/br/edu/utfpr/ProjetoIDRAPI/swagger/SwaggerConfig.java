@@ -1,4 +1,4 @@
-package br.edu.utfpr.ProjetoIDRAPI.Swagger;
+package br.edu.utfpr.ProjetoIDRAPI.swagger;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
