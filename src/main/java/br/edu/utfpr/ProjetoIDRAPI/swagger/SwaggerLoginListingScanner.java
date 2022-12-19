@@ -1,4 +1,4 @@
-package br.edu.utfpr.ProjetoIDRAPI.Swagger;
+package br.edu.utfpr.ProjetoIDRAPI.swagger;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
