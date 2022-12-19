@@ -1,6 +1,5 @@
 package br.edu.utfpr.ProjetoIDRAPI.dto;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.Property;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -10,7 +9,7 @@ public class ProductUseDto {
 
     private Long id;
 
-    private Property property;
+    private PropertyDto property;
 
     private LocalDate useDate;
 

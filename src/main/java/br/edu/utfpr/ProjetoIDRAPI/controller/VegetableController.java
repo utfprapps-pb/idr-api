@@ -9,18 +9,19 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.edu.utfpr.ProjetoIDRAPI.dto.VegetableDto;
 import br.edu.utfpr.ProjetoIDRAPI.model.Vegetable;
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
 import br.edu.utfpr.ProjetoIDRAPI.service.VegetableService;
 
 @RestController
 @RequestMapping("vegetables")
-public class VegetableController extends CrudController<Vegetable, Vegetable, Long>{
+public class VegetableController extends CrudController<Vegetable, VegetableDto, Long>{
 	private final VegetableService service;
 	private ModelMapper modelMapper;
 	
 	public VegetableController(VegetableService service, ModelMapper modelMapper) {
-		super(Vegetable.class,Vegetable.class);
+		super(Vegetable.class,VegetableDto.class);
 		this.service = service;
 		this.modelMapper = modelMapper;
 	}
@@ -36,7 +37,11 @@ public class VegetableController extends CrudController<Vegetable, Vegetable, Lo
 	}
 	
 	@GetMapping("/findName")
-	public ResponseEntity<Vegetable> findByName(@RequestHeader @Valid String name){
-		return ResponseEntity.ok(service.findByName(name));
+	public ResponseEntity<VegetableDto> findByName(@RequestHeader @Valid String name){
+		return ResponseEntity.ok(convertToDto(service.findByName(name)));
+	}
+	
+	private VegetableDto convertToDto(Vegetable vegetable) {
+		return modelMapper.map(vegetable, VegetableDto.class);
 	}
 }
