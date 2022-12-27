@@ -8,8 +8,6 @@ import br.edu.utfpr.ProjetoIDRAPI.model.City;
 import br.edu.utfpr.ProjetoIDRAPI.service.CityService;
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
 
-import javax.validation.Valid;
-
 @RestController
 @RequestMapping("cities")
 public class CityController extends CrudController<City, City, Long>{
@@ -34,8 +32,8 @@ public class CityController extends CrudController<City, City, Long>{
 		return this.modelMapper;
 	}
 
-	@GetMapping("/findName")
-	public ResponseEntity<City> findByName(@RequestBody @Valid String name){
+	@GetMapping("/findName/{name}")
+	public ResponseEntity<City> findByName(@PathVariable String name){
 		return ResponseEntity.ok(cityService.findByName(name));
 	}
 }

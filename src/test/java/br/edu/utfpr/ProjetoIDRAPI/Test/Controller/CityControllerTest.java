@@ -39,97 +39,102 @@ import br.edu.utfpr.ProjetoIDRAPI.service.CityService;
 @WebMvcTest(controllers = CityController.class)
 @AutoConfigureMockMvc
 public class CityControllerTest {
-	//FAZER TESTES NO USER
 	static final String API = "/cities";
 	static final MediaType JSON = MediaType.APPLICATION_JSON;
-	
+
 	@Autowired
 	private WebApplicationContext context;
-	
+
 	@Autowired
-	MockMvc mvc;
-	
+	private MockMvc mvc;
+
 	@MockBean
 	private CityService service;
-	
+
 	@MockBean
 	private CityRepository repository;
-	
+
 	@MockBean
 	private RegionRepository regRepository;
-	
-	Region region = new Region(1l, "Region");
-	
-	City RECORD_1 = new City(1l, "City-test-1", region);
-	City RECORD_2 = new City(2l, "City-test-2", region);
-	City RECORD_3 = new City(3l, "City-test-3", region);
-	
+
 	@BeforeEach
 	public void setup() {
-		mvc = MockMvcBuilders
-				.webAppContextSetup(context)
-				.apply(springSecurity()) 
-				.build();
+		mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
 	}
 
 	@Test
 	@WithMockUser
-	public void whenFingAll_returnSucess() throws Exception {
-		regRepository.save(region);
+	public void whenFindAll_returnSucess() throws Exception {
+		regRepository.save(createRegion());
+		List<City> records = createList();
+
+		Mockito.when(service.findAll()).thenReturn(records);
+
+		mvc.perform(MockMvcRequestBuilders.get(API).contentType(JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasSize(3))).andExpect(jsonPath("$[2].name", is("City-test-3")));
+	}
+
+	@Test
+	@WithMockUser
+	public void whenFindById_returnCity() throws Exception {
+		Mockito.when(service.findOne(createCity().getId())).thenReturn(createCity());
+
+		mvc.perform(MockMvcRequestBuilders.get(API + "/{id}", createCity().getId())).andExpect(status().isOk())
+				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.id", is(4)))
+				.andExpect(jsonPath("$.name", is("City-test-4")));
+	}
+
+	@Test
+	@WithMockUser
+	public void whenFindByIdIsNull_returnNoContentStatus() throws Exception {
+		Mockito.when(service.findOne(createCity().getId())).thenReturn(null);
+
+		mvc.perform(MockMvcRequestBuilders.get(API + "/{id}", createCity().getId())).andExpect(status().isNoContent());
+	}
+
+	@Test
+	@WithMockUser
+	public void whenFindByName_returnCity() throws Exception {
+		Mockito.when(service.findByName(createCity().getName())).thenReturn(createCity());
+		
+		mvc.perform(MockMvcRequestBuilders.get(API + "/findName/{name}", createCity().getName()))
+		   .andExpect(status().isOk())
+		   .andExpect(content().contentType(JSON))
+		   .andExpect(jsonPath("$.name", is("City-test-4")));
+	}
+
+	@Test
+	@WithMockUser
+	public void whenFindByNameIsNull_returnBadRequest() throws Exception {
+		City city = new City(5l, "", createRegion());
+
+		Mockito.when(service.findByName(city.getName())).thenReturn(null);
+
+		mvc.perform(MockMvcRequestBuilders.get(API + "/findName", city.getName())).andExpect(status().isBadRequest());
+	}
+
+	public List<City> createList() {
+		City RECORD_1 = new City(1l, "City-test-1", createRegion());
+		City RECORD_2 = new City(2l, "City-test-2", createRegion());
+		City RECORD_3 = new City(3l, "City-test-3", createRegion());
+
 		List<City> records = new ArrayList<>();
 		records.add(RECORD_1);
 		records.add(RECORD_2);
 		records.add(RECORD_3);
-		
-		Mockito.when(service.findAll()).thenReturn(records);
-		
-		mvc.perform(MockMvcRequestBuilders.get(API).contentType(JSON))
-		.andExpect(status().isOk())
-		.andExpect(jsonPath("$", hasSize(3)))
-		.andExpect(jsonPath("$[2].name", is("City-test-3")));
-	}
-	
-	@Test
-	@WithMockUser
-	public void whenFindById_returnRegion() throws Exception {
-		Mockito.when(service.findOne(RECORD_1.getId())).thenReturn(RECORD_1);
-		
-		mvc.perform(MockMvcRequestBuilders.get(API+"/{id}", RECORD_1.getId()))
-		.andExpect(status().isOk())
-		.andExpect(content().contentType(JSON))
-		.andExpect(jsonPath("$.id", is(1)))
-        .andExpect(jsonPath("$.name", is("City-test-1")));
-	}
-	
-	@Test
-	@WithMockUser
-	public void whenFindByIdIsNull_returnNoContentStatus() throws Exception {
-		Mockito.when(service.findOne(RECORD_1.getId())).thenReturn(null);
 
-		mvc.perform(MockMvcRequestBuilders.get(API+"/{id}", RECORD_1.getId()))
-		.andExpect(status().isNoContent());
+		return records;
+	}
+
+	public City createCity() {
+		City city = new City(4l, "City-test-4", createRegion());
+
+		return city;
 	}
 	
-	@Test
-	@WithMockUser
-	public void whenFindByName_returnRegion() throws Exception {
-		Mockito.when(service.findByName(RECORD_1.getName())).thenReturn(RECORD_1);
+	public Region createRegion() {
+		Region region = new Region(1l, "Region");
 		
-		mvc.perform(MockMvcRequestBuilders.get(API+"/findName/{name}", RECORD_1.getName()))
-		.andExpect(status().isOk())
-		.andExpect(content().contentType(JSON))
-		.andExpect(jsonPath("$.id", is(1)))
-        .andExpect(jsonPath("$.name", is("City-test-1")));
-	}
-	
-	@Test
-	@WithMockUser
-	public void whenFindByNameIsNull_returnBadRequest() throws Exception {
-		City city = new City(4l, "", region);
-		
-		Mockito.when(service.findByName(city.getName())).thenReturn(null);
-		
-		mvc.perform(MockMvcRequestBuilders.get(API+"/findName/{name}", city.getName()))
-		.andExpect(status().isBadRequest());
+		return region;
 	}
 }

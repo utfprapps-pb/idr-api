@@ -30,6 +30,7 @@ public class PlagueDisease {
 	
 	private String culture;
 	
+	@NotNull
 	private String identification;
 	
 	private String type;

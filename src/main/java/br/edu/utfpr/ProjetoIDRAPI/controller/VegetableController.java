@@ -1,11 +1,9 @@
 package br.edu.utfpr.ProjetoIDRAPI.controller;
 
-import javax.validation.Valid;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,8 +34,8 @@ public class VegetableController extends CrudController<Vegetable, VegetableDto,
 		return this.modelMapper;
 	}
 	
-	@GetMapping("/findName")
-	public ResponseEntity<VegetableDto> findByName(@RequestHeader @Valid String name){
+	@GetMapping("/findName/{name}")
+	public ResponseEntity<VegetableDto> findByName(@PathVariable String name){
 		return ResponseEntity.ok(convertToDto(service.findByName(name)));
 	}
 	

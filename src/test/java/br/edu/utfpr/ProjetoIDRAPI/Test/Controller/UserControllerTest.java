@@ -50,7 +50,7 @@ public class UserControllerTest {
 	private WebApplicationContext context;
 
 	@Autowired
-	MockMvc mvc;
+	private MockMvc mvc;
 
 	@MockBean
 	private UserService service;
@@ -58,22 +58,15 @@ public class UserControllerTest {
 	@MockBean
 	private UserRepository repository;
 
-	User RECORD_1 = new User(1l, "User-test-1", "1616", null, null, null, null, "21221", null, "12222", null, null);
-	User RECORD_2 = new User(2l, "User-test-2", "1313", null, null, null, null, "13131", null, "16161", null, null);
-	User RECORD_3 = new User(3l, "User-test-3", "9444", null, null, null, null, "11551", null, "13113", null, null);
-
 	@BeforeEach
 	public void setup() {
 		mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
 	}
-
+	
 	@Test
 	@WithMockUser
-	public void whenFingAll_returnSucess() throws Exception {
-		List<User> records = new ArrayList<>();
-		records.add(RECORD_1);
-		records.add(RECORD_2);
-		records.add(RECORD_3);
+	public void whenFindAll_returnSucess() throws Exception {
+		List<User> records = createList();
 
 		Mockito.when(service.findAll()).thenReturn(records);
 
@@ -84,35 +77,35 @@ public class UserControllerTest {
 	@Test
 	@WithMockUser
 	public void whenFindById_returnUser() throws Exception {
-		Mockito.when(service.findOne(RECORD_1.getId())).thenReturn(RECORD_1);
+		Mockito.when(service.findOne(createUser().getId())).thenReturn(createUser());
 
-		mvc.perform(MockMvcRequestBuilders.get(API + "/{id}", RECORD_1.getId())).andExpect(status().isOk())
-				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.id", is(1)))
-				.andExpect(jsonPath("$.username", is("User-test-1")));
+		mvc.perform(MockMvcRequestBuilders.get(API + "/{id}", createUser().getId())).andExpect(status().isOk())
+				.andExpect(content().contentType(JSON)).andExpect(jsonPath("$.id", is(4)))
+				.andExpect(jsonPath("$.username", is("User-test-4")));
 	}
 
 	@Test
 	@WithMockUser
 	public void whenFindByIdIsNull_returnNoContentStatus() throws Exception {
-		Mockito.when(service.findOne(RECORD_1.getId())).thenReturn(null);
+		Mockito.when(service.findOne(createUser().getId())).thenReturn(null);
 
-		mvc.perform(MockMvcRequestBuilders.get(API + "/{id}", RECORD_1.getId())).andExpect(status().isNoContent());
+		mvc.perform(MockMvcRequestBuilders.get(API + "/{id}", createUser().getId())).andExpect(status().isNoContent());
 	}
 
 	@Test
 	@WithMockUser
 	public void whenFindByName_returnUser() throws Exception {
-		Mockito.when(service.findByName(RECORD_1.getUsername())).thenReturn(RECORD_1);
+		Mockito.when(service.findByName(createUser().getUsername())).thenReturn(createUser());
 
-		mvc.perform(MockMvcRequestBuilders.get(API + "/findName/{username}", RECORD_1.getUsername()))
-				.andExpect(status().isOk()).andExpect(content().contentType(JSON)).andExpect(jsonPath("$.id", is(1)))
-				.andExpect(jsonPath("$.username", is("User-test-1")));
+		mvc.perform(MockMvcRequestBuilders.get(API + "/findName/{username}", createUser().getUsername()))
+				.andExpect(status().isOk()).andExpect(content().contentType(JSON)).andExpect(jsonPath("$.id", is(4)))
+				.andExpect(jsonPath("$.username", is("User-test-4")));
 	}
 
 	@Test
 	@WithMockUser
 	public void whenFindByNameIsNull_returnBadRequest() throws Exception {
-		User user = new User(4l, "", "9444", null, null, null, null, "11551", null, "13113", null, null);
+		User user = new User(5l, "", "9444", null, null, null, null, "11551", null, "13113", null, null);
 
 		Mockito.when(service.findByName(user.getUsername())).thenReturn(null);
 
@@ -123,12 +116,7 @@ public class UserControllerTest {
 	@Test
 	@WithMockUser
 	public void whenUserIsCreated() throws Exception {
-		User userToPost = new User();
-		userToPost.setUsername("New-test-user");
-		userToPost.setCpf("5115");
-		userToPost.setPhone("5115");
-		userToPost.setProfessionalRegister("5151");
-		userToPost.setUserPermissions(null);
+		User userToPost = createUser();
 
 		Mockito.when(repository.save(ArgumentMatchers.any(User.class))).thenReturn(userToPost);
 
@@ -141,13 +129,7 @@ public class UserControllerTest {
 	@Test
 	@WithMockUser
 	public void whenGivenId_shouldDeleteUser() {
-		User user = new User();
-		user.setId(1L);
-		user.setUsername("Test Name");
-		user.setCpf("5115");
-		user.setPhone("5115");
-		user.setProfessionalRegister("5151");
-		user.setUserPermissions(null);
+		User user = createUser();
 
 		Mockito.when(repository.findById(user.getId())).thenReturn(Optional.of(user));
 
@@ -156,14 +138,9 @@ public class UserControllerTest {
 	}
 
 	@Test
+	@WithMockUser
 	public void deleteShouldThrowException_whenUserDoesntExist() {
-		User user = new User();
-		user.setId(9L);
-		user.setUsername("Test Name");
-		user.setCpf("5115");
-		user.setPhone("5115");
-		user.setProfessionalRegister("5151");
-		user.setUserPermissions(null);
+		User user = createUser();
 
 		Mockito.when(service.findOne(anyLong())).thenReturn(null);
 		service.delete(user.getId());
@@ -172,17 +149,11 @@ public class UserControllerTest {
 	@Test
 	@WithMockUser
 	public void whenGivenId_shouldUpdateUser() {
-		User user = new User();
-		user.setId(9L);
-		user.setUsername("Test Name");
-		user.setCpf("5115");
-		user.setPhone("5115");
-		user.setProfessionalRegister("5151");
-		user.setUserPermissions(null);
+		User user = createUser();
 
 		repository.save(user);
 
-		user.setId(9L);
+		user.setId(4L);
 		user.setUsername("New Test Name");
 
 		repository.save(user);
@@ -193,9 +164,7 @@ public class UserControllerTest {
 	@Test
 	@WithMockUser
 	public void updateShouldThrowException_whenUserDoesntExist() {
-		User user = new User();
-		user.setId(9L);
-		user.setUsername("Test Name");
+		User user = createUser();
 
 		User newUser = new User();
 		newUser.setId(null);
@@ -203,5 +172,24 @@ public class UserControllerTest {
 
 		Mockito.when(service.findOne(anyLong())).thenReturn(null);
 		repository.save(newUser);
+	}
+	
+	public List<User> createList(){
+		User RECORD_1 = new User(1l, "User-test-1", "1616", null, null, null, null, "21221", null, "12222", null, null);
+		User RECORD_2 = new User(2l, "User-test-2", "1313", null, null, null, null, "13131", null, "16161", null, null);
+		User RECORD_3 = new User(3l, "User-test-3", "9444", null, null, null, null, "11551", null, "13113", null, null);
+		
+		List<User> records = new ArrayList<>();
+		records.add(RECORD_1);
+		records.add(RECORD_2);
+		records.add(RECORD_3);
+		
+		return records;
+	}
+	
+	public User createUser(){
+		User user = new User(4l, "User-test-4", "1717", null, null, null, null, "21221", null, "12222", null, null);
+		
+		return user;
 	}
 }

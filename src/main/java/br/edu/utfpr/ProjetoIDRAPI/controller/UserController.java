@@ -8,8 +8,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 @RestController
 @RequestMapping("users")
 public class UserController extends CrudController<User, UserDto, Long>{
@@ -32,8 +30,8 @@ public class UserController extends CrudController<User, UserDto, Long>{
 		return this.modelMapper;
 	}
 	
-	@GetMapping("/findName")
-	public ResponseEntity<UserDto> findByName(@RequestBody @Valid String username){
+	@GetMapping("/findName/{username}")
+	public ResponseEntity<UserDto> findByName(@PathVariable String username){
 		return ResponseEntity.ok(convertToDto(userService.findByName(username)));
 	}
 	
