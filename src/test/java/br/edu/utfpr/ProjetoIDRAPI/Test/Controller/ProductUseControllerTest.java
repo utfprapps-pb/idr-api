@@ -94,7 +94,6 @@ public class ProductUseControllerTest {
         productUse.setProperty(property);
         ResponseEntity<Object> responseProductUse =
                 testRestTemplate.postForEntity(API, productUse, Object.class);
-        productUse.setId(1L);
 
         testRestTemplate.delete(API + "/1");
     }
@@ -117,14 +116,14 @@ public class ProductUseControllerTest {
         ResponseEntity<Object> responseProductUse =
                 testRestTemplate.postForEntity(API, productUse, Object.class);
         productUse.setId(1L);
-        productUse.setUsedFor("Updated UsedFor details");
+        productUse.setUsedFor("Updated details");
 
         ResponseEntity<Object> response =
                 testRestTemplate.postForEntity(API, productUse, Object.class);
 
         List<ProductUse> productUseList = productUseRepository.findAll();
         ProductUse productUseDB = productUseList.get(0);
-        assertThat(productUseDB.getUsedFor()).isEqualTo("Updated UsedFor details");
+        assertThat(productUseDB.getUsedFor()).isEqualTo("Updated details");
     }
 
     @Test
@@ -146,7 +145,7 @@ public class ProductUseControllerTest {
                 testRestTemplate.postForEntity(API, productUse, Object.class);
         productUse.setId(1L);
 
-        ProductUse productUseDB = productUseRepository.findById(1l).orElse(null);
+        ProductUse productUseDB = productUseRepository.findById(1L).orElse(null);
 
         List<ProductUse> productUseList = productUseRepository.findAll();
         ProductUse productUseDB1 = productUseList.get(0);
@@ -164,9 +163,8 @@ public class ProductUseControllerTest {
         return user;
     }
 
-    public Property createValidProperty() {
+    private Property createValidProperty() {
         Property property = new Property();
-        property.setUser(createValidUser());
         property.setLeased(true);
 
         return property;
@@ -175,8 +173,7 @@ public class ProductUseControllerTest {
     private ProductUse createValidProductUse() {
         LocalDate date = LocalDate.parse("2022-06-23");
         ProductUse productUse = new ProductUse();
-        productUse.setProperty(createValidProperty());
-        productUse.setUsedFor("UsedFor details");
+        productUse.setUsedFor("details");
         productUse.setQuantity(20);
         productUse.setUseDate(date);
 

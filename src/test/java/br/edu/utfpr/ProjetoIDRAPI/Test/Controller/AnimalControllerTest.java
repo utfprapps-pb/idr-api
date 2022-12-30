@@ -1,11 +1,23 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
+import br.edu.utfpr.ProjetoIDRAPI.model.Animal;
+import br.edu.utfpr.ProjetoIDRAPI.model.ProductUse;
+import br.edu.utfpr.ProjetoIDRAPI.model.Property;
+import br.edu.utfpr.ProjetoIDRAPI.model.User;
 import br.edu.utfpr.ProjetoIDRAPI.repository.AnimalRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -22,6 +34,149 @@ public class AnimalControllerTest {
     private void cleanup() {
         animalRepository.deleteAll();
         testRestTemplate.getRestTemplate().getInterceptors().clear();
+    }
+
+    @Test
+    public void postProductUse_whenProductUseIsValid_receiveCreated() {
+        User user = createValidUser();
+        ResponseEntity<Object> responseUser =
+                testRestTemplate.postForEntity("/users", user, Object.class);
+        user.setId(1L);
+
+        Property property = createValidProperty();
+        property.setUser(user);
+        ResponseEntity<Object> responseProperty =
+                testRestTemplate.postForEntity("/properties", property, Object.class);
+        property.setId(1L);
+
+        Animal animal = createValidAnimal();
+        animal.setProperty(property);
+        ResponseEntity<Object> response =
+                testRestTemplate.postForEntity(API, animal, Object.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    public void postProductUse_whenProductUseIsValid_productUseSavedToDatabase() {
+        User user = createValidUser();
+        ResponseEntity<Object> responseUser =
+                testRestTemplate.postForEntity("/users", user, Object.class);
+        user.setId(1L);
+
+        Property property = createValidProperty();
+        property.setUser(user);
+        ResponseEntity<Object> responseProperty =
+                testRestTemplate.postForEntity("/properties", property, Object.class);
+        property.setId(1L);
+
+        Animal animal = createValidAnimal();
+        animal.setProperty(property);
+        ResponseEntity<Object> response =
+                testRestTemplate.postForEntity(API, animal, Object.class);
+
+        assertThat( animalRepository.count() ).isEqualTo(1);
+    }
+
+    @Test
+    public void deleteProductUse_whenProductUseIdExists_receiveOk() {
+        User user = createValidUser();
+        ResponseEntity<Object> responseUser =
+                testRestTemplate.postForEntity("/users", user, Object.class);
+        user.setId(1L);
+
+        Property property = createValidProperty();
+        property.setUser(user);
+        ResponseEntity<Object> responseProperty =
+                testRestTemplate.postForEntity("/properties", property, Object.class);
+        property.setId(1L);
+
+        Animal animal = createValidAnimal();
+        animal.setProperty(property);
+        ResponseEntity<Object> responseProductUse =
+                testRestTemplate.postForEntity(API, animal, Object.class);
+
+        testRestTemplate.delete(API + "/1");
+    }
+
+    @Test
+    public void postProductUse_whenProductUseIsValidAndAlreadyExists_productUseUpdateDatabase() {
+        User user = createValidUser();
+        ResponseEntity<Object> responseUser =
+                testRestTemplate.postForEntity("/users", user, Object.class);
+        user.setId(1L);
+
+        Property property = createValidProperty();
+        property.setUser(user);
+        ResponseEntity<Object> responseProperty =
+                testRestTemplate.postForEntity("/properties", property, Object.class);
+        property.setId(1L);
+
+        Animal animal = createValidAnimal();
+        animal.setProperty(property);
+        ResponseEntity<Object> responseProductUse =
+                testRestTemplate.postForEntity(API, animal, Object.class);
+        animal.setId(1L);
+        animal.setBreed("Updated Vaca vaca");
+
+        ResponseEntity<Object> response =
+                testRestTemplate.postForEntity(API, animal, Object.class);
+
+        List<Animal> animalList = animalRepository.findAll();
+        Animal animalDB = animalList.get(0);
+        assertThat(animalDB.getBreed()).isEqualTo("Updated Vaca vaca");
+    }
+
+    @Test
+    public void getProductUse_whenProductUseExists_productUseReturnFromDatabase() {
+        User user = createValidUser();
+        ResponseEntity<Object> responseUser =
+                testRestTemplate.postForEntity("/users", user, Object.class);
+        user.setId(1L);
+
+        Property property = createValidProperty();
+        property.setUser(user);
+        ResponseEntity<Object> responseProperty =
+                testRestTemplate.postForEntity("/properties", property, Object.class);
+        property.setId(1L);
+
+        Animal animal = createValidAnimal();
+        animal.setProperty(property);
+        ResponseEntity<Object> responseProductUse =
+                testRestTemplate.postForEntity(API, animal, Object.class);
+        animal.setId(1L);
+
+        Animal animalDB = animalRepository.findById(1L).orElse(null);
+
+        List<Animal> animalList = animalRepository.findAll();
+        Animal animalDB1 = animalList.get(0);
+
+        assertThat(animalDB).isEqualTo(animalDB1);
+    }
+
+    private User createValidUser() {
+        User user = new User();
+        user.setUsername("User-test-1");
+        user.setCpf("115.675.888-66");
+        user.setPhone("4632232277");
+        user.setProfessionalRegister("999101");
+
+        return user;
+    }
+
+    private Property createValidProperty() {
+        Property property = new Property();
+        property.setLeased(true);
+
+        return property;
+    }
+
+    private Animal createValidAnimal() {
+        Animal animal = new Animal();
+        animal.setName("Mimosa");
+        animal.setBreed("Vaca vaca");
+
+        return animal;
     }
 
 }
