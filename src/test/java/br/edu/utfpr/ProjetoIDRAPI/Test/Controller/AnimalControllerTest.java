@@ -1,7 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
 import br.edu.utfpr.ProjetoIDRAPI.model.Animal;
-import br.edu.utfpr.ProjetoIDRAPI.model.ProductUse;
 import br.edu.utfpr.ProjetoIDRAPI.model.Property;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
 import br.edu.utfpr.ProjetoIDRAPI.repository.AnimalRepository;
@@ -14,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;

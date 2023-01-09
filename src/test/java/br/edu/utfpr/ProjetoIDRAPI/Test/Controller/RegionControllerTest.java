@@ -157,14 +157,16 @@ public class RegionControllerTest {
 	public void whenGivenId_shouldUpdateRegion() {
 		Region region = createRegion();
 		
+		Mockito.when(repository.save(ArgumentMatchers.any(Region.class))).thenReturn(region);
+		
 		repository.save(region);
 		
 		region.setId(4L);
 		region.setName("New Test Name");
 		
-		repository.save(region);
+		Region regionUpdate = repository.save(region);
 		
-		assertThat(region.getName()).isEqualTo("New Test Name");
+		assertThat(regionUpdate.getName()).isEqualTo("New Test Name");
 	}
 	
 	@Test
@@ -181,7 +183,7 @@ public class RegionControllerTest {
 		repository.save(newRegion);
 	}
 	
-	public List<Region> createList(){
+	private List<Region> createList(){
 		Region RECORD_1 = new Region(1l, "Region-test-1");
 		Region RECORD_2 = new Region(2l, "Region-test-2");
 		Region RECORD_3 = new Region(3l, "Region-test-3");
@@ -194,7 +196,7 @@ public class RegionControllerTest {
 		return records;
 	}
 	
-	public Region createRegion() {
+	private Region createRegion() {
 		Region region = new Region(4l, "Region-test-4");
 		
 		return region;

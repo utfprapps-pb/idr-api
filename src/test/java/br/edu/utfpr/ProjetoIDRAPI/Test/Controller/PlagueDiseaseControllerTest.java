@@ -140,14 +140,16 @@ public class PlagueDiseaseControllerTest {
 	public void whenGivenId_shouldUpdatePlagueDisease() {
 		PlagueDisease plagueDisease = createPlagueDisease();
 		
+		Mockito.when(repository.save(ArgumentMatchers.any(PlagueDisease.class))).thenReturn(plagueDisease);
+		
 		repository.save(plagueDisease);
 		
 		plagueDisease.setId(4L);
 		plagueDisease.setIdentification("New Test Ident");
 		
-		repository.save(plagueDisease);
+		PlagueDisease plagueDiseaseUpdate = repository.save(plagueDisease);
 		
-		assertThat(plagueDisease.getIdentification()).isEqualTo("New Test Ident");
+		assertThat(plagueDiseaseUpdate.getIdentification()).isEqualTo("New Test Ident");
 	}
 	
 	@Test
@@ -164,15 +166,33 @@ public class PlagueDiseaseControllerTest {
 		repository.save(newplagueDisease);
 	}
 	
-	public Vegetable createVegetable() {
-		User user = new User(1l, "User-test-1", "1717", null, null, null, null, "21221", null, "12222", null, null);
-		Property property = new Property(1l,user,null,null,null,null,null,true);
-		Vegetable vegetable = new Vegetable(1l,property,"test-4");
+	private User createUser() {
+		User user = new User();
+		user.setId(1l);
+		user.setUsername("User-test-1");
+		user.setCpf("1717");
+		user.setPhone("21221");
+		user.setProfessionalRegister("12222");
+		
+		return user;
+	}
+	
+	private Property createProperty() {
+		Property property = new Property();
+		property.setId(1l);
+		property.setUser(createUser());
+		property.setLeased(true);
+		
+		return property;
+	}
+	
+	private Vegetable createVegetable() {
+		Vegetable vegetable = new Vegetable(1l,createProperty(),"test-1");
 		
 		return vegetable;
 	}
 	
-	public List<PlagueDisease> createList(){
+	private List<PlagueDisease> createList(){
 		PlagueDisease RECORD_1 = new PlagueDisease(1l,createVegetable(),null,"ident-1",null);
 		PlagueDisease RECORD_2 = new PlagueDisease(2l,createVegetable(),null,"ident-2",null);
 		PlagueDisease RECORD_3 = new PlagueDisease(3l,createVegetable(),null,"ident-3",null);
@@ -185,7 +205,7 @@ public class PlagueDiseaseControllerTest {
 		return records;
 	}
 	
-	public PlagueDisease createPlagueDisease() {
+	private PlagueDisease createPlagueDisease() {
 		PlagueDisease plagueDisease = new PlagueDisease(4l,createVegetable(),null,"ident-4",null);
 		
 		return plagueDisease;
