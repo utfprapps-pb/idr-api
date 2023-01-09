@@ -96,6 +96,8 @@ public class ProductUseControllerTest {
                 testRestTemplate.postForEntity(API, productUse, Object.class);
 
         testRestTemplate.delete(API + "/1");
+
+        assertThat( productUseRepository.count() ).isEqualTo(0);
     }
 
     @Test

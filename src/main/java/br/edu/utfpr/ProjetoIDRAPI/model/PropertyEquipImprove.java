@@ -21,6 +21,7 @@ public class PropertyEquipImprove {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JoinColumn(name = "Property_id")
     @ManyToOne
     private Property property;
 
@@ -30,7 +31,6 @@ public class PropertyEquipImprove {
     @NotNull
     private String name;
 
-    @NotNull
     private Integer quantity;
 
     private BigDecimal unityValue;

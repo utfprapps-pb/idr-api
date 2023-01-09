@@ -97,6 +97,8 @@ public class AnimalControllerTest {
                 testRestTemplate.postForEntity(API, animal, Object.class);
 
         testRestTemplate.delete(API + "/1");
+
+        assertThat( animalRepository.count() ).isEqualTo(0);
     }
 
     @Test

@@ -77,6 +77,8 @@ public class PropertyControllerTest {
                 testRestTemplate.postForEntity(API, property, Object.class);
 
         testRestTemplate.delete(API + "/1");
+
+        assertThat( propertyRepository.count() ).isEqualTo(0);
     }
 
     @Test

@@ -98,6 +98,8 @@ public class PropertyCollaboratorControllerTest {
                 testRestTemplate.postForEntity(API, collaborator, Object.class);
 
         testRestTemplate.delete(API + "/1");
+
+        assertThat( collaboratorRepository.count() ).isEqualTo(0);
     }
 
     @Test
