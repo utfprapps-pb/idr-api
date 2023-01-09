@@ -113,7 +113,7 @@ public class CityControllerTest {
 		mvc.perform(MockMvcRequestBuilders.get(API + "/findName", city.getName())).andExpect(status().isBadRequest());
 	}
 
-	public List<City> createList() {
+	private List<City> createList() {
 		City RECORD_1 = new City(1l, "City-test-1", createRegion());
 		City RECORD_2 = new City(2l, "City-test-2", createRegion());
 		City RECORD_3 = new City(3l, "City-test-3", createRegion());
@@ -126,13 +126,13 @@ public class CityControllerTest {
 		return records;
 	}
 
-	public City createCity() {
+	private City createCity() {
 		City city = new City(4l, "City-test-4", createRegion());
 
 		return city;
 	}
 	
-	public Region createRegion() {
+	private Region createRegion() {
 		Region region = new Region(1l, "Region");
 		
 		return region;

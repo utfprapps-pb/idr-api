@@ -177,9 +177,26 @@ public class UserControllerTest {
 	}
 	
 	private List<User> createList(){
-		User RECORD_1 = new User(1l, "User-test-1", "1616", null, null, null, null, "21221", null, "12222", null, null);
-		User RECORD_2 = new User(2l, "User-test-2", "1313", null, null, null, null, "13131", null, "16161", null, null);
-		User RECORD_3 = new User(3l, "User-test-3", "9444", null, null, null, null, "11551", null, "13113", null, null);
+		User RECORD_1 = new User();
+		RECORD_1.setId(1l);  
+		RECORD_1.setUsername("User-test-1");  
+		RECORD_1.setCpf("1616");
+		RECORD_1.setPhone("21221");
+		RECORD_1.setProfessionalRegister("12222");
+		
+		User RECORD_2 = new User();
+		RECORD_2.setId(2l);  
+		RECORD_2.setUsername("User-test-2");
+		RECORD_2.setCpf("1313");
+		RECORD_2.setPhone("13131");
+		RECORD_2.setProfessionalRegister("16161");
+		
+		User RECORD_3 = new User();
+		RECORD_3.setId(3l);  
+		RECORD_3.setUsername("User-test-3");
+		RECORD_3.setCpf("9444");
+		RECORD_3.setPhone("11551");
+		RECORD_3.setProfessionalRegister("13113");
 		
 		List<User> records = new ArrayList<>();
 		records.add(RECORD_1);
