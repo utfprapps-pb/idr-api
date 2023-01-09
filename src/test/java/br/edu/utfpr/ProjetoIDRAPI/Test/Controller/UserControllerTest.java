@@ -150,15 +150,17 @@ public class UserControllerTest {
 	@WithMockUser
 	public void whenGivenId_shouldUpdateUser() {
 		User user = createUser();
-
+		
+		Mockito.when(repository.save(ArgumentMatchers.any(User.class))).thenReturn(user);
+		
 		repository.save(user);
 
 		user.setId(4L);
 		user.setUsername("New Test Name");
 
-		repository.save(user);
+		User userUpdate = repository.save(user);
 
-		assertThat(user.getUsername()).isEqualTo("New Test Name");
+		assertThat(userUpdate.getUsername()).isEqualTo("New Test Name");
 	}
 
 	@Test
@@ -174,7 +176,7 @@ public class UserControllerTest {
 		repository.save(newUser);
 	}
 	
-	public List<User> createList(){
+	private List<User> createList(){
 		User RECORD_1 = new User(1l, "User-test-1", "1616", null, null, null, null, "21221", null, "12222", null, null);
 		User RECORD_2 = new User(2l, "User-test-2", "1313", null, null, null, null, "13131", null, "16161", null, null);
 		User RECORD_3 = new User(3l, "User-test-3", "9444", null, null, null, null, "11551", null, "13113", null, null);
@@ -187,8 +189,13 @@ public class UserControllerTest {
 		return records;
 	}
 	
-	public User createUser(){
-		User user = new User(4l, "User-test-4", "1717", null, null, null, null, "21221", null, "12222", null, null);
+	private User createUser(){
+		User user = new User();
+		user.setId(4l);
+		user.setUsername("User-test-4");
+		user.setCpf("1717");
+		user.setPhone("21221");
+		user.setProfessionalRegister("12222");
 		
 		return user;
 	}

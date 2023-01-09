@@ -162,14 +162,16 @@ public class VegetableControllerTest {
 	public void whenGivenId_shouldUpdateVegetable() {
 		Vegetable vegetable = createVegetable();
 		
+		Mockito.when(repository.save(ArgumentMatchers.any(Vegetable.class))).thenReturn(vegetable);
+		
 		repository.save(vegetable);
 		
 		vegetable.setId(4L);
 		vegetable.setName("New Test Name");
 		
-		repository.save(vegetable);
+		Vegetable vegetableUpdate = repository.save(vegetable);
 		
-		assertThat(vegetable.getName()).isEqualTo("New Test Name");
+		assertThat(vegetableUpdate.getName()).isEqualTo("New Test Name");
 	}
 	
 	@Test
@@ -186,14 +188,27 @@ public class VegetableControllerTest {
 		repository.save(newVegetable);
 	}
 	
-	public Property createProperty() {
-		User user = new User(1l, "User-test-1", "1717", null, null, null, null, "21221", null, "12222", null, null);
-		Property property = new Property(1l,user,null,null,null,null,null,true);
+	private User createUser() {
+		User user = new User();
+		user.setId(1l);
+		user.setUsername("User-test-1");
+		user.setCpf("1717");
+		user.setPhone("21221");
+		user.setProfessionalRegister("12222");
+		
+		return user;
+	}
+	
+	private Property createProperty() {
+		Property property = new Property();
+		property.setId(1l);
+		property.setUser(createUser());
+		property.setLeased(true);
 		
 		return property;
 	}
 	
-	public List<Vegetable> createList(){
+	private List<Vegetable> createList(){
 		Vegetable RECORD_1 = new Vegetable(1l,createProperty(),"test-1");
 		Vegetable RECORD_2 = new Vegetable(2l,createProperty(),"test-2");
 		Vegetable RECORD_3 = new Vegetable(3l,createProperty(),"test-3");
@@ -206,7 +221,7 @@ public class VegetableControllerTest {
 		return records;
 	}
 	
-	public Vegetable createVegetable() {
+	private Vegetable createVegetable() {
 		Vegetable vegetable = new Vegetable(4l,createProperty(),"test-4");
 		
 		return vegetable;
