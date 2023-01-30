@@ -35,7 +35,7 @@ public class PropertyCollaboratorControllerTest {
     }
 
     @Test
-    public void postProductUse_whenProductUseIsValid_receiveCreated() {
+    public void postCollaborator_whenCollaboratorIsValid_receiveCreated() {
         User user = createValidUser();
         ResponseEntity<Object> responseUser =
                 testRestTemplate.postForEntity("/users", user, Object.class);
@@ -56,7 +56,7 @@ public class PropertyCollaboratorControllerTest {
     }
 
     @Test
-    public void postProductUse_whenProductUseIsValid_productUseSavedToDatabase() {
+    public void postCollaborator_whenCollaboratorIsValid_collaboratorSavedToDatabase() {
         User user = createValidUser();
         ResponseEntity<Object> responseUser =
                 testRestTemplate.postForEntity("/users", user, Object.class);
@@ -77,7 +77,7 @@ public class PropertyCollaboratorControllerTest {
     }
 
     @Test
-    public void deleteProductUse_whenProductUseIdExists_receiveOk() {
+    public void deleteCollaborator_whenCollaboratorIdExists_receiveOk() {
         User user = createValidUser();
         ResponseEntity<Object> responseUser =
                 testRestTemplate.postForEntity("/users", user, Object.class);
@@ -100,7 +100,7 @@ public class PropertyCollaboratorControllerTest {
     }
 
     @Test
-    public void postProductUse_whenProductUseIsValidAndAlreadyExists_productUseUpdateDatabase() {
+    public void postCollaborator_whenCollaboratorIsValidAndAlreadyExists_collaboratorUpdateDatabase() {
         User user = createValidUser();
         ResponseEntity<Object> responseUser =
                 testRestTemplate.postForEntity("/users", user, Object.class);
@@ -129,7 +129,7 @@ public class PropertyCollaboratorControllerTest {
     }
 
     @Test
-    public void getProductUse_whenProductUseExists_productUseReturnFromDatabase() {
+    public void getCollaborator_whenCollaboratorExists_collaboratorReturnFromDatabase() {
         User user = createValidUser();
         ResponseEntity<Object> responseUser =
                 testRestTemplate.postForEntity("/users", user, Object.class);

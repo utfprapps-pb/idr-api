@@ -1,9 +1,10 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
 import br.edu.utfpr.ProjetoIDRAPI.model.Animal;
+import br.edu.utfpr.ProjetoIDRAPI.model.PerennialAnualFodders;
 import br.edu.utfpr.ProjetoIDRAPI.model.Property;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
-import br.edu.utfpr.ProjetoIDRAPI.repository.AnimalRepository;
+import br.edu.utfpr.ProjetoIDRAPI.repository.PerennialAnualFoddersRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +20,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class AnimalControllerTest {
-    private static final String API = "/animals";
+public class PerennialAnualFoddersControllerTest {
+    private static final String API = "/fodders";
 
     @Autowired
     TestRestTemplate testRestTemplate;
 
     @Autowired
-    AnimalRepository animalRepository;
+    PerennialAnualFoddersRepository perennialAnualFoddersRepository;
 
     @BeforeEach()
     private void cleanup() {
-        animalRepository.deleteAll();
+        perennialAnualFoddersRepository.deleteAll();
         testRestTemplate.getRestTemplate().getInterceptors().clear();
     }
 
     @Test
-    public void postAnimal_whenAnimalIsValid_receiveCreated() {
+    public void postFodder_whenFodderIsValid_receiveCreated() {
         User user = createValidUser();
         ResponseEntity<Object> responseUser =
                 testRestTemplate.postForEntity("/users", user, Object.class);
@@ -47,16 +48,16 @@ public class AnimalControllerTest {
                 testRestTemplate.postForEntity("/properties", property, Object.class);
         property.setId(1L);
 
-        Animal animal = createValidAnimal();
-        animal.setProperty(property);
+        PerennialAnualFodders perennialAnualFodders = new PerennialAnualFodders();
+        perennialAnualFodders.setProperty(property);
         ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, animal, Object.class);
+                testRestTemplate.postForEntity(API, perennialAnualFodders, Object.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
     @Test
-    public void postAnimal_whenAnimalIsValid_animalSavedToDatabase() {
+    public void postFodder_whenFodderIsValid_fodderSavedToDatabase() {
         User user = createValidUser();
         ResponseEntity<Object> responseUser =
                 testRestTemplate.postForEntity("/users", user, Object.class);
@@ -68,16 +69,16 @@ public class AnimalControllerTest {
                 testRestTemplate.postForEntity("/properties", property, Object.class);
         property.setId(1L);
 
-        Animal animal = createValidAnimal();
-        animal.setProperty(property);
+        PerennialAnualFodders perennialAnualFodders = new PerennialAnualFodders();
+        perennialAnualFodders.setProperty(property);
         ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, animal, Object.class);
+                testRestTemplate.postForEntity(API, perennialAnualFodders, Object.class);
 
-        assertThat( animalRepository.count() ).isEqualTo(1);
+        assertThat( perennialAnualFoddersRepository.count() ).isEqualTo(1);
     }
 
     @Test
-    public void deleteAnimal_whenAnimalIdExists_receiveOk() {
+    public void deleteFodder_whenFodderIdExists_receiveOk() {
         User user = createValidUser();
         ResponseEntity<Object> responseUser =
                 testRestTemplate.postForEntity("/users", user, Object.class);
@@ -89,18 +90,18 @@ public class AnimalControllerTest {
                 testRestTemplate.postForEntity("/properties", property, Object.class);
         property.setId(1L);
 
-        Animal animal = createValidAnimal();
-        animal.setProperty(property);
+        PerennialAnualFodders perennialAnualFodders = new PerennialAnualFodders();
+        perennialAnualFodders.setProperty(property);
         ResponseEntity<Object> responseProductUse =
-                testRestTemplate.postForEntity(API, animal, Object.class);
+                testRestTemplate.postForEntity(API, perennialAnualFodders, Object.class);
 
         testRestTemplate.delete(API + "/1");
 
-        assertThat( animalRepository.count() ).isEqualTo(0);
+        assertThat( perennialAnualFoddersRepository.count() ).isEqualTo(0);
     }
 
     @Test
-    public void postAnimal_whenAnimalIsValidAndAlreadyExists_animalUpdateDatabase() {
+    public void postFodder_whenFodderIsValidAndAlreadyExists_fodderUpdateDatabase() {
         User user = createValidUser();
         ResponseEntity<Object> responseUser =
                 testRestTemplate.postForEntity("/users", user, Object.class);
@@ -112,23 +113,23 @@ public class AnimalControllerTest {
                 testRestTemplate.postForEntity("/properties", property, Object.class);
         property.setId(1L);
 
-        Animal animal = createValidAnimal();
-        animal.setProperty(property);
+        PerennialAnualFodders perennialAnualFodders = new PerennialAnualFodders();
+        perennialAnualFodders.setProperty(property);
         ResponseEntity<Object> responseProductUse =
-                testRestTemplate.postForEntity(API, animal, Object.class);
-        animal.setId(1L);
-        animal.setBreed("Updated Vaca vaca");
+                testRestTemplate.postForEntity(API, perennialAnualFodders, Object.class);
+        perennialAnualFodders.setId(1L);
+        perennialAnualFodders.setFodder("Updated Test Fodder");
 
         ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, animal, Object.class);
+                testRestTemplate.postForEntity(API, perennialAnualFodders, Object.class);
 
-        List<Animal> animalList = animalRepository.findAll();
-        Animal animalDB = animalList.get(0);
-        assertThat(animalDB.getBreed()).isEqualTo("Updated Vaca vaca");
+        List<PerennialAnualFodders> fodderList = perennialAnualFoddersRepository.findAll();
+        PerennialAnualFodders fodderDB = fodderList.get(0);
+        assertThat(fodderDB.getFodder()).isEqualTo("Updated Test Fodder");
     }
 
     @Test
-    public void getAnimal_whenAnimalExists_animalReturnFromDatabase() {
+    public void getFodder_whenFodderExists_fodderReturnFromDatabase() {
         User user = createValidUser();
         ResponseEntity<Object> responseUser =
                 testRestTemplate.postForEntity("/users", user, Object.class);
@@ -140,18 +141,18 @@ public class AnimalControllerTest {
                 testRestTemplate.postForEntity("/properties", property, Object.class);
         property.setId(1L);
 
-        Animal animal = createValidAnimal();
-        animal.setProperty(property);
+        PerennialAnualFodders perennialAnualFodders = new PerennialAnualFodders();
+        perennialAnualFodders.setProperty(property);
         ResponseEntity<Object> responseProductUse =
-                testRestTemplate.postForEntity(API, animal, Object.class);
-        animal.setId(1L);
+                testRestTemplate.postForEntity(API, perennialAnualFodders, Object.class);
+        perennialAnualFodders.setId(1L);
 
-        Animal animalDB = animalRepository.findById(1L).orElse(null);
+        PerennialAnualFodders fodderDB = perennialAnualFoddersRepository.findById(1L).orElse(null);
 
-        List<Animal> animalList = animalRepository.findAll();
-        Animal animalDB1 = animalList.get(0);
+        List<PerennialAnualFodders> fodderList = perennialAnualFoddersRepository.findAll();
+        PerennialAnualFodders fodderDB1 = fodderList.get(0);
 
-        assertThat(animalDB).isEqualTo(animalDB1);
+        assertThat(fodderDB).isEqualTo(fodderDB1);
     }
 
     private User createValidUser() {
@@ -171,11 +172,11 @@ public class AnimalControllerTest {
         return property;
     }
 
-    private Animal createValidAnimal() {
-        Animal animal = new Animal();
-        animal.setName("Mimosa");
-        animal.setBreed("Vaca vaca");
+    private PerennialAnualFodders createValidFodder() {
+        PerennialAnualFodders perennialAnualFodders = new PerennialAnualFodders();
+        perennialAnualFodders.setFodder("Test Fodder");
+        perennialAnualFodders.setNote("Test Note");
 
-        return animal;
+        return perennialAnualFodders;
     }
 }
