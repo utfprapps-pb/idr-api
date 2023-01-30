@@ -22,10 +22,12 @@ public class RegionController extends CrudController<Region, Region, Long> {
 		this.modelMapper = modelMapper;
 	}
 	
+	
 	@Override
 	protected CrudService<Region, Long> getService() {
 		return this.regionService;
 	}
+	
 	
 	@Override
 	protected ModelMapper getModelMapper() {
