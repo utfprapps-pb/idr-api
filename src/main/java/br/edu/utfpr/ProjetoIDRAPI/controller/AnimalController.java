@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("animals")
-public class AnimalController extends CrudController<Animal, AnimalDto, Long>{
+public class AnimalController extends CrudController<Animal, AnimalDto, Long> {
 
     private final AnimalService animalService;
     private ModelMapper modelMapper;
