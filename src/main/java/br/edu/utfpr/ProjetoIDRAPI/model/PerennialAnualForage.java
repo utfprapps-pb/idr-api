@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PerennialAnualFodders {
+public class PerennialAnualForage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,7 @@ public class PerennialAnualFodders {
 
     private Double price;
 
-    private String fodder;
+    private String forage;
 
     private Double area;
 

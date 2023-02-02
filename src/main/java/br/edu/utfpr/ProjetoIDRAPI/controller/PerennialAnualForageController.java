@@ -1,10 +1,9 @@
 package br.edu.utfpr.ProjetoIDRAPI.controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.dto.PerennialAnualFoddersDto;
-import br.edu.utfpr.ProjetoIDRAPI.dto.PropertyCollaboratorDto;
-import br.edu.utfpr.ProjetoIDRAPI.model.PerennialAnualFodders;
+import br.edu.utfpr.ProjetoIDRAPI.dto.PerennialAnualForageDto;
+import br.edu.utfpr.ProjetoIDRAPI.model.PerennialAnualForage;
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
-import br.edu.utfpr.ProjetoIDRAPI.service.PerennialAnualFoddersService;
+import br.edu.utfpr.ProjetoIDRAPI.service.PerennialAnualForageService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,19 +16,19 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("fodders")
-public class PerennialAnualFoddersController extends CrudController<PerennialAnualFodders, PerennialAnualFoddersDto, Long> {
+public class PerennialAnualForageController extends CrudController<PerennialAnualForage, PerennialAnualForageDto, Long> {
 
-    private final PerennialAnualFoddersService perennialAnualFoddersService;
+    private final PerennialAnualForageService perennialAnualFoddersService;
     private ModelMapper modelMapper;
 
-    public PerennialAnualFoddersController(PerennialAnualFoddersService perennialAnualFoddersService, ModelMapper modelMapper) {
-        super(PerennialAnualFodders.class, PerennialAnualFoddersDto.class);
+    public PerennialAnualForageController(PerennialAnualForageService perennialAnualFoddersService, ModelMapper modelMapper) {
+        super(PerennialAnualForage.class, PerennialAnualForageDto.class);
         this.perennialAnualFoddersService = perennialAnualFoddersService;
         this.modelMapper = modelMapper;
     }
 
     @Override
-    protected CrudService<PerennialAnualFodders, Long> getService() {
+    protected CrudService<PerennialAnualForage, Long> getService() {
         return this.perennialAnualFoddersService;
     }
 
@@ -39,7 +38,7 @@ public class PerennialAnualFoddersController extends CrudController<PerennialAnu
     }
 
     @GetMapping("/fodderProperty/{id}")
-    public ResponseEntity<List<PerennialAnualFoddersDto>> findAllByPropertyId(@PathVariable Long id) {
+    public ResponseEntity<List<PerennialAnualForageDto>> findAllByPropertyId(@PathVariable Long id) {
         return ResponseEntity.ok(
                 perennialAnualFoddersService.findByPropertyId(id)
                         .stream()
@@ -48,7 +47,7 @@ public class PerennialAnualFoddersController extends CrudController<PerennialAnu
         );
     }
 
-    private PerennialAnualFoddersDto convertEntityToDto(PerennialAnualFodders perennialAnualFodders) {
-        return modelMapper.map(perennialAnualFodders, PerennialAnualFoddersDto.class);
+    private PerennialAnualForageDto convertEntityToDto(PerennialAnualForage perennialAnualFodders) {
+        return modelMapper.map(perennialAnualFodders, PerennialAnualForageDto.class);
     }
 }
