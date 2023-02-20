@@ -9,6 +9,7 @@ import br.edu.utfpr.ProjetoIDRAPI.service.CityService;
 
 @Service
 public class CityServiceImpl extends CrudServiceImpl<City, Long> implements CityService {
+
 	private final CityRepository cityRepository;
 	
 	public CityServiceImpl(CityRepository cityRepository) {
@@ -34,4 +35,5 @@ public class CityServiceImpl extends CrudServiceImpl<City, Long> implements City
 	public void delete(Long id) {
 		System.out.println("NÃO É POSSÍVEL REALIZAR O DELETE DE CIDADES");
 	}
+
 }

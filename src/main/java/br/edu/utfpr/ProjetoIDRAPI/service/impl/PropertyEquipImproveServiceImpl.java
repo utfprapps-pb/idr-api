@@ -3,41 +3,29 @@ package br.edu.utfpr.ProjetoIDRAPI.service.impl;
 import br.edu.utfpr.ProjetoIDRAPI.model.PropertyEquipImprove;
 import br.edu.utfpr.ProjetoIDRAPI.repository.PropertyEquipImproveRepository;
 import br.edu.utfpr.ProjetoIDRAPI.service.PropertyEquipImproveService;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class PropertyEquipImproveServiceImpl implements PropertyEquipImproveService {
+public class PropertyEquipImproveServiceImpl extends CrudServiceImpl<PropertyEquipImprove, Long>
+        implements PropertyEquipImproveService {
 
-    private final PropertyEquipImproveRepository repository;
+    private final PropertyEquipImproveRepository equipImproveRepository;
 
     public PropertyEquipImproveServiceImpl(PropertyEquipImproveRepository repository) {
-        this.repository = repository;
+        this.equipImproveRepository = repository;
     }
 
     @Override
-    public PropertyEquipImprove save(PropertyEquipImprove propertyEquipImprove) {
-        return repository.save(propertyEquipImprove);
-    }
-
-    @Override
-    public PropertyEquipImprove findOne(Long id) {
-        return repository.findById(id).orElse(null);
-    }
-
-    @Override
-    public List<PropertyEquipImprove> findAll() {
-        return repository.findAll();
+    protected JpaRepository<PropertyEquipImprove, Long> getRepository() {
+        return this.equipImproveRepository;
     }
 
     @Override
     public List<PropertyEquipImprove> findByPropertyId(Long id) {
-        return repository.findAllByPropertyId(id);
+        return equipImproveRepository.findAllByPropertyId(id);
     }
 
-    @Override
-    public void delete(Long id) {
-        repository.deleteById(id);
-    }
 }

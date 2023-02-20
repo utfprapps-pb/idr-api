@@ -1,7 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.service.impl;
 
-import java.util.List;
-
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import br.edu.utfpr.ProjetoIDRAPI.model.Region;
@@ -9,26 +8,17 @@ import br.edu.utfpr.ProjetoIDRAPI.repository.RegionRepository;
 import br.edu.utfpr.ProjetoIDRAPI.service.RegionService;
 
 @Service
-public class RegionServiceImpl implements RegionService{
+public class RegionServiceImpl extends CrudServiceImpl<Region, Long> implements RegionService {
+
 	private final RegionRepository regionRepository;
 	
 	public RegionServiceImpl(RegionRepository regionRepository) {
 		this.regionRepository = regionRepository;
 	}
-	
-	@Override
-	public Region save(Region region) {
-		return regionRepository.save(region);
-	}
 
 	@Override
-	public Region findOne(Long id) {
-		return regionRepository.findById(id).orElse(null);
-	}
-	
-	@Override
-	public void delete(Long id) {
-		regionRepository.deleteById(id);
+	protected JpaRepository<Region, Long> getRepository() {
+		return this.regionRepository;
 	}
 
 	@Override
@@ -36,8 +26,4 @@ public class RegionServiceImpl implements RegionService{
 		return regionRepository.findByname(name);
 	}
 
-	@Override
-	public List<Region> findAll() {
-		return regionRepository.findAll();
-	}
 }
