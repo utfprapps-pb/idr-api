@@ -1,7 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.service.impl;
 
-import java.util.List;
-
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import br.edu.utfpr.ProjetoIDRAPI.model.City;
@@ -9,7 +8,7 @@ import br.edu.utfpr.ProjetoIDRAPI.repository.CityRepository;
 import br.edu.utfpr.ProjetoIDRAPI.service.CityService;
 
 @Service
-public class CityServiceImpl implements CityService{
+public class CityServiceImpl extends CrudServiceImpl<City, Long> implements CityService {
 	private final CityRepository cityRepository;
 	
 	public CityServiceImpl(CityRepository cityRepository) {
@@ -17,8 +16,8 @@ public class CityServiceImpl implements CityService{
 	}
 
 	@Override
-	public City findOne(Long id) {
-		return cityRepository.findById(id).orElse(null);
+	protected JpaRepository<City, Long> getRepository() {
+		return this.cityRepository;
 	}
 	
 	@Override
@@ -27,18 +26,12 @@ public class CityServiceImpl implements CityService{
 	}
 
 	@Override
-	public List<City> findAll() {
-		return cityRepository.findAll();
-	}
-
-	@Override
 	public City save(City entity) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void delete(Long id) {
-		// TODO Auto-generated method stub
+		System.out.println("NÃO É POSSÍVEL REALIZAR O DELETE DE CIDADES");
 	}
 }
