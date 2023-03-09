@@ -11,8 +11,7 @@ import br.edu.utfpr.ProjetoIDRAPI.service.RegionService;
 @RestController
 @RequestMapping("regions")
 public class RegionController extends CrudController<Region, Region, Long> {
-//Como região não tem um dto definido, quando chamado o extends do crud 
-//foi passado para ele duas regiões no lugar de uma region e um dto
+
 	private final RegionService regionService;
 	private ModelMapper modelMapper;
 	
@@ -21,14 +20,12 @@ public class RegionController extends CrudController<Region, Region, Long> {
 		this.regionService = regionService;
 		this.modelMapper = modelMapper;
 	}
-	
-	
+
 	@Override
 	protected CrudService<Region, Long> getService() {
 		return this.regionService;
 	}
-	
-	
+
 	@Override
 	protected ModelMapper getModelMapper() {
 		return this.modelMapper;
