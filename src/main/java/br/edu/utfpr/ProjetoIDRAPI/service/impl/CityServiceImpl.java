@@ -26,14 +26,18 @@ public class CityServiceImpl extends CrudServiceImpl<City, Long> implements City
 		return cityRepository.findByName(name);
 	}
 
+	/*
+	//para realizar testes será possivel salvar e deletar cidades
 	@Override
 	public City save(City entity) {
 		return null;
+		//caso as ja estejam cadastradas em outro banco e não seja
+		//necessario salvar deixar o return null
 	}
 
 	@Override
 	public void delete(Long id) {
 		System.out.println("NÃO É POSSÍVEL REALIZAR O DELETE DE CIDADES");
-	}
+	}*/
 
 }

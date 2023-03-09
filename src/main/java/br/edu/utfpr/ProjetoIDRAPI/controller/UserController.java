@@ -32,7 +32,13 @@ public class UserController extends CrudController<User, UserDto, Long>{
 	
 	@GetMapping("/findName/{username}")
 	public ResponseEntity<UserDto> findByName(@PathVariable String username){
-		return ResponseEntity.ok(convertToDto(userService.findByName(username)));
+		User entity = userService.findByName(username);
+		
+		if(entity != null) {
+    		return ResponseEntity.ok(convertToDto(userService.findByName(username)));
+    	} else {
+    		return ResponseEntity.noContent().build();
+    	}
 	}
 	
 	private UserDto convertToDto(User user) {

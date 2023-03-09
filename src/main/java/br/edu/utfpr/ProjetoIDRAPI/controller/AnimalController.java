@@ -33,7 +33,13 @@ public class AnimalController extends CrudController<Animal, AnimalDto, Long> {
 
     @GetMapping("/findAnimal/{identifier}")
     public ResponseEntity<AnimalDto> findAnimalByIdentifier(@PathVariable String identifier) {
-        return ResponseEntity.ok(convertEntityToDto(animalService.findByIdentifier(identifier)));
+        Animal entity = animalService.findByIdentifier(identifier);
+        
+        if(entity != null) {
+        	return ResponseEntity.ok(convertEntityToDto(animalService.findByIdentifier(identifier)));
+        } else {
+    		return ResponseEntity.noContent().build();
+    	}
     }
 
     private AnimalDto convertEntityToDto(Animal animal) {

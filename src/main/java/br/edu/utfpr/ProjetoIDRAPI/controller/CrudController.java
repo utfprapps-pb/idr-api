@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
 import br.edu.utfpr.ProjetoIDRAPI.utils.GenericResponse;
 
+/*EXEMPLO TRATAMENTOS PARA CRUD
+ * https://github.com/leonardombr/Generic-CRUD-Spring-Boot/blob/master/src/main/java/com/crud/generic/controller/generic/impl/ControllerGenericImpl.java
+ * */
+
 public abstract class CrudController<T, D, ID extends Serializable> {
 	protected abstract CrudService<T, ID> getService();
 	protected abstract ModelMapper getModelMapper();
@@ -34,14 +38,28 @@ public abstract class CrudController<T, D, ID extends Serializable> {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public GenericResponse createRegister(@RequestBody @Valid T entity) {
-		getService().save(entity);
-		return new GenericResponse("Registro inserido com sucesso");
+		try {
+			getService().save(entity);
+	    	return new GenericResponse("Registro inserido com sucesso");
+		} catch (Exception e) {
+			return new GenericResponse("Erro ao inserir novo registro!");
+		}
 	}
 	
-	@PutMapping
-    public GenericResponse updateRegister(@RequestBody @Valid T entity) {
-		getService().save(entity);
-        return new GenericResponse("Registro atualizado com sucesso");
+	@PutMapping("{id}")
+    public GenericResponse updateRegister(@RequestBody @Valid T entity, @PathVariable ID id) {
+		try {
+			T ent = getService().findOne(id);
+	    	
+	    	if(ent != null) {
+	    		getService().save(entity);
+	    		return new GenericResponse("Registro atualizado com sucesso");
+	    	}else {
+	    		return new GenericResponse("Registro inexistente");
+	    	}
+		} catch (Exception e) {
+			return new GenericResponse("Erro ao atualizar o registro!");
+		}
     }
 	
 	@GetMapping
@@ -64,8 +82,12 @@ public abstract class CrudController<T, D, ID extends Serializable> {
 	
 	@DeleteMapping("{id}")
 	public GenericResponse deleteRegister(@PathVariable ID id){
-		getService().delete(id);
-		return new GenericResponse("Registro excluido com sucesso");
+		try {
+			getService().delete(id);
+	    	return new GenericResponse("Registro excluido com sucesso");
+		} catch (Exception e) {
+			return new GenericResponse("Erro ao excluir o registro!");
+		}
 	}
 	
 	private D convertToDto(T entity) {

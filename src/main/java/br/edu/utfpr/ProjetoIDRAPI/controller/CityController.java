@@ -34,6 +34,12 @@ public class CityController extends CrudController<City, City, Long>{
 
 	@GetMapping("/findName/{name}")
 	public ResponseEntity<City> findByName(@PathVariable String name){
-		return ResponseEntity.ok(cityService.findByName(name));
+		City entity = cityService.findByName(name);
+		
+		if(entity != null) {
+			return ResponseEntity.ok(cityService.findByName(name));
+    	} else {
+    		return ResponseEntity.noContent().build();
+    	}
 	}
 }

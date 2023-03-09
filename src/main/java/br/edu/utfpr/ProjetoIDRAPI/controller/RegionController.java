@@ -22,12 +22,10 @@ public class RegionController extends CrudController<Region, Region, Long> {
 		this.modelMapper = modelMapper;
 	}
 	
-	
 	@Override
 	protected CrudService<Region, Long> getService() {
 		return this.regionService;
 	}
-	
 	
 	@Override
 	protected ModelMapper getModelMapper() {
@@ -36,6 +34,12 @@ public class RegionController extends CrudController<Region, Region, Long> {
 	
 	@GetMapping("/findName/{name}")
 	public ResponseEntity<Region> findByName(@PathVariable String name){
-		return ResponseEntity.ok(regionService.findByName(name));
+		Region entity = regionService.findByName(name);
+		
+		if(entity != null) {
+			return ResponseEntity.ok(regionService.findByName(name));
+		} else {
+    		return ResponseEntity.noContent().build();
+    	}
 	}
 }

@@ -36,7 +36,13 @@ public class VegetableController extends CrudController<Vegetable, VegetableDto,
 	
 	@GetMapping("/findName/{name}")
 	public ResponseEntity<VegetableDto> findByName(@PathVariable String name){
-		return ResponseEntity.ok(convertToDto(service.findByName(name)));
+		Vegetable entity = service.findByName(name);
+		
+		if(entity != null) {
+			return ResponseEntity.ok(convertToDto(service.findByName(name)));
+		} else {
+    		return ResponseEntity.noContent().build();
+    	}
 	}
 	
 	private VegetableDto convertToDto(Vegetable vegetable) {

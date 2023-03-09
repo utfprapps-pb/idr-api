@@ -3,6 +3,7 @@ package br.edu.utfpr.ProjetoIDRAPI.dto;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import br.edu.utfpr.ProjetoIDRAPI.model.Property;
 import lombok.Data;
 
 @Data
@@ -21,4 +22,17 @@ public class PropertyDto {
     private BigInteger longitude;
     
     private Boolean leased;
+    
+    public Property toProperty() {
+    	Property prop = new Property();
+    	prop.setId(id);
+    	prop.setOcupationArea(ocupationArea);
+    	prop.setTotalArea(totalArea);
+    	prop.setSoilMap(soilMap);
+    	prop.setLatitude(latitude);
+    	prop.setLongitude(longitude);
+    	prop.setLeased(leased);
+    	
+    	return prop;
+    }
 }
