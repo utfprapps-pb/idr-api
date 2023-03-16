@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class PropertyCollaboratorDto {
 
-    private Long id;
+    private long id;
 
     private String collaboratorName;
 

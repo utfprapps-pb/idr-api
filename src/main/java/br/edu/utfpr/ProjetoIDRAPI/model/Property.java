@@ -19,7 +19,7 @@ public class Property {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @NotNull
     @JoinColumn(name = "User_id")

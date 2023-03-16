@@ -169,7 +169,7 @@ public class UserControllerTest {
 		User user = createUser();
 
 		User newUser = new User();
-		newUser.setId(null);
+		newUser.setId(0);
 		user.setUsername("New Test Name");
 
 		Mockito.when(service.findOne(anyLong())).thenReturn(null);

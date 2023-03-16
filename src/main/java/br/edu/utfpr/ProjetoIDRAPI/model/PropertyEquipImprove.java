@@ -19,7 +19,7 @@ public class PropertyEquipImprove {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @JoinColumn(name = "Property_id")
     @ManyToOne

@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public class ForageDisponibilityDto {
-	private Long id;
+	private long id;
 
 	private LocalDate date;
 

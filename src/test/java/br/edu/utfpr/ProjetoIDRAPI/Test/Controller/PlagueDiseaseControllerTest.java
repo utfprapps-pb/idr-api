@@ -158,7 +158,7 @@ public class PlagueDiseaseControllerTest {
 		PlagueDisease plagueDisease = createPlagueDisease();
 		
 		PlagueDisease newplagueDisease = new PlagueDisease();
-		newplagueDisease.setId(null);
+		newplagueDisease.setId(0);
 		
 		plagueDisease.setIdentification("New Test Ident");
 		

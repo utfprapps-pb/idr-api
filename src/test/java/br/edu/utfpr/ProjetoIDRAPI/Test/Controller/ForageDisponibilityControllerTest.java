@@ -159,7 +159,7 @@ public class ForageDisponibilityControllerTest {
 		ForageDisponibility forageDisponibility = createForageDisponibility();
 		
 		ForageDisponibility newForageDisponibility = new ForageDisponibility();
-		newForageDisponibility.setId(null);
+		newForageDisponibility.setId(0);
 		
 		forageDisponibility.setForage("New Test forage");
 		

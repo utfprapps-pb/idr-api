@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class PropertyDto {
 	
-	private Long id;
+	private long id;
 	
     private String ocupationArea;
     

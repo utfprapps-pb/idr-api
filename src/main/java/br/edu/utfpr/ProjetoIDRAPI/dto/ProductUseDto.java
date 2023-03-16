@@ -7,7 +7,7 @@ import java.time.LocalDate;
 @Data
 public class ProductUseDto {
 
-    private Long id;
+    private long id;
 
     private PropertyDto property;
 

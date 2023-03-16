@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class CompositeUserPermission implements Serializable {
     //A classe composite serve para fazer a foreign key composta do banco de dados.
     //Essa classe é criada para receber a anotação @Embeddable.
-    private Long user;
+    private long user;
 
-    private Long permission;
+    private long permission;
 }

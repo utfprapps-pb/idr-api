@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class VegetableDto {
-	private Long id;
+	private long id;
 	
 	private String name;
 	

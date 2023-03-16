@@ -8,7 +8,7 @@ import java.util.Date;
 @Data
 public class PropertyEquipImproveDto {
 
-    private Long id;
+    private long id;
 
     private String type;
 

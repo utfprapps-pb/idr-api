@@ -175,7 +175,7 @@ public class RegionControllerTest {
 		Region region = createRegion();
 		
 		Region newRegion = new Region();
-		newRegion.setId(null);
+		newRegion.setId(0);
 		
 		region.setName("New Test Name");
 		

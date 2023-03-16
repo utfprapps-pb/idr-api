@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class PlagueDiseaseDto {
-	private Long id;
+	private long id;
 	
 	private VegetableDto vegetable;
 	
