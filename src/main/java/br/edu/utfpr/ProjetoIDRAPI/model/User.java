@@ -26,6 +26,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(unique = true)
     @NotNull
     private String username;
 

@@ -32,7 +32,7 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements User
 	
 	@Override
 	public User findByName(String username) {
-		return userRepository.findByusername(username);
+		return userRepository.findByUsername(username);
 	}
 
 }
