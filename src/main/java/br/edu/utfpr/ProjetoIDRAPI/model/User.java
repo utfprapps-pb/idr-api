@@ -1,6 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +26,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
+    
     @Column(unique = true)
     @NotNull
     private String username;

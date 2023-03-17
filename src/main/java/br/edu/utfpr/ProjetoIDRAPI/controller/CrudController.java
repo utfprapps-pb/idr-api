@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,14 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
 import br.edu.utfpr.ProjetoIDRAPI.utils.GenericResponse;
-
-/*EXEMPLO TRATAMENTOS PARA CRUD
- * https://github.com/leonardombr/Generic-CRUD-Spring-Boot/blob/master/src/main/java/com/crud/generic/controller/generic/impl/ControllerGenericImpl.java
- * */
 
 public abstract class CrudController<T, D, ID extends Serializable> {
 	protected abstract CrudService<T, ID> getService();
@@ -36,13 +29,12 @@ public abstract class CrudController<T, D, ID extends Serializable> {
 	}
 	
 	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public GenericResponse createRegister(@RequestBody @Valid T entity) {
+	public ResponseEntity createRegister(@RequestBody @Valid T entity) {
 		try {
 			getService().save(entity);
-	    	return new GenericResponse("Registro inserido com sucesso");
+	    	return ResponseEntity.ok(new GenericResponse("Registro inserido com sucesso"));
 		} catch (Exception e) {
-			return new GenericResponse("Erro ao inserir novo registro!");
+			return ResponseEntity.badRequest().body(new GenericResponse("Erro ao inserir novo registro."));
 		}
 	}
 	
@@ -81,12 +73,12 @@ public abstract class CrudController<T, D, ID extends Serializable> {
     }
 	
 	@DeleteMapping("{id}")
-	public GenericResponse deleteRegister(@PathVariable ID id){
+	public ResponseEntity deleteRegister(@PathVariable ID id){
 		try {
 			getService().delete(id);
-	    	return new GenericResponse("Registro excluido com sucesso");
+	    	return ResponseEntity.ok(new GenericResponse("Registro excluido com sucesso"));
 		} catch (Exception e) {
-			return new GenericResponse("Erro ao excluir o registro!");
+			return ResponseEntity.badRequest().body(new GenericResponse("Erro ao excluir o registro!"));
 		}
 	}
 	
