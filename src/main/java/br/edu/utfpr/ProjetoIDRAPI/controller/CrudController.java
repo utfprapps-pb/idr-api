@@ -34,7 +34,7 @@ public abstract class CrudController<T, D, ID extends Serializable> {
 			getService().save(entity);
 	    	return ResponseEntity.ok(new GenericResponse("Registro inserido com sucesso"));
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(new GenericResponse("Erro ao inserir novo registro."));
+			return ResponseEntity.badRequest().body(new GenericResponse("Erro ao inserir novo registro!"));
 		}
 	}
 	
