@@ -157,7 +157,7 @@ public class PropertyEquipImproveControllerTest {
     private User createValidUser() {
         User user = new User();
         user.setUsername("User-test-1");
-        user.setCpf("115.675.888-66");
+        user.setPassword("115.675.888-66");
         user.setPhone("4632232277");
         user.setProfessionalRegister("999101");
 

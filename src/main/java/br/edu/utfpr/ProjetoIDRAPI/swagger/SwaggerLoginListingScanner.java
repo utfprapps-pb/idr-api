@@ -55,7 +55,7 @@ public class SwaggerLoginListingScanner implements ApiListingScannerPlugin{
 		List<RequestParameter> list = new ArrayList<>();
 		
 		list.add(new RequestParameterBuilder().name("UserDto")
-			.description("{\"username\": \"username\", \"cpf\": \"cpf\"}")
+			.description("{\"username\": \"username\", \"password\": \"password\"}")
 			.required(true).in(ParameterType.BODY).build()
 			);
 		
@@ -68,7 +68,7 @@ public class SwaggerLoginListingScanner implements ApiListingScannerPlugin{
 		
 		return new OperationBuilder(new CachingOperationNameGenerator())
 				.method(HttpMethod.POST).uniqueId("login").summary("common_user_login")
-				.notes("username/cpf, /login").consumes(consumes).produces(produces)
+				.notes("username/password, /login").consumes(consumes).produces(produces)
 				.tags(tags).requestParameters(list).responses(Collections.singleton(
 						new ResponseBuilder().code("200").description("success").build()))
 				.build();

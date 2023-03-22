@@ -170,7 +170,7 @@ public class PlagueDiseaseControllerTest {
 		User user = new User();
 		user.setId(1l);
 		user.setUsername("User-test-1");
-		user.setCpf("1717");
+		user.setPassword("1717");
 		user.setPhone("21221");
 		user.setProfessionalRegister("12222");
 		

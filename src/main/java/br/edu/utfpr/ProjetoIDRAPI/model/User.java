@@ -2,6 +2,7 @@ package br.edu.utfpr.ProjetoIDRAPI.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import br.edu.utfpr.ProjetoIDRAPI.Annotation.UniqueUsername;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,13 +28,16 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     
+    @UniqueUsername//modificar properties
     @Column(unique = true)
     @NotNull
     private String username;
 
     @NotNull
+    private String password;
+    
     private String cpf;
-
+    
     private String county;
 
     private String cep;
@@ -70,7 +74,7 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return cpf;
+        return password;
     }
 
     @Override

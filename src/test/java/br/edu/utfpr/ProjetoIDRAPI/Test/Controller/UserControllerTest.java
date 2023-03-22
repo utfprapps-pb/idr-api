@@ -105,7 +105,7 @@ public class UserControllerTest {
 	@Test
 	@WithMockUser
 	public void whenFindByNameIsNull_returnBadRequest() throws Exception {
-		User user = new User(5l, "", "9444", null, null, null, null, "11551", null, "13113", null, null);
+		User user = new User(5l, "", "5555", "9444", null, null, null, null, "11551", null, "13113", null, null);
 
 		Mockito.when(service.findByName(user.getUsername())).thenReturn(null);
 
@@ -180,21 +180,21 @@ public class UserControllerTest {
 		User RECORD_1 = new User();
 		RECORD_1.setId(1l);  
 		RECORD_1.setUsername("User-test-1");  
-		RECORD_1.setCpf("1616");
+		RECORD_1.setPassword("1616");
 		RECORD_1.setPhone("21221");
 		RECORD_1.setProfessionalRegister("12222");
 		
 		User RECORD_2 = new User();
 		RECORD_2.setId(2l);  
 		RECORD_2.setUsername("User-test-2");
-		RECORD_2.setCpf("1313");
+		RECORD_2.setPassword("1313");
 		RECORD_2.setPhone("13131");
 		RECORD_2.setProfessionalRegister("16161");
 		
 		User RECORD_3 = new User();
 		RECORD_3.setId(3l);  
 		RECORD_3.setUsername("User-test-3");
-		RECORD_3.setCpf("9444");
+		RECORD_3.setPassword("9444");
 		RECORD_3.setPhone("11551");
 		RECORD_3.setProfessionalRegister("13113");
 		
@@ -210,7 +210,7 @@ public class UserControllerTest {
 		User user = new User();
 		user.setId(4l);
 		user.setUsername("User-test-4");
-		user.setCpf("1717");
+		user.setPassword("1717");
 		user.setPhone("21221");
 		user.setProfessionalRegister("12222");
 		
