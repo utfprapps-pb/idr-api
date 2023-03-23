@@ -1,4 +1,4 @@
-package br.edu.utfpr.ProjetoIDRAPI.Annotation;
+package br.edu.utfpr.ProjetoIDRAPI.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
