@@ -2,7 +2,7 @@ package br.edu.utfpr.ProjetoIDRAPI.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import br.edu.utfpr.ProjetoIDRAPI.Annotation.UniqueUsername;
+import br.edu.utfpr.ProjetoIDRAPI.annotation.UniqueUsername;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,9 +27,8 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    
+
     @UniqueUsername//modificar properties
-    @Column(unique = true)
     @NotNull
     private String username;
 

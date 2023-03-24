@@ -42,6 +42,7 @@ public class WebSecurity {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/users/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/tokenAuth/refreshToken").permitAll()
                 .antMatchers(HttpMethod.GET, "/error/**").permitAll()
                 .antMatchers("/swagger-resources/**", "swagger-ui.html", "/swagger-ui/**", "/v2/api-docs"
                 		,"/webjars/**").permitAll()
