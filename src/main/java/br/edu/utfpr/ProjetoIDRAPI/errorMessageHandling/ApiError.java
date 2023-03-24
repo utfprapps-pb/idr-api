@@ -1,4 +1,4 @@
-package br.edu.utfpr.ProjetoIDRAPI.ErrorMessageHandling;
+package br.edu.utfpr.ProjetoIDRAPI.errorMessageHandling;
 
 import java.util.Date;
 import java.util.Map;

@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import br.edu.utfpr.ProjetoIDRAPI.ErrorMessageHandling.ApiError;
+import br.edu.utfpr.ProjetoIDRAPI.errorMessageHandling.ApiError;
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
 import br.edu.utfpr.ProjetoIDRAPI.utils.GenericResponse;
 

@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import br.edu.utfpr.ProjetoIDRAPI.Validation.UniqueUsernameValidator;
+import br.edu.utfpr.ProjetoIDRAPI.validation.UniqueUsernameValidator;
 
 @Constraint(validatedBy = UniqueUsernameValidator.class)
 @Target(ElementType.FIELD)
