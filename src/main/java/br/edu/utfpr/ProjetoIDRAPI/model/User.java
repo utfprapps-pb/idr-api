@@ -1,8 +1,8 @@
 package br.edu.utfpr.ProjetoIDRAPI.model;
 
+import br.edu.utfpr.ProjetoIDRAPI.annotation.UniqueUsername;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import br.edu.utfpr.ProjetoIDRAPI.annotation.UniqueUsername;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,9 +28,14 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    //O username do usuário deve ser seu email.
     @UniqueUsername
     @NotNull
     private String username;
+
+    //Aqui no displayName é onde virá o nome do usuário.
+    @NotNull
+    private String displayName;
 
     @NotNull
     private String password;
@@ -45,12 +50,8 @@ public class User implements UserDetails {
 
     private String houseNumber;
 
-    @NotNull
     private String phone;
 
-    private String email;
-
-    @NotNull
     private String professionalRegister;
 
     private String graduationYear;

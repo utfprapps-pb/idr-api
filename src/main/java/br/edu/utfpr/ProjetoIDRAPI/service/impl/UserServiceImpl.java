@@ -5,6 +5,7 @@ import br.edu.utfpr.ProjetoIDRAPI.repository.UserRepository;
 import br.edu.utfpr.ProjetoIDRAPI.service.UserService;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +35,12 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements User
 	public User findByName(String username) {
 		return userRepository.findByUsername(username);
 	}
+
+    @Override
+    public User findSelfUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findByUsername(principal.toString());
+        return user;
+    }
 
 }

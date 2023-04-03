@@ -9,6 +9,8 @@ public class UserDto {
     private long id;
 
     private String username;
+
+    private String displayName;
     
     private String cpf;
     
@@ -25,14 +27,12 @@ public class UserDto {
     private String professionalRegister;
 
     private String graduationYear;
-
-    private String email;
     
     public User toUser() {
     	User user = new User();
     	user.setId(id);  
 		user.setUsername(username);
-		user.setPhone(phone);
+		user.setDisplayName(displayName);
 		user.setProfessionalRegister(professionalRegister);
     	
     	return user;

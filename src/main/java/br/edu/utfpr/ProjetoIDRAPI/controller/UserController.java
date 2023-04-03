@@ -30,7 +30,7 @@ public class UserController extends CrudController<User, UserDto, Long>{
 		return this.modelMapper;
 	}
 	
-	@GetMapping("/findName/{username}")
+	@GetMapping("/findUser/{username}")
 	public ResponseEntity<UserDto> findByName(@PathVariable String username){
 		User entity = userService.findByName(username);
 		
@@ -39,6 +39,11 @@ public class UserController extends CrudController<User, UserDto, Long>{
     	} else {
     		return ResponseEntity.noContent().build();
     	}
+	}
+
+	@GetMapping("/findSelfUser")
+	public ResponseEntity<UserDto> findSelfUser(){
+		return ResponseEntity.ok(convertToDto(userService.findSelfUser()));
 	}
 	
 	private UserDto convertToDto(User user) {

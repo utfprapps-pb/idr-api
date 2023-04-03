@@ -1,11 +1,14 @@
 package br.edu.utfpr.ProjetoIDRAPI.dto;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.User;
+import lombok.Data;
 
+@Data
 public class UserTokenDto {
 	private long id;
 
     private String username;
+
+    private String displayName;
     
     private String password;
     
@@ -17,7 +20,7 @@ public class UserTokenDto {
 
     private String street;
 
-    private Integer houseNumber;
+    private String houseNumber;
 
     private String phone;
 
@@ -25,5 +28,4 @@ public class UserTokenDto {
 
     private String graduationYear;
 
-    private String email;
 }
