@@ -23,6 +23,8 @@ public class PropertyDto {
     
     private Boolean leased;
     
+    private UserDto user;
+    
     public Property toProperty() {
     	Property prop = new Property();
     	prop.setId(id);
