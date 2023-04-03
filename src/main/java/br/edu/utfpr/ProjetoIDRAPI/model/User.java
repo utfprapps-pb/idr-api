@@ -43,7 +43,7 @@ public class User implements UserDetails {
 
     private String street;
 
-    private Integer houseNumber;
+    private String houseNumber;
 
     @NotNull
     private String phone;
