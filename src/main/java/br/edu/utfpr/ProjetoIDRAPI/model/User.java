@@ -28,7 +28,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @UniqueUsername//modificar properties
+    @UniqueUsername
     @NotNull
     private String username;
 
@@ -43,7 +43,7 @@ public class User implements UserDetails {
 
     private String street;
 
-    private Integer number;
+    private Integer houseNumber;
 
     @NotNull
     private String phone;

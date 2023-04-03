@@ -15,7 +15,7 @@ public class PerennialAnualForageDto {
 
     private Double price;
 
-    private String fodder;
+    private String forage;
 
     private Double area;
 

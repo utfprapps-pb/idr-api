@@ -9,8 +9,18 @@ public class UserDto {
     private long id;
 
     private String username;
+    
+    private String password;
+    
+    private String cpf;
+    
+    private String county;
 
-    private Integer number;
+    private String cep;
+
+    private String street;
+
+    private Integer houseNumber;
 
     private String phone;
 

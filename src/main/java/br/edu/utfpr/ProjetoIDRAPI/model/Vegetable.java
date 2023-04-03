@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class Vegetable {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private long id;
 	
 	@NotNull
 	@JoinColumn(name = "Property_id")

@@ -180,7 +180,7 @@ public class VegetableControllerTest {
 		Vegetable vegetable = createVegetable();
 		
 		Vegetable newVegetable = new Vegetable();
-		newVegetable.setId(null);
+		newVegetable.setId(0);
 		
 		vegetable.setName("New Test Name");
 		
