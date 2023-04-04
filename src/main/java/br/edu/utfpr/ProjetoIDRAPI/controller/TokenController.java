@@ -11,7 +11,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +21,7 @@ import java.util.Date;
 @RestController
 @RequestMapping("tokenAuth")
 public class TokenController {
+
 	private final AuthService authService;
 	
 	 public TokenController(AuthService authService) {
@@ -34,12 +34,12 @@ public class TokenController {
     }
 
     @PostMapping("/refreshToken")
-    public void refreshToken(@Valid @RequestBody RefreshToken refreshToken, HttpServletResponse response, Authentication authResult) throws IOException {
+    public void refreshToken(@Valid @RequestBody RefreshToken refreshToken, HttpServletResponse response) throws IOException {
         if(!refreshToken.getRefreshToken().substring(0, 7).startsWith(SecurityConstants.TOKEN_PREFIX)) {
             throw new RuntimeException("Token inválido");
         }
         
-        User user = (User) authService.loadUserByUsername(authResult.getName());
+        User user = (User) authService.loadUserByUsername(refreshToken.getUsername());
         
         String token = JWT.create()
                 .withSubject(refreshToken.getUsername())
