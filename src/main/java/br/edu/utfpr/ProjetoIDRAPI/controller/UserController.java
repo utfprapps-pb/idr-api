@@ -1,33 +1,83 @@
 package br.edu.utfpr.ProjetoIDRAPI.controller;
 
 import br.edu.utfpr.ProjetoIDRAPI.dto.UserDto;
+import br.edu.utfpr.ProjetoIDRAPI.dto.UserCreateDto;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
-import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
 import br.edu.utfpr.ProjetoIDRAPI.service.UserService;
+import br.edu.utfpr.ProjetoIDRAPI.utils.GenericResponse;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("users")
-public class UserController extends CrudController<User, UserDto, Long>{
+public class UserController{
     private final UserService userService;
     private ModelMapper modelMapper;
 
     public UserController(UserService userService, ModelMapper modelMapper) {
-        super(User.class,UserDto.class);
     	this.userService = userService;
         this.modelMapper = modelMapper;
     }
-
-	@Override
-	protected CrudService<User, Long> getService() {
-		return this.userService;
+	
+    @PostMapping
+	public ResponseEntity createRegister(@RequestBody @Valid UserCreateDto user) {
+    	User userEntity = modelMapper.map(user, User.class);
+    	
+    	userService.save(userEntity);
+	    return ResponseEntity.ok(new GenericResponse("Registro inserido com sucesso"));
 	}
-
-	@Override
-	protected ModelMapper getModelMapper() {
-		return this.modelMapper;
+	
+	@PutMapping("{id}")
+	public GenericResponse updateRegister(@RequestBody @Valid UserCreateDto user, @PathVariable Long id) {
+		try {
+			User ent = userService.findOne(id);
+	    	
+	    	if(ent != null) {
+	    		User userEntity = modelMapper.map(user, User.class);
+	    		
+	    		userService.save(userEntity);
+	    		return new GenericResponse("Registro atualizado com sucesso");
+	    	}else {
+	    		return new GenericResponse("Registro inexistente");
+	    	}
+		} catch (Exception e) {
+			return new GenericResponse("Erro ao atualizar o registro!");
+		}
+    }
+	
+	@GetMapping
+    public ResponseEntity<List<UserDto>> listAll(){
+    	return ResponseEntity.ok(userService.findAll().stream()
+    			.map(this::convertToDto)
+    			.collect(Collectors.toList()));
+    }
+	
+	@GetMapping("{id}")
+    public ResponseEntity<UserDto> findOne(@PathVariable Long id){
+    	User entity = userService.findOne(id);
+    	
+    	if(entity != null) {
+    		return ResponseEntity.ok(convertToDto(userService.findOne(id)));
+    	} else {
+    		return ResponseEntity.noContent().build();
+    	}
+    }
+	
+	@DeleteMapping("{id}")
+	public ResponseEntity deleteRegister(@PathVariable Long id){
+		try {
+			userService.delete(id);
+	    	return ResponseEntity.ok(new GenericResponse("Registro excluido com sucesso"));
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(new GenericResponse("Não foi possível excluir o registro!"));
+		}
 	}
 	
 	@GetMapping("/findUser/{username}")

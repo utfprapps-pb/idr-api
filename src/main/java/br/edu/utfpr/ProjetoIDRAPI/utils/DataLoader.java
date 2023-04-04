@@ -1,7 +1,9 @@
 package br.edu.utfpr.ProjetoIDRAPI.utils;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import br.edu.utfpr.ProjetoIDRAPI.controller.RegionController;
 import br.edu.utfpr.ProjetoIDRAPI.controller.UserController;
 import br.edu.utfpr.ProjetoIDRAPI.controller.VegetableController;
 import br.edu.utfpr.ProjetoIDRAPI.dto.PropertyDto;
+import br.edu.utfpr.ProjetoIDRAPI.dto.UserCreateDto;
 import br.edu.utfpr.ProjetoIDRAPI.dto.UserDto;
 import br.edu.utfpr.ProjetoIDRAPI.dto.VegetableDto;
 import br.edu.utfpr.ProjetoIDRAPI.model.Animal;
@@ -34,12 +37,15 @@ import br.edu.utfpr.ProjetoIDRAPI.model.PropertyEquipImprove;
 import br.edu.utfpr.ProjetoIDRAPI.model.Region;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
 import br.edu.utfpr.ProjetoIDRAPI.model.Vegetable;
+import br.edu.utfpr.ProjetoIDRAPI.repository.UserRepository;
 
 //Classe responsavel por adicionar dados "fixos" ao banco de dados
 @Component
 public class DataLoader implements CommandLineRunner{
 	@Autowired
 	private UserController userController;
+	@Autowired
+	private UserRepository userRepository;
 	@Autowired
 	private PropertyController propertyController;
 	@Autowired
@@ -63,6 +69,12 @@ public class DataLoader implements CommandLineRunner{
 	@Autowired
 	private CityController cityController;
 	
+	private ModelMapper modelMapper;
+	
+	public DataLoader(ModelMapper modelMapper) {
+		this.modelMapper = modelMapper;
+	}
+	
 	@Override
 	public void run(String... args) throws Exception {
 		createUsers();
@@ -81,41 +93,48 @@ public class DataLoader implements CommandLineRunner{
 	
 	private void createUsers() {
 		User user1 = new User(); 
-		user1.setUsername("Fulano 1");  
+		user1.setUsername("fulano1@test.com");
+		user1.setDisplayName("Fulano 1");
 		user1.setPassword("123");
 		user1.setPhone("1111");
 		user1.setProfessionalRegister("1111");
 		
 		User user2 = new User(); 
-		user2.setUsername("Fulano 2");
+		user2.setUsername("fulano2@test.com");
+		user2.setDisplayName("Fulano 2");
 		user2.setPassword("123");
 		user2.setPhone("2222");
 		user2.setProfessionalRegister("2222");
 		
 		User user3 = new User(); 
-		user3.setUsername("Fulano 3");
+		user3.setUsername("fulano3@test.com");
+		user3.setDisplayName("Fulano 3");
 		user3.setPassword("123");
 		user3.setPhone("3333");
 		user3.setProfessionalRegister("3333");
-      
-      userController.createRegister(user1);
-      userController.createRegister(user2);
-      userController.createRegister(user3);
+		
+		UserCreateDto userEntity1 = modelMapper.map(user1, UserCreateDto.class);
+		UserCreateDto userEntity2 = modelMapper.map(user2, UserCreateDto.class);
+		UserCreateDto userEntity3 = modelMapper.map(user3, UserCreateDto.class);
+		
+		userController.createRegister(userEntity1);
+		userController.createRegister(userEntity2);
+		userController.createRegister(userEntity3);
 	}
 
 	private void createProperties() {
 		Property property1 = new Property();
-		property1.setUser(convertDtoToUser(userController.findByName("Fulano 1")));
+		property1.setUser(userRepository.findById(1L).get());
 		property1.setOcupationArea("Ocupation Area1");
 		property1.setLeased(true);
 
 		Property property2 = new Property();
-		property2.setUser(convertDtoToUser(userController.findByName("Fulano 1")));
+		property2.setUser(userRepository.findById(1L).get());
 		property2.setOcupationArea("Ocupation Area2");
 		property2.setLeased(true);
 
 		Property property3 = new Property();
-		property3.setUser(convertDtoToUser(userController.findByName("Fulano 2")));
+		property3.setUser(userRepository.findById(2L).get());
 		property3.setOcupationArea("Ocupation Area3");
 		property3.setLeased(true);
 
@@ -313,12 +332,6 @@ public class DataLoader implements CommandLineRunner{
 		Property prop = dto.toProperty();
 		return prop;
 	}
-	
-	private User convertDtoToUser(ResponseEntity<UserDto> responseEntity) {
-		UserDto dto = responseEntity.getBody();
-		User user = dto.toUser();
-  	return user;
-  }
 	
 	private Vegetable convertDtoToVegetable(ResponseEntity<VegetableDto> responseEntity) {
 		VegetableDto dto = responseEntity.getBody();

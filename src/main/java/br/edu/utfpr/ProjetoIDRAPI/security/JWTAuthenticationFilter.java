@@ -1,5 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.security;
 
+import br.edu.utfpr.ProjetoIDRAPI.dto.UserTokenDto;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
 import br.edu.utfpr.ProjetoIDRAPI.service.AuthService;
 import com.auth0.jwt.JWT;
@@ -54,13 +55,15 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException, TokenExpiredException {
     	
+    	User user = (User) authService.loadUserByUsername(authResult.getName());
+    	
     	String token = JWT.create()
                 .withSubject(authResult.getName())
                 .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
                 .sign(Algorithm.HMAC512(SecurityConstants.SECRET));
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getWriter().write(new ObjectMapper().writeValueAsString(
-                new AuthenticationResponse(token)
+                new AuthenticationResponse(token, new UserTokenDto(user))
         ));
     }
 }
