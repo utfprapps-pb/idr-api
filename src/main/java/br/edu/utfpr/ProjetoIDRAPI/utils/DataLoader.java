@@ -1,7 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.utils;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -305,16 +304,19 @@ public class DataLoader implements CommandLineRunner{
       Animal animal1 = new Animal();
       animal1.setName("animal 1");
       animal1.setBreed("test 1");
+      animal1.setBornDate(LocalDate.now());
       animal1.setProperty(convertToProperty(propertyController.findOne(3l)));
       
       Animal animal2 = new Animal();
       animal2.setName("animal 2");
       animal2.setBreed("test 2");
+      animal2.setBornDate(LocalDate.now());
       animal2.setProperty(convertToProperty(propertyController.findOne(2l)));
       
       Animal animal3 = new Animal();
       animal3.setName("animal 3");
       animal3.setBreed("test 3");
+      animal3.setBornDate(LocalDate.now());
       animal3.setProperty(convertToProperty(propertyController.findOne(1l)));
       
       animalController.createRegister(animal1);

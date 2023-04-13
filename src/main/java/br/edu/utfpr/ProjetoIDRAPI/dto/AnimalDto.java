@@ -2,8 +2,6 @@ package br.edu.utfpr.ProjetoIDRAPI.dto;
 
 import lombok.Data;
 
-import java.time.LocalDate;
-
 @Data
 public class AnimalDto {
 
@@ -19,7 +17,7 @@ public class AnimalDto {
 
     private String breed;
 
-    private LocalDate bornDate;
+    private String bornDate;
 
     private Float bornWeight;
 
