@@ -6,7 +6,6 @@ COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
-COPY report report
 
 # clean up the file
 RUN sed -i 's/\r$//' mvnw
