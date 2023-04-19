@@ -11,7 +11,8 @@ import br.edu.utfpr.ProjetoIDRAPI.service.ForageDisponibilityService;
 
 @RestController
 @RequestMapping("foragesDisponibilities")
-public class ForageDisponibilityController extends CrudController<ForageDisponibility, ForageDisponibilityDto, Long>{
+public class ForageDisponibilityController extends CrudController<ForageDisponibility, ForageDisponibilityDto, Long> {
+
 	private final ForageDisponibilityService forageService;
 	private ModelMapper modelMapper;
 	

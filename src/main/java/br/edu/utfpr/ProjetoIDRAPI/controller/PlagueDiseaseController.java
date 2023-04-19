@@ -11,7 +11,8 @@ import br.edu.utfpr.ProjetoIDRAPI.service.PlagueDiseaseService;
 
 @RestController
 @RequestMapping("plaguesDiseases")
-public class PlagueDiseaseController extends CrudController<PlagueDisease, PlagueDiseaseDto, Long>{
+public class PlagueDiseaseController extends CrudController<PlagueDisease, PlagueDiseaseDto, Long> {
+
 	private final PlagueDiseaseService service;
 	private ModelMapper modelMapper;
 	

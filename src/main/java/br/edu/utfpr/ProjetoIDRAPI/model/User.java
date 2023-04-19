@@ -41,8 +41,8 @@ public class User implements UserDetails {
     private String password;
     
     private String cpf;
-    
-    private String county;
+
+    private String city;
 
     private String cep;
 
