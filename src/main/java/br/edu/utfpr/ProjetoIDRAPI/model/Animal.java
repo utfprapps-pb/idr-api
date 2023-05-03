@@ -23,13 +23,21 @@ public class Animal {
     @ManyToOne
     private Property property;
 
+    @ManyToOne
+    private Animal animalMother;
+
+    @ManyToOne
+    private Breed breed;
+
     private String type;
 
     private String identifier;
 
     private String name;
 
-    private String breed;
+    private String gender;
+
+    private String bornCondition;
 
     private LocalDate bornDate;
 
