@@ -2,10 +2,13 @@ package br.edu.utfpr.ProjetoIDRAPI.service.impl;
 
 import java.time.LocalDateTime;
 
+import javax.mail.internet.MimeMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import br.edu.utfpr.ProjetoIDRAPI.model.Email;
@@ -25,14 +28,16 @@ public class EmailServiceImpl implements EmailService{
 		email.setSendDateEmail(LocalDateTime.now());
 		
 		try {
-			SimpleMailMessage message = new SimpleMailMessage();
+			MimeMessage mail = emailSender.createMimeMessage();
+			MimeMessageHelper message = new MimeMessageHelper(mail);
+			//SimpleMailMessage message = new SimpleMailMessage();
 			
 			message.setFrom(email.getEmailFrom());
 			message.setTo(email.getEmailTo());
 			message.setSubject(email.getSubject());
-			message.setText(email.getText());
+			message.setText(email.getText(), true);
 			
-			emailSender.send(message);
+			emailSender.send(message.getMimeMessage());
 			
 			email.setStatusEmail("The email has been sent!");
 		}catch(MailException e) {

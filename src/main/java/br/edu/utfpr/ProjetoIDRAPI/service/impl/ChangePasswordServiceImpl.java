@@ -44,8 +44,7 @@ public class ChangePasswordServiceImpl implements ChangePasswordService{
 		
 		EmailDto emailDto = new EmailDto(changePassword.getUserDisplayName(),
 				"danieli.marialefchak@gmail.com", changePassword.getRecuperationEmail(),
-				"Teste Projeto IDR", "Teste de código de recuperação de senha. \n" +
-		        "O codigo de recuperação de senha é: " + changePassword.getRecuperationCode());
+				"Teste Projeto IDR", redirectButton(changePassword.getRecuperationCode()));
 		
 		Email emailModel = new Email();
 		BeanUtils.copyProperties(emailDto, emailModel);
@@ -58,6 +57,45 @@ public class ChangePasswordServiceImpl implements ChangePasswordService{
 	public String getPasswordRecoveryCode(Long id) {
 		DateFormat format = new SimpleDateFormat("HHmmssmm");
 		return format.format(new Date().getTime())+id;
+	}
+	
+	@Override
+	public String redirectButton(String code) {
+		return "<head>" +
+	                "<p>Teste de código de recuperação de senha.</p>" +
+	
+	                "<style type=\"text/css\">" +
+		                ".btn{" +
+			                "background:white;" +
+			                "color:#40A527;" +
+			                "font-size:18px;" +
+			                "border-color:#40A527;" +
+			                "border-radius:12px;" +
+			                "border-style:solid;" +
+			                "text-align:center;" +
+			                "width:200px;" +
+			                "align-items:center;" +
+			                "margin-top:25px;" +
+			                "padding:5px;" +
+		                "}" +
+		
+		                ".btn:hover{" +
+			                "color:white;" +
+			                "background:#40A527;" +
+		                "}" +
+	                "</style>" +
+                "</head>" +
+
+                "<body>" +
+	                "<p>O codigo de recuperação de senha é: </p>" +
+	                code + "<br>" + 
+	                "<a href='#'>" +
+		                "<button " +
+		                "class=\"btn\">" +
+		                	"Alterar senha" +
+		                "</button>" +
+	                "</a>" +
+                "</body>";
 	}
 
 	@Override
@@ -99,5 +137,4 @@ public class ChangePasswordServiceImpl implements ChangePasswordService{
 	public ChangePassword findByEmailAndCode(String recuperationEmail, String recuperationCode) {
 		return changePasswordRepository.findByRecuperationEmailAndRecuperationCode(recuperationEmail, recuperationCode);
 	}
-
 }
