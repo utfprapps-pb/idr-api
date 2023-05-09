@@ -432,9 +432,8 @@ public class DataLoader implements CommandLineRunner {
 		Animal animal1 = new Animal();
 		animal1.setType("type 1");
 		animal1.setIdentifier("identifier 1");
-		animal1.setName("animal 1");
-		animal1.setGender("gender 1");
-		animal1.setBornCondition("Condition 1");
+		animal1.setGender("M");
+		animal1.setBornCondition("Vivo");
 		animal1.setBreed(breed1);
 		animal1.setBornDate(date);
 		animal1.setBornWeight(12f);
@@ -447,9 +446,8 @@ public class DataLoader implements CommandLineRunner {
 		animal2.setAnimalMother(animal1);
 		animal2.setType("type 2");
 		animal2.setIdentifier("identifier 2");
-		animal2.setName("animal 2");
-		animal2.setGender("gender 2");
-		animal2.setBornCondition("Condition 2");
+		animal2.setGender("F");
+		animal2.setBornCondition("Morto");
 		animal2.setBreed(breed2);
 		animal2.setBornDate(LocalDate.now());
 		animal2.setBornWeight(10f);
@@ -462,9 +460,8 @@ public class DataLoader implements CommandLineRunner {
 		animal3.setAnimalMother(animal1);
 		animal3.setType("type 3");
 		animal3.setIdentifier("identifier 3");
-		animal3.setName("animal 3");
-		animal3.setGender("gender 3");
-		animal3.setBornCondition("Condition 3");
+		animal3.setGender("F");
+		animal3.setBornCondition("Vivo");
 		animal3.setBreed(breed1);
 		animal3.setBornDate(LocalDate.now());
 		animal3.setBornWeight(16f);

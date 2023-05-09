@@ -180,7 +180,6 @@ public class AnimalControllerTest {
 		breed.setBreedName("Girolando");
     	
         Animal animal = new Animal();
-        animal.setName("Mimosa");
         animal.setBreed(breed);
 
         return animal;

@@ -33,10 +33,10 @@ public class Animal {
 
     private String identifier;
 
-    private String name;
-
+    //Sexo do animal(M ou F)
     private String gender;
 
+    //Condição de Nascimento(Vivo ou Morto)
     private String bornCondition;
 
     private LocalDate bornDate;
