@@ -12,12 +12,14 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("users")
-public class UserController{
+public class UserController {
+
     private final UserService userService;
     private ModelMapper modelMapper;
 
@@ -25,13 +27,14 @@ public class UserController{
     	this.userService = userService;
         this.modelMapper = modelMapper;
     }
-	
-    @PostMapping
-	public ResponseEntity createRegister(@RequestBody @Valid UserCreateDto user) {
-    	User userEntity = modelMapper.map(user, User.class);
-    	
-    	userService.save(userEntity);
-	    return ResponseEntity.ok(new GenericResponse("Registro inserido com sucesso"));
+
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	public GenericResponse createRegister(@RequestBody @Valid UserCreateDto user) {
+		User userEntity = modelMapper.map(user, User.class);
+
+		userService.save(userEntity);
+		return new GenericResponse("Registro inserido com sucesso");
 	}
 	
 	@PutMapping("{id}")

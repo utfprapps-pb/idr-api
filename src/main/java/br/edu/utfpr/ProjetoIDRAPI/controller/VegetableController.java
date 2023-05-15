@@ -14,7 +14,8 @@ import br.edu.utfpr.ProjetoIDRAPI.service.VegetableService;
 
 @RestController
 @RequestMapping("vegetables")
-public class VegetableController extends CrudController<Vegetable, VegetableDto, Long>{
+public class VegetableController extends CrudController<Vegetable, VegetableDto, Long> {
+
 	private final VegetableService service;
 	private ModelMapper modelMapper;
 	

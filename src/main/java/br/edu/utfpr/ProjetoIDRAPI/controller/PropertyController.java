@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("properties")
 public class PropertyController extends CrudController<Property, PropertyDto, Long> {
+
 	private final PropertyService propertyService;
 	private ModelMapper modelMapper;
 	

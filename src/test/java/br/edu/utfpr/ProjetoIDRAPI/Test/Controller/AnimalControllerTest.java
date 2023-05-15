@@ -1,6 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
 import br.edu.utfpr.ProjetoIDRAPI.model.Animal;
+import br.edu.utfpr.ProjetoIDRAPI.model.Breed;
 import br.edu.utfpr.ProjetoIDRAPI.model.Property;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
 import br.edu.utfpr.ProjetoIDRAPI.repository.AnimalRepository;
@@ -111,13 +112,16 @@ public class AnimalControllerTest {
         ResponseEntity<Object> responseProperty =
                 testRestTemplate.postForEntity("/properties", property, Object.class);
         property.setId(1L);
+        
+        Breed breed = new Breed();
+		breed.setBreedName("Holandês");
 
         Animal animal = createValidAnimal();
         animal.setProperty(property);
         ResponseEntity<Object> responseProductUse =
                 testRestTemplate.postForEntity(API, animal, Object.class);
         animal.setId(1L);
-        animal.setBreed("Updated Vaca vaca");
+        animal.setBreed(breed);
 
         ResponseEntity<Object> response =
                 testRestTemplate.postForEntity(API, animal, Object.class);
@@ -172,9 +176,11 @@ public class AnimalControllerTest {
     }
 
     private Animal createValidAnimal() {
+    	Breed breed = new Breed();
+		breed.setBreedName("Girolando");
+    	
         Animal animal = new Animal();
-        animal.setName("Mimosa");
-        animal.setBreed("Vaca vaca");
+        animal.setBreed(breed);
 
         return animal;
     }
