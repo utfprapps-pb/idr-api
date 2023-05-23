@@ -13,21 +13,25 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PropertyCollaborator {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotNull
+    private String name;
+
+    @NotNull
+    private String description;
+
+    @NotNull
+    private String applicationWay;
+
     @ManyToOne
-    private Property property;
+    private ActivePrinciple activePrinciple;
 
-    @NotNull
-    private String collaboratorName;
+    @ManyToOne
+    private ProductCategory category;
 
-    @NotNull
-    private Integer workHours;
-
-    @NotNull
-    private Integer workDays;
 }
