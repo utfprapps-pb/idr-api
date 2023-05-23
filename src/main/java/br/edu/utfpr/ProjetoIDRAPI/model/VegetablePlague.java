@@ -1,5 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.model;
 
+import java.time.LocalDate;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,20 +20,28 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlagueDisease {
+public class VegetablePlague {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
 	@NotNull
-	@JoinColumn(name = "Vegetable_id")
-    @ManyToOne
-	private Vegetable idVegetable;
+	private String infestationType;
 	
-	private String culture;
+	private LocalDate date;
 	
 	@NotNull
-	private String identification;
+	@JoinColumn(name = "Property_id")
+    @ManyToOne
+	private Property idProperty;
 	
-	private String type;
+	@NotNull
+	@JoinColumn(name = "Culture_id")
+    @ManyToOne
+	private Culture idCulture;
+	
+	@NotNull
+	@JoinColumn(name = "Plague_id")
+    @ManyToOne
+    private Plague idPlague;
 }

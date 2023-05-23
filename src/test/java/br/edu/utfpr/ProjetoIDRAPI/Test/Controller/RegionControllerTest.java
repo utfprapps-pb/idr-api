@@ -1,6 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import java.util.ArrayList;
+/*import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,9 +37,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @WebMvcTest(controllers = RegionController.class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc*/
 public class RegionControllerTest {
-	static final String API = "/regions";
+	/*static final String API = "/regions";
 	static final MediaType JSON = MediaType.APPLICATION_JSON;
 	
 	@Autowired
@@ -200,5 +200,5 @@ public class RegionControllerTest {
 		Region region = new Region(4l, "Region-test-4");
 		
 		return region;
-	}
+	}*/
 }

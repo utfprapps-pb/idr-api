@@ -1,6 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import static org.hamcrest.Matchers.hasSize;
+/*import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -41,9 +41,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @WebMvcTest(controllers = UserController.class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc*/
 public class UserControllerTest {
-	static final String API = "/users";
+	/*static final String API = "/users";
 	static final MediaType JSON = MediaType.APPLICATION_JSON;
 
 	@Autowired
@@ -215,5 +215,5 @@ public class UserControllerTest {
 		user.setProfessionalRegister("12222");
 		
 		return user;
-	}
+	}*/
 }

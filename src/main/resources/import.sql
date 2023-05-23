@@ -1,0 +1,65 @@
+--TABELA USERS
+--senhas 123
+insert into users (cep, city, cpf, display_name, graduation_year, house_number, password, phone, professional_register, street, username) values ('1111.1111', 'Pato Branco', '111.111.111-11', 'Fulano 1', '1991', '01', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '1111', '1111', 'Rua teste1', 'fulano1@test.com');
+insert into users (cep, city, cpf, display_name, graduation_year, house_number, password, phone, professional_register, street, username) values ('2222.2222', 'Beltrao', '222.222.222-22', 'Fulano 2', '2002', '22', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '2222', '2222', 'Rua teste2', 'fulano2@test.com');
+insert into users (cep, city, cpf, display_name, graduation_year, house_number, password, phone, professional_register, street, username) values ('3333.3333', 'Palmas', '333.333.333-33', 'Fulano 2', '2013', '333', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '3333', '3333', 'Rua teste3', 'fulano3@test.com');
+--TABELA PROPERTY
+insert into property (latitude, leased, longitude, ocupation_area, soil_map, total_area, user_id) values ('1365', 'true', '1365', 'Ocupation Area1', null, '163.46', 1);
+insert into property (latitude, leased, longitude, ocupation_area, soil_map, total_area, user_id) values ('654', 'true', '654', 'Ocupation Area2', null, '634.13', 1);
+insert into property (latitude, leased, longitude, ocupation_area, soil_map, total_area, user_id) values ('365', 'true', '365', 'Ocupation Area3', null, '389.16', 2);
+--TABELA REGION
+insert into region (name) values ('Region 1');
+insert into region (name) values ('Region 2');
+insert into region (name) values ('Region 3');
+--TABELA CITY
+insert into city (region_id, name) values (1, 'City 1');
+insert into city (region_id, name) values (2, 'City 2');
+insert into city (region_id, name) values (3, 'City 3');
+--TABELA PROPERTY_EQUIP_IMPROVE
+insert into property_equip_improve (aquisition_date, name, percentage_cattle, property_id, quantity, type, unity_value, util_life, value_cattle) values ('2023-05-18', 'Equipament 1', '965.36', 3, 10, 'Test type', '135.13', 16, '136.16');
+insert into property_equip_improve (aquisition_date, name, percentage_cattle, property_id, quantity, type, unity_value, util_life, value_cattle) values ('2023-05-16', 'Equipament 2', '965.36', 1, 22, 'Test type', '135.13', 36, '136.16');
+insert into property_equip_improve (aquisition_date, name, percentage_cattle, property_id, quantity, type, unity_value, util_life, value_cattle) values ('2023-05-17', 'Equipament 3', '965.36', 1, 3, 'Test type', '135.13', 15, '136.16');
+--TABELA PROPERTY_COLLABORATOR
+insert into property_collaborator (collaborator_name, property_id, work_days, work_hours) values ('collaborator 1', 2, 7, 12);
+insert into property_collaborator (collaborator_name, property_id, work_days, work_hours) values ('collaborator 2', 3, 7, 8);
+insert into property_collaborator (collaborator_name, property_id, work_days, work_hours) values ('collaborator 3', 1, 7, 8);
+--TABELA PRODUCT_USE
+insert into product_use (property_id, quantity, use_date, used_for) values (1, 20, '2022-06-23', 'UsedFor details 1');
+insert into product_use (property_id, quantity, use_date, used_for) values (3, 15, '2022-06-20', 'UsedFor details 2');
+insert into product_use (property_id, quantity, use_date, used_for) values (2, 62, '2022-06-16', 'UsedFor details 3');
+--TABELA PERENNIAL_ANNUAL_FORAGE
+insert into perennial_anual_forage (area, average_cost, forage, formation_date, note, price, property_id, type, util_life) values ('165.13', '136.45', 'Forage 1', '2022-06-23', 'Note 1', '16.12', 2, 'Type 1', 13);
+insert into perennial_anual_forage (area, average_cost, forage, formation_date, note, price, property_id, type, util_life) values ('365.46', '63.45', 'Forage 2', '2022-06-23', 'Note 2', '35.16', 1, 'Type 2', 16);
+insert into perennial_anual_forage (area, average_cost, forage, formation_date, note, price, property_id, type, util_life) values ('65.13', '365.45', 'Forage 3', '2022-06-23', 'Note 3', '51.12', 3, 'Type 3', 15);
+--TABELA FORAGE_DISPONIBILITY
+insert into forage_disponibility (date, efficiency, entry, forage, kg, kg_cows, num_cows, picket_area, property_id, residue) values ('2022-06-23', '129', '15.1', 'forage 1', '16', '36', '1365', '169', 1, '16');
+insert into forage_disponibility (date, efficiency, entry, forage, kg, kg_cows, num_cows, picket_area, property_id, residue) values ('2022-06-20', '465', '64.5', 'forage 2', '46', '46', '1365', '26', 2, '36');
+insert into forage_disponibility (date, efficiency, entry, forage, kg, kg_cows, num_cows, picket_area, property_id, residue) values ('2022-06-15', '121', '46.9', 'forage 3', '45', '32', '1365', '265', 3, '36');
+--TABELA BREED
+insert into breed (breed_name) values ('Holandês');
+insert into breed (breed_name) values ('Girolando');
+insert into breed (breed_name) values ('Jersey');
+--TABELA ANIMAL
+insert into animal (animal_mother_id, born_condition, born_date, born_weight, breed_id, current_weight, ecc, gender, identifier, previous_weight, property_id, type) values (null, 'Vivo', '2019-06-23', '12', 1, '62', '32', 'F', 'identifier 1', '45', 3, 'type 1');
+insert into animal (animal_mother_id, born_condition, born_date, born_weight, breed_id, current_weight, ecc, gender, identifier, previous_weight, property_id, type) values (1, 'Vivo', '2023-06-23', '10', 2, '54', '36', 'F', 'identifier 2', '36', 2, 'type 2');
+insert into animal (animal_mother_id, born_condition, born_date, born_weight, breed_id, current_weight, ecc, gender, identifier, previous_weight, property_id, type) values (1, 'Vivo', '2022-05-16', '16', 2, '62', '36', 'M', 'identifier 3', '26', 2, 'type 3');
+--TABELA CULTURE
+insert into culture (culture_name) values ('Culture 1');
+insert into culture (culture_name) values ('Culture 2');
+insert into culture (culture_name) values ('Culture 3');
+--TABELA PLAGUE
+insert into plague (plague_name) values ('Plague 1');
+insert into plague (plague_name) values ('Plague 2');
+insert into plague (plague_name) values ('Plague 3');
+--TABELA DISEASE
+insert into disease (disease_name) values ('Disease 1');
+insert into disease (disease_name) values ('Disease 2');
+insert into disease (disease_name) values ('Disease 3');
+--TABELA VEGETABLE_DISEASE
+insert into vegetable_disease (date, culture_id, disease_id, property_id, infestation_type) values ('2022-06-23', 3, 1, 2, 'InfestationType 1');
+insert into vegetable_disease (date, culture_id, disease_id, property_id, infestation_type) values ('2022-06-15', 2, 3, 2, 'InfestationType 2');
+insert into vegetable_disease (date, culture_id, disease_id, property_id, infestation_type) values ('2022-03-05', 1, 2, 3, 'InfestationType 3');
+--TABELA VEGETABLE_PLAGUE
+insert into vegetable_plague (date, culture_id, plague_id, property_id, infestation_type) values ('2021-03-14', 3, 1, 2, 'InfestationType 1');
+insert into vegetable_plague (date, culture_id, plague_id, property_id, infestation_type) values ('2019-10-22', 2, 3, 2, 'InfestationType 2');
+insert into vegetable_plague (date, culture_id, plague_id, property_id, infestation_type) values ('2021-03-14', 1, 2, 3, 'InfestationType 3');

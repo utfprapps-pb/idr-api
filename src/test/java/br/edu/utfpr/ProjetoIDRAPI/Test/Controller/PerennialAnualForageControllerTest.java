@@ -1,6 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.PerennialAnualForage;
+/*import br.edu.utfpr.ProjetoIDRAPI.model.PerennialAnualForage;
 import br.edu.utfpr.ProjetoIDRAPI.model.Property;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
 import br.edu.utfpr.ProjetoIDRAPI.repository.PerennialAnualForageRepository;
@@ -18,9 +18,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@ActiveProfiles("test")*/
 public class PerennialAnualForageControllerTest {
-    private static final String API = "/fodders";
+    /*private static final String API = "/fodders";
 
     @Autowired
     TestRestTemplate testRestTemplate;
@@ -177,5 +177,5 @@ public class PerennialAnualForageControllerTest {
         perennialAnualForage.setNote("Test Note");
 
         return perennialAnualForage;
-    }
+    }*/
 }

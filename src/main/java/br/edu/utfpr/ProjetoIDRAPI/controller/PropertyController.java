@@ -42,12 +42,8 @@ public class PropertyController extends CrudController<Property, PropertyDto, Lo
 		return ResponseEntity.ok(
 				propertyService.findByUserId(id)
 						.stream()
-						.map(this::convertToDto)
+						.map(super::convertToDto)
 						.collect(Collectors.toList())
 		);
 	}
-	
-	private PropertyDto convertToDto(Property property) {
-    	return modelMapper.map(property, PropertyDto.class);
-    }
 }

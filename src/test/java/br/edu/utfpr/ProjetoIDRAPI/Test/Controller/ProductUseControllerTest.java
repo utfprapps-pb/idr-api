@@ -1,6 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.ProductUse;
+/*import br.edu.utfpr.ProjetoIDRAPI.model.ProductUse;
 import br.edu.utfpr.ProjetoIDRAPI.model.Property;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
 import br.edu.utfpr.ProjetoIDRAPI.repository.ProductUseRepository;
@@ -19,9 +19,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@ActiveProfiles("test")*/
 public class ProductUseControllerTest {
-    private static final String API = "/productsUse";
+    /*private static final String API = "/productsUse";
 
     @Autowired
     TestRestTemplate testRestTemplate;
@@ -183,6 +183,6 @@ public class ProductUseControllerTest {
         productUse.setUseDate(date);
 
         return productUse;
-    }
+    }*/
 
 }

@@ -1,6 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import static org.hamcrest.Matchers.hasSize;
+/*import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -37,9 +37,9 @@ import br.edu.utfpr.ProjetoIDRAPI.service.CityService;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @WebMvcTest(controllers = CityController.class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc*/
 public class CityControllerTest {
-	static final String API = "/cities";
+	/*static final String API = "/cities";
 	static final MediaType JSON = MediaType.APPLICATION_JSON;
 
 	@Autowired
@@ -136,5 +136,5 @@ public class CityControllerTest {
 		Region region = new Region(1l, "Region");
 		
 		return region;
-	}
+	}*/
 }

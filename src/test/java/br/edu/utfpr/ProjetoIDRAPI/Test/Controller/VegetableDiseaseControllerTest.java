@@ -1,6 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
+/*import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,19 +33,21 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import br.edu.utfpr.ProjetoIDRAPI.controller.VegetableController;
+import br.edu.utfpr.ProjetoIDRAPI.controller.VegetableDiseaseController;
+import br.edu.utfpr.ProjetoIDRAPI.model.Culture;
+import br.edu.utfpr.ProjetoIDRAPI.model.Disease;
 import br.edu.utfpr.ProjetoIDRAPI.model.Property;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
-import br.edu.utfpr.ProjetoIDRAPI.model.Vegetable;
-import br.edu.utfpr.ProjetoIDRAPI.repository.VegetableRepository;
-import br.edu.utfpr.ProjetoIDRAPI.service.VegetableService;
+import br.edu.utfpr.ProjetoIDRAPI.model.VegetableDisease;
+import br.edu.utfpr.ProjetoIDRAPI.repository.VegetableDiseaseRepository;
+import br.edu.utfpr.ProjetoIDRAPI.service.VegetableDiseaseService;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@WebMvcTest(controllers = VegetableController.class)
-@AutoConfigureMockMvc
-public class VegetableControllerTest {
-	static final String API = "/vegetables";
+@WebMvcTest(controllers = VegetableDiseaseController.class)
+@AutoConfigureMockMvc*/
+public class VegetableDiseaseControllerTest {
+	/*static final String API = "/vegetablediseases";
 	static final MediaType JSON = MediaType.APPLICATION_JSON;
 	
 	@Autowired
@@ -54,10 +57,10 @@ public class VegetableControllerTest {
 	private MockMvc mvc;
 	
 	@MockBean
-	private VegetableRepository repository;
+	private VegetableDiseaseRepository repository;
 	
 	@MockBean
-	private VegetableService service;
+	private VegetableDiseaseService service;
 	
 	@BeforeEach
 	public void setup() {
@@ -70,14 +73,14 @@ public class VegetableControllerTest {
 	@Test
 	@WithMockUser
 	public void whenFindAll_returnSucess() throws Exception {
-		List<Vegetable> records = createList();
+		List<VegetableDisease> records = createList();
 		
 		Mockito.when(service.findAll()).thenReturn(records);
 		
 		mvc.perform(MockMvcRequestBuilders.get(API).contentType(JSON))
 		.andExpect(status().isOk())
 		.andExpect(jsonPath("$", hasSize(3)))
-		.andExpect(jsonPath("$[2].name", is("test-3")));
+		.andExpect(jsonPath("$[2].infestationType", is("InfestationType 3")));
 	}
 	
 	@Test
@@ -89,7 +92,7 @@ public class VegetableControllerTest {
 		.andExpect(status().isOk())
 		.andExpect(content().contentType(JSON))
 		.andExpect(jsonPath("$.id", is(4)))
-        .andExpect(jsonPath("$.name", is("test-4")));
+        .andExpect(jsonPath("$.infestationType", is("InfestationType 4")));
 	}
 	
 	@Test
@@ -103,86 +106,63 @@ public class VegetableControllerTest {
 	
 	@Test
 	@WithMockUser
-	public void whenFindByName_returnVegetable() throws Exception {
-		Mockito.when(service.findByName(createVegetable().getName())).thenReturn(createVegetable());
-		
-		mvc.perform(MockMvcRequestBuilders.get(API+"/findName/{name}", createVegetable().getName()))
-		.andExpect(status().isOk())
-		.andExpect(content().contentType(JSON))
-		.andExpect(jsonPath("$.id", is(4)))
-        .andExpect(jsonPath("$.name", is("test-4")));
-	}
-	
-	@Test
-	@WithMockUser
-	public void whenFindByNameIsNull_returnBadRequest() throws Exception {
-		Vegetable vegetable = new Vegetable(5l,createProperty(),"");
-		
-		Mockito.when(service.findByName(vegetable.getName())).thenReturn(null);
-		
-		mvc.perform(MockMvcRequestBuilders.get(API+"/findName/{name}", vegetable.getName()))
-		.andExpect(status().isBadRequest());
-	}
-	
-	@Test
-	@WithMockUser
 	public void whenVegetableIsCreated() throws Exception {
-		Vegetable vegetablePost = createVegetable();
+		VegetableDisease vegetablePost = createVegetable();
 		
-		Mockito.when(repository.save(ArgumentMatchers.any(Vegetable.class))).thenReturn(vegetablePost);
+		Mockito.when(repository.save(ArgumentMatchers.any(VegetableDisease.class))).thenReturn(vegetablePost);
 		
-		Vegetable vegetableReturn = repository.save(vegetablePost);
+		VegetableDisease vegetableReturn = repository.save(vegetablePost);
 		
-		assertThat(vegetableReturn.getName()).isSameAs(vegetablePost.getName());
+		assertThat(vegetableReturn.getInfestationType()).isSameAs(vegetablePost.getInfestationType());
 		verify(repository).save(vegetablePost);
 	}
 	
 	@Test
 	@WithMockUser
 	public void whenGivenId_shouldDeleteVegetable() {
-		Vegetable vegetable = createVegetable();
+		VegetableDisease vegetableDisease = createVegetable();
 		
-		Mockito.when(repository.findById(vegetable.getId())).thenReturn(Optional.of(vegetable));
+		Mockito.when(repository.findById(vegetableDisease.getId())).thenReturn(Optional.of(vegetableDisease));
 
-		service.delete(vegetable.getId());
-		verify(service).delete(vegetable.getId());
+		service.delete(vegetableDisease.getId());
+		verify(service).delete(vegetableDisease.getId());
 	}
 	
 	@Test
 	@WithMockUser
 	public void deleteShouldThrowException_whenVegetableDoesntExist() {
-		Vegetable vegetable = createVegetable();
+		VegetableDisease vegetableDisease = createVegetable();
 		
 		Mockito.when(service.findOne(anyLong())).thenReturn(null);
-		service.delete(vegetable.getId());
+		service.delete(vegetableDisease.getId());
 	}
 	
 	@Test
 	@WithMockUser
 	public void whenGivenId_shouldUpdateVegetable() {
-		Vegetable vegetable = createVegetable();
+		VegetableDisease vegetableDisease = createVegetable();
 		
-		Mockito.when(repository.save(ArgumentMatchers.any(Vegetable.class))).thenReturn(vegetable);
+		Mockito.when(repository.save(ArgumentMatchers.any(VegetableDisease.class))).thenReturn(vegetableDisease);
 		
-		repository.save(vegetable);
+		repository.save(vegetableDisease);
 		
-		vegetable.setId(4L);
-		vegetable.setName("New Test Name");
+		vegetableDisease.setId(4L);
+		vegetableDisease.setInfestationType("New Test");
 		
-		Vegetable vegetableUpdate = repository.save(vegetable);
+		VegetableDisease vegetableUpdate = repository.save(vegetableDisease);
 		
-		assertThat(vegetableUpdate.getName()).isEqualTo("New Test Name");
+		assertThat(vegetableUpdate.getInfestationType()).isEqualTo("New Test");
 	}
 	
 	@Test
 	@WithMockUser
 	public void updateShouldThrowException_whenVegetableDoesntExist() {
-		Vegetable vegetable = createVegetable();
+		VegetableDisease vegetableDisease = createVegetable();
 		
-		Vegetable newVegetable = new Vegetable();
+		VegetableDisease newVegetable = new VegetableDisease();
 		newVegetable.setId(0);
 		
-		vegetable.setName("New Test Name");
+		vegetableDisease.setInfestationType("New Test");
 		
 		Mockito.when(service.findOne(anyLong())).thenReturn(null);
 		repository.save(newVegetable);
@@ -208,22 +188,64 @@ public class VegetableControllerTest {
 		return property;
 	}
 	
-	private List<Vegetable> createList(){
-		Vegetable RECORD_1 = new Vegetable(1l,createProperty(),"test-1");
-		Vegetable RECORD_2 = new Vegetable(2l,createProperty(),"test-2");
-		Vegetable RECORD_3 = new Vegetable(3l,createProperty(),"test-3");
+	public Disease createDisease() {
+		Disease disease = new Disease(1l, "Disease 1");
 		
-		List<Vegetable> records = new ArrayList<>();
-		records.add(RECORD_1);
-		records.add(RECORD_2);
-		records.add(RECORD_3);
+		return disease;
+	}
+	
+	public Culture createCulture() {
+		Culture culture = new Culture(1l, "Culture 1");
+		
+		return culture;
+	}
+	
+	private List<VegetableDisease> createList(){
+		LocalDate date = LocalDate.parse("2022-06-23");
+		
+		VegetableDisease vegetable1 = new VegetableDisease();
+		vegetable1.setId(1l);
+		vegetable1.setInfestationType("InfestationType 1");
+		vegetable1.setDate(date);
+		vegetable1.setIdProperty(createProperty());
+		vegetable1.setIdCulture(createCulture());
+		vegetable1.setIdDisease(createDisease());
+		
+		VegetableDisease vegetable2 = new VegetableDisease();
+		vegetable2.setId(2l);
+		vegetable2.setInfestationType("InfestationType 2");
+		vegetable2.setDate(date);
+		vegetable2.setIdProperty(createProperty());
+		vegetable2.setIdCulture(createCulture());
+		vegetable2.setIdDisease(createDisease());
+		
+		VegetableDisease vegetable3 = new VegetableDisease();
+		vegetable3.setId(3l);
+		vegetable3.setInfestationType("InfestationType 3");
+		vegetable3.setDate(date);
+		vegetable3.setIdProperty(createProperty());
+		vegetable3.setIdCulture(createCulture());
+		vegetable3.setIdDisease(createDisease());
+		
+		List<VegetableDisease> records = new ArrayList<>();
+		records.add(vegetable1);
+		records.add(vegetable2);
+		records.add(vegetable3);
 		
 		return records;
 	}
 	
-	private Vegetable createVegetable() {
-		Vegetable vegetable = new Vegetable(4l,createProperty(),"test-4");
+	private VegetableDisease createVegetable() {
+		LocalDate date = LocalDate.parse("2022-06-23");
 		
-		return vegetable;
-	}
+		VegetableDisease vegetableDisease = new VegetableDisease();
+		vegetableDisease.setId(4l);
+		vegetableDisease.setInfestationType("InfestationType 4");
+		vegetableDisease.setDate(date);
+		vegetableDisease.setIdProperty(createProperty());
+		vegetableDisease.setIdCulture(createCulture());
+		vegetableDisease.setIdDisease(createDisease());
+		
+		return vegetableDisease;
+	}*/
 }

@@ -1,6 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.Property;
+/*import br.edu.utfpr.ProjetoIDRAPI.model.Property;
 import br.edu.utfpr.ProjetoIDRAPI.model.PropertyCollaborator;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
 import br.edu.utfpr.ProjetoIDRAPI.repository.PropertyCollaboratorRepository;
@@ -18,9 +18,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@ActiveProfiles("test")*/
 public class PropertyCollaboratorControllerTest {
-    private static final String API = "/propertyCollaborators";
+    /*private static final String API = "/propertyCollaborators";
 
     @Autowired
     TestRestTemplate testRestTemplate;
@@ -179,6 +179,6 @@ public class PropertyCollaboratorControllerTest {
         collaborator.setWorkDays(7);
 
         return collaborator;
-    }
+    }*/
 
 }

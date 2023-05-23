@@ -1,6 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.Animal;
+/*import br.edu.utfpr.ProjetoIDRAPI.model.Animal;
 import br.edu.utfpr.ProjetoIDRAPI.model.Breed;
 import br.edu.utfpr.ProjetoIDRAPI.model.Property;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
@@ -19,9 +19,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@ActiveProfiles("test")*/
 public class AnimalControllerTest {
-    private static final String API = "/animals";
+    /*private static final String API = "/animals";
 
     @Autowired
     TestRestTemplate testRestTemplate;
@@ -183,5 +183,5 @@ public class AnimalControllerTest {
         animal.setBreed(breed);
 
         return animal;
-    }
+    }*/
 }

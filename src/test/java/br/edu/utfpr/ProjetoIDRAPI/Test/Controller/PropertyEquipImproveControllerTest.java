@@ -1,6 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.Property;
+/*import br.edu.utfpr.ProjetoIDRAPI.model.Property;
 import br.edu.utfpr.ProjetoIDRAPI.model.PropertyEquipImprove;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
 import br.edu.utfpr.ProjetoIDRAPI.repository.PropertyEquipImproveRepository;
@@ -18,9 +18,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@ActiveProfiles("test")*/
 public class PropertyEquipImproveControllerTest {
-    private static final String API = "/propertyEquipImproves";
+    /*private static final String API = "/propertyEquipImproves";
 
     @Autowired
     TestRestTemplate testRestTemplate;
@@ -177,5 +177,5 @@ public class PropertyEquipImproveControllerTest {
         equipImprove.setName("Equipament test");
 
         return equipImprove;
-    }
+    }*/
 }

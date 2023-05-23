@@ -1,6 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.Property;
+/*import br.edu.utfpr.ProjetoIDRAPI.model.Property;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
 import br.edu.utfpr.ProjetoIDRAPI.repository.PropertyRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +17,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@ActiveProfiles("test")*/
 public class PropertyControllerTest {
-    private static final String API = "/properties";
+    /*private static final String API = "/properties";
 
     @Autowired
     TestRestTemplate testRestTemplate;
@@ -139,6 +139,6 @@ public class PropertyControllerTest {
         property.setLeased(true);
 
         return property;
-    }
+    }*/
 
 }

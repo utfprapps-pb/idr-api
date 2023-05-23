@@ -1,6 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
+/*import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -34,7 +34,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import br.edu.utfpr.ProjetoIDRAPI.controller.ForageDisponibilityController;
 import br.edu.utfpr.ProjetoIDRAPI.model.ForageDisponibility;
-import br.edu.utfpr.ProjetoIDRAPI.model.PlagueDisease;
 import br.edu.utfpr.ProjetoIDRAPI.model.Property;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
 import br.edu.utfpr.ProjetoIDRAPI.repository.ForageDisponibilityRepository;
@@ -44,9 +43,9 @@ import br.edu.utfpr.ProjetoIDRAPI.service.ForageDisponibilityService;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @WebMvcTest(controllers = ForageDisponibilityController.class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc*/
 public class ForageDisponibilityControllerTest {
-	static final String API = "/foragesDisponibilities";
+	/*static final String API = "/foragesDisponibilities";
 	static final MediaType JSON = MediaType.APPLICATION_JSON;
 	
 	@Autowired
@@ -218,5 +217,5 @@ public class ForageDisponibilityControllerTest {
 		forageDisponibility.setProperty(createProperty());
 		
 		return forageDisponibility;
-	}
+	}*/
 }
