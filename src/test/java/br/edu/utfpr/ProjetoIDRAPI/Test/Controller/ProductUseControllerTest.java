@@ -1,9 +1,9 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.ProductUse;
+import br.edu.utfpr.ProjetoIDRAPI.model.LandProduct;
 import br.edu.utfpr.ProjetoIDRAPI.model.Property;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
-import br.edu.utfpr.ProjetoIDRAPI.repository.ProductUseRepository;
+import br.edu.utfpr.ProjetoIDRAPI.repository.LandProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class ProductUseControllerTest {
     TestRestTemplate testRestTemplate;
 
     @Autowired
-    private ProductUseRepository productUseRepository;
+    private LandProductRepository productUseRepository;
 
     @BeforeEach()
     private void cleanup() {
@@ -48,7 +48,7 @@ public class ProductUseControllerTest {
                 testRestTemplate.postForEntity("/properties", property, Object.class);
         property.setId(1L);
 
-        ProductUse productUse = createValidProductUse();
+        LandProduct productUse = createValidProductUse();
         productUse.setProperty(property);
         ResponseEntity<Object> response =
                 testRestTemplate.postForEntity(API, productUse, Object.class);
@@ -69,7 +69,7 @@ public class ProductUseControllerTest {
                 testRestTemplate.postForEntity("/properties", property, Object.class);
         property.setId(1L);
 
-        ProductUse productUse = createValidProductUse();
+        LandProduct productUse = createValidProductUse();
         productUse.setProperty(property);
         ResponseEntity<Object> response =
                 testRestTemplate.postForEntity(API, productUse, Object.class);
@@ -90,7 +90,7 @@ public class ProductUseControllerTest {
                 testRestTemplate.postForEntity("/properties", property, Object.class);
         property.setId(1L);
 
-        ProductUse productUse = createValidProductUse();
+        LandProduct productUse = createValidProductUse();
         productUse.setProperty(property);
         ResponseEntity<Object> responseProductUse =
                 testRestTemplate.postForEntity(API, productUse, Object.class);
@@ -114,7 +114,7 @@ public class ProductUseControllerTest {
                 testRestTemplate.postForEntity("/properties", property, Object.class);
         property.setId(1L);
 
-        ProductUse productUse = createValidProductUse();
+        LandProduct productUse = createValidProductUse();
         productUse.setProperty(property);
         ResponseEntity<Object> responseProductUse =
                 testRestTemplate.postForEntity(API, productUse, Object.class);
@@ -124,8 +124,8 @@ public class ProductUseControllerTest {
         ResponseEntity<Object> response =
                 testRestTemplate.postForEntity(API, productUse, Object.class);
 
-        List<ProductUse> productUseList = productUseRepository.findAll();
-        ProductUse productUseDB = productUseList.get(0);
+        List<LandProduct> productUseList = productUseRepository.findAll();
+        LandProduct productUseDB = productUseList.get(0);
         assertThat(productUseDB.getUsedFor()).isEqualTo("Updated UsedFor details");
     }
 
@@ -142,16 +142,16 @@ public class ProductUseControllerTest {
                 testRestTemplate.postForEntity("/properties", property, Object.class);
         property.setId(1L);
 
-        ProductUse productUse = createValidProductUse();
+        LandProduct productUse = createValidProductUse();
         productUse.setProperty(property);
         ResponseEntity<Object> responseProductUse =
                 testRestTemplate.postForEntity(API, productUse, Object.class);
         productUse.setId(1L);
 
-        ProductUse productUseDB = productUseRepository.findById(1l).orElse(null);
+        LandProduct productUseDB = productUseRepository.findById(1l).orElse(null);
 
-        List<ProductUse> productUseList = productUseRepository.findAll();
-        ProductUse productUseDB1 = productUseList.get(0);
+        List<LandProduct> productUseList = productUseRepository.findAll();
+        LandProduct productUseDB1 = productUseList.get(0);
 
         assertThat(productUseDB).isEqualTo(productUseDB1);
     }
@@ -174,9 +174,9 @@ public class ProductUseControllerTest {
         return property;
     }
 
-    private ProductUse createValidProductUse() {
+    private LandProduct createValidProductUse() {
         LocalDate date = LocalDate.parse("2022-06-23");
-        ProductUse productUse = new ProductUse();
+        LandProduct productUse = new LandProduct();
         productUse.setProperty(createValidProperty());
         productUse.setUsedFor("UsedFor details");
         productUse.setQuantity(20);

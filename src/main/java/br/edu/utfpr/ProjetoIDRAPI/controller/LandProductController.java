@@ -1,9 +1,9 @@
 package br.edu.utfpr.ProjetoIDRAPI.controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.dto.ProductUseDto;
-import br.edu.utfpr.ProjetoIDRAPI.model.ProductUse;
+import br.edu.utfpr.ProjetoIDRAPI.dto.LandProductDto;
+import br.edu.utfpr.ProjetoIDRAPI.model.LandProduct;
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
-import br.edu.utfpr.ProjetoIDRAPI.service.ProductUseService;
+import br.edu.utfpr.ProjetoIDRAPI.service.LandProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,20 +15,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("productsUse")
-public class ProductUseController extends CrudController<ProductUse, ProductUseDto, Long> {
+@RequestMapping("landProducts")
+public class LandProductController extends CrudController<LandProduct, LandProductDto, Long> {
 
-    private final ProductUseService productUseService;
+    private final LandProductService productUseService;
     private ModelMapper modelMapper;
 
-    public ProductUseController(ProductUseService productUseService, ModelMapper modelMapper) {
-        super(ProductUse.class, ProductUseDto.class);
+    public LandProductController(LandProductService productUseService, ModelMapper modelMapper) {
+        super(LandProduct.class, LandProductDto.class);
         this.productUseService = productUseService;
         this.modelMapper = modelMapper;
     }
 
     @Override
-    protected CrudService<ProductUse, Long> getService() {
+    protected CrudService<LandProduct, Long> getService() {
         return this.productUseService;
     }
 
@@ -38,7 +38,7 @@ public class ProductUseController extends CrudController<ProductUse, ProductUseD
     }
 
     @GetMapping("/productUseProp/{id}")
-    public ResponseEntity<List<ProductUseDto>> findAllByPropertyId(@PathVariable Long id) {
+    public ResponseEntity<List<LandProductDto>> findAllByPropertyId(@PathVariable Long id) {
         return ResponseEntity.ok(
                 productUseService.findByPropertyId(id)
                         .stream()
@@ -47,7 +47,7 @@ public class ProductUseController extends CrudController<ProductUse, ProductUseD
         );
     }
 
-    private ProductUseDto convertEntityToDto(ProductUse productUse) {
-        return modelMapper.map(productUse, ProductUseDto.class);
+    private LandProductDto convertEntityToDto(LandProduct productUse) {
+        return modelMapper.map(productUse, LandProductDto.class);
     }
 }

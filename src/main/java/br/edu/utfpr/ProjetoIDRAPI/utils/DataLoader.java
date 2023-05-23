@@ -17,7 +17,7 @@ import br.edu.utfpr.ProjetoIDRAPI.controller.CityController;
 import br.edu.utfpr.ProjetoIDRAPI.controller.ForageDisponibilityController;
 import br.edu.utfpr.ProjetoIDRAPI.controller.PerennialAnualForageController;
 import br.edu.utfpr.ProjetoIDRAPI.controller.PlagueDiseaseController;
-import br.edu.utfpr.ProjetoIDRAPI.controller.ProductUseController;
+import br.edu.utfpr.ProjetoIDRAPI.controller.LandProductController;
 import br.edu.utfpr.ProjetoIDRAPI.controller.PropertyCollaboratorController;
 import br.edu.utfpr.ProjetoIDRAPI.controller.PropertyController;
 import br.edu.utfpr.ProjetoIDRAPI.controller.PropertyEquipImproveController;
@@ -26,16 +26,14 @@ import br.edu.utfpr.ProjetoIDRAPI.controller.UserController;
 import br.edu.utfpr.ProjetoIDRAPI.controller.VegetableController;
 import br.edu.utfpr.ProjetoIDRAPI.dto.PropertyDto;
 import br.edu.utfpr.ProjetoIDRAPI.dto.UserCreateDto;
-import br.edu.utfpr.ProjetoIDRAPI.dto.UserDto;
 import br.edu.utfpr.ProjetoIDRAPI.dto.VegetableDto;
 import br.edu.utfpr.ProjetoIDRAPI.model.Animal;
 import br.edu.utfpr.ProjetoIDRAPI.model.Breed;
 import br.edu.utfpr.ProjetoIDRAPI.model.City;
 import br.edu.utfpr.ProjetoIDRAPI.model.ForageDisponibility;
 import br.edu.utfpr.ProjetoIDRAPI.model.PerennialAnualForage;
-import br.edu.utfpr.ProjetoIDRAPI.model.Permission;
 import br.edu.utfpr.ProjetoIDRAPI.model.PlagueDisease;
-import br.edu.utfpr.ProjetoIDRAPI.model.ProductUse;
+import br.edu.utfpr.ProjetoIDRAPI.model.LandProduct;
 import br.edu.utfpr.ProjetoIDRAPI.model.Property;
 import br.edu.utfpr.ProjetoIDRAPI.model.PropertyCollaborator;
 import br.edu.utfpr.ProjetoIDRAPI.model.PropertyEquipImprove;
@@ -66,7 +64,7 @@ public class DataLoader implements CommandLineRunner {
 	@Autowired
 	private PropertyCollaboratorController propertyCollaboratorController;
 	@Autowired
-	private ProductUseController productUseController;
+	private LandProductController productUseController;
 	@Autowired
 	private PlagueDiseaseController plagueDiseaseController;
 	@Autowired
@@ -285,19 +283,19 @@ public class DataLoader implements CommandLineRunner {
 
 	private void createProductsUses() {
 		LocalDate date = LocalDate.parse("2022-06-23");
-		ProductUse productUse1 = new ProductUse();
+		LandProduct productUse1 = new LandProduct();
 		productUse1.setProperty(convertToProperty(propertyController.findOne(1l)));
 		productUse1.setUsedFor("UsedFor details 1");
 		productUse1.setQuantity(20);
 		productUse1.setUseDate(date);
 
-		ProductUse productUse2 = new ProductUse();
+		LandProduct productUse2 = new LandProduct();
 		productUse2.setProperty(convertToProperty(propertyController.findOne(3l)));
 		productUse2.setUsedFor("UsedFor details 2");
 		productUse2.setQuantity(20);
 		productUse2.setUseDate(date);
 
-		ProductUse productUse3 = new ProductUse();
+		LandProduct productUse3 = new LandProduct();
 		productUse3.setProperty(convertToProperty(propertyController.findOne(2l)));
 		productUse3.setUsedFor("UsedFor details 3");
 		productUse3.setQuantity(20);
