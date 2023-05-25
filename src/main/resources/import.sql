@@ -23,10 +23,18 @@ insert into property_equip_improve (aquisition_date, name, percentage_cattle, pr
 insert into property_collaborator (collaborator_name, property_id, work_days, work_hours) values ('collaborator 1', 2, 7, 12);
 insert into property_collaborator (collaborator_name, property_id, work_days, work_hours) values ('collaborator 2', 3, 7, 8);
 insert into property_collaborator (collaborator_name, property_id, work_days, work_hours) values ('collaborator 3', 1, 7, 8);
---TABELA PRODUCT_USE
-insert into product_use (property_id, quantity, use_date, used_for) values (1, 20, '2022-06-23', 'UsedFor details 1');
-insert into product_use (property_id, quantity, use_date, used_for) values (3, 15, '2022-06-20', 'UsedFor details 2');
-insert into product_use (property_id, quantity, use_date, used_for) values (2, 62, '2022-06-16', 'UsedFor details 3');
+--TABELA ACTIVE_PRINCIPLE
+insert into active_principle (name) values ('Active principle 1');
+insert into active_principle (name) values ('Active principle 2');
+insert into active_principle (name) values ('Active principle 3');
+--TABELA PRODUCT_CATEGORY
+insert into product_category (description) values ('Description 1');
+insert into product_category (description) values ('Description 2');
+insert into product_category (description) values ('Description 3');
+--TABELA PRODUCT
+insert into product (name, description, application_way, active_principle_id, category_id) values ('Product 1', 'Description 1', 'Way 1', 2, 3);
+insert into product (name, description, application_way, active_principle_id, category_id) values ('Product 2', 'Description 2', 'Way 2', 3, 1);
+insert into product (name, description, application_way, active_principle_id, category_id) values ('Product 3', 'Description 3', 'Way 3', 1, 2);
 --TABELA PERENNIAL_ANNUAL_FORAGE
 insert into perennial_anual_forage (area, average_cost, forage, formation_date, note, price, property_id, type, util_life) values ('165.13', '136.45', 'Forage 1', '2022-06-23', 'Note 1', '16.12', 2, 'Type 1', 13);
 insert into perennial_anual_forage (area, average_cost, forage, formation_date, note, price, property_id, type, util_life) values ('365.46', '63.45', 'Forage 2', '2022-06-23', 'Note 2', '35.16', 1, 'Type 2', 16);
@@ -56,10 +64,18 @@ insert into disease (disease_name) values ('Disease 1');
 insert into disease (disease_name) values ('Disease 2');
 insert into disease (disease_name) values ('Disease 3');
 --TABELA VEGETABLE_DISEASE
-insert into vegetable_disease (date, culture_id, disease_id, property_id, infestation_type) values ('2022-06-23', 3, 1, 2, 'InfestationType 1');
+insert into vegetable_disease (date, culture_id, disease_id, property_id, infestation_type) values ('2021-12-30', 3, 1, 2, 'InfestationType 1');
 insert into vegetable_disease (date, culture_id, disease_id, property_id, infestation_type) values ('2022-06-15', 2, 3, 2, 'InfestationType 2');
 insert into vegetable_disease (date, culture_id, disease_id, property_id, infestation_type) values ('2022-03-05', 1, 2, 3, 'InfestationType 3');
 --TABELA VEGETABLE_PLAGUE
 insert into vegetable_plague (date, culture_id, plague_id, property_id, infestation_type) values ('2021-03-14', 3, 1, 2, 'InfestationType 1');
 insert into vegetable_plague (date, culture_id, plague_id, property_id, infestation_type) values ('2019-10-22', 2, 3, 2, 'InfestationType 2');
 insert into vegetable_plague (date, culture_id, plague_id, property_id, infestation_type) values ('2021-03-14', 1, 2, 3, 'InfestationType 3');
+--TABELA LAND_PRODUCT
+insert into land_product (quantity, use_date, used_for, property_id) values (20, '2022-06-15', 'For 1', 2);
+insert into land_product (quantity, use_date, used_for, property_id) values (36, '2023-03-26', 'For 2', 1);
+insert into land_product (quantity, use_date, used_for, property_id) values (14, '2023-01-11', 'For 3', 3);
+--TABELA MEDICATION
+insert into medication (application_date, application_way, applied_dose, animal_id, product_id) values ('2023-02-18','Way 1','Dose 1', 3, 2);
+insert into medication (application_date, application_way, applied_dose, animal_id, product_id) values ('2022-12-29','Way 2','Dose 2', 1, 3);
+insert into medication (application_date, application_way, applied_dose, animal_id, product_id) values ('2023-05-03','Way 3','Dose 3', 2, 1);
