@@ -2,8 +2,6 @@ package br.edu.utfpr.ProjetoIDRAPI.dto;
 
 import lombok.Data;
 
-import java.time.LocalDate;
-
 @Data
 public class LandProductDto {
 
@@ -11,7 +9,7 @@ public class LandProductDto {
 
     private PropertyDto property;
 
-    private LocalDate useDate;
+    private String useDate;
 
     private Integer quantity;
 

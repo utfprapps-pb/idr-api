@@ -79,3 +79,12 @@ insert into land_product (quantity, use_date, used_for, property_id) values (14,
 insert into medication (application_date, application_way, applied_dose, animal_id, product_id) values ('2023-02-18','Way 1','Dose 1', 3, 2);
 insert into medication (application_date, application_way, applied_dose, animal_id, product_id) values ('2022-12-29','Way 2','Dose 2', 1, 3);
 insert into medication (application_date, application_way, applied_dose, animal_id, product_id) values ('2023-05-03','Way 3','Dose 3', 2, 1);
+--TABLE ANIMAL_DISEASES
+insert into animal_diseases (diagnosis, diagnosis_date, animal_id) values ('Diagnosis 1', '2022-08-20', 2);
+insert into animal_diseases (diagnosis, diagnosis_date, animal_id) values ('Diagnosis 2', '2022-11-29', 3);
+insert into animal_diseases (diagnosis, diagnosis_date, animal_id) values ('Diagnosis 3', '2022-01-18', 2);
+--TABLE ANIMAL_PURCHASES
+insert into animal_purchases (birth_date, date_purchase, value, animal_id) values ('2019-06-23', '2019-10-28', '2156.13', 1);
+--TABLE ANIMAL_SALES
+insert into animal_sales (date_sale, destination, reason, value, animal_id) values ('2023-08-16', 'Destination 1', 'Reason 1', '3546.00', 2);
+insert into animal_sales (date_sale, destination, reason, value, animal_id) values ('2023-08-24', 'Destination 2', 'Reason 2', '3123.00', 3);

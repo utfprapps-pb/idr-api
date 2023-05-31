@@ -3,7 +3,6 @@ package br.edu.utfpr.ProjetoIDRAPI.dto;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Data
 public class PropertyEquipImproveDto {
@@ -22,7 +21,7 @@ public class PropertyEquipImproveDto {
 
     private Integer utilLife;
 
-    private Date aquisitionDate;
+    private String aquisitionDate;
 
     private BigDecimal valueCattle;
 

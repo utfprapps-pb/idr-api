@@ -1,7 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.dto;
 
 import java.math.BigInteger;
-import java.time.LocalDate;
 
 import lombok.Data;
 
@@ -9,7 +8,7 @@ import lombok.Data;
 public class ForageDisponibilityDto {
 	private long id;
 
-	private LocalDate date;
+	private String date;
 
 	private String forage;
 

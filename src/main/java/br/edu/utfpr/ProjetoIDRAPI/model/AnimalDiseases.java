@@ -1,6 +1,5 @@
 package br.edu.utfpr.ProjetoIDRAPI.model;
 
-
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
@@ -9,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,28 +19,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VegetableDisease {
+public class AnimalDiseases {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@NotNull
-	private String infestationType;
+	private String diagnosis;
 	
-	private LocalDate date;
+	private LocalDate diagnosisDate;
 	
-	@NotNull
-	@JoinColumn(name = "Property_id")
-    @ManyToOne
-	private Property idProperty;
-	
-	@NotNull
-	@JoinColumn(name = "Culture_id")
-    @ManyToOne
-	private Culture idCulture;
-	
-	@NotNull
-	@JoinColumn(name = "Disease_id")
-    @ManyToOne
-    private Disease idDisease;
+	@JoinColumn(name = "Animal_id")
+	@ManyToOne
+	private Animal animal;
 }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -39,7 +39,7 @@ public class PropertyEquipImprove {
 
     private Integer utilLife;
 
-    private Date aquisitionDate;
+    private LocalDate aquisitionDate;
 
     private BigDecimal valueCattle;
 }
