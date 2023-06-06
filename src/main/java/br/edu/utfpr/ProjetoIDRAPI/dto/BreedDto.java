@@ -6,5 +6,5 @@ import lombok.Data;
 public class BreedDto {
 	private long id;
 
-    private String breedName;
+	private String breedName;
 }

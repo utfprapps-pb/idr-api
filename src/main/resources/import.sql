@@ -86,5 +86,15 @@ insert into animal_diseases (diagnosis, diagnosis_date, animal_id) values ('Diag
 --TABLE ANIMAL_PURCHASES
 insert into animal_purchases (birth_date, date_purchase, value, animal_id) values ('2019-06-23', '2019-10-28', '2156.13', 1);
 --TABLE ANIMAL_SALES
-insert into animal_sales (date_sale, destination, reason, value, animal_id) values ('2023-08-16', 'Destination 1', 'Reason 1', '3546.00', 2);
-insert into animal_sales (date_sale, destination, reason, value, animal_id) values ('2023-08-24', 'Destination 2', 'Reason 2', '3123.00', 3);
+insert into animal_sales (date_sale, destination, reason, value, animal_id) values ('2023-08-16', 1, 0, '3546.00', 2);
+insert into animal_sales (date_sale, destination, reason, value, animal_id) values ('2023-08-24', 1, 2, '3123.00', 3);
+--TABELA PREGNANCY_DIAGNOSE
+insert into pregnancy_diagnose (diagnose_date, lastia, animal_id) values ('2023-05-20', '2023-01-16', 1);
+insert into pregnancy_diagnose (diagnose_date, lastia, animal_id) values ('2023-06-03', '2023-02-06', 2);
+--TABELA INSEMINATION
+insert into insemination (bull, ia_date, animal_id) values ('bull 1', '2023-01-16', 1);
+insert into insemination (bull, ia_date, animal_id) values ('bull 2', '2023-02-06', 2);
+--TABELA MASTITIS
+insert into mastitis (ad, ae, cmt_result, diagnose_date, mastitis_type, pd, pe, animal_id) values ('ad 1','ae 1','cmt_result 1','2023-02-18','Type 1','pd 1','pe 1',3);
+
+

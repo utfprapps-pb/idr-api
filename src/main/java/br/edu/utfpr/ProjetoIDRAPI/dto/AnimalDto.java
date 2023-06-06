@@ -15,7 +15,7 @@ public class AnimalDto {
 
     private String name;
 
-    private String breed;
+    private BreedDto breed;
 
     private String bornDate;
 

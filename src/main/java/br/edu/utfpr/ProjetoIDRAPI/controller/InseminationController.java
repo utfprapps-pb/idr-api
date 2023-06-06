@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("insemination")
+@RequestMapping("inseminations")
 public class InseminationController extends CrudController<Insemination, InseminationDto, Long> {
 
     private final InseminationService inseminationService;
