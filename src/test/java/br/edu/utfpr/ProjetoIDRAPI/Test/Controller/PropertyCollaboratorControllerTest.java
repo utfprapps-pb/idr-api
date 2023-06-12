@@ -1,10 +1,9 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-/*import br.edu.utfpr.ProjetoIDRAPI.model.Property;
+import br.edu.utfpr.ProjetoIDRAPI.model.Property;
 import br.edu.utfpr.ProjetoIDRAPI.model.PropertyCollaborator;
-import br.edu.utfpr.ProjetoIDRAPI.model.User;
 import br.edu.utfpr.ProjetoIDRAPI.repository.PropertyCollaboratorRepository;
-import org.junit.jupiter.api.BeforeEach;
+import br.edu.utfpr.ProjetoIDRAPI.repository.PropertyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,9 +17,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")*/
+@ActiveProfiles("test")
 public class PropertyCollaboratorControllerTest {
-    /*private static final String API = "/propertyCollaborators";
+    private static final String API = "/propertyCollaborators";
 
     @Autowired
     TestRestTemplate testRestTemplate;
@@ -28,24 +27,12 @@ public class PropertyCollaboratorControllerTest {
     @Autowired
     PropertyCollaboratorRepository collaboratorRepository;
 
-    @BeforeEach()
-    private void cleanup() {
-        collaboratorRepository.deleteAll();
-        testRestTemplate.getRestTemplate().getInterceptors().clear();
-    }
+    @Autowired
+    private PropertyRepository propertyRepository;
 
     @Test
     public void postCollaborator_whenCollaboratorIsValid_receiveCreated() {
-        User user = createValidUser();
-        ResponseEntity<Object> responseUser =
-                testRestTemplate.postForEntity("/users", user, Object.class);
-        user.setId(1L);
-
-        Property property = createValidProperty();
-        property.setUser(user);
-        ResponseEntity<Object> responseProperty =
-                testRestTemplate.postForEntity("/properties", property, Object.class);
-        property.setId(1L);
+        Property property = propertyRepository.findById(1L).orElse(null);
 
         PropertyCollaborator collaborator = createValidCollaborator();
         collaborator.setProperty(property);
@@ -57,119 +44,52 @@ public class PropertyCollaboratorControllerTest {
 
     @Test
     public void postCollaborator_whenCollaboratorIsValid_collaboratorSavedToDatabase() {
-        User user = createValidUser();
-        ResponseEntity<Object> responseUser =
-                testRestTemplate.postForEntity("/users", user, Object.class);
-        user.setId(1L);
-
-        Property property = createValidProperty();
-        property.setUser(user);
-        ResponseEntity<Object> responseProperty =
-                testRestTemplate.postForEntity("/properties", property, Object.class);
-        property.setId(1L);
+        Property property = propertyRepository.findById(1L).orElse(null);
 
         PropertyCollaborator collaborator = createValidCollaborator();
         collaborator.setProperty(property);
         ResponseEntity<Object> response =
                 testRestTemplate.postForEntity(API, collaborator, Object.class);
 
-        assertThat( collaboratorRepository.count() ).isEqualTo(1);
+        //Se compara com 4 pois existem três colaboradores padrões inseridos no banco.
+        assertThat( collaboratorRepository.count() ).isEqualTo(4);
     }
 
     @Test
     public void deleteCollaborator_whenCollaboratorIdExists_receiveOk() {
-        User user = createValidUser();
-        ResponseEntity<Object> responseUser =
-                testRestTemplate.postForEntity("/users", user, Object.class);
-        user.setId(1L);
-
-        Property property = createValidProperty();
-        property.setUser(user);
-        ResponseEntity<Object> responseProperty =
-                testRestTemplate.postForEntity("/properties", property, Object.class);
-        property.setId(1L);
+        Property property = propertyRepository.findById(1L).orElse(null);
 
         PropertyCollaborator collaborator = createValidCollaborator();
         collaborator.setProperty(property);
         ResponseEntity<Object> responseProductUse =
                 testRestTemplate.postForEntity(API, collaborator, Object.class);
 
-        testRestTemplate.delete(API + "/1");
+        testRestTemplate.delete(API + "/4");
 
-        assertThat( collaboratorRepository.count() ).isEqualTo(0);
+        //Se compara com 3 pois existem três colaboradores padrões inseridos no banco.
+        assertThat( collaboratorRepository.count() ).isEqualTo(3);
     }
 
     @Test
     public void postCollaborator_whenCollaboratorIsValidAndAlreadyExists_collaboratorUpdateDatabase() {
-        User user = createValidUser();
-        ResponseEntity<Object> responseUser =
-                testRestTemplate.postForEntity("/users", user, Object.class);
-        user.setId(1L);
-
-        Property property = createValidProperty();
-        property.setUser(user);
-        ResponseEntity<Object> responseProperty =
-                testRestTemplate.postForEntity("/properties", property, Object.class);
-        property.setId(1L);
-
-
-        PropertyCollaborator collaborator = createValidCollaborator();
-        collaborator.setProperty(property);
-        ResponseEntity<Object> responseProductUse =
-                testRestTemplate.postForEntity(API, collaborator, Object.class);
-        collaborator.setId(1L);
+        PropertyCollaborator collaborator = collaboratorRepository.findById(1L).orElse(null);
         collaborator.setCollaboratorName("Updated Josias");
 
         ResponseEntity<Object> response =
                 testRestTemplate.postForEntity(API, collaborator, Object.class);
 
-        List<PropertyCollaborator> collaboratorList = collaboratorRepository.findAll();
-        PropertyCollaborator collaboratorDB = collaboratorList.get(0);
-        assertThat(collaboratorDB.getCollaboratorName()).isEqualTo("Updated Josias");
+        PropertyCollaborator changedCollaborator = collaboratorRepository.findById(1L).orElse(null);
+        assertThat(changedCollaborator.getCollaboratorName()).isEqualTo("Updated Josias");
     }
 
     @Test
     public void getCollaborator_whenCollaboratorExists_collaboratorReturnFromDatabase() {
-        User user = createValidUser();
-        ResponseEntity<Object> responseUser =
-                testRestTemplate.postForEntity("/users", user, Object.class);
-        user.setId(1L);
-
-        Property property = createValidProperty();
-        property.setUser(user);
-        ResponseEntity<Object> responseProperty =
-                testRestTemplate.postForEntity("/properties", property, Object.class);
-        property.setId(1L);
-
-        PropertyCollaborator collaborator = createValidCollaborator();
-        collaborator.setProperty(property);
-        ResponseEntity<Object> responseProductUse =
-                testRestTemplate.postForEntity(API, collaborator, Object.class);
-        collaborator.setId(1L);
-
         PropertyCollaborator collaboratorDB = collaboratorRepository.findById(1L).orElse(null);
 
         List<PropertyCollaborator> collaboratorList = collaboratorRepository.findAll();
         PropertyCollaborator collaboratorDB1 = collaboratorList.get(0);
 
         assertThat(collaboratorDB).isEqualTo(collaboratorDB1);
-    }
-
-    private User createValidUser() {
-        User user = new User();
-        user.setUsername("User-test-1");
-        user.setPassword("115.675.888-66");
-        user.setPhone("4632232277");
-        user.setProfessionalRegister("999101");
-
-        return user;
-    }
-
-    private Property createValidProperty() {
-        Property property = new Property();
-        property.setLeased(true);
-
-        return property;
     }
 
     private PropertyCollaborator createValidCollaborator() {
@@ -179,6 +99,5 @@ public class PropertyCollaboratorControllerTest {
         collaborator.setWorkDays(7);
 
         return collaborator;
-    }*/
-
+    }
 }

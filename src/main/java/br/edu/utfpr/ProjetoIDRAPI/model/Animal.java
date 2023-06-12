@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
@@ -19,13 +20,15 @@ public class Animal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @JoinColumn(name = "Property_id")
+    @NotNull
     @ManyToOne
     private Property property;
 
+    @NotNull
     @ManyToOne
     private Animal animalMother;
 
+    @NotNull
     @ManyToOne
     private Breed breed;
 
