@@ -23,7 +23,6 @@ public class City {
     private String name;
 
     @NotNull
-    @JoinColumn(name = "Region_id")
     @ManyToOne
     private Region cityRegion;
 }

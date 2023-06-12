@@ -19,6 +19,7 @@ public class PropertyCollaborator {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotNull
     @ManyToOne
     private Property property;
 
@@ -30,4 +31,5 @@ public class PropertyCollaborator {
 
     @NotNull
     private Integer workDays;
+
 }

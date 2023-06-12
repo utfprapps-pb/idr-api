@@ -22,7 +22,6 @@ public class Property {
     private long id;
 
     @NotNull
-    @JoinColumn(name = "User_id")
     @ManyToOne
     private User user;
 
