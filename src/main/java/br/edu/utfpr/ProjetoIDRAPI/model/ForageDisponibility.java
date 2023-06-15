@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ForageDisponibility {
+
 	 @Id
 	 @GeneratedValue(strategy = GenerationType.IDENTITY)
 	 private long id;
@@ -42,8 +44,9 @@ public class ForageDisponibility {
 	 private BigInteger numCows;
 	 
 	 private Float kgCows;
-	 
-	 @JoinColumn(name = "Property_id")
+
+	 @NotNull
 	 @ManyToOne
 	 private Property property;
+
 }

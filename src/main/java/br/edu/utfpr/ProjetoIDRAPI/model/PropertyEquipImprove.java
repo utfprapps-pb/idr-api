@@ -21,7 +21,7 @@ public class PropertyEquipImprove {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @JoinColumn(name = "Property_id")
+    @NotNull
     @ManyToOne
     private Property property;
 

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
@@ -19,7 +20,7 @@ public class PerennialAnualForage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @JoinColumn(name = "Property_id")
+    @NotNull
     @ManyToOne
     private Property property;
 
@@ -38,4 +39,5 @@ public class PerennialAnualForage {
     private LocalDate formationDate;
 
     private String note;
+
 }

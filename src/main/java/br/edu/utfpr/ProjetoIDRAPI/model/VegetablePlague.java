@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VegetablePlague {
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -29,19 +30,17 @@ public class VegetablePlague {
 	private String infestationType;
 	
 	private LocalDate date;
-	
+
 	@NotNull
-	@JoinColumn(name = "Property_id")
     @ManyToOne
 	private Property property;
-	
+
 	@NotNull
-	@JoinColumn(name = "Culture_id")
     @ManyToOne
 	private Culture culture;
-	
+
 	@NotNull
-	@JoinColumn(name = "Plague_id")
     @ManyToOne
     private Plague plague;
+
 }

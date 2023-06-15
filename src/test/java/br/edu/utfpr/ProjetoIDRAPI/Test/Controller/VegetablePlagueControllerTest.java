@@ -1,251 +1,113 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-/*import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.junit.jupiter.api.BeforeEach;
+import br.edu.utfpr.ProjetoIDRAPI.model.*;
+import br.edu.utfpr.ProjetoIDRAPI.repository.CultureRepository;
+import br.edu.utfpr.ProjetoIDRAPI.repository.PlagueRepository;
+import br.edu.utfpr.ProjetoIDRAPI.repository.PropertyRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import br.edu.utfpr.ProjetoIDRAPI.controller.VegetablePlagueController;
-import br.edu.utfpr.ProjetoIDRAPI.model.VegetablePlague;
-import br.edu.utfpr.ProjetoIDRAPI.model.Culture;
-import br.edu.utfpr.ProjetoIDRAPI.model.Plague;
-import br.edu.utfpr.ProjetoIDRAPI.model.Property;
-import br.edu.utfpr.ProjetoIDRAPI.model.User;
 import br.edu.utfpr.ProjetoIDRAPI.repository.VegetablePlagueRepository;
-import br.edu.utfpr.ProjetoIDRAPI.service.VegetablePlagueService;
 
-@ExtendWith(SpringExtension.class)
+import java.util.List;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@WebMvcTest(controllers = VegetablePlagueController.class)
-@AutoConfigureMockMvc*/
 public class VegetablePlagueControllerTest {
-	/*static final String API = "/vegetableplagues";
-	static final MediaType JSON = MediaType.APPLICATION_JSON;
+
+	static final String API = "/vegetableplagues";
+
+	@Autowired
+	TestRestTemplate testRestTemplate;
 	
 	@Autowired
-	private WebApplicationContext context;
-	
+	private VegetablePlagueRepository vegetableRepository;
+
 	@Autowired
-	private MockMvc mvc;
-	
-	@MockBean
-	private VegetablePlagueRepository repository;
-	
-	@MockBean
-	private VegetablePlagueService service;
-	
-	@BeforeEach
-	public void setup() {
-		mvc = MockMvcBuilders
-				.webAppContextSetup(context)
-				.apply(springSecurity()) 
-				.build();
-	}
-	
-	@Test
-	@WithMockUser
-	public void whenFindAll_returnSucess() throws Exception {
-		List<VegetablePlague> records = createList();
-		
-		Mockito.when(service.findAll()).thenReturn(records);
-		
-		mvc.perform(MockMvcRequestBuilders.get(API).contentType(JSON))
-		.andExpect(status().isOk())
-		.andExpect(jsonPath("$", hasSize(3)))
-		.andExpect(jsonPath("$[2].infestationType", is("InfestationType 3")));
-	}
-	
-	@Test
-	@WithMockUser
-	public void whenFindById_returnPlague() throws Exception {
-		Mockito.when(service.findOne(createVegetablePlague().getId())).thenReturn(createVegetablePlague());
-		
-		mvc.perform(MockMvcRequestBuilders.get(API+"/{id}", createVegetablePlague().getId()))
-		.andExpect(status().isOk())
-		.andExpect(content().contentType(JSON))
-		.andExpect(jsonPath("$.id", is(4)))
-        .andExpect(jsonPath("$.infestationType", is("InfestationType 4")));
-	}
-	
-	@Test
-	@WithMockUser
-	public void whenFindByIdIsNull_returnNoContentStatus() throws Exception {
-		Mockito.when(service.findOne(createVegetablePlague().getId())).thenReturn(null);
+	private PropertyRepository propertyRepository;
 
-		mvc.perform(MockMvcRequestBuilders.get(API+"/{id}", createVegetablePlague().getId()))
-		.andExpect(status().isNoContent());
-	}
-	
-	@Test
-	@WithMockUser
-	public void whenPlagueIsCreated() throws Exception {
-		VegetablePlague plaguePost = createVegetablePlague();
-		
-		Mockito.when(repository.save(ArgumentMatchers.any(VegetablePlague.class))).thenReturn(plaguePost);
-		
-		VegetablePlague plagueDiseaseReturn = repository.save(plaguePost);
-		
-		assertThat(plagueDiseaseReturn.getInfestationType()).isSameAs(plaguePost.getInfestationType());
-		verify(repository).save(plaguePost);
-	}
-	
-	@Test
-	@WithMockUser
-	public void whenGivenId_shouldDeletePlague() {
-		VegetablePlague vegetablePlague = createVegetablePlague();
-		
-		Mockito.when(repository.findById(vegetablePlague.getId())).thenReturn(Optional.of(vegetablePlague));
+	@Autowired
+	private CultureRepository cultureRepository;
 
-		service.delete(vegetablePlague.getId());
-		verify(service).delete(vegetablePlague.getId());
-	}
-	
+	@Autowired
+	private PlagueRepository plagueRepository;
+
 	@Test
-	@WithMockUser
-	public void deleteShouldThrowException_whenPlagueDoesntExist() {
-		VegetablePlague vegetablePlague = createVegetablePlague();
-		
-		Mockito.when(service.findOne(anyLong())).thenReturn(null);
-		service.delete(vegetablePlague.getId());
+	public void postVegetablePlague_whenVegetablePlagueIsValid_receiveCreated() {
+		VegetablePlague vegetable = createValidVegetablePlague();
+		vegetable.setPlague(plagueRepository.findById(1L).orElse(null));
+		vegetable.setProperty(propertyRepository.findById(1L).orElse(null));
+		vegetable.setCulture(cultureRepository.findById(1L).orElse(null));
+
+		ResponseEntity<Object> response =
+				testRestTemplate.postForEntity(API, vegetable, Object.class);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 	}
-	
+
 	@Test
-	@WithMockUser
-	public void whenGivenId_shouldUpdatePlague() {
-		VegetablePlague vegetablePlague = createVegetablePlague();
-		
-		Mockito.when(repository.save(ArgumentMatchers.any(VegetablePlague.class))).thenReturn(vegetablePlague);
-		
-		repository.save(vegetablePlague);
-		
-		vegetablePlague.setId(4L);
-		vegetablePlague.setInfestationType("New Test Inf");
-		
-		VegetablePlague plagueUpdate = repository.save(vegetablePlague);
-		
-		assertThat(plagueUpdate.getInfestationType()).isEqualTo("New Test Inf");
+	public void postVegetablePlague_whenVegetablePlagueIsValid_vegetablePlagueSavedToDatabase() {
+		VegetablePlague vegetable = createValidVegetablePlague();
+		vegetable.setPlague(plagueRepository.findById(1L).orElse(null));
+		vegetable.setProperty(propertyRepository.findById(1L).orElse(null));
+		vegetable.setCulture(cultureRepository.findById(1L).orElse(null));
+
+		ResponseEntity<Object> response =
+				testRestTemplate.postForEntity(API, vegetable, Object.class);
+
+		//Se compara com 4 pois existem três pragas vegetais padrões inseridas no banco.
+		assertThat( vegetableRepository.count() ).isEqualTo(4);
 	}
-	
+
 	@Test
-	@WithMockUser
-	public void updateShouldThrowException_whenPlagueDoesntExist() {
-		VegetablePlague vegetablePlague = createVegetablePlague();
-		
-		VegetablePlague newplague = new VegetablePlague();
-		newplague.setId(0);
-		
-		vegetablePlague.setInfestationType("New Test Inf");
-		
-		Mockito.when(service.findOne(anyLong())).thenReturn(null);
-		repository.save(newplague);
+	public void deleteVegetablePlague_whenVegetablePlagueIdExists_receiveOk() {
+		VegetablePlague vegetable = createValidVegetablePlague();
+		vegetable.setPlague(plagueRepository.findById(1L).orElse(null));
+		vegetable.setProperty(propertyRepository.findById(1L).orElse(null));
+		vegetable.setCulture(cultureRepository.findById(1L).orElse(null));
+
+		ResponseEntity<Object> response =
+				testRestTemplate.postForEntity(API, vegetable, Object.class);
+
+		testRestTemplate.delete(API + "/4");
+
+		//Se compara com 3 pois existem três pragas vegetais padrões inseridas no banco.
+		assertThat( vegetableRepository.count() ).isEqualTo(3);
+	}
+
+	@Test
+	public void postVegetablePlague_whenVegetablePlagueIsValidAndAlreadyExists_vegetablePlagueUpdateDatabase() {
+		VegetablePlague vegetable = vegetableRepository.findById(1L).orElse(null);
+		vegetable.setInfestationType("Changed Test Type");
+
+		ResponseEntity<Object> response =
+				testRestTemplate.postForEntity(API, vegetable, Object.class);
+
+		VegetablePlague changedVegetable = vegetableRepository.findById(1L).orElse(null);
+		assertThat(changedVegetable.getInfestationType()).isEqualTo("Changed Test Type");
+	}
+
+	@Test
+	public void getVegetablePlague_whenVegetablePlagueExists_vegetablePlagueReturnFromDatabase() {
+		VegetablePlague vegetableDB = vegetableRepository.findById(1L).orElse(null);
+
+		List<VegetablePlague> vegetableList = vegetableRepository.findAll();
+		VegetablePlague vegetableDB1 = vegetableList.get(0);
+
+		assertThat(vegetableDB).isEqualTo(vegetableDB1);
 	}
 	
-	private User createUser() {
-		User user = new User();
-		user.setId(1l);
-		user.setUsername("User-test-1");
-		user.setPassword("1717");
-		user.setPhone("21221");
-		user.setProfessionalRegister("12222");
-		
-		return user;
-	}
-	
-	private Property createProperty() {
-		Property property = new Property();
-		property.setId(1l);
-		property.setUser(createUser());
-		property.setLeased(true);
-		
-		return property;
-	}
-	
-	public Culture createCulture() {
-		Culture culture = new Culture(1l, "Culture 1");
-		
-		return culture;
-	}
-	
-	public Plague createPlague() {
-		Plague plague = new Plague(1l, "Plague 1");
-		
-		return plague;
-	}
-	
-	private VegetablePlague createVegetablePlague() {
-		LocalDate date = LocalDate.parse("2022-06-23");
-		
+	private VegetablePlague createValidVegetablePlague() {
 		VegetablePlague vegetablePlague = new VegetablePlague();
-		vegetablePlague.setId(4l);
-		vegetablePlague.setInfestationType("InfestationType 4");
-		vegetablePlague.setDate(date);
-		vegetablePlague.setIdProperty(createProperty());
-		vegetablePlague.setIdCulture(createCulture());
-		vegetablePlague.setIdPlague(createPlague());
+		vegetablePlague.setInfestationType("Test Type");
 		
 		return vegetablePlague;
 	}
-	
-	private List<VegetablePlague> createList(){
-		LocalDate date = LocalDate.parse("2022-06-23");
-		
-		VegetablePlague vegetablePlague1 = new VegetablePlague();
-		vegetablePlague1.setId(1l);
-		vegetablePlague1.setInfestationType("InfestationType 1");
-		vegetablePlague1.setDate(date);
-		vegetablePlague1.setIdProperty(createProperty());
-		vegetablePlague1.setIdCulture(createCulture());
-		vegetablePlague1.setIdPlague(createPlague());
-		
-		VegetablePlague vegetablePlague2 = new VegetablePlague();
-		vegetablePlague2.setId(2l);
-		vegetablePlague2.setInfestationType("InfestationType 2");
-		vegetablePlague2.setDate(date);
-		vegetablePlague2.setIdProperty(createProperty());
-		vegetablePlague2.setIdCulture(createCulture());
-		vegetablePlague2.setIdPlague(createPlague());
-		
-		VegetablePlague vegetablePlague3 = new VegetablePlague();
-		vegetablePlague3.setId(3l);
-		vegetablePlague3.setInfestationType("InfestationType 3");
-		vegetablePlague3.setDate(date);
-		vegetablePlague3.setIdProperty(createProperty());
-		vegetablePlague3.setIdCulture(createCulture());
-		vegetablePlague3.setIdPlague(createPlague());
-		
-		List<VegetablePlague> records = new ArrayList<>();
-		records.add(vegetablePlague1);
-		records.add(vegetablePlague2);
-		records.add(vegetablePlague3);
-		
-		return records;
-	}*/
 }

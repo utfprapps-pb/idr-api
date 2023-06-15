@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VegetableDisease {
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -45,4 +46,5 @@ public class VegetableDisease {
 	@JoinColumn(name = "Disease_id")
     @ManyToOne
     private Disease disease;
+
 }

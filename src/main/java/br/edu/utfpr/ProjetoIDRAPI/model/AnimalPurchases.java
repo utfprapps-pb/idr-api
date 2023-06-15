@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AnimalPurchases {
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -30,8 +31,8 @@ public class AnimalPurchases {
 	private LocalDate birthDate;
 	
 	private BigDecimal value;
-	
-	@JoinColumn(name = "Animal_id")
+
 	@ManyToOne
 	private Animal animal;
+
 }
