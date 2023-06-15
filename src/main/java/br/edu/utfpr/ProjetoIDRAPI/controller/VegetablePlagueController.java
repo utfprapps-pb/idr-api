@@ -1,13 +1,17 @@
 package br.edu.utfpr.ProjetoIDRAPI.controller;
 
+import br.edu.utfpr.ProjetoIDRAPI.utils.GenericResponse;
 import org.modelmapper.ModelMapper;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import br.edu.utfpr.ProjetoIDRAPI.dto.VegetablePlagueDto;
 import br.edu.utfpr.ProjetoIDRAPI.model.VegetablePlague;
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
 import br.edu.utfpr.ProjetoIDRAPI.service.VegetablePlagueService;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("vegetableplagues")
@@ -30,5 +34,12 @@ public class VegetablePlagueController extends CrudController<VegetablePlague, V
 	@Override
 	protected ModelMapper getModelMapper() {
 		return this.modelMapper;
+	}
+
+	@PostMapping("/sendVegetablePlagues")
+	@ResponseStatus(HttpStatus.CREATED)
+	public GenericResponse createRegister(@RequestBody @Valid List<VegetablePlague> vegetablePlagues) {
+		VegetablePlagueService.saveListVegetablePlagues(vegetablePlagues);
+		return new GenericResponse("Registros inseridos com sucesso");
 	}
 }
