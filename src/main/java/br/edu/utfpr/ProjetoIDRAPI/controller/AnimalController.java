@@ -4,9 +4,14 @@ import br.edu.utfpr.ProjetoIDRAPI.dto.AnimalDto;
 import br.edu.utfpr.ProjetoIDRAPI.model.Animal;
 import br.edu.utfpr.ProjetoIDRAPI.service.AnimalService;
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
+import br.edu.utfpr.ProjetoIDRAPI.utils.GenericResponse;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("animals")
@@ -40,6 +45,13 @@ public class AnimalController extends CrudController<Animal, AnimalDto, Long> {
         } else {
     		return ResponseEntity.noContent().build();
     	}
+    }
+
+    @PostMapping("/sendAnimals")
+    @ResponseStatus(HttpStatus.CREATED)
+    public GenericResponse createRegister(@RequestBody @Valid List<Animal> animals) {
+        animalService.saveListAnimals(animals);
+        return new GenericResponse("Registros inseridos com sucesso");
     }
 
     private AnimalDto convertEntityToDto(Animal animal) {

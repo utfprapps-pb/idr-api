@@ -4,9 +4,13 @@ import br.edu.utfpr.ProjetoIDRAPI.dto.InseminationDto;
 import br.edu.utfpr.ProjetoIDRAPI.model.Insemination;
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
 import br.edu.utfpr.ProjetoIDRAPI.service.InseminationService;
+import br.edu.utfpr.ProjetoIDRAPI.utils.GenericResponse;
 import org.modelmapper.ModelMapper;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("inseminations")
@@ -31,4 +35,10 @@ public class InseminationController extends CrudController<Insemination, Insemin
         return this.modelMapper;
     }
 
+    @PostMapping("/sendInseminations")
+    @ResponseStatus(HttpStatus.CREATED)
+    public GenericResponse createRegister(@RequestBody @Valid List<Insemination> inseminations) {
+        inseminationService.saveListInseminations(inseminations);
+        return new GenericResponse("Registros inseridos com sucesso");
+    }
 }

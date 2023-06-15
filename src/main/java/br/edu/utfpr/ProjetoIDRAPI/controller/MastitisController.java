@@ -4,9 +4,13 @@ import br.edu.utfpr.ProjetoIDRAPI.dto.MastitisDto;
 import br.edu.utfpr.ProjetoIDRAPI.model.Mastitis;
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
 import br.edu.utfpr.ProjetoIDRAPI.service.MastitisService;
+import br.edu.utfpr.ProjetoIDRAPI.utils.GenericResponse;
 import org.modelmapper.ModelMapper;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("mastitis")
@@ -24,6 +28,13 @@ public class MastitisController extends CrudController<Mastitis, MastitisDto, Lo
     @Override
     protected CrudService<Mastitis, Long> getService() {
         return this.mastitisService;
+    }
+
+    @PostMapping("/sendMastitis")
+    @ResponseStatus(HttpStatus.CREATED)
+    public GenericResponse createRegister(@RequestBody @Valid List<Mastitis> mastitisList) {
+        mastitisService.saveListMastitis(mastitisList);
+        return new GenericResponse("Registros inseridos com sucesso");
     }
 
     @Override
