@@ -33,15 +33,15 @@ public class VegetablePlague {
 	@NotNull
 	@JoinColumn(name = "Property_id")
     @ManyToOne
-	private Property idProperty;
+	private Property property;
 	
 	@NotNull
 	@JoinColumn(name = "Culture_id")
     @ManyToOne
-	private Culture idCulture;
+	private Culture culture;
 	
 	@NotNull
 	@JoinColumn(name = "Plague_id")
     @ManyToOne
-    private Plague idPlague;
+    private Plague plague;
 }
