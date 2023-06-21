@@ -1,0 +1,38 @@
+services:
+  idr-db:
+    container_name: idr-db
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /data/postgres
+    volumes:
+      - idr-db:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - idr-db
+    restart: unless-stopped
+
+  idr-api:
+    container_name: idr-api
+    image: maven:3.8.3-openjdk-17
+    working_dir: /home/java/app
+    restart: always
+    command: mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+    volumes:
+      - ./:/home/java/app
+    ports: 
+      - "8080:8080"
+      - "5005:5005"
+    networks:
+      - idr-db
+    depends_on:
+      - idr-db
+
+networks:
+  idr-db:
+    driver: bridge
+
+volumes:
+  idr-db:
