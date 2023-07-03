@@ -12,9 +12,9 @@ insert into region (name) values ('Region 1');
 insert into region (name) values ('Region 2');
 insert into region (name) values ('Region 3');
 --TABELA CITY
-insert into city (region_id, name) values (1, 'City 1');
-insert into city (region_id, name) values (2, 'City 2');
-insert into city (region_id, name) values (3, 'City 3');
+insert into city (city_region_id, name) values (1, 'City 1');
+insert into city (city_region_id, name) values (2, 'City 2');
+insert into city (city_region_id, name) values (3, 'City 3');
 --TABELA PROPERTY_EQUIP_IMPROVE
 insert into property_equip_improve (aquisition_date, name, percentage_cattle, property_id, quantity, type, unity_value, util_life, value_cattle) values ('2023-05-18', 'Equipament 1', '965.36', 3, 10, 'Test type', '135.13', 16, '136.16');
 insert into property_equip_improve (aquisition_date, name, percentage_cattle, property_id, quantity, type, unity_value, util_life, value_cattle) values ('2023-05-16', 'Equipament 2', '965.36', 1, 22, 'Test type', '135.13', 36, '136.16');
