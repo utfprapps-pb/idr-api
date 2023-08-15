@@ -20,7 +20,7 @@ public class UserCreateDto {
     
     private String cpf;
     
-    private String county;
+    private String city;
 
     private String cep;
 
