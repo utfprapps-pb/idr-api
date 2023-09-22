@@ -5,11 +5,12 @@ import br.edu.utfpr.ProjetoIDRAPI.model.Mastitis;
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
 import br.edu.utfpr.ProjetoIDRAPI.service.MastitisService;
 import br.edu.utfpr.ProjetoIDRAPI.utils.GenericResponse;
+import jakarta.validation.Valid;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController

@@ -1,8 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.dto;
 
-import javax.validation.constraints.NotNull;
-
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data

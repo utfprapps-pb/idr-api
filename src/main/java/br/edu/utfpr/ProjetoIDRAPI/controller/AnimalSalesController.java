@@ -1,6 +1,8 @@
 package br.edu.utfpr.ProjetoIDRAPI.controller;
 
 import br.edu.utfpr.ProjetoIDRAPI.utils.GenericResponse;
+import jakarta.validation.Valid;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +12,6 @@ import br.edu.utfpr.ProjetoIDRAPI.model.AnimalSales;
 import br.edu.utfpr.ProjetoIDRAPI.service.AnimalSalesService;
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController

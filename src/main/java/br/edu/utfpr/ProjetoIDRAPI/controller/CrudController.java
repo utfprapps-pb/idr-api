@@ -3,13 +3,13 @@ package br.edu.utfpr.ProjetoIDRAPI.controller;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import br.edu.utfpr.ProjetoIDRAPI.service.CrudService;
 import br.edu.utfpr.ProjetoIDRAPI.utils.GenericResponse;
+import jakarta.validation.Valid;
 
 public abstract class CrudController<T, D, ID extends Serializable> {
 	protected abstract CrudService<T, ID> getService();

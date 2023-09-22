@@ -1,6 +1,5 @@
 package br.edu.utfpr.ProjetoIDRAPI.service;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.Insemination;
 import br.edu.utfpr.ProjetoIDRAPI.model.VegetableDisease;
 
 import java.util.List;

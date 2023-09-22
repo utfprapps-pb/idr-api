@@ -1,6 +1,9 @@
 package br.edu.utfpr.ProjetoIDRAPI.model;
 
 import br.edu.utfpr.ProjetoIDRAPI.annotation.UniqueUsername;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
@@ -10,8 +13,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

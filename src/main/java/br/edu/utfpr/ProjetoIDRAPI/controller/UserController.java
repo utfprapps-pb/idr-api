@@ -5,11 +5,10 @@ import br.edu.utfpr.ProjetoIDRAPI.dto.UserCreateDto;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
 import br.edu.utfpr.ProjetoIDRAPI.service.UserService;
 import br.edu.utfpr.ProjetoIDRAPI.utils.GenericResponse;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;

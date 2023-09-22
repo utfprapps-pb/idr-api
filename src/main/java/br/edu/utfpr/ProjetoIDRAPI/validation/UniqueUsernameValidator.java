@@ -1,12 +1,12 @@
 package br.edu.utfpr.ProjetoIDRAPI.validation;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.edu.utfpr.ProjetoIDRAPI.annotation.UniqueUsername;
 import br.edu.utfpr.ProjetoIDRAPI.repository.UserRepository;
+
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername, String> {
 

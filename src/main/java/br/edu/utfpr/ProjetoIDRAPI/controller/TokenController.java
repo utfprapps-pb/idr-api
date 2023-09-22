@@ -7,14 +7,15 @@ import br.edu.utfpr.ProjetoIDRAPI.security.AuthenticationResponse;
 import br.edu.utfpr.ProjetoIDRAPI.security.SecurityConstants;
 import br.edu.utfpr.ProjetoIDRAPI.service.AuthService;
 import br.edu.utfpr.ProjetoIDRAPI.utils.GenericResponse;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Date;
 

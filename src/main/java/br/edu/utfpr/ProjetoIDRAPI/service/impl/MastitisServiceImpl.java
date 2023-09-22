@@ -1,7 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.service.impl;
 
 import br.edu.utfpr.ProjetoIDRAPI.model.Animal;
- import br.edu.utfpr.ProjetoIDRAPI.model.Mastitis;
+import br.edu.utfpr.ProjetoIDRAPI.model.Mastitis;
 import br.edu.utfpr.ProjetoIDRAPI.repository.MastitisRepository;
 import br.edu.utfpr.ProjetoIDRAPI.service.AnimalService;
 import br.edu.utfpr.ProjetoIDRAPI.service.MastitisService;

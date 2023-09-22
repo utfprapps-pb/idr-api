@@ -2,8 +2,9 @@ package br.edu.utfpr.ProjetoIDRAPI.model;
 
 import lombok.Data;
 
-import javax.persistence.Embeddable;
 import java.io.Serializable;
+
+import jakarta.persistence.Embeddable;
 
 @Data
 @Embeddable
