@@ -3,7 +3,10 @@ package br.edu.utfpr.ProjetoIDRAPI.controller;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import br.edu.utfpr.ProjetoIDRAPI.search.request.SearchRequest;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,4 +79,9 @@ public abstract class CrudController<T, D, ID extends Serializable> {
 	public D convertToDto(T entity) {
     	return getModelMapper().map(entity, this.typeDtoClass);
     }
+
+	@PostMapping("/search")
+	public Page<T> search(@RequestBody @Valid SearchRequest entity){
+		return getService().search(entity);
+	}
 }
