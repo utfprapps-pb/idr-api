@@ -1,6 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.service.impl;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 import br.edu.utfpr.ProjetoIDRAPI.model.Disease;
@@ -10,7 +11,7 @@ import br.edu.utfpr.ProjetoIDRAPI.service.DiseaseService;
 @Service
 public class DiseaseServiceImpl extends CrudServiceImpl<Disease, Long> implements DiseaseService {
 	private final DiseaseRepository diseaseRepository;
-	
+
 	public DiseaseServiceImpl(DiseaseRepository diseaseRepository) {
 		this.diseaseRepository = diseaseRepository;
 	}
@@ -25,4 +26,8 @@ public class DiseaseServiceImpl extends CrudServiceImpl<Disease, Long> implement
 		return this.diseaseRepository;
 	}
 
+	@Override
+	public JpaSpecificationExecutor<Disease> getSpecExecutor() {
+		return this.diseaseRepository;
+	}
 }

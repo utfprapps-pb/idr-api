@@ -3,6 +3,7 @@ package br.edu.utfpr.ProjetoIDRAPI.errorMessageHandling;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hibernate.query.SemanticException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -42,4 +43,11 @@ public class ExceptionHandlerAdvice {
 		
 		return new ApiError(HttpStatus.BAD_REQUEST.value(), "Erro ao validar as informações!", request.getServletPath(), validationErrors);
 	}
+
+	@ExceptionHandler(SemanticException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ApiError handleSemanticException(HttpServletRequest request) {
+		return new ApiError(HttpStatus.BAD_REQUEST.value(), "O campo informado não existe!", request.getServletPath(), null);
+	}
+
 }
