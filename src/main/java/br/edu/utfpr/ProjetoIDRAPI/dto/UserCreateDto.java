@@ -1,11 +1,14 @@
 package br.edu.utfpr.ProjetoIDRAPI.dto;
 
+import br.edu.utfpr.ProjetoIDRAPI.annotation.ValidUser;
 import br.edu.utfpr.ProjetoIDRAPI.model.User;
+import br.edu.utfpr.ProjetoIDRAPI.utils.BaseUser;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class UserCreateDto {
+@ValidUser
+public class UserCreateDto implements BaseUser {
 	private long id;
 	
 	@NotNull
@@ -16,7 +19,7 @@ public class UserCreateDto {
     
 	@NotNull
     private String password;
-    
+
     private String cpf;
     
     private String city;
