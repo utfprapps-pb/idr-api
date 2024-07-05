@@ -1,6 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.service.impl;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 import br.edu.utfpr.ProjetoIDRAPI.model.Breed;
@@ -20,4 +21,8 @@ public class BreedServiceImpl extends CrudServiceImpl<Breed, Long> implements Br
 		return this.breedRepository;
 	}
 
+	@Override
+	public JpaSpecificationExecutor<Breed> getSpecExecutor() {
+		return this.breedRepository;
+	}
 }

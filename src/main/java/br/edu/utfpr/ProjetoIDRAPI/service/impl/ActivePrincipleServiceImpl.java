@@ -4,6 +4,7 @@ import br.edu.utfpr.ProjetoIDRAPI.model.ActivePrinciple;
 import br.edu.utfpr.ProjetoIDRAPI.repository.ActivePrincipleRepository;
 import br.edu.utfpr.ProjetoIDRAPI.service.ActivePrincipleService;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,4 +21,8 @@ public class ActivePrincipleServiceImpl extends CrudServiceImpl<ActivePrinciple,
         return this.activePrincipleRepository;
     }
 
+    @Override
+    public JpaSpecificationExecutor<ActivePrinciple> getSpecExecutor() {
+        return this.activePrincipleRepository;
+    }
 }

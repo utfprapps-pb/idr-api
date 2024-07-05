@@ -5,6 +5,7 @@ import br.edu.utfpr.ProjetoIDRAPI.repository.AnimalRepository;
 import br.edu.utfpr.ProjetoIDRAPI.service.AnimalService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,4 +44,8 @@ public class AnimalServiceImpl extends CrudServiceImpl<Animal, Long> implements 
         return status;
     }
 
+    @Override
+    public JpaSpecificationExecutor<Animal> getSpecExecutor() {
+        return this.animalRepository;
+    }
 }
