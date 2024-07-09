@@ -1,6 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.model;
 
-import br.edu.utfpr.ProjetoIDRAPI.annotation.UniqueUsername;
+import br.edu.utfpr.ProjetoIDRAPI.utils.BaseUser;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -23,15 +23,15 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements UserDetails {
+public class User implements UserDetails, BaseUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     //O username do usuário deve ser seu email.
-    @UniqueUsername
     @NotNull
+    @Column(unique = true)
     private String username;
 
     //Aqui no displayName é onde virá o nome do usuário.
@@ -40,7 +40,8 @@ public class User implements UserDetails {
 
     @NotNull
     private String password;
-    
+
+    @Column(unique = true)
     private String cpf;
 
     private String city;
