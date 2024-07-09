@@ -1,6 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.service.impl;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 import br.edu.utfpr.ProjetoIDRAPI.model.City;
@@ -40,4 +41,8 @@ public class CityServiceImpl extends CrudServiceImpl<City, Long> implements City
 		System.out.println("NÃO É POSSÍVEL REALIZAR O DELETE DE CIDADES");
 	}*/
 
+	@Override
+	public JpaSpecificationExecutor<City> getSpecExecutor() {
+		return this.cityRepository;
+	}
 }

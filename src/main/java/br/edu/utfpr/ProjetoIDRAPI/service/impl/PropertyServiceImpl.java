@@ -7,6 +7,7 @@ import br.edu.utfpr.ProjetoIDRAPI.service.PropertyService;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,4 +29,8 @@ public class PropertyServiceImpl extends CrudServiceImpl<Property, Long> impleme
 		return propertyRepository.findAllByUserId(id);
 	}
 
+	@Override
+	public JpaSpecificationExecutor<Property> getSpecExecutor() {
+		return this.propertyRepository;
+	}
 }

@@ -4,6 +4,7 @@ import br.edu.utfpr.ProjetoIDRAPI.model.Product;
 import br.edu.utfpr.ProjetoIDRAPI.repository.ProductRepository;
 import br.edu.utfpr.ProjetoIDRAPI.service.ProductService;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,4 +21,8 @@ public class ProductServiceImpl extends CrudServiceImpl<Product, Long> implement
         return this.productRepository;
     }
 
+    @Override
+    public JpaSpecificationExecutor<Product> getSpecExecutor() {
+        return this.productRepository;
+    }
 }

@@ -4,6 +4,7 @@ import br.edu.utfpr.ProjetoIDRAPI.model.ProductCategory;
 import br.edu.utfpr.ProjetoIDRAPI.repository.ProductCategoryRepository;
 import br.edu.utfpr.ProjetoIDRAPI.service.ProductCategoryService;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,4 +21,8 @@ public class ProductCategoryServiceImpl extends CrudServiceImpl<ProductCategory,
         return this.productCategoryRepository;
     }
 
+    @Override
+    public JpaSpecificationExecutor<ProductCategory> getSpecExecutor() {
+        return this.productCategoryRepository;
+    }
 }

@@ -1,6 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.service.impl;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 import br.edu.utfpr.ProjetoIDRAPI.model.Region;
@@ -26,4 +27,8 @@ public class RegionServiceImpl extends CrudServiceImpl<Region, Long> implements 
 		return regionRepository.findByname(name);
 	}
 
+	@Override
+	public JpaSpecificationExecutor<Region> getSpecExecutor() {
+		return this.regionRepository;
+	}
 }
