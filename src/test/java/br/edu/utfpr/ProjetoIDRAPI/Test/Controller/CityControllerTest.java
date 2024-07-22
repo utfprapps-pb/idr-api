@@ -12,10 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.City;
-import br.edu.utfpr.ProjetoIDRAPI.model.Region;
-import br.edu.utfpr.ProjetoIDRAPI.repository.CityRepository;
-import br.edu.utfpr.ProjetoIDRAPI.repository.RegionRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.city.City;
+import br.edu.utfpr.ProjetoIDRAPI.entity.region.Region;
+import br.edu.utfpr.ProjetoIDRAPI.entity.city.CityRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.region.RegionRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")

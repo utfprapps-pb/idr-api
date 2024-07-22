@@ -12,8 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.User;
-import br.edu.utfpr.ProjetoIDRAPI.repository.UserRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
+import br.edu.utfpr.ProjetoIDRAPI.entity.user.UserRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")

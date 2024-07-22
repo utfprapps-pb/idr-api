@@ -4,8 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.*;
-import br.edu.utfpr.ProjetoIDRAPI.repository.PropertyRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.forageDisponibility.ForageDisponibility;
+import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
+import br.edu.utfpr.ProjetoIDRAPI.entity.property.PropertyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import br.edu.utfpr.ProjetoIDRAPI.repository.ForageDisponibilityRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.forageDisponibility.ForageDisponibilityRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")

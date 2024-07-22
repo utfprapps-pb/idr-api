@@ -1,7 +1,8 @@
 package br.edu.utfpr.ProjetoIDRAPI.validation;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.User;
-import br.edu.utfpr.ProjetoIDRAPI.repository.UserRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
+import br.edu.utfpr.ProjetoIDRAPI.entity.user.UserRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.user.validation.UserValidator;
 import br.edu.utfpr.ProjetoIDRAPI.utils.BaseUser;
 import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;

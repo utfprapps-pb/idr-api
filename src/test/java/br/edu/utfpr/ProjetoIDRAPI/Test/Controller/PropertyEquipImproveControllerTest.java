@@ -1,11 +1,9 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.Property;
-import br.edu.utfpr.ProjetoIDRAPI.model.PropertyEquipImprove;
-import br.edu.utfpr.ProjetoIDRAPI.model.User;
-import br.edu.utfpr.ProjetoIDRAPI.repository.PropertyEquipImproveRepository;
-import br.edu.utfpr.ProjetoIDRAPI.repository.PropertyRepository;
-import org.junit.jupiter.api.BeforeEach;
+import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
+import br.edu.utfpr.ProjetoIDRAPI.entity.propertyEquipImprove.PropertyEquipImprove;
+import br.edu.utfpr.ProjetoIDRAPI.entity.propertyEquipImprove.PropertyEquipImproveRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.property.PropertyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

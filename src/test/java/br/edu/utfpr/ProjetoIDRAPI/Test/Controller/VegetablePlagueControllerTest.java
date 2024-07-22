@@ -2,10 +2,10 @@ package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.*;
-import br.edu.utfpr.ProjetoIDRAPI.repository.CultureRepository;
-import br.edu.utfpr.ProjetoIDRAPI.repository.PlagueRepository;
-import br.edu.utfpr.ProjetoIDRAPI.repository.PropertyRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.vegetablePlague.VegetablePlague;
+import br.edu.utfpr.ProjetoIDRAPI.entity.culture.CultureRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.plague.PlagueRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.property.PropertyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import br.edu.utfpr.ProjetoIDRAPI.repository.VegetablePlagueRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.vegetablePlague.VegetablePlagueRepository;
 
 import java.util.List;
 

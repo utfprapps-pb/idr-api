@@ -1,8 +1,8 @@
 package br.edu.utfpr.ProjetoIDRAPI.security;
 
-import br.edu.utfpr.ProjetoIDRAPI.dto.UserTokenDto;
-import br.edu.utfpr.ProjetoIDRAPI.model.User;
-import br.edu.utfpr.ProjetoIDRAPI.service.AuthService;
+import br.edu.utfpr.ProjetoIDRAPI.entity.token.dto.UserTokenDto;
+import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
+import br.edu.utfpr.ProjetoIDRAPI.entity.token.AuthService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
