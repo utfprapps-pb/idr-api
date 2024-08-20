@@ -1,8 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.user;
 
-import br.edu.utfpr.ProjetoIDRAPI.entity.compositeUserPermission.CompositeUserPermission;
+import br.edu.utfpr.ProjetoIDRAPI.entity.compositeuserpermission.CompositeUserPermission;
 import br.edu.utfpr.ProjetoIDRAPI.entity.permission.Permission;
-import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;

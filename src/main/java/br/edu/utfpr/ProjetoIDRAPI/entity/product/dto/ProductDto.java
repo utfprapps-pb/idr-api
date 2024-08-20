@@ -1,7 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.product.dto;
 
-import br.edu.utfpr.ProjetoIDRAPI.entity.activePrinciple.ActivePrinciple;
-import br.edu.utfpr.ProjetoIDRAPI.entity.productCategory.ProductCategory;
+import br.edu.utfpr.ProjetoIDRAPI.entity.activeprinciple.ActivePrinciple;
+import br.edu.utfpr.ProjetoIDRAPI.entity.productcategory.ProductCategory;
 import lombok.Data;
 
 @Data

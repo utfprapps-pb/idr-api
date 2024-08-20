@@ -1,8 +1,8 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.entity.perennialAnualForage.PerennialAnualForage;
+import br.edu.utfpr.ProjetoIDRAPI.entity.perennialanualforage.PerennialAnualForage;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
-import br.edu.utfpr.ProjetoIDRAPI.entity.perennialAnualForage.PerennialAnualForageRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.perennialanualforage.PerennialAnualForageRepository;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.PropertyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

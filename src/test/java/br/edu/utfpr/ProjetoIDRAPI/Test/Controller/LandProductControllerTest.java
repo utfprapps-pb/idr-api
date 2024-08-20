@@ -1,8 +1,8 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.entity.landProduct.LandProduct;
+import br.edu.utfpr.ProjetoIDRAPI.entity.landproduct.LandProduct;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
-import br.edu.utfpr.ProjetoIDRAPI.entity.landProduct.LandProductRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.landproduct.LandProductRepository;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.PropertyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

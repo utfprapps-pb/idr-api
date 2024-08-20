@@ -1,8 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.user;
 
-import br.edu.utfpr.ProjetoIDRAPI.entity.compositeUserRegion.CompositeUserRegion;
+import br.edu.utfpr.ProjetoIDRAPI.entity.compositeuserregion.CompositeUserRegion;
 import br.edu.utfpr.ProjetoIDRAPI.entity.region.Region;
-import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
