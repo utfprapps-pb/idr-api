@@ -4,8 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.*;
-import br.edu.utfpr.ProjetoIDRAPI.repository.*;
+import br.edu.utfpr.ProjetoIDRAPI.entity.culture.CultureRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.disease.DiseaseRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.property.PropertyRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.vegetabledisease.VegetableDisease;
+import br.edu.utfpr.ProjetoIDRAPI.entity.vegetabledisease.VegetableDiseaseRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

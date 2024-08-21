@@ -1,6 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.security;
 
-import br.edu.utfpr.ProjetoIDRAPI.service.AuthService;
+import br.edu.utfpr.ProjetoIDRAPI.entity.token.AuthService;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

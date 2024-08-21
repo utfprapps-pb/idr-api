@@ -1,9 +1,9 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.Animal;
-import br.edu.utfpr.ProjetoIDRAPI.repository.AnimalRepository;
-import br.edu.utfpr.ProjetoIDRAPI.repository.BreedRepository;
-import br.edu.utfpr.ProjetoIDRAPI.repository.PropertyRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.animal.Animal;
+import br.edu.utfpr.ProjetoIDRAPI.entity.animal.AnimalRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.breed.BreedRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.property.PropertyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.Region;
-import br.edu.utfpr.ProjetoIDRAPI.repository.RegionRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.region.Region;
+import br.edu.utfpr.ProjetoIDRAPI.entity.region.RegionRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

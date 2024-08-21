@@ -1,9 +1,9 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.Property;
-import br.edu.utfpr.ProjetoIDRAPI.model.PropertyCollaborator;
-import br.edu.utfpr.ProjetoIDRAPI.repository.PropertyCollaboratorRepository;
-import br.edu.utfpr.ProjetoIDRAPI.repository.PropertyRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
+import br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator.PropertyCollaborator;
+import br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator.PropertyCollaboratorRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.property.PropertyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
