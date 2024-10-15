@@ -1,112 +1,36 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
-import br.edu.utfpr.ProjetoIDRAPI.entity.culture.CultureRepository;
-import br.edu.utfpr.ProjetoIDRAPI.entity.disease.DiseaseRepository;
-import br.edu.utfpr.ProjetoIDRAPI.entity.property.PropertyRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudControllerTest;
+import br.edu.utfpr.ProjetoIDRAPI.entity.culture.Culture;
+import br.edu.utfpr.ProjetoIDRAPI.entity.disease.Disease;
+import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
 import br.edu.utfpr.ProjetoIDRAPI.entity.vegetabledisease.VegetableDisease;
-import br.edu.utfpr.ProjetoIDRAPI.entity.vegetabledisease.VegetableDiseaseRepository;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
+import br.edu.utfpr.ProjetoIDRAPI.entity.vegetabledisease.dto.VegetableDiseaseDto;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-public class VegetableDiseaseControllerTest {
+public class VegetableDiseaseControllerTest extends CrudControllerTest<VegetableDisease, VegetableDiseaseDto, Long> {
 
-	static final String API = "/vegetablediseases";
-
-    @Autowired
-    TestRestTemplate testRestTemplate;
-	
-	@Autowired
-	private VegetableDiseaseRepository vegetableRepository;
-
-    @Autowired
-    private PropertyRepository propertyRepository;
-
-    @Autowired
-    private CultureRepository cultureRepository;
-
-    @Autowired
-    private DiseaseRepository diseaseRepository;
-
-    @Test
-    public void postVegetableDisease_whenVegetableDiseaseIsValid_receiveCreated() {
-        VegetableDisease vegetable = createValidVegetableDisease();
-        vegetable.setDisease(diseaseRepository.findById(1L).orElse(null));
-        vegetable.setProperty(propertyRepository.findById(1L).orElse(null));
-        vegetable.setCulture(cultureRepository.findById(1L).orElse(null));
-
-        ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, vegetable, Object.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    @Override
+    protected VegetableDisease createValidObject() {
+        return VegetableDisease.builder()
+                .disease(Disease.builder().id(1L).build())
+                .property(Property.builder().id(1L).build())
+                .infestationType("Teste")
+                .culture(Culture.builder().id(1L).build())
+                .build();
     }
 
-    @Test
-    public void postVegetableDisease_whenVegetableDiseaseIsValid_vegetableDiseaseSavedToDatabase() {
-        VegetableDisease vegetable = createValidVegetableDisease();
-        vegetable.setDisease(diseaseRepository.findById(1L).orElse(null));
-        vegetable.setProperty(propertyRepository.findById(1L).orElse(null));
-        vegetable.setCulture(cultureRepository.findById(1L).orElse(null));
-
-        ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, vegetable, Object.class);
-
-        //Se compara com 4 pois existem três doenças vegetais padrões inseridas no banco.
-        assertThat( vegetableRepository.count() ).isEqualTo(4);
+    @Override
+    protected VegetableDisease createInvalidObject() {
+        return VegetableDisease.builder().build();
     }
 
-    @Test
-    public void deleteVegetableDisease_whenVegetableDiseaseIdExists_receiveOk() {
-        VegetableDisease vegetable = createValidVegetableDisease();
-        vegetable.setDisease(diseaseRepository.findById(1L).orElse(null));
-        vegetable.setProperty(propertyRepository.findById(1L).orElse(null));
-        vegetable.setCulture(cultureRepository.findById(1L).orElse(null));
-
-        ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, vegetable, Object.class);
-
-        testRestTemplate.delete(API + "/4");
-
-        //Se compara com 3 pois existem três doenças vegetais padrões inseridas no banco.
-        assertThat( vegetableRepository.count() ).isEqualTo(3);
+    @Override
+    protected Long getValidId() {
+        return 1L;
     }
 
-    @Test
-    public void postVegetablePlague_whenVegetablePlagueIsValidAndAlreadyExists_vegetablePlagueUpdateDatabase() {
-        VegetableDisease vegetable = vegetableRepository.findById(1L).orElse(null);
-        vegetable.setInfestationType("Changed Test Type");
-
-        ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, vegetable, Object.class);
-
-        VegetableDisease changedVegetable = vegetableRepository.findById(1L).orElse(null);
-        assertThat(changedVegetable.getInfestationType()).isEqualTo("Changed Test Type");
+    @Override
+    protected String getURL() {
+        return "/vegetablediseases";
     }
-
-    @Test
-    public void getVegetablePlague_whenVegetablePlagueExists_vegetablePlagueReturnFromDatabase() {
-        VegetableDisease vegetableDB = vegetableRepository.findById(1L).orElse(null);
-
-        List<VegetableDisease> vegetableList = vegetableRepository.findAll();
-        VegetableDisease vegetableDB1 = vegetableList.get(0);
-
-        assertThat(vegetableDB).isEqualTo(vegetableDB1);
-    }
-	
-	private VegetableDisease createValidVegetableDisease() {
-		VegetableDisease vegetableDisease = new VegetableDisease();
-		vegetableDisease.setInfestationType("Test Type");
-		
-		return vegetableDisease;
-	}
 }

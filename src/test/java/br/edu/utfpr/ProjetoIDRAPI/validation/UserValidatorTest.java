@@ -44,7 +44,7 @@ public class UserValidatorTest {
     @Test
     @DisplayName("Should return true when user is valid")
     void testIsValid_withValidUser() {
-        when(repository.findByCpf("12345678901")).thenReturn(null);
+        when(repository.findByCpfAndCpfIsNotNull("12345678901")).thenReturn(null);
         when(repository.findByUsername("testUser")).thenReturn(null);
 
         assertTrue(userValidator.isValid(user, context));
@@ -58,7 +58,7 @@ public class UserValidatorTest {
                 .cpf("12345678901")
                 .build();
 
-        when(repository.findByCpf("12345678901")).thenReturn(existingUser);
+        when(repository.findByCpfAndCpfIsNotNull("12345678901")).thenReturn(existingUser);
 
         assertFalse(userValidator.isValid(user, context));
     }
@@ -79,7 +79,7 @@ public class UserValidatorTest {
     @Test
     @DisplayName("Should return true when CPF and username match the current user")
     void testIsValid_withMatchingCPFAndUsername() {
-        when(repository.findByCpf("12345678901")).thenReturn(null);
+        when(repository.findByCpfAndCpfIsNotNull("12345678901")).thenReturn(null);
         when(repository.findByUsername("testUser")).thenReturn(null);
 
         assertTrue(userValidator.isValid(user, context));

@@ -1,108 +1,34 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.animal.Animal;
-import br.edu.utfpr.ProjetoIDRAPI.entity.animal.AnimalRepository;
-import br.edu.utfpr.ProjetoIDRAPI.entity.breed.BreedRepository;
-import br.edu.utfpr.ProjetoIDRAPI.entity.property.PropertyRepository;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
+import br.edu.utfpr.ProjetoIDRAPI.entity.animal.dto.AnimalDto;
+import br.edu.utfpr.ProjetoIDRAPI.entity.breed.Breed;
+import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudControllerTest;
+import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
 
-import java.util.List;
+public class AnimalControllerTest extends CrudControllerTest<Animal, AnimalDto, Long> {
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-public class AnimalControllerTest {
-
-    private static final String API = "/animals";
-
-    @Autowired
-    TestRestTemplate testRestTemplate;
-
-    @Autowired
-    AnimalRepository animalRepository;
-
-    @Autowired
-    PropertyRepository propertyRepository;
-
-    @Autowired
-    BreedRepository breedRepository;
-
-    @Test
-    public void postAnimal_whenAnimalIsValid_receiveCreated() {
-        Animal animal = createValidAnimal();
-        animal.setProperty(propertyRepository.findById(1L).orElse(null));
-        animal.setBreed(breedRepository.findById(1L).orElse(null));
-        animal.setAnimalMother(animalRepository.findById(1L).orElse(null));
-        ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, animal, Object.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    @Override
+    protected Animal createValidObject() {
+        return Animal.builder()
+                .property(Property.builder().id(1L).build())
+                .animalMother(Animal.builder().id(1L).build())
+                .breed(Breed.builder().id(1L).build())
+                .build();
     }
 
-    @Test
-    public void postAnimal_whenAnimalIsValid_animalSavedToDatabase() {
-        Animal animal = createValidAnimal();
-        animal.setProperty(propertyRepository.findById(1L).orElse(null));
-        animal.setBreed(breedRepository.findById(1L).orElse(null));
-        animal.setAnimalMother(animalRepository.findById(1L).orElse(null));
-        ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, animal, Object.class);
-
-        //Se compara com 4 pois existem três animais padrões inseridos no banco.
-        assertThat( animalRepository.count() ).isEqualTo(4);
+    @Override
+    protected Animal createInvalidObject() {
+        return Animal.builder().build();
     }
 
-    @Test
-    public void deleteAnimal_whenAnimalIdExists_receiveOk() {
-        Animal animal = createValidAnimal();
-        animal.setProperty(propertyRepository.findById(1L).orElse(null));
-        animal.setBreed(breedRepository.findById(1L).orElse(null));
-        animal.setAnimalMother(animalRepository.findById(1L).orElse(null));
-        ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, animal, Object.class);
-
-        testRestTemplate.delete(API + "/4");
-
-        //Se compara com 3 pois existem três animais padrões inseridos no banco.
-        assertThat( animalRepository.count() ).isEqualTo(3);
+    @Override
+    protected Long getValidId() {
+        return 1L;
     }
 
-    @Test
-    public void postAnimal_whenAnimalIsValidAndAlreadyExists_animalUpdateDatabase() {
-        Animal animal = animalRepository.findById(1L).orElse(null);
-        animal.setIdentifier("changed identifier 1");
-
-        ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, animal, Object.class);
-
-        Animal changedAnimal = animalRepository.findById(1L).orElse(null);
-        assertThat(changedAnimal.getIdentifier()).isEqualTo("changed identifier 1");
+    @Override
+    protected String getURL() {
+        return "/animals";
     }
-
-    @Test
-    public void getAnimal_whenAnimalExists_animalReturnFromDatabase() {
-        Animal animalDB = animalRepository.findById(1L).orElse(null);
-
-        List<Animal> animalList = animalRepository.findAll();
-        Animal animalDB1 = animalList.get(0);
-
-        assertThat(animalDB).isEqualTo(animalDB1);
-    }
-
-    private Animal createValidAnimal() {
-        Animal animal = new Animal();
-        animal.setBornCondition("Vivo");
-        animal.setIdentifier("Identifier-test");
-        animal.setGender("M");
-
-        return animal;
-    }
-
 }
