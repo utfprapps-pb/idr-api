@@ -1,103 +1,32 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
+
+import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudControllerTest;
 import br.edu.utfpr.ProjetoIDRAPI.entity.perennialanualforage.PerennialAnualForage;
+import br.edu.utfpr.ProjetoIDRAPI.entity.perennialanualforage.dto.PerennialAnualForageDto;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
-import br.edu.utfpr.ProjetoIDRAPI.entity.perennialanualforage.PerennialAnualForageRepository;
-import br.edu.utfpr.ProjetoIDRAPI.entity.property.PropertyRepository;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
+public class PerennialAnualForageControllerTest extends CrudControllerTest<PerennialAnualForage, PerennialAnualForageDto, Long> {
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-public class PerennialAnualForageControllerTest {
-
-    private static final String API = "/fodders";
-
-    @Autowired
-    TestRestTemplate testRestTemplate;
-
-    @Autowired
-    PerennialAnualForageRepository perennialAnualForageRepository;
-
-    @Autowired
-    private PropertyRepository propertyRepository;
-
-    @Test
-    public void postForage_whenForageIsValid_receiveCreated() {
-        Property property = propertyRepository.findById(1L).orElse(null);
-
-        PerennialAnualForage perennialAnualForage = createValidForage();
-        perennialAnualForage.setProperty(property);
-        ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, perennialAnualForage, Object.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    @Override
+    protected PerennialAnualForage createValidObject() {
+        return PerennialAnualForage.builder()
+                .property(Property.builder().id(1L).build())
+                .build();
     }
 
-    @Test
-    public void postForage_whenForageIsValid_forageSavedToDatabase() {
-        Property property = propertyRepository.findById(1L).orElse(null);
-
-        PerennialAnualForage perennialAnualForage = createValidForage();
-        perennialAnualForage.setProperty(property);
-        ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, perennialAnualForage, Object.class);
-
-        //Se compara com 4 pois existem três foragens padrões inseridas no banco.
-        assertThat( perennialAnualForageRepository.count() ).isEqualTo(4);
+    @Override
+    protected PerennialAnualForage createInvalidObject() {
+        return PerennialAnualForage.builder().build();
     }
 
-    @Test
-    public void deleteForage_whenForageIdExists_receiveOk() {
-        Property property = propertyRepository.findById(1L).orElse(null);
-
-        PerennialAnualForage perennialAnualForage = createValidForage();
-        perennialAnualForage.setProperty(property);
-        ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, perennialAnualForage, Object.class);
-
-        testRestTemplate.delete(API + "/4");
-
-        //Se compara com 3 pois existem três foragens padrões inseridas no banco.
-        assertThat( perennialAnualForageRepository.count() ).isEqualTo(3);
+    @Override
+    protected Long getValidId() {
+        return 1L;
     }
 
-    @Test
-    public void postForage_whenForageIsValidAndAlreadyExists_forageUpdateDatabase() {
-        PerennialAnualForage perennialAnualForage = perennialAnualForageRepository.findById(1L).orElse(null);
-        perennialAnualForage.setForage("Updated Test Fodder");
-
-        ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, perennialAnualForage, Object.class);
-
-        PerennialAnualForage changedFodder = perennialAnualForageRepository.findById(1L).orElse(null);
-        assertThat(changedFodder.getForage()).isEqualTo("Updated Test Fodder");
-    }
-
-    @Test
-    public void getForage_whenForageExists_forageReturnFromDatabase() {
-        PerennialAnualForage forageDB = perennialAnualForageRepository.findById(1L).orElse(null);
-
-        List<PerennialAnualForage> forageList = perennialAnualForageRepository.findAll();
-        PerennialAnualForage forageDB1 = forageList.get(0);
-
-        assertThat(forageDB).isEqualTo(forageDB1);
-    }
-
-    private PerennialAnualForage createValidForage() {
-        PerennialAnualForage perennialAnualForage = new PerennialAnualForage();
-        perennialAnualForage.setForage("Test Forage");
-        perennialAnualForage.setNote("Test Note");
-
-        return perennialAnualForage;
+    @Override
+    protected String getURL() {
+        return "/fodders";
     }
 }

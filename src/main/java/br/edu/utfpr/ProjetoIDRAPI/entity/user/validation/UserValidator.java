@@ -23,7 +23,7 @@ public class UserValidator implements ConstraintValidator<ValidUser, BaseUser> {
 	}
 
 	boolean validateUniqueCPF(BaseUser entity, ConstraintValidatorContext context) {
-		User user = respository.findByCpf(entity.getCpf());
+		User user = respository.findByCpfAndCpfIsNotNull(entity.getCpf());
         boolean valid = user == null || Objects.equals(user.getId(), entity.getId());
 
 		if (!valid) {
