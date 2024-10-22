@@ -1,9 +1,10 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.user.dto;
 
+import br.edu.utfpr.ProjetoIDRAPI.utils.BaseUser;
 import lombok.Data;
 
 @Data
-public class UserDto {
+public class UserDto implements BaseUser {
     private long id;
 
     private String username;

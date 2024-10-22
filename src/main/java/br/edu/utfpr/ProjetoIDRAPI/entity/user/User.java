@@ -1,6 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.user;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.permission.Permission;
+import br.edu.utfpr.ProjetoIDRAPI.entity.user.annotation.ValidUser;
 import br.edu.utfpr.ProjetoIDRAPI.utils.BaseUser;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ValidUser
 public class User implements UserDetails, BaseUser {
 
     @Id

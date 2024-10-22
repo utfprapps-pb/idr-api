@@ -5,15 +5,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import br.edu.utfpr.ProjetoIDRAPI.search.request.SearchRequest;
+import br.edu.utfpr.ProjetoIDRAPI.utils.EntityUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import br.edu.utfpr.ProjetoIDRAPI.utils.GenericResponse;
 import jakarta.validation.Valid;
 
 public abstract class CrudController<T, D, ID extends Serializable> {
+
 	protected abstract CrudService<T, ID> getService();
 	protected abstract ModelMapper getModelMapper();
 	private final Class<T> typeClass;
@@ -26,29 +27,19 @@ public abstract class CrudController<T, D, ID extends Serializable> {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public GenericResponse createRegister(@RequestBody @Valid T entity) {
+	public ResponseEntity<ID> create(@RequestBody @Valid T entity) {
 		getService().save(entity);
-	    return new GenericResponse("Registro inserido com sucesso");
+		return ResponseEntity.status(HttpStatus.CREATED).body(getId(entity));
 	}
 	
 	@PutMapping("{id}")
-    public GenericResponse updateRegister(@RequestBody @Valid T entity, @PathVariable ID id) {
-		try {
-			T ent = getService().findOne(id);
-	    	
-	    	if(ent != null) {
-	    		getService().save(entity);
-	    		return new GenericResponse("Registro atualizado com sucesso");
-	    	}else {
-	    		return new GenericResponse("Registro inexistente");
-	    	}
-		} catch (Exception e) {
-			return new GenericResponse("Erro ao atualizar o registro!");
-		}
-    }
-	
+    public ResponseEntity<D> update(@RequestBody @Valid T entity, @PathVariable ID id) {
+		getService().save(entity);
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+
 	@GetMapping
-    public ResponseEntity<List<D>> listAll(){
+    public ResponseEntity<List<D>> findAll(){
     	return ResponseEntity.ok(getService().findAll().stream()
     			.map(this::convertToDto)
     			.collect(Collectors.toList()));
@@ -66,21 +57,21 @@ public abstract class CrudController<T, D, ID extends Serializable> {
     }
 	
 	@DeleteMapping("{id}")
-	public ResponseEntity deleteRegister(@PathVariable ID id){
-		try {
-			getService().delete(id);
-	    	return ResponseEntity.ok(new GenericResponse("Registro excluido com sucesso"));
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(new GenericResponse("Não foi possível excluir o registro!"));
-		}
+	public ResponseEntity<Void> deleteRegister(@PathVariable ID id) {
+		getService().delete(id);
+		return ResponseEntity.noContent().build();
 	}
-	
-	public D convertToDto(T entity) {
-    	return getModelMapper().map(entity, this.typeDtoClass);
-    }
 
 	@PostMapping("/search")
-	public Page<T> search(@RequestBody @Valid SearchRequest entity){
-		return getService().search(entity);
+	public ResponseEntity<Page<T>> search(@RequestBody @Valid SearchRequest entity){
+		return ResponseEntity.ok(getService().search(entity));
+	}
+
+	public D convertToDto(T entity) {
+		return getModelMapper().map(entity, this.typeDtoClass);
+	}
+
+	public ID getId(T entity) {
+		return EntityUtils.getIdValue(entity);
 	}
 }
