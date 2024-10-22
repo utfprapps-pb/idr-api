@@ -1,6 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.crud;
 
 import br.edu.utfpr.ProjetoIDRAPI.ApplicationTest;
+import br.edu.utfpr.ProjetoIDRAPI.utils.EntityUtils;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -22,12 +23,16 @@ public abstract class CrudControllerTest<T, D, ID extends Serializable> {
     @Autowired
     protected TestRestTemplate testRestTemplate;
 
+    private static Object id;
+
     @Test
     @Order(1)
     protected void createValidRegister() {
         T entity = createValidObject();
 
         ResponseEntity<Object> response = testRestTemplate.postForEntity(getURL(), entity, Object.class);
+        id = response.getBody();
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
     }
@@ -44,12 +49,12 @@ public abstract class CrudControllerTest<T, D, ID extends Serializable> {
     @Test
     @Order(3)
     protected void updateValidRegister() {
-        ID id = getValidId();
         T entity = createValidObject();
 
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<T> requestEntity = new HttpEntity<>(entity, headers);
 
+        EntityUtils.setIdValue(entity, id);
         ResponseEntity<Object> response = testRestTemplate.exchange(getURL() + "/" + id, HttpMethod.PUT, requestEntity, Object.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -58,8 +63,6 @@ public abstract class CrudControllerTest<T, D, ID extends Serializable> {
     @Test
     @Order(4)
     protected void findOneValid() {
-        ID id = getValidId();
-
         ResponseEntity<Object> response = testRestTemplate.getForEntity(getURL() + "/" + id, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -67,8 +70,6 @@ public abstract class CrudControllerTest<T, D, ID extends Serializable> {
     @Test
     @Order(5)
     protected void findOneNonExistent() {
-        ID id = getValidId();
-
         ResponseEntity<Object> response = testRestTemplate.getForEntity(getURL() + "/" + id, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -78,6 +79,13 @@ public abstract class CrudControllerTest<T, D, ID extends Serializable> {
     protected void listAllRegisters() {
         ResponseEntity<List<D>> response = testRestTemplate.exchange(getURL(), HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    @Order(7)
+    protected void deleteValidRegister() {
+        ResponseEntity<Void> response = testRestTemplate.exchange(getURL() + "/" + id, HttpMethod.DELETE, null, Void.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
     protected abstract T createValidObject();
