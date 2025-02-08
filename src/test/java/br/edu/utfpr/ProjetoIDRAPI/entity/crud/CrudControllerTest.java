@@ -35,6 +35,7 @@ public abstract class CrudControllerTest<T, D, ID extends Serializable> {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
+        assertThat(id).isNotNull();
     }
 
     @Test
