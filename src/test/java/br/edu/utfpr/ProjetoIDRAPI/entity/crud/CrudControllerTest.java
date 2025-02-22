@@ -27,7 +27,7 @@ public abstract class CrudControllerTest<T, D, ID extends Serializable> {
 
     @Test
     @Order(1)
-    protected void createValidRegister() {
+    protected void createAndUpdateValidRegister() {
         T entity = createValidObject();
 
         ResponseEntity<Object> response = testRestTemplate.postForEntity(getURL(), entity, Object.class);
@@ -35,6 +35,14 @@ public abstract class CrudControllerTest<T, D, ID extends Serializable> {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
+
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<T> requestEntity = new HttpEntity<>(entity, headers);
+        //EntityUtils.setIdValue(entity, id);
+        // por que essa linha acrescenta erros se entity não é usado depois?
+        response = testRestTemplate.exchange(getURL() + "/" + id, HttpMethod.PUT, requestEntity, Object.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(id).isNotNull();
     }
 
@@ -49,41 +57,27 @@ public abstract class CrudControllerTest<T, D, ID extends Serializable> {
 
     @Test
     @Order(3)
-    protected void updateValidRegister() {
-        T entity = createValidObject();
-
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<T> requestEntity = new HttpEntity<>(entity, headers);
-
-        EntityUtils.setIdValue(entity, id);
-        ResponseEntity<Object> response = testRestTemplate.exchange(getURL() + "/" + id, HttpMethod.PUT, requestEntity, Object.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    @Order(4)
     protected void findOneValid() {
         ResponseEntity<Object> response = testRestTemplate.getForEntity(getURL() + "/" + id, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     protected void findOneNonExistent() {
         ResponseEntity<Object> response = testRestTemplate.getForEntity(getURL() + "/" + id, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    @Order(6)
+    @Order(5)
     protected void listAllRegisters() {
         ResponseEntity<List<D>> response = testRestTemplate.exchange(getURL(), HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    @Order(7)
+    @Order(6)
     protected void deleteValidRegister() {
         ResponseEntity<Void> response = testRestTemplate.exchange(getURL() + "/" + id, HttpMethod.DELETE, null, Void.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);

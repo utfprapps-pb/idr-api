@@ -228,7 +228,7 @@ CREATE TABLE property
     user_id        BIGINT                                  NOT NULL,
     ocupation_area VARCHAR(255),
     total_area     DECIMAL,
-    soil_map       BYTEA,
+    soil_map       OID,
     latitude       DECIMAL,
     longitude      DECIMAL,
     leased         BOOLEAN                                 NOT NULL,

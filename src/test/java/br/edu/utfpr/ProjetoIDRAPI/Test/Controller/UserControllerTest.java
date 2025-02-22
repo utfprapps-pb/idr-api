@@ -13,7 +13,7 @@ public class UserControllerTest extends CrudControllerTest<User, UserDto, Long> 
     protected User createValidObject() {
         return User.builder()
                 .displayName("name")
-                .username("username")
+                .username("username@email.com")
                 .password("password")
                 .cpf("09876543210")
                 .userPermissions(Set.of())
