@@ -37,9 +37,8 @@ public abstract class CrudControllerTest<T, D, ID extends Serializable> {
         assertThat(response.getBody()).isNotNull();
 
         HttpHeaders headers = new HttpHeaders();
+        EntityUtils.setIdValue(entity, id);
         HttpEntity<T> requestEntity = new HttpEntity<>(entity, headers);
-        //EntityUtils.setIdValue(entity, id);
-        // por que essa linha acrescenta erros se entity não é usado depois?
         response = testRestTemplate.exchange(getURL() + "/" + id, HttpMethod.PUT, requestEntity, Object.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
