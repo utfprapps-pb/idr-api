@@ -23,7 +23,7 @@ public abstract class CrudControllerTest<T, D, ID extends Serializable> {
     @Autowired
     protected TestRestTemplate testRestTemplate;
 
-    private static Object id;
+    static Object id;
 
     @Test
     @Order(1)
