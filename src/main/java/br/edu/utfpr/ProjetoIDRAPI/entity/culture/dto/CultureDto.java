@@ -16,4 +16,41 @@ public class CultureDto {
 		
 		return cult;
 	}
+
+	private float ms;
+	private float pb;
+	private float pm;
+	private float pdr;
+	private float pndr;
+	private float pidn;
+	private float pida;
+	private float ndt;
+	private float em;
+	private float ell;
+	private float ee;
+	private float fda;
+	private float fdn;
+	private float efdn;
+	private float dfdn;
+	private float ufdn;
+	private float cnf;
+	private float amido;
+	private float cinzas;
+	private float ca;
+	private float p;
+	private float mg;
+	private float na;
+	private float cl;
+	private float k;
+	private float s;
+	private float ppmcu;
+	private float ppmzn;
+	private float ppmfe;
+	private float ppmmn;
+	private float ppmi;
+	private float ppmco;
+	private float ppmse;
+	private float vitaui;
+	private float vitdui;
+	private float viteui;
 }
