@@ -1,6 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.culture.dto;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.culture.Culture;
+import br.edu.utfpr.ProjetoIDRAPI.enums.CultureType;
 import lombok.Data;
 
 @Data
@@ -16,6 +17,8 @@ public class CultureDto {
 		
 		return cult;
 	}
+
+	private CultureType cultureType;
 
 	private float ms;
 	private float pb;

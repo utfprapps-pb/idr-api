@@ -1,5 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.culture;
 
+import br.edu.utfpr.ProjetoIDRAPI.enums.CultureType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +23,9 @@ public class Culture {
 
 	@NotNull
 	private String cultureName;
+
+	@NotNull
+	private CultureType cultureType;
 
 	private float ms;
 	private float pb;
