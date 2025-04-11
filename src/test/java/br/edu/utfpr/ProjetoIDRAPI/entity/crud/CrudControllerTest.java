@@ -1,7 +1,9 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.crud;
 
 import br.edu.utfpr.ProjetoIDRAPI.ApplicationTest;
+import br.edu.utfpr.ProjetoIDRAPI.entity.region.Region;
 import br.edu.utfpr.ProjetoIDRAPI.utils.EntityUtils;
+import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,28 @@ public abstract class CrudControllerTest<T, D, ID extends Serializable> {
     protected TestRestTemplate testRestTemplate;
 
     static Object id;
+
+    public static abstract class Dependent<T, D, ID extends Serializable> extends CrudControllerTest<T, D, ID> {
+        public <DT> Object createValidDependency(Object dependentObject, String dependencyURL) {
+            DT entity = (DT) dependentObject;
+
+            ResponseEntity<Object> response = testRestTemplate.postForEntity(dependencyURL, entity, Object.class);
+            Object dependencyId = response.getBody();
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+            assertThat(response.getBody()).isNotNull();
+            assertThat(dependencyId).isNotNull();
+
+            EntityUtils.setIdValue(entity, dependencyId);
+
+            return entity;
+        }
+    }
+
+    protected abstract T createValidObject();
+    protected abstract T createInvalidObject();
+    protected abstract ID getValidId();
+    protected abstract String getURL();
 
     @Test
     @Order(1)
@@ -81,9 +105,4 @@ public abstract class CrudControllerTest<T, D, ID extends Serializable> {
         ResponseEntity<Void> response = testRestTemplate.exchange(getURL() + "/" + id, HttpMethod.DELETE, null, Void.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
-
-    protected abstract T createValidObject();
-    protected abstract T createInvalidObject();
-    protected abstract ID getValidId();
-    protected abstract String getURL();
 }

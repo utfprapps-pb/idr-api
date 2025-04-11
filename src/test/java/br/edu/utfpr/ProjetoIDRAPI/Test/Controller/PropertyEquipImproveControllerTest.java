@@ -1,33 +1,37 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudDependentControllerTest;
+import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudControllerTest;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertyequipimprove.PropertyEquipImprove;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertyequipimprove.dto.PropertyEquipImproveDto;
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
 
-public class PropertyEquipImproveControllerTest extends CrudDependentControllerTest<Property, PropertyEquipImprove, PropertyEquipImproveDto, Long> {
-
-    @Override
-    protected Property createValidDependencyObject() {
-        return Property.builder()
-                .user(User.builder().id(1L).build())
-                .leased(false)
-                .build();
-    }
-
-    @Override
-    protected PropertyEquipImprove createValidObject(Property property) {
-        return PropertyEquipImprove.builder()
-                .name("Teste")
-                .type("Teste")
-                .property(property)
-                .build();
-    }
+public class PropertyEquipImproveControllerTest extends CrudControllerTest.Dependent<PropertyEquipImprove, PropertyEquipImproveDto, Long> {
 
     @Override
     protected PropertyEquipImprove createValidObject() {
-        return null;
+        return PropertyEquipImprove.builder()
+            .name("Teste")
+            .type("Teste")
+            .property(
+                (Property) createValidDependency(
+                Property.builder()
+                .user(
+                    (User) createValidDependency(
+                        User.builder()
+                        .username("Teste")
+                        .displayName("Teste")
+                        .password("Teste")
+                        .build(),
+                        "/users"
+                    )
+                )
+                .leased(false)
+                .build(),
+                "/properties"
+                )
+            )
+            .build();
     }
 
     @Override
@@ -44,10 +48,4 @@ public class PropertyEquipImproveControllerTest extends CrudDependentControllerT
     protected String getURL() {
         return "/propertyEquipImproves";
     }
-
-    @Override
-    protected String getDependencyURL() {
-        return "/properties";
-    }
-
 }

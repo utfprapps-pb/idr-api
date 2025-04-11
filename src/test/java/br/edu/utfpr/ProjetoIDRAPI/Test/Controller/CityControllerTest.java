@@ -1,29 +1,24 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudDependentControllerTest;
 import br.edu.utfpr.ProjetoIDRAPI.entity.city.City;
+import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudControllerTest;
 import br.edu.utfpr.ProjetoIDRAPI.entity.region.Region;
 
-public class CityControllerTest extends CrudDependentControllerTest<Region, City, City, Long> {
-
-    @Override
-    protected Region createValidDependencyObject() {
-        return Region.builder()
-                .name("Teste")
-                .build();
-    }
-
-    @Override
-    protected City createValidObject(Region region) {
-        return City.builder()
-                .name("Test")
-                .cityRegion(region)
-                .build();
-    }
+public class CityControllerTest extends CrudControllerTest.Dependent<City, City, Long> {
 
     @Override
     protected City createValidObject() {
-        return null;
+        return City.builder()
+                .name("Teste")
+                .cityRegion(
+                        (Region) createValidDependency(
+                                Region.builder()
+                                .name("Teste")
+                                .build(),
+                                "/regions"
+                        )
+                )
+                .build();
     }
 
     @Override
@@ -39,10 +34,5 @@ public class CityControllerTest extends CrudDependentControllerTest<Region, City
     @Override
     protected String getURL() {
         return "/cities";
-    }
-
-    @Override
-    protected String getDependencyURL() {
-        return "/regions";
     }
 }
