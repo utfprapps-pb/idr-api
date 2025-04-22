@@ -6,6 +6,7 @@ import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.UserRepository;
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.UserService;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,12 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements User
 		return this.userRepository;
 	}
 
-	@Override
+    @Override
+    public JpaSpecificationExecutor<User> getSpecExecutor() {
+        return this.userRepository;
+    }
+
+    @Override
     public User save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);

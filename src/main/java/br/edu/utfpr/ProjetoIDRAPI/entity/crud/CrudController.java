@@ -63,8 +63,9 @@ public abstract class CrudController<T, D, ID extends Serializable> {
 	}
 
 	@PostMapping("/search")
-	public ResponseEntity<Page<T>> search(@RequestBody @Valid SearchRequest entity){
-		return ResponseEntity.ok(getService().search(entity));
+	public ResponseEntity<Page<D>> search(@RequestBody @Valid SearchRequest entity){
+		Page<D> page = getService().search(entity).map(this::convertToDto);
+		return ResponseEntity.ok(page);
 	}
 
 	public D convertToDto(T entity) {
