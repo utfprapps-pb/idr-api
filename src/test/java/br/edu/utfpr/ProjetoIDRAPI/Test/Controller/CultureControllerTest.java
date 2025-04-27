@@ -10,7 +10,7 @@ public class CultureControllerTest extends CrudControllerTest<Culture, Culture, 
     protected Culture createValidObject() {
         return Culture.builder()
                 .cultureName("Test")
-                .cultureType(CultureType.Concentrado)
+                .cultureType(CultureType.CONCENTRADO)
                 .build();
     }
 
