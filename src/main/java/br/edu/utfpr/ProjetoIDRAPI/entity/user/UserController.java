@@ -42,6 +42,16 @@ public class UserController extends CrudController<User, UserDto, Long> {
     	}
 	}
 
+	@GetMapping("me")
+	public ResponseEntity<UserDto> findOne() {
+		User user = userService.findSelfUser();
+		if (user != null) {
+			return ResponseEntity.ok(convertToDto(user));
+		} else {
+			return ResponseEntity.noContent().build();
+		}
+	}
+
 	@GetMapping("/findSelfUser")
 	public ResponseEntity<UserDto> findSelfUser(){
 		return ResponseEntity.ok(convertToDto(userService.findSelfUser()));
