@@ -52,6 +52,7 @@ public class UserController extends CrudController<User, UserDto, Long> {
 		}
 	}
 
+	@Deprecated(forRemoval = true)
 	@GetMapping("/findSelfUser")
 	public ResponseEntity<UserDto> findSelfUser(){
 		return ResponseEntity.ok(convertToDto(userService.findSelfUser()));
