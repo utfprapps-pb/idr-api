@@ -1,6 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.search.request.filter;
 
 import jakarta.persistence.criteria.*;
+import org.hibernate.query.sqm.PathElementException;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class SearchFilterAdapter implements Specification {
     @Override
     @SuppressWarnings("unchecked")
     public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
-        Expression field = root.get(filter.getField());
+        Expression field = getNestedField(root, filter.getField());
         Object value = filter.getValue();
         return switch (filter.getType()) {
             case EQUALS -> cb.equal(field, value);
@@ -42,6 +43,21 @@ public class SearchFilterAdapter implements Specification {
                 );
             }
         };
+    }
+
+    private Expression<?> getNestedField(Root<?> root, String fieldPath) {
+        String[] path = fieldPath.split("\\.");
+        Path<?> currentPath = root;
+
+        for (String segment : path) {
+            try {
+                currentPath = currentPath.get(segment);
+            } catch (PathElementException e) {
+                throw new IllegalArgumentException("Invalid field path", e);
+            }
+        }
+
+        return currentPath;
     }
 
 }
