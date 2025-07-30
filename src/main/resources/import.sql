@@ -48,9 +48,9 @@ insert into breed (breed_name) values ('Holandês');
 insert into breed (breed_name) values ('Girolando');
 insert into breed (breed_name) values ('Jersey');
 --TABELA ANIMAL
-insert into animal (animal_mother_id, born_condition, born_date, born_weight, breed_id, current_weight, ecc, gender, identifier, previous_weight, property_id, type) values (null, 'Vivo', '2019-06-23', '12', 1, '62', '32', 'F', '123', '45', 3, 'type 1');
-insert into animal (animal_mother_id, born_condition, born_date, born_weight, breed_id, current_weight, ecc, gender, identifier, previous_weight, property_id, type) values (1, 'Vivo', '2023-06-23', '10', 2, '54', '36', 'F', '321', '36', 2, 'type 2');
-insert into animal (animal_mother_id, born_condition, born_date, born_weight, breed_id, current_weight, ecc, gender, identifier, previous_weight, property_id, type) values (1, 'Vivo', '2022-05-16', '16', 2, '62', '36', 'M', '456', '26', 2, 'type 3');
+insert into animal (animal_mother_id, born_condition, born_date, born_weight, breed_id, current_weight, ecc, gender, identifier, previous_weight, property_id, type) values (null, 'Vivo', '2019-06-23', '12', 1, '62', '32', 'F', 'Mimosa', '45', 3, 'type 1');
+insert into animal (animal_mother_id, born_condition, born_date, born_weight, breed_id, current_weight, ecc, gender, identifier, previous_weight, property_id, type) values (1, 'Vivo', '2023-06-23', '10', 2, '54', '36', 'F', 'Charmosa', '36', 2, 'type 2');
+insert into animal (animal_mother_id, born_condition, born_date, born_weight, breed_id, current_weight, ecc, gender, identifier, previous_weight, property_id, type) values (1, 'Vivo', '2022-05-16', '16', 2, '62', '36', 'M', 'Leitosa', '26', 2, 'type 3');
 --TABELA CULTURE
 insert into culture (culture_name) values ('Culture 1');
 insert into culture (culture_name) values ('Culture 2');

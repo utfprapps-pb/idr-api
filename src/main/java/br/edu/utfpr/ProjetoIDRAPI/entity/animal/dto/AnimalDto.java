@@ -13,9 +13,8 @@ public class AnimalDto {
 
     private String type;
 
+    // identifier é o nome do animal
     private String identifier;
-
-    private String name;
 
     private BreedDto breed;
 
