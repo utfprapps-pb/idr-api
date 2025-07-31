@@ -33,13 +33,13 @@ public class PropertyEquipImprove {
 
     private Integer quantity;
 
-    private BigDecimal unityValue;
+    private BigDecimal unitPrice;
 
-    private BigDecimal percentageCattle;
+    private BigDecimal percentDairyCattle;
 
-    private Integer utilLife;
+    private Integer usefulLife;
 
-    private LocalDate aquisitionDate;
+    private LocalDate acquisitionDate;
 
-    private BigDecimal valueCattle;
+    private BigDecimal moneyDairyCattle;
 }
