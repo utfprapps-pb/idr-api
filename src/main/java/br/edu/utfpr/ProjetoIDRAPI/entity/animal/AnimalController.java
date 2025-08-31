@@ -50,10 +50,17 @@ public class AnimalController extends CrudController<Animal, AnimalDto, Long> {
     	}
     }
 
+    @PostMapping("/sendAnimal")
+    @ResponseStatus(HttpStatus.CREATED)
+    public GenericResponse createRegister(@RequestBody @Valid Animal animal) {
+        System.out.println(animal); // REMOVER
+        animalService.save(animal);
+        return new GenericResponse("Registro inserido com sucesso");
+    }
+
     @PostMapping("/sendAnimals")
     @ResponseStatus(HttpStatus.CREATED)
-    public GenericResponse createRegister(@RequestBody @Valid List<Animal> animals) {
-        System.out.println(animals);
+    public GenericResponse createListRegister(@RequestBody @Valid List<Animal> animals) {
         animalService.saveListAnimals(animals);
         return new GenericResponse("Registros inseridos com sucesso");
     }
