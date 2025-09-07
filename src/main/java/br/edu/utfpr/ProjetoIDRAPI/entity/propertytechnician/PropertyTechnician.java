@@ -3,6 +3,7 @@ package br.edu.utfpr.ProjetoIDRAPI.entity.propertytechnician;
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
 import br.edu.utfpr.ProjetoIDRAPI.entity.compositepropertytechnician.CompositePropertyTechnician;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -28,6 +29,7 @@ public class PropertyTechnician {
     @ManyToOne
     private User user;
 
+    @JsonIgnore
     @NotNull
     @MapsId("property")
     @ManyToOne

@@ -1,37 +1,29 @@
-package br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator;
+package br.edu.utfpr.ProjetoIDRAPI.entity.propertymap;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PropertyCollaborator {
+public class PropertyMap {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @JsonIgnore
-    @NotNull
     @ManyToOne
+    @JoinColumn(name = "property_id", nullable = false)
     private Property property;
 
-    @NotNull
-    private String collaboratorName;
-
-    @NotNull
-    private Integer workHours;
-
-    @NotNull
-    private Integer workDays;
-
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "soil_map")
+    private Byte[] soilMap;
 }

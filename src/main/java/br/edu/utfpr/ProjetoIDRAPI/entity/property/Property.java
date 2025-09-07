@@ -1,5 +1,9 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.property;
 
+import br.edu.utfpr.ProjetoIDRAPI.entity.propertyarea.PropertyArea;
+import br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator.PropertyCollaborator;
+import br.edu.utfpr.ProjetoIDRAPI.entity.propertymap.PropertyMap;
+import br.edu.utfpr.ProjetoIDRAPI.entity.propertytechnician.PropertyTechnician;
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +14,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 
 @Entity
 @Data
@@ -30,15 +35,31 @@ public class Property {
 
     private BigDecimal totalArea;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "soil_map")
-    private Byte[] soilMap;
-
     private BigInteger latitude;
-
     private BigInteger longitude;
 
     @NotNull
     private Boolean leased;
+
+    private String name;
+
+    private String city;
+    private String state;
+
+    private Double nakedAveragePrice;
+    private Double leaseAveragePrice;
+
+    private String farmer;
+
+    @OneToMany(mappedBy = "property")
+    private List<PropertyCollaborator> collaborators;
+
+    @OneToMany(mappedBy = "property")
+    private List<PropertyTechnician> technicians;
+
+    @OneToMany(mappedBy = "property")
+    private List<PropertyMap> maps;
+
+    @OneToOne(mappedBy = "property")
+    private PropertyArea area;
 }
