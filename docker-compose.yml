@@ -1,0 +1,43 @@
+version: "3.9"
+
+########################### SERVICES
+services:
+  ########################### DAINF LABS API
+  idr-api:
+    image: idr-api
+    container_name: idr-api
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      - SERVER_PORT=${SERVER_PORT}
+      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - TZ=America/Sao_Paulo
+    ports:
+      - "8500:8500"
+    labels:
+        # Traefik Config
+      - "traefik.enable=true"
+      - "traefik.http.routers.idr-api.rule=Host(`idr-api.app.pb.utfpr.edu.br`)"
+      - "traefik.http.routers.idr-api.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.idr-api.entrypoints=websecure"
+    restart: unless-stopped
+    networks:
+      - web
+      - database
+
+########################### NETWORKS
+networks:
+  web:
+    name: web
+    driver: bridge
+    external: true
+    attachable: true
+  database:
+    name: database
+    driver: bridge
+    external: false
+    attachable: true
+      

@@ -1,0 +1,43 @@
+package br.edu.utfpr.ProjetoIDRAPI.entity.property;
+
+import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+@Entity
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Property {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @NotNull
+    @ManyToOne
+    private User user;
+
+    private String ocupationArea;
+
+    private BigDecimal totalArea;
+
+    @Lob
+    @Column(name = "soil_map", columnDefinition = "bytea")
+    private byte[] soilMap;
+
+    private BigInteger latitude;
+
+    private BigInteger longitude;
+
+    @NotNull
+    private Boolean leased;
+}
