@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("animals")
+// Gambiarra, deve ser refatorado pra haver restrição de busca do animal para
+// cada propriedade, seguindo a documentação do SpringBoot:
+// https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-requestmapping.html
+@RequestMapping("properties/*/animals")
 public class AnimalController extends CrudController<Animal, AnimalDto, Long> {
 
     private final AnimalService animalService;
@@ -47,9 +50,16 @@ public class AnimalController extends CrudController<Animal, AnimalDto, Long> {
     	}
     }
 
+    @PostMapping("/sendAnimal")
+    @ResponseStatus(HttpStatus.CREATED)
+    public GenericResponse createRegister(@RequestBody @Valid Animal animal) {
+        animalService.save(animal);
+        return new GenericResponse("Registro inserido com sucesso");
+    }
+
     @PostMapping("/sendAnimals")
     @ResponseStatus(HttpStatus.CREATED)
-    public GenericResponse createRegister(@RequestBody @Valid List<Animal> animals) {
+    public GenericResponse createListRegister(@RequestBody @Valid List<Animal> animals) {
         animalService.saveListAnimals(animals);
         return new GenericResponse("Registros inseridos com sucesso");
     }

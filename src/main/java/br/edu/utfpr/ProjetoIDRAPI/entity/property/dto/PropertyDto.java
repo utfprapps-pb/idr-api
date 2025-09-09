@@ -16,7 +16,6 @@ public class PropertyDto {
     
     private BigDecimal totalArea;
     
-    private byte[] soilMap;
     
     private BigInteger latitude;
     

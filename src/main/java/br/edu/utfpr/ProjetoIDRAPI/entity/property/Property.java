@@ -31,8 +31,6 @@ public class Property {
     private BigDecimal totalArea;
 
     @Lob
-    @Column(name = "soil_map", columnDefinition = "bytea")
-    private byte[] soilMap;
 
     private BigInteger latitude;
 
