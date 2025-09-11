@@ -22,15 +22,15 @@ public class PropertyDto {
     private BigInteger longitude;
     
     private Boolean leased;
-    
+
     private UserDto user;
-    
-    public Property toProperty() {
+
+
+	public Property toProperty() {
     	Property prop = new Property();
     	prop.setId(id);
     	prop.setOcupationArea(ocupationArea);
     	prop.setTotalArea(totalArea);
-    	prop.setSoilMap(soilMap);
     	prop.setLatitude(latitude);
     	prop.setLongitude(longitude);
     	prop.setLeased(leased);

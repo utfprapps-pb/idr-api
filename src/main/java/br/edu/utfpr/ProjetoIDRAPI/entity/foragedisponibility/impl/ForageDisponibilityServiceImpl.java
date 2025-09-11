@@ -5,11 +5,13 @@ import br.edu.utfpr.ProjetoIDRAPI.entity.foragedisponibility.ForageDisponibility
 import br.edu.utfpr.ProjetoIDRAPI.entity.foragedisponibility.ForageDisponibilityRepository;
 import br.edu.utfpr.ProjetoIDRAPI.entity.foragedisponibility.ForageDisponibilityService;
 import br.edu.utfpr.ProjetoIDRAPI.entity.foragedisponibility.dto.ForageDisponibilityDto;
+import br.edu.utfpr.ProjetoIDRAPI.entity.foragedisponibility.dto.ForageSearchRequest;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -22,8 +24,8 @@ public class ForageDisponibilityServiceImpl extends CrudServiceImpl<ForageDispon
 
 	public ForageDisponibilityServiceImpl(ForageDisponibilityRepository forageRepository, ModelMapper modelMapper) {
 		this.forageRepository = forageRepository;
-        this.modelMapper = modelMapper;
-    }
+		this.modelMapper = modelMapper;
+	}
 
 	@Override
 	protected JpaRepository<ForageDisponibility, Long> getRepository() {
@@ -32,11 +34,33 @@ public class ForageDisponibilityServiceImpl extends CrudServiceImpl<ForageDispon
 
 	@Override
 	public List<ForageDisponibilityDto> findByPropertyId(Long propertyId) {
+		List<ForageDisponibility> list = forageRepository.findByPropertyIdWithProperty(propertyId);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-		System.out.println("Buscando por propertyId: " + propertyId);List<ForageDisponibility> list = forageRepository.findByPropertyIdWithProperty(propertyId);
 		return list.stream()
-				.map(f -> modelMapper.map(f, ForageDisponibilityDto.class))
+				.map(f -> {
+					ForageDisponibilityDto dto = modelMapper.map(f, ForageDisponibilityDto.class);
+
+					// Converter date para String
+					if (f.getDate() != null) {
+						dto.setFormation(f.getDate().format(formatter));
+					}
+
+					// Converter BigInteger para Long
+					if (f.getNumCows() != null) {
+						dto.setNumCows(f.getNumCows().longValue());
+					}
+
+					// Mapear forage para cultivation
+					dto.setCultivation(f.getForage());
+
+					// Mapear picketArea para area, se fizer sentido
+					dto.setArea(f.getPicketArea() != null ? f.getPicketArea().toString() : null);
+
+					return dto;
+				})
 				.toList();
 	}
+
 
 }

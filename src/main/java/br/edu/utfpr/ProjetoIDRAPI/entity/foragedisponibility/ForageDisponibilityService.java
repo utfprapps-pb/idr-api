@@ -8,4 +8,5 @@ import java.util.List;
 public interface ForageDisponibilityService extends CrudService<ForageDisponibility, Long> {
     List<ForageDisponibilityDto> findByPropertyId(Long propertyId);
 
+
 }
