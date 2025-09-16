@@ -1,6 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.animalsales.impl;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.animal.Animal;
+import br.edu.utfpr.ProjetoIDRAPI.entity.animal.AnimalRepository;
 import br.edu.utfpr.ProjetoIDRAPI.entity.animal.AnimalService;
 import br.edu.utfpr.ProjetoIDRAPI.entity.animalsales.AnimalSales;
 import br.edu.utfpr.ProjetoIDRAPI.entity.animalsales.AnimalSalesRepository;
@@ -17,10 +18,12 @@ import java.util.List;
 public class AnimalSalesServiceImpl extends CrudServiceImpl<AnimalSales, Long> implements AnimalSalesService {
 	private final AnimalSalesRepository animalSalesRepository;
 	private final AnimalService animalService;
+	private final AnimalRepository animalRepository;
 
-	public AnimalSalesServiceImpl(AnimalSalesRepository animalSalesRepository, AnimalService animalService) {
-		this.animalSalesRepository = animalSalesRepository;
+	public AnimalSalesServiceImpl(AnimalSalesRepository animalSalesRepository, AnimalService animalService, AnimalRepository animalRepository) {
+        this.animalSalesRepository = animalSalesRepository;
 		this.animalService = animalService;
+		this.animalRepository = animalRepository;
 	}
 
 	@Override

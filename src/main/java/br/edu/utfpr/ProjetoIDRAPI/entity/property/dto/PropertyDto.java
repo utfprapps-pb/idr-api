@@ -24,7 +24,7 @@ public class PropertyDto {
     private BigInteger longitude;
     
     private Boolean leased;
-    
+
     private UserDto user;
 
     private String name;
@@ -36,4 +36,5 @@ public class PropertyDto {
     private List<PropertyCollaborator> collaborators;
     private PropertyArea area;
     private List<PropertyTechnician> technicians;
+
 }

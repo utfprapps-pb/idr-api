@@ -27,18 +27,19 @@ public abstract class CrudController<T, D, ID extends Serializable> {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<ID> create(@RequestBody @Valid T entity) {
+	public ResponseEntity<ID> create(@RequestBody @Valid D dto) {
+		T entity = getModelMapper().map(dto, this.typeClass);
 		getService().save(entity);
 		return ResponseEntity.status(HttpStatus.CREATED).body(getId(entity));
 	}
-	
+
 	@PutMapping("{id}")
-    public ResponseEntity<D> update(@RequestBody @Valid T entity, @PathVariable ID id) {
+	public ResponseEntity<D> update(@RequestBody @Valid D dto, @PathVariable ID id) {
+		T entity = getModelMapper().map(dto, this.typeClass);
 		getService().save(entity);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
-	@GetMapping
     public ResponseEntity<List<D>> findAll(){
     	return ResponseEntity.ok(getService().findAll().stream()
     			.map(this::convertToDto)
