@@ -40,6 +40,7 @@ public abstract class CrudController<T, D, ID extends Serializable> {
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
+    @GetMapping("/all")
     public ResponseEntity<List<D>> findAll(){
     	return ResponseEntity.ok(getService().findAll().stream()
     			.map(this::convertToDto)

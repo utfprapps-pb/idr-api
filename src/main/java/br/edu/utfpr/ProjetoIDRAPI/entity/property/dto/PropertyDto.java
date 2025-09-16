@@ -8,6 +8,7 @@ import br.edu.utfpr.ProjetoIDRAPI.entity.propertyarea.PropertyArea;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator.PropertyCollaborator;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertytechnician.PropertyTechnician;
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.dto.UserDto;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -25,6 +26,7 @@ public class PropertyDto {
     
     private Boolean leased;
 
+    @NotNull
     private UserDto user;
 
     private String name;
