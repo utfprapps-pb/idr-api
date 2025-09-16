@@ -2,7 +2,6 @@ package br.edu.utfpr.ProjetoIDRAPI.entity.property;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertyarea.PropertyArea;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator.PropertyCollaborator;
-import br.edu.utfpr.ProjetoIDRAPI.entity.propertymap.PropertyImage;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertytechnician.PropertyTechnician;
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
 import jakarta.persistence.*;
@@ -56,9 +55,6 @@ public class Property {
 
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PropertyTechnician> technicians;
-
-    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<PropertyImage> images;
 
     @OneToOne(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
     private PropertyArea area;

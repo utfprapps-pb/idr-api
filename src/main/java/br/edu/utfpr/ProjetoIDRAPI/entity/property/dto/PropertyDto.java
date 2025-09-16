@@ -6,7 +6,6 @@ import java.util.List;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertyarea.PropertyArea;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator.PropertyCollaborator;
-import br.edu.utfpr.ProjetoIDRAPI.entity.propertymap.PropertyImage;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertytechnician.PropertyTechnician;
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.dto.UserDto;
 import lombok.Data;
@@ -37,5 +36,4 @@ public class PropertyDto {
     private List<PropertyCollaborator> collaborators;
     private PropertyArea area;
     private List<PropertyTechnician> technicians;
-    private List<PropertyImage> images;
 }

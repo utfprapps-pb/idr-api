@@ -2,15 +2,11 @@ package br.edu.utfpr.ProjetoIDRAPI.entity.property;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudController;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.dto.PropertyDto;
-import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudService;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,14 +44,4 @@ public class PropertyController extends CrudController<Property, PropertyDto, Lo
 						.collect(Collectors.toList())
 		);
 	}
-
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Long> create(
-            @RequestPart("property") @Valid Property entity,
-            @RequestPart(value = "images", required = false) List<MultipartFile> files
-    ) {
-        propertyService.save(entity, files);
-        return ResponseEntity.status(HttpStatus.CREATED).body(getId(entity));
-    }
 }
