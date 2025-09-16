@@ -1,13 +1,9 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.propertytechnician;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
-import br.edu.utfpr.ProjetoIDRAPI.entity.compositepropertytechnician.CompositePropertyTechnician;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,17 +17,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PropertyTechnician {
 
-    @EmbeddedId
-    private CompositePropertyTechnician id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotNull
-    @MapsId("user")
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     @JsonIgnore
     @NotNull
-    @MapsId("property")
     @ManyToOne
+    @JoinColumn(name = "property_id")
     private Property property;
 }

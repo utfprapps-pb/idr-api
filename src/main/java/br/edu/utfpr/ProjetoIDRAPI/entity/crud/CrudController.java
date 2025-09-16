@@ -50,7 +50,7 @@ public abstract class CrudController<T, D, ID extends Serializable> {
     	T entity = getService().findOne(id);
     	
     	if(entity != null) {
-    		return ResponseEntity.ok(convertToDto(getService().findOne(id)));
+    		return ResponseEntity.ok(convertToDto(entity));
     	} else {
     		return ResponseEntity.noContent().build();
     	}

@@ -3,15 +3,14 @@ package br.edu.utfpr.ProjetoIDRAPI.entity.propertymap;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter @Setter
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PropertyMap {
+public class PropertyImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +21,6 @@ public class PropertyMap {
     @JoinColumn(name = "property_id", nullable = false)
     private Property property;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "soil_map")
-    private Byte[] soilMap;
+    @Column(name = "soil_map", columnDefinition = "bytea")
+    private byte[] soilMap;
 }
