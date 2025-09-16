@@ -31,7 +31,6 @@ public class PropertyController extends CrudController<Property, PropertyDto, Lo
 
 	@Override
 	protected ModelMapper getModelMapper() {
-        modelMapper.getConfiguration().setCollectionsMergeEnabled(false);
 		return this.modelMapper;
 	}
 	
