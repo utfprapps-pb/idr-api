@@ -77,7 +77,7 @@ public abstract class CrudControllerTest<T, D, ID extends Serializable> {
     @Test
     @Order(6)
     protected void listAllRegisters() {
-        ResponseEntity<List<D>> response = testRestTemplate.exchange(getURL(), HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+        ResponseEntity<List<D>> response = testRestTemplate.exchange(getURL() + "/all", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 

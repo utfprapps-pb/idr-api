@@ -4,10 +4,7 @@ import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudController;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.dto.PropertyDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudService;
 

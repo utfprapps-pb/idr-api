@@ -1,6 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ public class PropertyCollaborator {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @JsonIgnore
     @NotNull
     @ManyToOne
     private Property property;

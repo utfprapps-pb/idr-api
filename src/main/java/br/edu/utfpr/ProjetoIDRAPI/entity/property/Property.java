@@ -1,5 +1,8 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.property;
 
+import br.edu.utfpr.ProjetoIDRAPI.entity.propertyarea.PropertyArea;
+import br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator.PropertyCollaborator;
+import br.edu.utfpr.ProjetoIDRAPI.entity.propertytechnician.PropertyTechnician;
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +13,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 
 @Entity
 @Data
@@ -30,12 +34,28 @@ public class Property {
 
     private BigDecimal totalArea;
 
-    @Lob
-
     private BigInteger latitude;
-
     private BigInteger longitude;
 
     @NotNull
     private Boolean leased;
+
+    private String name;
+
+    private String city;
+    private String state;
+
+    private Double nakedAveragePrice;
+    private Double leaseAveragePrice;
+
+    private String farmer;
+
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PropertyCollaborator> collaborators;
+
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PropertyTechnician> technicians;
+
+    @OneToOne(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
+    private PropertyArea area;
 }
