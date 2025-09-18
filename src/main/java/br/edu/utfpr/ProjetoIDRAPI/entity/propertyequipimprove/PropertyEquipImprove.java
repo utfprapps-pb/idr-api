@@ -31,15 +31,15 @@ public class PropertyEquipImprove {
     @NotNull
     private String name;
 
-    private Integer quantity;
+    private Integer amount;
 
-    private BigDecimal unityValue;
+    private BigDecimal unitPrice;
 
-    private BigDecimal percentageCattle;
+    private BigDecimal percentDairyCattle;
 
-    private Integer utilLife;
+    private Integer lifespan;
 
-    private LocalDate aquisitionDate;
+    private LocalDate acquisitionDate;
 
-    private BigDecimal valueCattle;
+    private BigDecimal moneyDairyCattle;
 }

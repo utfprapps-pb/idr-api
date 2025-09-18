@@ -16,9 +16,9 @@ insert into city (city_region_id, name) values (1, 'City 1');
 insert into city (city_region_id, name) values (2, 'City 2');
 insert into city (city_region_id, name) values (3, 'City 3');
 --TABELA PROPERTY_EQUIP_IMPROVE
-insert into property_equip_improve (aquisition_date, name, percentage_cattle, property_id, quantity, type, unity_value, util_life, value_cattle) values ('2023-05-18', 'Equipament 1', '965.36', 3, 10, 'Test type', '135.13', 16, '136.16');
-insert into property_equip_improve (aquisition_date, name, percentage_cattle, property_id, quantity, type, unity_value, util_life, value_cattle) values ('2023-05-16', 'Equipament 2', '965.36', 1, 22, 'Test type', '135.13', 36, '136.16');
-insert into property_equip_improve (aquisition_date, name, percentage_cattle, property_id, quantity, type, unity_value, util_life, value_cattle) values ('2023-05-17', 'Equipament 3', '965.36', 1, 3, 'Test type', '135.13', 15, '136.16');
+insert into property_equip_improve (acquisition_date, name, percent_dairy_cattle, property_id, amount, type, unitPrice, lifespan, money_dairy_cattle) values ('2025-01-01', 'Equipment 1', '0.1', 1, 10, 'Test Type', '100.0', 10, '10.0');
+insert into property_equip_improve (acquisition_date, name, percent_dairy_cattle, property_id, amount, type, unitPrice, lifespan, money_dairy_cattle) values ('2025-02-02', 'Equipment 2', '0.2', 2, 20, 'Test Type', '200.0', 20, '20.0');
+insert into property_equip_improve (acquisition_date, name, percent_dairy_cattle, property_id, amount, type, unitPrice, lifespan, money_dairy_cattle) values ('2025-03-03', 'Equipment 3', '0.3', 3, 30, 'Test Type', '300.0', 30, '30.0');
 --TABELA PROPERTY_COLLABORATOR
 insert into property_collaborator (collaborator_name, property_id, work_days, work_hours) values ('collaborator 1', 2, 7, 12);
 insert into property_collaborator (collaborator_name, property_id, work_days, work_hours) values ('collaborator 2', 3, 7, 8);
