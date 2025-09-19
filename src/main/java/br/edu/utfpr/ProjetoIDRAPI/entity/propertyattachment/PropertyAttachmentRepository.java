@@ -7,4 +7,5 @@ import java.util.List;
 public interface PropertyAttachmentRepository extends JpaRepository<PropertyAttachment, Long> {
 
     List<PropertyAttachment> findByPropertyId(Long id);
+    void deleteByPropertyId(Long id);
 }

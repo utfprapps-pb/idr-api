@@ -32,4 +32,9 @@ public class PropertyAttachmentServiceImpl extends CrudServiceImpl<PropertyAttac
     public List<PropertyAttachment> findByPropertyId(Long id) {
         return repository.findByPropertyId(id);
     }
+
+    @Override
+    public void deleteByPropertyId(Long id) {
+        repository.deleteByPropertyId(id);
+    }
 }
