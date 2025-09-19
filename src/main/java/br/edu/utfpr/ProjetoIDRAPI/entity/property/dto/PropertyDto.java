@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertyarea.PropertyArea;
+import br.edu.utfpr.ProjetoIDRAPI.entity.propertyattachment.PropertyAttachmentDTO;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator.PropertyCollaborator;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertytechnician.PropertyTechnician;
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.dto.UserDto;
@@ -38,5 +39,5 @@ public class PropertyDto {
     private List<PropertyCollaborator> collaborators;
     private PropertyArea area;
     private List<PropertyTechnician> technicians;
-
+    private PropertyAttachmentDTO attachment;
 }
