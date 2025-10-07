@@ -21,10 +21,8 @@ public class Culture {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@NotNull
 	private String cultureName;
 
-	@NotNull
 	private CultureType cultureType;
 
 	private Double ms;
