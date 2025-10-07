@@ -31,7 +31,6 @@ public class Animal {
     @ManyToOne
     private Property property;
 
-    @NotNull
     @ManyToOne
     private Animal animalMother;
 
