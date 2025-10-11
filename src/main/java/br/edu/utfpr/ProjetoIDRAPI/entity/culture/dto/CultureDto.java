@@ -2,6 +2,9 @@ package br.edu.utfpr.ProjetoIDRAPI.entity.culture.dto;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.culture.Culture;
 import br.edu.utfpr.ProjetoIDRAPI.enums.CultureType;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Data;
 
 @Data
@@ -18,6 +21,8 @@ public class CultureDto {
 		return cult;
 	}
 
+	@Column(name = "culture_type")
+	@Enumerated(EnumType.STRING)
 	private CultureType cultureType;
 
 	private float ms;

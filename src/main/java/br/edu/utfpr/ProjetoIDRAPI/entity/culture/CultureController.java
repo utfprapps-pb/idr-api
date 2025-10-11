@@ -3,11 +3,10 @@ package br.edu.utfpr.ProjetoIDRAPI.entity.culture;
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudController;
 import br.edu.utfpr.ProjetoIDRAPI.entity.culture.dto.CultureDto;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudService;
 
@@ -32,7 +31,7 @@ public class CultureController extends CrudController<Culture, CultureDto, Long>
 	protected ModelMapper getModelMapper() {
 		return this.modelMapper;
 	}
-	
+
 	@GetMapping("/findName/{name}")
 	public ResponseEntity<CultureDto> findByName(@PathVariable String name){
 		Culture entity = cultureService.findByName(name);
@@ -43,4 +42,15 @@ public class CultureController extends CrudController<Culture, CultureDto, Long>
     		return ResponseEntity.noContent().build();
     	}
 	}
+
+	@PostMapping("/advanced-search")
+	public ResponseEntity<Page<CultureDto>> search(
+			@RequestBody CultureFilter filters,
+			Pageable pageable
+	) {
+		Page<Culture> page = cultureService.search(filters, pageable);
+		return ResponseEntity.ok(page.map(this::convertToDto));
+	}
+
+
 }
