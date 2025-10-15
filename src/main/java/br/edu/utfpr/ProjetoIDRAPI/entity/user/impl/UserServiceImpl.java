@@ -7,6 +7,7 @@ import br.edu.utfpr.ProjetoIDRAPI.entity.user.UserRepository;
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.UserService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,9 +46,11 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements User
 
     @Override
     public User findSelfUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepository.findByUsername(principal.toString());
-        return user;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) return null;
+
+        Object principal = authentication.getPrincipal();
+        return userRepository.findByUsername(principal.toString());
     }
 
 }

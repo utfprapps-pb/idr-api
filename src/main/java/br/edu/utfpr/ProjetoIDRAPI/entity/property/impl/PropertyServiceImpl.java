@@ -9,6 +9,7 @@ import br.edu.utfpr.ProjetoIDRAPI.entity.property.PropertyRepository;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.PropertyService;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertyattachment.PropertyAttachment;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertyattachment.PropertyAttachmentService;
+import br.edu.utfpr.ProjetoIDRAPI.entity.user.UserService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,12 @@ public class PropertyServiceImpl extends CrudServiceImpl<Property, Long> impleme
 
 	private final PropertyRepository propertyRepository;
     private final PropertyAttachmentService propertyAttachmentService;
+    private final UserService userService;
 
-	public PropertyServiceImpl(PropertyRepository propertyRepository, PropertyAttachmentService propertyAttachmentService) {
+	public PropertyServiceImpl(PropertyRepository propertyRepository, PropertyAttachmentService propertyAttachmentService, UserService userService) {
 		this.propertyRepository = propertyRepository;
         this.propertyAttachmentService = propertyAttachmentService;
+        this.userService = userService;
 	}
 
 	@Override
@@ -42,6 +45,7 @@ public class PropertyServiceImpl extends CrudServiceImpl<Property, Long> impleme
     @Override
     public Property save(Property entity, byte[] attachment) {
         boolean isNew = (entity.getId() == 0);
+        entity.setUser(userService.findSelfUser());
         super.save(entity);
         handleAttachmentSave(entity, attachment, isNew);
         return entity;
