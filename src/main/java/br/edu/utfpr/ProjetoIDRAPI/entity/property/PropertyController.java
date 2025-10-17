@@ -76,6 +76,9 @@ public class PropertyController extends CrudController<Property, PropertyDto, Lo
 
     private Long save(PropertyDto dto, MultipartFile attachment) throws IOException {
         Property entity = getModelMapper().map(dto, Property.class);
+        entity.getArea().setProperty(entity);
+        entity.getCollaborators().forEach(collaborator -> { collaborator.setProperty(entity); });
+        entity.getTechnicians().forEach(technician -> { technician.setProperty(entity); });
         if (attachment != null) {
             propertyService.save(entity, attachment.getBytes());
         } else {
