@@ -3,26 +3,28 @@ package br.edu.utfpr.ProjetoIDRAPI.entity.foragedisponibility.dto;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class ForageCreateDto {
     @NotNull
-    private Float area;
+    private Double area;
     @NotNull
-    private Float averageCost;
+    private Double averageCost;
     @NotNull
     private Long usefulLife;
     @NotNull
-    private String formation;
+    private LocalDate formation;
     @NotNull
     private String growthCycle;
     private String observation;
     @NotNull
     private String ownershipType;
     private String cultivation;
-    private Float entry;
-    private Float residue;
-    private Float kg;
-    private Float efficiency;
+    private Double entry;
+    private Double residue;
+    private Double kg;
+    private Double efficiency;
     private Long numCows;
-    private Float kgCows;
+    private Double kgCows;
 }

@@ -3,6 +3,8 @@ package br.edu.utfpr.ProjetoIDRAPI.entity.foragedisponibility.dto;
 import lombok.Data;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDate;
+
 @Data
 public class ForageUpdateDto {
 
@@ -10,6 +12,6 @@ public class ForageUpdateDto {
     private String area;
     private String averageCost;
     private String usefulLife;
-    private String formation;
+    private LocalDate formation;
     private String growthCycle;
 }

@@ -25,21 +25,21 @@ public class ForageDisponibility {
 	private LocalDate date;
 
 	private String forage;
-	private Float averageCost;
+	private Double averageCost;
 	private Long usefulLife;
 	private String growthCycle;
 	private String observation;
 	private String ownershipType;
-	private Float entry;
-	private Float residue;
-	private Float kg;
-	private Float picketArea;
-	private Float efficiency;
+	private Double entry;
+	private Double residue;
+	private Double kg;
+	private Double picketArea;
+	private Double efficiency;
 
 	@Column(precision = 20, scale = 0)
 	private BigDecimal numCows;
 
-	private Float kgCows;
+	private Double kgCows;
 
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)

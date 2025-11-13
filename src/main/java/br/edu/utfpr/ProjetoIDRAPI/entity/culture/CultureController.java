@@ -43,14 +43,4 @@ public class CultureController extends CrudController<Culture, CultureDto, Long>
     	}
 	}
 
-	@PostMapping("/advanced-search")
-	public ResponseEntity<Page<CultureDto>> search(
-			@RequestBody CultureFilter filters,
-			Pageable pageable
-	) {
-		Page<Culture> page = cultureService.search(filters, pageable);
-		return ResponseEntity.ok(page.map(this::convertToDto));
-	}
-
-
 }

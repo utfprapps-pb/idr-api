@@ -3,6 +3,8 @@ package br.edu.utfpr.ProjetoIDRAPI.entity.foragedisponibility.dto;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.dto.PropertyDto;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class ForageDisponibilityDto {
 
@@ -11,17 +13,19 @@ public class ForageDisponibilityDto {
 	private String area;
 	private String averageCost;
 	private String usefulLife;
-	private String formation;         // antes era date
+	private LocalDate formation;         // antes era date
 	private String ownershipType;
 	private String growthCycle;
 	private String observation;       // opcional
-	private Float entry;
-	private Float residue;
-	private Float kg;
-	private Float picketArea;
-	private Float efficiency;
+	private Double entry;
+	private Double residue;
+	private Double kg;
+	private Double picketArea;
+	private Double efficiency;
 	private Long numCows;
-	private Float kgCows;
+	private Double kgCows;
 
 	private PropertyDto property;
+
+
 }

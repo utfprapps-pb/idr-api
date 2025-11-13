@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -29,8 +28,6 @@ public class ForageDisponibilityServiceImpl extends CrudServiceImpl<ForageDispon
 	private final PropertyRepository propertyRepository;
 	private final ModelMapper modelMapper;
 	private final EntityManager entityManager;
-	private final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE_TIME;
-
 	public ForageDisponibilityServiceImpl(ForageDisponibilityRepository forageRepository,
 										  PropertyRepository propertyRepository,
 										  ModelMapper modelMapper,
@@ -52,35 +49,25 @@ public class ForageDisponibilityServiceImpl extends CrudServiceImpl<ForageDispon
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
 						"Propriedade não encontrada com ID: " + propertyId));
 		ForageDisponibility forage = modelMapper.map(createDto, ForageDisponibility.class);
-
 		forage.setForage(createDto.getCultivation());
-
 		forage.setPicketArea(createDto.getArea());
-
-		try {
-			LocalDate date = LocalDate.parse(createDto.getFormation().substring(0, 10), DateTimeFormatter.ISO_LOCAL_DATE);
-			forage.setDate(date);
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato de data inválido para 'formation'. Use YYYY-MM-DD.");
-		}
+		forage.setDate(createDto.getFormation());
 		if (createDto.getNumCows() != null) {
 			forage.setNumCows(BigDecimal.valueOf(createDto.getNumCows()));
 		}
 		forage.setProperty(property);
 		return forageRepository.save(forage);
 	}
-
 	@Override
 	public List<ForageDisponibilityDto> findByPropertyId(Long propertyId) {
 		List<ForageDisponibility> list = forageRepository.findByPropertyIdWithProperty(propertyId);
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		// REMOVIDO: DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		return list.stream()
 				.map(f -> {
 					ForageDisponibilityDto dto = modelMapper.map(f, ForageDisponibilityDto.class);
-
 					if (f.getDate() != null) {
-						dto.setFormation(f.getDate().format(formatter));
+						dto.setFormation(f.getDate());
 					}
 
 					if (f.getNumCows() != null) {
@@ -95,7 +82,6 @@ public class ForageDisponibilityServiceImpl extends CrudServiceImpl<ForageDispon
 				})
 				.toList();
 	}
-
 	@Override
 	public void updateForage(Long propertyId, Long forageId, ForageUpdateDto updateDto) {
 		ForageDisponibility forage = forageRepository.findByIdAndPropertyId(forageId, propertyId)
@@ -103,27 +89,23 @@ public class ForageDisponibilityServiceImpl extends CrudServiceImpl<ForageDispon
 						HttpStatus.NOT_FOUND,
 						"Forrageira não encontrada para esta propriedade"
 				));
-
 		if (updateDto.getCultivation() != null) {
 			forage.setForage(updateDto.getCultivation());
 		}
-
 		if (updateDto.getArea() != null) {
 			try {
-				forage.setPicketArea(Float.valueOf(updateDto.getArea()));
+				forage.setPicketArea(Double.valueOf(updateDto.getArea()));
 			} catch (NumberFormatException e) {
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Área inválida");
 			}
 		}
-
 		if (updateDto.getAverageCost() != null) {
 			try {
-				forage.setAverageCost(Float.valueOf(updateDto.getAverageCost()));
+				forage.setAverageCost(Double.valueOf(updateDto.getAverageCost()));
 			} catch (NumberFormatException e) {
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Custo médio inválido");
 			}
 		}
-
 		if (updateDto.getUsefulLife() != null) {
 			try {
 				forage.setUsefulLife(Long.valueOf(updateDto.getUsefulLife()));
@@ -131,20 +113,12 @@ public class ForageDisponibilityServiceImpl extends CrudServiceImpl<ForageDispon
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vida útil inválida");
 			}
 		}
-
 		if (updateDto.getFormation() != null) {
-			try {
-				LocalDate date = LocalDate.parse(updateDto.getFormation(), DateTimeFormatter.ISO_LOCAL_DATE);
-				forage.setDate(date);
-			} catch (Exception e) {
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Data inválida (use YYYY-MM-DD)");
-			}
+			forage.setDate(updateDto.getFormation());
 		}
-
 		if (updateDto.getGrowthCycle() != null) {
 			forage.setGrowthCycle(updateDto.getGrowthCycle());
 		}
-
 		forageRepository.save(forage);
 	}
 
@@ -152,24 +126,16 @@ public class ForageDisponibilityServiceImpl extends CrudServiceImpl<ForageDispon
 	public ForageDisponibilityDto findDtoById(Long id) {
 		ForageDisponibility forageEntity = forageRepository.findById(id)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Registro não encontrado com ID: " + id));
-
 		this.entityManager.refresh(forageEntity);
-
 		ForageDisponibilityDto dto = modelMapper.map(forageEntity, ForageDisponibilityDto.class);
-
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
 		dto.setCultivation(forageEntity.getForage());
-
 		if (forageEntity.getDate() != null) {
-			dto.setFormation(forageEntity.getDate().format(formatter));
+			dto.setFormation(forageEntity.getDate());
 		}
-
 		dto.setArea(forageEntity.getPicketArea() != null ? forageEntity.getPicketArea().toString() : null);
 		if (forageEntity.getNumCows() != null) {
 			dto.setNumCows(forageEntity.getNumCows().longValue());
 		}
-
 		return dto;
 	}
 }
