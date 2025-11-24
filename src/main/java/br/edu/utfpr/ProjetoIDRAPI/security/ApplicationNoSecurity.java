@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Configuration
-@Profile("test")
+@Profile({"test","dev"})
 public class ApplicationNoSecurity {
 
     //Essa classe tem a função de retirar as medidas de segurança no profile de testes.

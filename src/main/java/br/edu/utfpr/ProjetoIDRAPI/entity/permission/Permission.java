@@ -4,13 +4,14 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
 import jakarta.persistence.Entity;
+import org.hibernate.envers.Audited;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 
 
-@Entity
+@Entity @Audited
 @Data
 @Builder
 @NoArgsConstructor

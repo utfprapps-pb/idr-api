@@ -9,13 +9,14 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
+import org.hibernate.envers.Audited;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 
-@Entity
+@Entity @Audited
 @Data
 @Builder
 @NoArgsConstructor
