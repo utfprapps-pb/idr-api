@@ -4,8 +4,9 @@ import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
-@Entity
+@Entity @Audited
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

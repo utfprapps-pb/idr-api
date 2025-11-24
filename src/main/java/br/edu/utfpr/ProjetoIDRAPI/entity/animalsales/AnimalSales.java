@@ -7,6 +7,7 @@ import br.edu.utfpr.ProjetoIDRAPI.entity.animal.Animal;
 import br.edu.utfpr.ProjetoIDRAPI.enums.Destination;
 import br.edu.utfpr.ProjetoIDRAPI.enums.Reason;
 import jakarta.persistence.Entity;
+import org.hibernate.envers.Audited;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,7 +18,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity @Audited
 @Data
 @Builder
 @NoArgsConstructor

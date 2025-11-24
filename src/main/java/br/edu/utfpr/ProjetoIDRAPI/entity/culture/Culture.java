@@ -2,6 +2,7 @@ package br.edu.utfpr.ProjetoIDRAPI.entity.culture;
 
 import br.edu.utfpr.ProjetoIDRAPI.enums.CultureType;
 import jakarta.persistence.Entity;
+import org.hibernate.envers.Audited;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,7 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity @Audited
 @Data
 @Builder
 @NoArgsConstructor

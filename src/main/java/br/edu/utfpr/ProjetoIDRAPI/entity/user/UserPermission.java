@@ -4,6 +4,7 @@ import br.edu.utfpr.ProjetoIDRAPI.entity.compositeuserpermission.CompositeUserPe
 import br.edu.utfpr.ProjetoIDRAPI.entity.permission.Permission;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import org.hibernate.envers.Audited;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.validation.constraints.NotNull;
@@ -12,7 +13,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity @Audited
 @Data
 @Builder
 @NoArgsConstructor
