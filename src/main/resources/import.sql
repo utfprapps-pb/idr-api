@@ -4,9 +4,9 @@ insert into users (cep, city, cpf, display_name, graduation_year, house_number, 
 insert into users (cep, city, cpf, display_name, graduation_year, house_number, password, phone, professional_register, street, username) values ('2222.2222', 'Beltrao', '222.222.222-22', 'Fulano 2', '2002', '22', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '2222', '2222', 'Rua teste2', 'fulano2@test.com');
 insert into users (cep, city, cpf, display_name, graduation_year, house_number, password, phone, professional_register, street, username) values ('3333.3333', 'Palmas', '333.333.333-33', 'Fulano 2', '2013', '333', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '3333', '3333', 'Rua teste3', 'fulano3@test.com');
 --TABELA PROPERTY
-insert into property (latitude, leased, longitude, ocupation_area, soil_map, total_area, user_id) values ('1365', 'true', '1365', 'Ocupation Area1', null, '163.46', 1);
-insert into property (latitude, leased, longitude, ocupation_area, soil_map, total_area, user_id) values ('654', 'true', '654', 'Ocupation Area2', null, '634.13', 1);
-insert into property (latitude, leased, longitude, ocupation_area, soil_map, total_area, user_id) values ('365', 'true', '365', 'Ocupation Area3', null, '389.16', 2);
+insert into property (latitude, leased, longitude, ocupation_area, total_area, user_id,name, city, state, naked_average_price, lease_average_price, farmer) values('1365', true, '1365', 'Ocupation Area1', '163.46', 1, 'Property 1', 'City 1', 'State 1', 1000.00, 500.00, 'Farmer 1');
+insert into property (latitude, leased, longitude, ocupation_area, total_area, user_id, name, city, state, naked_average_price, lease_average_price, farmer) values('654', true, '654', 'Ocupation Area2', '634.13', 1, 'Property 2', 'City 2', 'State 2', 2000.00, 1000.00, 'Farmer 2');
+insert into property (latitude, leased, longitude, ocupation_area, total_area, user_id,name, city, state, naked_average_price, lease_average_price, farmer) values('365', true, '365', 'Ocupation Area3', '389.16', 2, 'Property 3', 'City 3', 'State 3', 1500.00, 750.00, 'Farmer 3');
 --TABELA REGION
 insert into region (name) values ('Region 1');
 insert into region (name) values ('Region 2');
@@ -23,6 +23,14 @@ insert into property_equip_improve (aquisition_date, name, percentage_cattle, pr
 insert into property_collaborator (collaborator_name, property_id, work_days, work_hours) values ('collaborator 1', 2, 7, 12);
 insert into property_collaborator (collaborator_name, property_id, work_days, work_hours) values ('collaborator 2', 3, 7, 8);
 insert into property_collaborator (collaborator_name, property_id, work_days, work_hours) values ('collaborator 3', 1, 7, 8);
+--TABELA PROPERTY_AREA
+insert into property_area (property_id, dairy_cattle_farming, perennial_pasture, summer_plowing, winter_plowing) values (1, 123.32, 312.32, 32.2, 32.2);
+insert into property_area (property_id, dairy_cattle_farming, perennial_pasture, summer_plowing, winter_plowing) values (2, 123.32, 312.32, 32.2, 32.2);
+insert into property_area (property_id, dairy_cattle_farming, perennial_pasture, summer_plowing, winter_plowing) values (3, 123.32, 312.32, 32.2, 32.2);
+-- TABELA PROPERTY_TECHNICIAN
+insert into property_technician (property_id, user_id) values (1, 1);
+insert into property_technician (property_id, user_id) values (2, 2);
+insert into property_technician (property_id, user_id) values (3, 3);
 --TABELA ACTIVE_PRINCIPLE
 insert into active_principle (name) values ('Active principle 1');
 insert into active_principle (name) values ('Active principle 2');
@@ -48,9 +56,9 @@ insert into breed (breed_name) values ('Holandês');
 insert into breed (breed_name) values ('Girolando');
 insert into breed (breed_name) values ('Jersey');
 --TABELA ANIMAL
-insert into animal (animal_mother_id, born_condition, born_date, born_weight, breed_id, current_weight, ecc, gender, identifier, previous_weight, property_id, type) values (null, 'Vivo', '2019-06-23', '12', 1, '62', '32', 'F', '123', '45', 3, 'type 1');
-insert into animal (animal_mother_id, born_condition, born_date, born_weight, breed_id, current_weight, ecc, gender, identifier, previous_weight, property_id, type) values (1, 'Vivo', '2023-06-23', '10', 2, '54', '36', 'F', '321', '36', 2, 'type 2');
-insert into animal (animal_mother_id, born_condition, born_date, born_weight, breed_id, current_weight, ecc, gender, identifier, previous_weight, property_id, type) values (1, 'Vivo', '2022-05-16', '16', 2, '62', '36', 'M', '456', '26', 2, 'type 3');
+insert into animal (animal_mother_id, born_condition, born_date, born_weight, breed_id, current_weight, ecc, gender, identifier, previous_weight, property_id, type) values (null, 'Vivo', '2019-06-23', '12', 1, '62', '32', 'F', 'Mimosa', '45', 3, 'type 1');
+insert into animal (animal_mother_id, born_condition, born_date, born_weight, breed_id, current_weight, ecc, gender, identifier, previous_weight, property_id, type) values (1, 'Vivo', '2023-06-23', '10', 2, '54', '36', 'F', 'Charmosa', '36', 2, 'type 2');
+insert into animal (animal_mother_id, born_condition, born_date, born_weight, breed_id, current_weight, ecc, gender, identifier, previous_weight, property_id, type) values (1, 'Vivo', '2022-05-16', '16', 2, '62', '36', 'M', 'Leitosa', '26', 2, 'type 3');
 --TABELA CULTURE
 insert into culture (culture_name) values ('Culture 1');
 insert into culture (culture_name) values ('Culture 2');

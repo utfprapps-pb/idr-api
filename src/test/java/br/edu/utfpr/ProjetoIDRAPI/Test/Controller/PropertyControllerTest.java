@@ -1,103 +1,87 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.Property;
-import br.edu.utfpr.ProjetoIDRAPI.model.User;
-import br.edu.utfpr.ProjetoIDRAPI.repository.PropertyRepository;
-import br.edu.utfpr.ProjetoIDRAPI.repository.UserRepository;
+import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudControllerTest;
+import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
+import br.edu.utfpr.ProjetoIDRAPI.entity.property.dto.PropertyDto;
+import br.edu.utfpr.ProjetoIDRAPI.entity.propertyarea.PropertyArea;
+import br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator.PropertyCollaborator;
+import br.edu.utfpr.ProjetoIDRAPI.entity.propertytechnician.PropertyTechnician;
+import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-public class PropertyControllerTest {
+public class PropertyControllerTest extends CrudControllerTest<Property, PropertyDto, Long> {
 
-    private static final String API = "/properties";
+    @Override
+    protected Property createValidObject() {
+        return Property.builder().ocupationArea("Occupation Area 1").totalArea(BigDecimal.valueOf(123.32)).latitude(BigInteger.valueOf(1365)).longitude(BigInteger.valueOf(1365)).leased(true).user(User.builder().id(1L).build()).name("Property 1").city("City 1").state("State 1").nakedAveragePrice(1000.50).leaseAveragePrice(1000.50).farmer("Farmer 1").collaborators(List.of(PropertyCollaborator.builder().collaboratorName("Collaborator 1").workHours(3).workDays(2).build())).area(PropertyArea.builder().dairyCattleFarming(132.32).perennialPasture(132.32).summerPlowing(132.32).winterPlowing(132.32).build()).technicians(List.of(PropertyTechnician.builder().user(User.builder().id(1L).build()).build())).build();
+    }
 
-    @Autowired
-    TestRestTemplate testRestTemplate;
+    @Override
+    protected Property createInvalidObject() {
+        return Property.builder().build();
+    }
 
-    @Autowired
-    PropertyRepository propertyRepository;
+    @Override
+    protected Long getValidId() {
+        return 1L;
+    }
 
-    @Autowired
-    UserRepository userRepository;
+    @Override
+    protected String getURL() {
+        return "/properties";
+    }
 
     @Test
-    public void postProperty_whenPropertyIsValid_receiveCreated() {
-        User user = userRepository.findById(1L).orElse(null);
+    @Order(20)
+    protected void createValidRegisterWithAttachment() throws JsonProcessingException {
+        Property entity = createValidObject();
+        String json = toJSON(entity);
 
-        Property property = createValidProperty();
-        property.setUser(user);
-        ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, property, Object.class);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("property", new HttpEntity<>(json, createJsonHeaders()));
+        body.add("attachment", createAttachment());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(getURL(), requestEntity, Object.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody()).isNotNull();
     }
 
-    @Test
-    public void postProperty_whenPropertyIsValid_propertySavedToDatabase() {
-        User user = userRepository.findById(1L).orElse(null);
-
-        Property property = createValidProperty();
-        property.setUser(user);
-        ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, property, Object.class);
-
-        //Se compara com 4 pois existem três propriedades padrões inseridas no banco.
-        assertThat( propertyRepository.count() ).isEqualTo(4);
+    private HttpHeaders createJsonHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return headers;
     }
 
-    @Test
-    public void deleteProperty_whenPropertyIdExists_receiveOk() {
-        User user = userRepository.findById(1L).orElse(null);
-
-        Property property = createValidProperty();
-        property.setUser(user);
-        ResponseEntity<Object> responseProperty =
-                testRestTemplate.postForEntity(API, property, Object.class);
-
-        testRestTemplate.delete(API + "/4");
-
-        //Se compara com 3 pois existem três propriedades padrões inseridas no banco.
-        assertThat( propertyRepository.count() ).isEqualTo(3);
+    private String toJSON(Property property) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(property);
     }
 
-    @Test
-    public void postProperty_whenPropertyIsValidAndAlreadyExists_propertyUpdateDatabase() {
-        Property property = propertyRepository.findById(1L).orElse(null);
-        property.setOcupationArea("Upadated Ocupation Area");
-
-        ResponseEntity<Object> response =
-                testRestTemplate.postForEntity(API, property, Object.class);
-
-        Property changedProperty = propertyRepository.findById(1L).orElse(null);
-        assertThat(changedProperty.getOcupationArea()).isEqualTo("Upadated Ocupation Area");
-    }
-
-    @Test
-    public void getProperty_whenPropertyExists_propertyReturnFromDatabase() {
-        Property propertyDB = propertyRepository.findById(1L).orElse(null);
-
-        List<Property> propertyList = propertyRepository.findAll();
-        Property propertyDB1 = propertyList.get(0);
-
-        assertThat(propertyDB).isEqualTo(propertyDB1);
-    }
-
-    private Property createValidProperty() {
-        Property property = new Property();
-        property.setOcupationArea("Ocupation Area");
-        property.setLeased(true);
-
-        return property;
+    private ByteArrayResource createAttachment() {
+        return new ByteArrayResource("conteúdo do arquivo".getBytes()) {
+            @Override
+            public String getFilename() {
+                return "file1.txt";
+            }
+        };
     }
 }

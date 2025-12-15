@@ -1,7 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.security;
 
-import br.edu.utfpr.ProjetoIDRAPI.model.User;
-import br.edu.utfpr.ProjetoIDRAPI.service.AuthService;
+import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
+import br.edu.utfpr.ProjetoIDRAPI.entity.token.AuthService;
 import br.edu.utfpr.ProjetoIDRAPI.utils.GenericResponse;
 
 import com.auth0.jwt.JWT;
