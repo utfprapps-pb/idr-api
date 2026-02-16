@@ -1,3 +1,4 @@
+
 package br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.constants;
 
 import java.math.BigDecimal;
