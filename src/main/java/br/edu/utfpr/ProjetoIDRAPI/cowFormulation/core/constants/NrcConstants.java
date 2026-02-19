@@ -14,6 +14,7 @@ public final class NrcConstants {
         public static final BigDecimal DE_TO_ME_INTERCEPT = new BigDecimal("0.45");
         public static final BigDecimal NDT_TO_NEL_SLOPE = new BigDecimal("0.0245");
         public static final BigDecimal NDT_TO_NEL_INTERCEPT = new BigDecimal("0.12");
+        public static final BigDecimal NDT_TO_PERCENT = new BigDecimal("100");
     }
 
     // --- Constantes de Proteína (Protein) ---
