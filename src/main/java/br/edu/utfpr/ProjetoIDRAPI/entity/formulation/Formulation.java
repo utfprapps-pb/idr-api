@@ -34,4 +34,6 @@ public class Formulation {
 
     private BigDecimal weightChangeGoal;
 
+    private Float milkYieldOverride;
+
 }

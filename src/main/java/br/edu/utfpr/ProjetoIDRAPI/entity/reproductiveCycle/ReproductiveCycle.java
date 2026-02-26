@@ -26,16 +26,16 @@ public class ReproductiveCycle {
     @ManyToOne
     private Animal animal;
 
-//    Ex: 1, 2, 3...
+    //    Ex: 1, 2, 3...
     private Integer lactationNumber;
 
-//    Data do parto que iniciou este ciclo
+    //    Data do parto que iniciou este ciclo
     private LocalDate calvingDate;
 
-//    Pode ser atualizado ao longo do ciclo
+    //    Pode ser atualizado ao longo do ciclo
     private LocalDate lastInseminationDate;
 
-//    Lactação, Seca, Pré-parto - Status atual deste ciclo
+    //    Lactação, Seca, Pré-parto - Status atual deste ciclo
     @Enumerated(EnumType.STRING)
     private ProductionStage stage;
 }

@@ -2,6 +2,8 @@ package br.edu.utfpr.ProjetoIDRAPI.entity.animal;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.breed.Breed;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
+import br.edu.utfpr.ProjetoIDRAPI.enums.AnimalSize;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,12 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.Entity;
 import org.hibernate.envers.Audited;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 
 @Entity @Audited
@@ -52,6 +49,9 @@ public class Animal {
     private LocalDate bornDate;
 
     private Float bornWeight;
+
+    @Enumerated(EnumType.STRING)
+    private AnimalSize size;
 
     private Float previousWeight;
 

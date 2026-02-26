@@ -26,15 +26,14 @@ public class MilkControl {
     @ManyToOne
     private Animal animal;
 
-//    Data da medição
+    //    Data da medição
     private LocalDate controlDate;
 
-//    Litros/Kg no dia
+    //    Litros/Kg no dia
     private BigDecimal milkYield;
 
     private BigDecimal fatPercentage;
 
     private BigDecimal proteinPercentage;
-
 
 }
