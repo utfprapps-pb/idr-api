@@ -1,7 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.cowFormulation.modules.energy;
 
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.domain.model.AnimalContext;
-import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.modules.energy.NetEnergyCalculatorService;
+import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.modules.energy.EnergyRequirementCalculator;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.engine.intake.DryMatterIntakeCalculator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import java.math.RoundingMode;
 @RequiredArgsConstructor
 public class NetEnergyCalculator {
 
-    private final NetEnergyCalculatorService energyService;
+    private final EnergyRequirementCalculator energyRequirementCalculator;
     private final DryMatterIntakeCalculator intakeCalculator;
 
     /**
@@ -26,16 +26,16 @@ public class NetEnergyCalculator {
                                        double birthWeight,
                                        double ecc) {
 
-        BigDecimal elMaintenance = energyService
+        BigDecimal elMaintenance = energyRequirementCalculator
                 .calculateELMaintenance(context, distanceKm, timesPerDay);
 
-        BigDecimal elLactation = energyService
+        BigDecimal elLactation = energyRequirementCalculator
                 .calculateELLactation(context);
 
-        BigDecimal elGestation = energyService
+        BigDecimal elGestation = energyRequirementCalculator
                 .calculateELGestation(context, birthWeight);
 
-        BigDecimal elWeightChange = energyService
+        BigDecimal elWeightChange = energyRequirementCalculator
                 .calculateELWeightChange(context, ecc);
 
         return elMaintenance

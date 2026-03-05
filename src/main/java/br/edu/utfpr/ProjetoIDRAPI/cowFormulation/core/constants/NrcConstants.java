@@ -43,6 +43,11 @@ public final class NrcConstants {
         public static final BigDecimal CALORIC_VALUE_PROT = new BigDecimal("5.55");
         public static final BigDecimal EFFICIENCY_CONVERSION = new BigDecimal("0.64")
                 .divide(new BigDecimal("0.75"), 4, RoundingMode.HALF_UP);
+
+        public static final BigDecimal ACTIVITY_ROUND_TRIPS = BigDecimal.valueOf(2);
+        public static final BigDecimal STANDARD_CALF_BIRTH_WEIGHT = BigDecimal.valueOf(45.0);
+        public static final BigDecimal BCS_BASE = BigDecimal.valueOf(1);
+        public static final BigDecimal BCS_FACTOR = BigDecimal.valueOf(2);
     }
 
     // --- Constantes de Proteína (Protein) ---
