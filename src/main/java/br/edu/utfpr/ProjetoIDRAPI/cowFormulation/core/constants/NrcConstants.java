@@ -8,13 +8,41 @@ public final class NrcConstants {
     }
 
     // --- Constantes de Energia (Energy) ---
-    public static final class Energy {
+    public static class Energy {
+        // Constantes Metabolizavel
         public static final BigDecimal TDN_TO_DE_FACTOR = new BigDecimal("0.04409");
         public static final BigDecimal DE_TO_ME_SLOPE = new BigDecimal("1.01");
         public static final BigDecimal DE_TO_ME_INTERCEPT = new BigDecimal("0.45");
         public static final BigDecimal NDT_TO_NEL_SLOPE = new BigDecimal("0.0245");
         public static final BigDecimal NDT_TO_NEL_INTERCEPT = new BigDecimal("0.12");
         public static final BigDecimal NDT_TO_PERCENT = new BigDecimal("100");
+
+        // Constantes para Mantença
+        public static final BigDecimal MAINTENANCE_EXPONENT = new BigDecimal("0.75");
+        public static final BigDecimal MAINTENANCE_COEFFICIENT = new BigDecimal("0.08");
+        public static final BigDecimal ACTIVITY_DIST_FACTOR = new BigDecimal("0.00045");
+        public static final BigDecimal ACTIVITY_BW_FACTOR = new BigDecimal("0.0012");
+
+        // Constantes para Lactação
+        public static final BigDecimal MILK_FAT_COEFFICIENT = new BigDecimal("0.0929");
+        public static final BigDecimal MILK_PROT_COEFFICIENT = new BigDecimal("0.0547");
+        public static final BigDecimal MILK_BASE_ENERGY = new BigDecimal("0.192");
+
+        // Constantes para Gestação
+        public static final BigDecimal GEST_DAYS_COEFFICIENT = new BigDecimal("0.00318");
+        public static final BigDecimal GEST_DAYS_INTERCEPT = new BigDecimal("0.0352");
+        public static final BigDecimal GEST_EFFICIENCY = new BigDecimal("0.218");
+        public static final int GEST_MIN_DAYS = 190;
+        public static final int GEST_MAX_DAYS = 310;
+
+        // Constantes para Ganho/Perda
+        public static final BigDecimal GAIN_FAT_COEFFICIENT = new BigDecimal("0.037683");
+        public static final BigDecimal GAIN_PROT_BASE = new BigDecimal("0.200886");
+        public static final BigDecimal GAIN_PROT_COEFFICIENT = new BigDecimal("0.0066762");
+        public static final BigDecimal CALORIC_VALUE_FAT = new BigDecimal("9.4");
+        public static final BigDecimal CALORIC_VALUE_PROT = new BigDecimal("5.55");
+        public static final BigDecimal EFFICIENCY_CONVERSION = new BigDecimal("0.64")
+                .divide(new BigDecimal("0.75"), 4, RoundingMode.HALF_UP);
     }
 
     // --- Constantes de Proteína (Protein) ---
