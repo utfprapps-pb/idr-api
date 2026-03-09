@@ -5,6 +5,7 @@ import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.domain.model.AnimalContext
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.engine.intake.DryMatterIntakeCalculator;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.modules.protein.fractions.interfaces.PndrServiceInterface;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.modules.protein.requirement.MetabolizableProteinCalculator;
+import br.edu.utfpr.ProjetoIDRAPI.enums.AnimalSize;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,14 +15,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import java.time.LocalDate;
 
 @ExtendWith(MockitoExtension.class) // Habilita o Mockito
 class MetabolizableProteinTest {
 
-    @Mock // Cria uma versão falsa do calculador de IMS
+    //    @Mock // Cria uma versão falsa do calculador de IMS
     private DryMatterIntakeCalculator intakeMock;
 
     @Mock // Cria uma versão falsa do serviço de PNDR (interface)
@@ -33,30 +32,49 @@ class MetabolizableProteinTest {
     @Test
     @DisplayName("Deve calcular PM Fecal corretamente isolando as dependências")
     void shouldCalculatePmRequirement() {
-        // --- ARRANGE (Preparar o terreno) ---
-        AnimalContext ctx = new AnimalContext();
-        ctx.setStage(ProductionStage.LACTATING);
-        // Precisamos do Peso Vazio para descamação/urina
-        // Vamos setar Peso 600kg e assumir feto 0 para simplificar o teste
-        ctx.setBodyWeight(new BigDecimal("600"));
-        ctx.setWeightChangeGoal(BigDecimal.ZERO);
+        AnimalContext ctx = getAnimalContext();
 
-        // Mágica do Mockito: "Quando alguém pedir o IMS, retorne 20kg"
-        when(intakeMock.calculatePredictedIntake(any())).thenReturn(20.0);
+        // Mockito: "Quando alguém pedir o IMS, retorne xxKg"
+//        when(intakeMock.calculatePredictedIntake(any())).thenReturn(17.92);
 
-        // Mágica do Mockito: "Quando alguém pedir o PNDR, retorne 0.5kg"
-        when(pndrMock.calculatePndrSupply(any())).thenReturn(new BigDecimal("0.5"));
+        // Mockito: "Quando alguém pedir o PNDR, retorne xxkg"
+//        when(pndrMock.calculatePndrSupply(any())).thenReturn(new BigDecimal("1.14"));
 
         // --- ACT (Executar) ---
         BigDecimal resultadoPm = pmCalculator.calculateRequirement(ctx);
 
         // --- ASSERT (Verificar) ---
-        // Você deve calcular na mão ou no Excel quanto dá essa conta com:
-        // IMS = 20, PNDR = 0.5, Peso = 600.
-        // Vamos supor que o resultado esperado seja 1.250 kg
         System.out.println("Resultado PM Calculado: " + resultadoPm);
+        System.out.println("PM REAL: 3.449 ou 3,45");
 
         Assertions.assertNotNull(resultadoPm);
-        // Assertions.assertEquals(new BigDecimal("1.250"), resultadoPm); (Descomente com valor real)
+        Assertions.assertEquals(new BigDecimal("3.449"), resultadoPm);
+    }
+
+    @Test
+    @DisplayName("Deve calcular IMS corretamente")
+    void shouldCalculateIMSCorrectly() {
+        AnimalContext ctx = getAnimalContext();
+        DryMatterIntakeCalculator intakeCalculator = new DryMatterIntakeCalculator();
+        double ims = intakeCalculator.calculatePredictedIntake(ctx);
+        System.out.println("IMS: " + ims);
+    }
+
+    private static AnimalContext getAnimalContext() {
+        AnimalContext ctx = new AnimalContext();
+        ctx.setStage(ProductionStage.LACTATING);
+        ctx.setBodyWeight(new BigDecimal("450"));
+        ctx.setWeightChangeGoal(BigDecimal.ZERO);
+        ctx.setBalanceDate(LocalDate.of(2025, 8, 29));
+        ctx.setLactationNumber(33);
+        ctx.setMilkFatPct(new BigDecimal("3.93"));
+        ctx.setMilkProteinPct(new BigDecimal("3.32"));
+        ctx.setSize(AnimalSize.MEDIUM);
+        ctx.setMilkYield(new BigDecimal("33.6"));
+        ctx.setMilkYieldForCalculations(new BigDecimal("33.6"));
+        ctx.setEcc(new BigDecimal("3.50"));
+        ctx.setNextVisitDate(LocalDate.of(2025, 9, 20));
+        ctx.setAmbientTemperature(new BigDecimal("35"));
+        return ctx;
     }
 }
