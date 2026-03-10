@@ -3,7 +3,7 @@ package br.edu.utfpr.ProjetoIDRAPI.cowFormulation.modules.protein.requirements;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.domain.enums.ProductionStage;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.domain.model.AnimalContext;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.engine.intake.DryMatterIntakeCalculator;
-import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.modules.protein.fractions.interfaces.PndrServiceInterface;
+import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.modules.protein.fractions.RumenUndegradableProteinServiceInterface;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.modules.protein.requirement.MetabolizableProteinCalculator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +25,7 @@ class MetabolizableProteinTest {
     private DryMatterIntakeCalculator intakeMock;
 
     @Mock // Cria uma versão falsa do serviço de PNDR (interface)
-    private PndrServiceInterface pndrMock;
+    private RumenUndegradableProteinServiceInterface pndrMock;
 
     @InjectMocks // Injeta os mocks dentro da sua classe de cálculo
     private MetabolizableProteinCalculator pmCalculator;
@@ -45,7 +45,7 @@ class MetabolizableProteinTest {
         when(intakeMock.calculatePredictedIntake(any())).thenReturn(20.0);
 
         // Mágica do Mockito: "Quando alguém pedir o PNDR, retorne 0.5kg"
-        when(pndrMock.calculatePndrSupply(any())).thenReturn(new BigDecimal("0.5"));
+        when(pndrMock.calculateTotalPUR(any())).thenReturn(new BigDecimal("0.5"));
 
         // --- ACT (Executar) ---
         BigDecimal resultadoPm = pmCalculator.calculateRequirement(ctx);

@@ -24,6 +24,7 @@ public class AnimalContext {
 
     // --- 1. Dados de Identificação e Estado ---
     private BigDecimal bodyWeight;          // Convertido de Animal.currentWeight
+    private BigDecimal projectedBodyWeight;
     private ProductionStage stage;          // Input manual (não tem no Animal)
     private Integer lactationNumber;        // Inferido de Animal.type ou input manual
 
@@ -57,6 +58,7 @@ public class AnimalContext {
                          BigDecimal milkYield,
                          BigDecimal milkFatPct,
                          BigDecimal milkProteinPct,
+                         BigDecimal projectedBodyWeight,
                          BigDecimal weightChangeGoal,
                          BigDecimal ambientTemperature) {
 
@@ -70,6 +72,7 @@ public class AnimalContext {
         this.milkFatPct = milkFatPct;
         this.milkProteinPct = milkProteinPct;
         this.weightChangeGoal = weightChangeGoal;
+        this.projectedBodyWeight = projectedBodyWeight;
         this.ambientTemperature = ambientTemperature;
 
         // --- Lógica de Extração da Entidade Animal ---
@@ -128,16 +131,24 @@ public class AnimalContext {
      * Peso Atual + (Dias até próxima visita * Taxa de Ganho/Perda).
      */
     public BigDecimal getProjectedBodyWeight() {
-        if (balanceDate == null || nextVisitDate == null || weightChangeGoal == null) {
-            return this.bodyWeight;
+        // Se temos datas e meta, calculamos a projeção
+        if (balanceDate != null && nextVisitDate != null && weightChangeGoal != null) {
+            long daysInterval = ChronoUnit.DAYS.between(balanceDate, nextVisitDate);
+            if (daysInterval > 0) {
+                BigDecimal weightBase = (this.bodyWeight != null) ? this.bodyWeight : this.projectedBodyWeight;
+                if (weightBase == null) return BigDecimal.ZERO;
+                
+                BigDecimal totalChange = weightChangeGoal.multiply(BigDecimal.valueOf(daysInterval));
+                return weightBase.add(totalChange);
+            }
         }
-        long daysInterval = ChronoUnit.DAYS.between(balanceDate, nextVisitDate);
-        if (daysInterval <= 0) return this.bodyWeight;
 
-        BigDecimal totalChange = weightChangeGoal.multiply(BigDecimal.valueOf(daysInterval));
-        return this.bodyWeight.add(totalChange);
+        // Fallback: se não puder projetar, tenta usar o peso que estiver disponível
+        if (this.projectedBodyWeight != null) return this.projectedBodyWeight;
+        if (this.bodyWeight != null) return this.bodyWeight;
+        
+        return BigDecimal.ZERO; 
     }
-
     /**
      * C58: Peso do Feto (Conceptus Weight).
      * Essencial para descontar do peso da vaca nos cálculos de manutenção.
@@ -203,4 +214,9 @@ public class AnimalContext {
     public double getMetabolicWeight() {
         return Math.pow(getProjectedBodyWeight().doubleValue(), 0.75);
     }
+
+    public ProductionStage getStage(){
+        return this.stage;
+    }
+
 }
