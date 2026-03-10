@@ -55,8 +55,7 @@ public class MetabolizableProteinCalculator implements NutrientRequirementCalcul
 
         // 3. PM Fecal (C93)
         // Obtemos o IMS em double e convertemos para BigDecimal para o cálculo preciso
-         double imsVal = intakeCalculator.calculatePredictedIntake(ctx);
-//        BigDecimal imsBigDecimal = BigDecimal.valueOf(17.92);
+        double imsVal = intakeCalculator.calculatePredictedIntake(ctx);
         BigDecimal imsBigDecimal = BigDecimal.valueOf(imsVal);
         BigDecimal fecalPm = calculateFecalPm(imsBigDecimal, ctx);
         logger.info("PM Fecal (C93) = {}", fecalPm);
@@ -75,13 +74,14 @@ public class MetabolizableProteinCalculator implements NutrientRequirementCalcul
 
         // 7. Soma Total (C97) em gramas
         BigDecimal totalPmGrams = scurfPm.add(urinePm).add(fecalPm).add(endogenaPm).add(lactationPm).add(gestationPm);
+        // 5. Final (C98) em KG
+        // Lógica: ((Total / 0.67) / 1000)
+        // MathContext.DECIMAL64 garante precisão durante as divisões
         BigDecimal pm = totalPmGrams
                 .divide(NrcConstants.Protein.PM_TO_MILK_EFFICIENCY, MathContext.DECIMAL64)
                 .divide(new BigDecimal("1000.0"), 3, RoundingMode.HALF_UP);
         logger.info("PM TOTAL (C98) = {}", scurfPm);
-        // 5. Final (C98) em KG
-        // Lógica: ((Total / 0.67) / 1000)
-        // MathContext.DECIMAL64 garante precisão durante as divisões
+
         return pm;
     }
 
