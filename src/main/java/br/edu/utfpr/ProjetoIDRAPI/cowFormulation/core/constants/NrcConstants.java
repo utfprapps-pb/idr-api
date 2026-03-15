@@ -67,23 +67,12 @@ public final class NrcConstants {
         // Síntese Microbiana
         public static final BigDecimal RDP_DIGESTIBILITY = new BigDecimal("0.80");
         public static final BigDecimal MCP_CONVERSION = new BigDecimal("0.64");
-
-        // Constantes de PM Endógena
-        public static final BigDecimal ENDOGENOUS_LOSS_FACTOR = new BigDecimal("11.8");
-        public static final BigDecimal ENDOGENOUS_TRUE_PROTEIN_FRACTION = new BigDecimal("0.4");
     }
 
     // --- Constantes de Gestação (Gestation) ---
     // Adicionado baseado na fórmula C58 e C91
     public static final class Gestation {
         public static final int CONCEPTUS_THRESHOLD_DAYS = 190; // Começa a contar feto a partir daqui
-        public static final int CONCEPTUS_MAX_DAYS = 310;
-
-        // Constantes de Proteína da Gestação
-        public static final BigDecimal PROTEIN_GROWTH_SLOPE = new BigDecimal("0.69");
-        public static final BigDecimal PROTEIN_GROWTH_INTERCEPT = new BigDecimal("69.2");
-        public static final BigDecimal STANDARD_CALF_WEIGHT = new BigDecimal("45.0");
-        public static final BigDecimal PM_GESTATION_EFFICIENCY = new BigDecimal("0.33");
         public static final BigDecimal FETAL_GROWTH_RATE = new BigDecimal("0.06275");
     }
 
