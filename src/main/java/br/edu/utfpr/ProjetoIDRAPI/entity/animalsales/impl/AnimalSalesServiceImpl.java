@@ -18,7 +18,6 @@ import java.util.List;
 public class AnimalSalesServiceImpl extends CrudServiceImpl<AnimalSales, Long> implements AnimalSalesService {
 	private final AnimalSalesRepository animalSalesRepository;
 	private final AnimalService animalService;
-	@SuppressWarnings("unused")
 	private final AnimalRepository animalRepository;
 
 	public AnimalSalesServiceImpl(AnimalSalesRepository animalSalesRepository, AnimalService animalService, AnimalRepository animalRepository) {

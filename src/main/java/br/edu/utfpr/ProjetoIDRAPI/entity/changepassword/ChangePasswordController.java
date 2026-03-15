@@ -14,7 +14,6 @@ import br.edu.utfpr.ProjetoIDRAPI.utils.GenericResponse;
 public class ChangePasswordController {
 	private final ChangePasswordService changePwService;
 	
-	@SuppressWarnings("unused")
 	private ModelMapper modelMapper;
 	
 	public ChangePasswordController(ChangePasswordService changePwService, 
