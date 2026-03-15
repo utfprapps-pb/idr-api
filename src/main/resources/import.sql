@@ -104,5 +104,3 @@ insert into insemination (bull, ia_date, animal_id) values ('bull 1', '2023-01-1
 insert into insemination (bull, ia_date, animal_id) values ('bull 2', '2023-02-06', 2);
 --TABELA MASTITIS
 insert into mastitis (ad, ae, cmt_result, diagnose_date, mastitis_type, pd, pe, animal_id) values ('ad 1','ae 1','cmt_result 1','2023-02-18','Type 1','pd 1','pe 1',3);
-
-

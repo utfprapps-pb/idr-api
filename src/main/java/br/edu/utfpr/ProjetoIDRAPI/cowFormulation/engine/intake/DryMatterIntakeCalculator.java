@@ -1,6 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.cowFormulation.engine.intake;
 
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.constants.NrcConstants;
+import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.domain.enums.ProductionStage;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.domain.model.AnimalContext;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class DryMatterIntakeCalculator {
         // Seleção de Fórmula Base
         // Nota: Assumindo que lactationNumber == 0 define Novilha.
         // Se houver enum específico HEIFER, usar ctx.getStage() == ProductionStage.HEIFER
-        if (ctx.getLactationNumber() != null && ctx.getLactationNumber() == 0) {
+        if (ctx.getStage() == ProductionStage.HEIFER) {
             baseIntake = calculateHeiferIntake(ctx);
         } else if (ctx.getStage().isProducingMilk()) {
             baseIntake = calculateLactatingCowIntake(ctx);

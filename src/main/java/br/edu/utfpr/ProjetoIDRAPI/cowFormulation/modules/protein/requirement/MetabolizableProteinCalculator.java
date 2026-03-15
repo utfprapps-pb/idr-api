@@ -4,6 +4,7 @@ import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.constants.NrcConstants;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.domain.model.AnimalContext;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.service.base.NutrientRequirementCalculatorBase;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.engine.intake.DryMatterIntakeCalculator;
+import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.modules.protein.fractions.RumenUndegradableProteinCalculator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -19,13 +20,13 @@ import java.math.RoundingMode;
 @RequiredArgsConstructor
 public class MetabolizableProteinCalculator implements NutrientRequirementCalculatorBase<BigDecimal> {
 
-    private final DryMatterIntakeCalculator intakeCalculator;
+    private final DryMatterIntakeCalculator intakeCalculator = new DryMatterIntakeCalculator();
 
     private static final Logger logger = LoggerFactory.getLogger(MetabolizableProteinCalculator.class);
 
 
 //    TODO: Injetar o serviço real de PNDR quando estiver pronto (C111)
-//    private final PndrServiceInterface pndrServiceInterface;
+    private final RumenUndegradableProteinCalculator pndrService = new RumenUndegradableProteinCalculator(intakeCalculator);
 
     @Override
     public String getNutrientName() {
@@ -35,9 +36,9 @@ public class MetabolizableProteinCalculator implements NutrientRequirementCalcul
     @Override
     public BigDecimal calculateRequirement(AnimalContext ctx) {
         // C98: Se não for lactação, retorna zero (conforme lógica discutida)
-        if (!ctx.getStage().isProducingMilk()) {
-            return BigDecimal.ZERO;
-        }
+//        if (!ctx.getStage().isProducingMilk()) {
+//            return BigDecimal.ZERO;
+//        }
 
         // 1. PM Descamação (C91)
         // Fórmula: 0.3 * (PesoVazio ^ 0.6)
@@ -80,7 +81,7 @@ public class MetabolizableProteinCalculator implements NutrientRequirementCalcul
         BigDecimal pm = totalPmGrams
                 .divide(NrcConstants.Protein.PM_TO_MILK_EFFICIENCY, MathContext.DECIMAL64)
                 .divide(new BigDecimal("1000.0"), 3, RoundingMode.HALF_UP);
-        logger.info("PM TOTAL (C98) = {}", scurfPm);
+        logger.info("PM TOTAL (C97) = {}", totalPmGrams);
 
         return pm;
     }
@@ -91,9 +92,8 @@ public class MetabolizableProteinCalculator implements NutrientRequirementCalcul
      */
     private BigDecimal calculateFecalPm(BigDecimal ims, AnimalContext ctx) {
         // TODO: Exigência de PNDR (C111). Substituir por: pndrCalculator.calculateRequirement(ctx);
-        // BigDecimal pndrRequirement = pndrServiceInterface.calculateRequirement(ctx);
-        // --- Dependência Externa (Mockada por enquanto) ---
-        BigDecimal pndrRequirement = new BigDecimal("1.14");
+         BigDecimal pndrRequirement = pndrService.calculateTotalPUR(ctx);
+        logger.info("PNDR: {}", pndrRequirement);
 
         // --- Fórmula C93 ---
         // Lógica: (IMS * 30) - 0.5 * (((PNDR / 1.18) * 0.64 / 0.8) - ((PNDR / 1.18) * 0.64))

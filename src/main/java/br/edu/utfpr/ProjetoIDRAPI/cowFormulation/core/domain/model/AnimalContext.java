@@ -28,6 +28,7 @@ public class AnimalContext {
 
     // --- 1. Dados de Identificação e Estado ---
     private BigDecimal bodyWeight;          // Convertido de Animal.currentWeight
+    private BigDecimal projectedBodyWeight;
     private ProductionStage stage;          // Input manual (não tem no Animal)
     private Integer lactationNumber;        // Inferido de Animal.type ou input manual
     private AnimalSize size;
@@ -58,9 +59,12 @@ public class AnimalContext {
     public AnimalContext(Animal animal,
                          ReproductiveCycle cycle,
                          MilkControl milkControl,
-                         Formulation formulation) {
+                         Formulation formulation,
+                         BigDecimal projectedBodyWeight
+    ) {
 
         this.animalOrigin = animal;
+        this.projectedBodyWeight = projectedBodyWeight;
 
         // --- 1. Extração do Animal (Garantia de Tipagem) ---
         if (animal != null) {
@@ -147,14 +151,23 @@ public class AnimalContext {
      * Peso Atual + (Dias até próxima visita * Taxa de Ganho/Perda).
      */
     public BigDecimal getProjectedBodyWeight() {
-        if (balanceDate == null || nextVisitDate == null || weightChangeGoal == null) {
-            return this.bodyWeight;
-        }
-        long daysInterval = ChronoUnit.DAYS.between(balanceDate, nextVisitDate);
-        if (daysInterval <= 0) return this.bodyWeight;
+        // Se temos datas e meta, calculamos a projeção
+        if (balanceDate != null && nextVisitDate != null && weightChangeGoal != null) {
+            long daysInterval = ChronoUnit.DAYS.between(balanceDate, nextVisitDate);
+            if (daysInterval > 0) {
+                BigDecimal weightBase = (this.bodyWeight != null) ? this.bodyWeight : this.projectedBodyWeight;
+                if (weightBase == null) return BigDecimal.ZERO;
 
-        BigDecimal totalChange = weightChangeGoal.multiply(BigDecimal.valueOf(daysInterval));
-        return this.bodyWeight.add(totalChange);
+                BigDecimal totalChange = weightChangeGoal.multiply(BigDecimal.valueOf(daysInterval));
+                return weightBase.add(totalChange);
+            }
+        }
+
+        // Fallback: se não puder projetar, tenta usar o peso que estiver disponível
+        if (this.projectedBodyWeight != null) return this.projectedBodyWeight;
+        if (this.bodyWeight != null) return this.bodyWeight;
+
+        return BigDecimal.ZERO;
     }
 
     /**
@@ -222,4 +235,5 @@ public class AnimalContext {
     public double getMetabolicWeight() {
         return Math.pow(getProjectedBodyWeight().doubleValue(), 0.75);
     }
+
 }
