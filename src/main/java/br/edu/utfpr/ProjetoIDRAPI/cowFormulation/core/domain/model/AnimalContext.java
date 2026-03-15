@@ -3,6 +3,10 @@ package br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.domain.model;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.constants.NrcConstants;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.domain.enums.ProductionStage;
 import br.edu.utfpr.ProjetoIDRAPI.entity.animal.Animal;
+import br.edu.utfpr.ProjetoIDRAPI.entity.formulation.Formulation;
+import br.edu.utfpr.ProjetoIDRAPI.entity.milkControl.MilkControl;
+import br.edu.utfpr.ProjetoIDRAPI.entity.reproductiveCycle.ReproductiveCycle;
+import br.edu.utfpr.ProjetoIDRAPI.enums.AnimalSize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,8 +28,10 @@ public class AnimalContext {
 
     // --- 1. Dados de Identificação e Estado ---
     private BigDecimal bodyWeight;          // Convertido de Animal.currentWeight
+    private BigDecimal projectedBodyWeight;
     private ProductionStage stage;          // Input manual (não tem no Animal)
     private Integer lactationNumber;        // Inferido de Animal.type ou input manual
+    private AnimalSize size;
 
     // --- 2. Dados de Datas (Eventos Dinâmicos) ---
     // Estes dados NÃO estão na entidade Animal, pois variam a cada ciclo reprodutivo
@@ -43,60 +49,77 @@ public class AnimalContext {
     // --- 4. Dados Ambientais ---
     private BigDecimal ambientTemperature;
 
+    private BigDecimal ecc;
+    private BigDecimal milkYieldForCalculations;
+
     /**
      * CONSTRUTOR INTELIGENTE (Builder Customizado)
-     * Este é o segredo da refatoração. Ele pega o Animal do banco e preenche o Contexto.
      */
     @Builder
     public AnimalContext(Animal animal,
-                         ProductionStage stage,
-                         LocalDate balanceDate,
-                         LocalDate nextVisitDate,
-                         LocalDate calvingDate,
-                         LocalDate lastInseminationDate,
-                         BigDecimal milkYield,
-                         BigDecimal milkFatPct,
-                         BigDecimal milkProteinPct,
-                         BigDecimal weightChangeGoal,
-                         BigDecimal ambientTemperature) {
+                         ReproductiveCycle cycle,
+                         MilkControl milkControl,
+                         Formulation formulation,
+                         BigDecimal projectedBodyWeight
+    ) {
 
         this.animalOrigin = animal;
-        this.balanceDate = balanceDate;
-        this.nextVisitDate = nextVisitDate;
-        this.calvingDate = calvingDate;
-        this.lastInseminationDate = lastInseminationDate;
-        this.stage = stage;
-        this.milkYield = milkYield;
-        this.milkFatPct = milkFatPct;
-        this.milkProteinPct = milkProteinPct;
-        this.weightChangeGoal = weightChangeGoal;
-        this.ambientTemperature = ambientTemperature;
+        this.projectedBodyWeight = projectedBodyWeight;
 
-        // --- Lógica de Extração da Entidade Animal ---
+        // --- 1. Extração do Animal (Garantia de Tipagem) ---
         if (animal != null) {
-            // 1. Conversão Segura de Peso (Float -> BigDecimal)
             this.bodyWeight = animal.getCurrentWeight() != null
                     ? BigDecimal.valueOf(animal.getCurrentWeight())
                     : BigDecimal.ZERO;
-
-            // 2. Inferência de Lactação baseada no Tipo
-            // Se for Novilha, Lactação = 0. Caso contrário, assumimos > 0 (ou deve ser passado no futuro)
-            if (animal.getType() != null && animal.getType().equalsIgnoreCase("Novilha")) {
-                this.lactationNumber = 0;
-            } else {
-                // Se for Vaca, assumimos 1 por padrão se não tiver histórico,
-                // mas idealmente isso viria de um count de partos do banco.
-                this.lactationNumber = 1;
-            }
+            this.size = animal.getSize();
+            this.ecc = animal.getEcc() != null ? BigDecimal.valueOf(animal.getEcc()) : new BigDecimal("3.0");
         } else {
-            // Fallback se não passar animal (Simulação pura)
             this.bodyWeight = BigDecimal.ZERO;
-            this.lactationNumber = 1;
+        }
+
+        // --- 2. Extração do Ciclo Reprodutivo ---
+        if (cycle != null) {
+            this.stage = cycle.getStage();
+            this.lactationNumber = cycle.getLactationNumber();
+            this.calvingDate = cycle.getCalvingDate();
+            this.lastInseminationDate = cycle.getLastInseminationDate();
+        } else {
+            // Inferência caso não exista ciclo (ex: primeira inserção de Novilha)
+            this.stage = ProductionStage.HEIFER;
+            this.lactationNumber = (animal != null && "Novilha".equalsIgnoreCase(animal.getType())) ? 0 : 1;
+        }
+
+        // --- 3. Extração do Controle Leiteiro ---
+        if (milkControl != null) {
+            this.milkYield = milkControl.getMilkYield() != null ? BigDecimal.valueOf(milkControl.getMilkYield().doubleValue()) : BigDecimal.ZERO;
+            this.milkFatPct = milkControl.getFatPercentage() != null ? BigDecimal.valueOf(milkControl.getFatPercentage().doubleValue()) : BigDecimal.ZERO;
+            this.milkProteinPct = milkControl.getProteinPercentage() != null ? BigDecimal.valueOf(milkControl.getProteinPercentage().doubleValue()) : BigDecimal.ZERO;
+        } else {
+            this.milkYield = BigDecimal.ZERO;
+            this.milkFatPct = BigDecimal.ZERO;
+            this.milkProteinPct = BigDecimal.ZERO;
+        }
+
+        // --- 4. Extração da Formulação / Metas ---
+        if (formulation != null) {
+            this.balanceDate = formulation.getBalanceDate() != null ? formulation.getBalanceDate() : LocalDate.now();
+            this.nextVisitDate = formulation.getNextVisitDate();
+            this.weightChangeGoal = formulation.getWeightChangeGoal() != null ? BigDecimal.valueOf(formulation.getWeightChangeGoal().doubleValue()) : BigDecimal.ZERO;
+            this.ambientTemperature = formulation.getAmbientTemperature() != null ? BigDecimal.valueOf(formulation.getAmbientTemperature().doubleValue()) : new BigDecimal("20.0");
+
+            // Lógicas de negócio da Formulação (Prioridade do técnico)
+            this.milkYieldForCalculations = formulation.getMilkYieldOverride() != null ? BigDecimal.valueOf(formulation.getMilkYieldOverride()) : this.getPeakAdjustedMilkYield();
+        } else {
+            this.balanceDate = LocalDate.now();
+            this.weightChangeGoal = BigDecimal.ZERO;
+            this.ambientTemperature = new BigDecimal("20.0"); // 20ºC é o ponto neutro térmico do NRC
+            this.ecc = animal != null && animal.getEcc() != null ? BigDecimal.valueOf(animal.getEcc()) : new BigDecimal("3.0");
+            this.milkYieldForCalculations = this.getPeakAdjustedMilkYield();
         }
     }
 
     // ==================================================================================
-    // MÉTODOS COMPUTADOS (Regra de Negócio Pura)
+    // MÉTODOS COMPUTADOS (Regra de Negócio)
     // ==================================================================================
 
     /**
@@ -128,14 +151,23 @@ public class AnimalContext {
      * Peso Atual + (Dias até próxima visita * Taxa de Ganho/Perda).
      */
     public BigDecimal getProjectedBodyWeight() {
-        if (balanceDate == null || nextVisitDate == null || weightChangeGoal == null) {
-            return this.bodyWeight;
-        }
-        long daysInterval = ChronoUnit.DAYS.between(balanceDate, nextVisitDate);
-        if (daysInterval <= 0) return this.bodyWeight;
+        // Se temos datas e meta, calculamos a projeção
+        if (balanceDate != null && nextVisitDate != null && weightChangeGoal != null) {
+            long daysInterval = ChronoUnit.DAYS.between(balanceDate, nextVisitDate);
+            if (daysInterval > 0) {
+                BigDecimal weightBase = (this.bodyWeight != null) ? this.bodyWeight : this.projectedBodyWeight;
+                if (weightBase == null) return BigDecimal.ZERO;
 
-        BigDecimal totalChange = weightChangeGoal.multiply(BigDecimal.valueOf(daysInterval));
-        return this.bodyWeight.add(totalChange);
+                BigDecimal totalChange = weightChangeGoal.multiply(BigDecimal.valueOf(daysInterval));
+                return weightBase.add(totalChange);
+            }
+        }
+
+        // Fallback: se não puder projetar, tenta usar o peso que estiver disponível
+        if (this.projectedBodyWeight != null) return this.projectedBodyWeight;
+        if (this.bodyWeight != null) return this.bodyWeight;
+
+        return BigDecimal.ZERO;
     }
 
     /**
@@ -203,4 +235,5 @@ public class AnimalContext {
     public double getMetabolicWeight() {
         return Math.pow(getProjectedBodyWeight().doubleValue(), 0.75);
     }
+
 }
