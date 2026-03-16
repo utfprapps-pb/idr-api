@@ -1,3 +1,4 @@
+
 package br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.constants;
 
 import java.math.BigDecimal;
@@ -7,12 +8,46 @@ public final class NrcConstants {
     }
 
     // --- Constantes de Energia (Energy) ---
-    public static final class Energy {
+    public static class Energy {
+        // Constantes Metabolizavel
         public static final BigDecimal TDN_TO_DE_FACTOR = new BigDecimal("0.04409");
         public static final BigDecimal DE_TO_ME_SLOPE = new BigDecimal("1.01");
         public static final BigDecimal DE_TO_ME_INTERCEPT = new BigDecimal("0.45");
         public static final BigDecimal NDT_TO_NEL_SLOPE = new BigDecimal("0.0245");
         public static final BigDecimal NDT_TO_NEL_INTERCEPT = new BigDecimal("0.12");
+        public static final BigDecimal NDT_TO_PERCENT = new BigDecimal("100");
+
+        // Constantes para Mantença
+        public static final BigDecimal MAINTENANCE_EXPONENT = new BigDecimal("0.75");
+        public static final BigDecimal MAINTENANCE_COEFFICIENT = new BigDecimal("0.08");
+        public static final BigDecimal ACTIVITY_DIST_FACTOR = new BigDecimal("0.00045");
+        public static final BigDecimal ACTIVITY_BW_FACTOR = new BigDecimal("0.0012");
+
+        // Constantes para Lactação
+        public static final BigDecimal MILK_FAT_COEFFICIENT = new BigDecimal("0.0929");
+        public static final BigDecimal MILK_PROT_COEFFICIENT = new BigDecimal("0.0547");
+        public static final BigDecimal MILK_BASE_ENERGY = new BigDecimal("0.192");
+
+        // Constantes para Gestação
+        public static final BigDecimal GEST_DAYS_COEFFICIENT = new BigDecimal("0.00318");
+        public static final BigDecimal GEST_DAYS_INTERCEPT = new BigDecimal("0.0352");
+        public static final BigDecimal GEST_EFFICIENCY = new BigDecimal("0.218");
+        public static final int GEST_MIN_DAYS = 190;
+        public static final int GEST_MAX_DAYS = 310;
+
+        // Constantes para Ganho/Perda
+        public static final BigDecimal GAIN_FAT_COEFFICIENT = new BigDecimal("0.037683");
+        public static final BigDecimal GAIN_PROT_BASE = new BigDecimal("0.200886");
+        public static final BigDecimal GAIN_PROT_COEFFICIENT = new BigDecimal("0.0066762");
+        public static final BigDecimal CALORIC_VALUE_FAT = new BigDecimal("9.4");
+        public static final BigDecimal CALORIC_VALUE_PROT = new BigDecimal("5.55");
+        public static final BigDecimal EFFICIENCY_CONVERSION = new BigDecimal("0.64")
+                .divide(new BigDecimal("0.75"), 4, RoundingMode.HALF_UP);
+
+        public static final BigDecimal ACTIVITY_ROUND_TRIPS = BigDecimal.valueOf(2);
+        public static final BigDecimal STANDARD_CALF_BIRTH_WEIGHT = BigDecimal.valueOf(45.0);
+        public static final BigDecimal BCS_BASE = BigDecimal.valueOf(1);
+        public static final BigDecimal BCS_FACTOR = BigDecimal.valueOf(2);
     }
 
     // --- Constantes de Proteína (Protein) ---
@@ -32,23 +67,12 @@ public final class NrcConstants {
         // Síntese Microbiana
         public static final BigDecimal RDP_DIGESTIBILITY = new BigDecimal("0.80");
         public static final BigDecimal MCP_CONVERSION = new BigDecimal("0.64");
-
-        // Constantes de PM Endógena
-        public static final BigDecimal ENDOGENOUS_LOSS_FACTOR = new BigDecimal("11.8");
-        public static final BigDecimal ENDOGENOUS_TRUE_PROTEIN_FRACTION = new BigDecimal("0.4");
     }
 
     // --- Constantes de Gestação (Gestation) ---
     // Adicionado baseado na fórmula C58 e C91
     public static final class Gestation {
         public static final int CONCEPTUS_THRESHOLD_DAYS = 190; // Começa a contar feto a partir daqui
-        public static final int CONCEPTUS_MAX_DAYS = 310;
-
-        // Constantes de Proteína da Gestação
-        public static final BigDecimal PROTEIN_GROWTH_SLOPE = new BigDecimal("0.69");
-        public static final BigDecimal PROTEIN_GROWTH_INTERCEPT = new BigDecimal("69.2");
-        public static final BigDecimal STANDARD_CALF_WEIGHT = new BigDecimal("45.0");
-        public static final BigDecimal PM_GESTATION_EFFICIENCY = new BigDecimal("0.33");
         public static final BigDecimal FETAL_GROWTH_RATE = new BigDecimal("0.06275");
     }
 

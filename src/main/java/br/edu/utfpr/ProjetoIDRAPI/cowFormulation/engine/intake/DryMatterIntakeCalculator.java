@@ -1,12 +1,8 @@
 package br.edu.utfpr.ProjetoIDRAPI.cowFormulation.engine.intake;
 
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.constants.NrcConstants;
-import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.domain.enums.ProductionStage;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.domain.model.AnimalContext;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 /**
  * Calculadora para estimar a IMS ingestão de Matéria Seca predita.
@@ -23,7 +19,7 @@ public class DryMatterIntakeCalculator {
         // Seleção de Fórmula Base
         // Nota: Assumindo que lactationNumber == 0 define Novilha.
         // Se houver enum específico HEIFER, usar ctx.getStage() == ProductionStage.HEIFER
-        if (ctx.getStage() == ProductionStage.HEIFER) {
+        if (ctx.getLactationNumber() != null && ctx.getLactationNumber() == 0) {
             baseIntake = calculateHeiferIntake(ctx);
         } else if (ctx.getStage().isProducingMilk()) {
             baseIntake = calculateLactatingCowIntake(ctx);
@@ -37,17 +33,13 @@ public class DryMatterIntakeCalculator {
         double currentTemp = ctx.getAmbientTemperature() != null ? ctx.getAmbientTemperature().doubleValue() : 20.0;
         double threshold = NrcConstants.Intake.HEAT_STRESS_THRESHOLD.doubleValue();
 
-        double finalIntake = baseIntake;
-
         if (currentTemp >= threshold) {
             // Fórmula: IMS * (1 - ((Temp - 20) * 0.005922))
             double correctionFactor = 1.0 - ((currentTemp - threshold) * NrcConstants.Intake.HEAT_STRESS_COEFF.doubleValue());
-            finalIntake = baseIntake * correctionFactor;
+            return baseIntake * correctionFactor;
         }
 
-        return BigDecimal.valueOf(finalIntake)
-                .setScale(2, RoundingMode.HALF_UP)
-                .doubleValue();
+        return baseIntake;
     }
 
     // --- C21: Novilhas ---
