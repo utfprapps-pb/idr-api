@@ -8,6 +8,7 @@ import br.edu.utfpr.ProjetoIDRAPI.entity.propertyarea.PropertyArea;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertyattachment.PropertyAttachmentDTO;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator.PropertyCollaborator;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertytechnician.PropertyTechnician;
+import br.edu.utfpr.ProjetoIDRAPI.entity.user.dto.UserDto;
 import lombok.Data;
 
 @Data
@@ -15,7 +16,7 @@ public class PropertyDto {
 	
 	private long id;
 	
-    private String ocupationArea;
+    private String occupationArea;
     
     private BigDecimal totalArea;
 
@@ -35,4 +36,6 @@ public class PropertyDto {
     private PropertyArea area;
     private List<PropertyTechnician> technicians;
     private PropertyAttachmentDTO attachment;
+
+    private UserDto user;
 }
