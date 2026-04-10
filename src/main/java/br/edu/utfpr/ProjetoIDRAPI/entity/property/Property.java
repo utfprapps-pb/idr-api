@@ -1,15 +1,13 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.property;
 
+import br.edu.utfpr.ProjetoIDRAPI.entity.city.City;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertyarea.PropertyArea;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator.PropertyCollaborator;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertytechnician.PropertyTechnician;
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.envers.Audited;
 
 import java.math.BigDecimal;
@@ -17,7 +15,8 @@ import java.math.BigInteger;
 import java.util.List;
 
 @Entity @Audited
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,31 +24,32 @@ public class Property {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @NotNull
+    private String name;
+
     @ManyToOne
-    private User user;
+    @JoinColumn(name = "producer_id")
+    private User producer;
 
-    private String occupationArea;
+    @ManyToOne
+    @JoinColumn(name = "city_id")
+    private City city;
 
     private BigDecimal totalArea;
 
     private BigInteger latitude;
+
     private BigInteger longitude;
 
-    @NotNull
     private Boolean leased;
 
-    private String name;
-
-    private String city;
-    private String state;
-
     private Double nakedAveragePrice;
+
     private Double leaseAveragePrice;
 
-    private String farmer;
+    @OneToOne(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
+    private PropertyArea area;
 
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PropertyCollaborator> collaborators;
@@ -57,6 +57,4 @@ public class Property {
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PropertyTechnician> technicians;
 
-    @OneToOne(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
-    private PropertyArea area;
 }

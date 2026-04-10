@@ -1,5 +1,7 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.user.impl;
 
+import br.edu.utfpr.ProjetoIDRAPI.entity.city.City;
+import br.edu.utfpr.ProjetoIDRAPI.entity.city.CityService;
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.impl.CrudServiceImpl;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
@@ -9,18 +11,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl extends CrudServiceImpl<User, Long> implements UserService {
 
     private final UserRepository userRepository;
-    BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+    private final CityService cityService;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        passwordEncoder = new BCryptPasswordEncoder();
+    public UserServiceImpl(UserRepository userRepository, CityService cityService, PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.cityService = cityService;
     }
 
 	@Override
@@ -35,6 +39,12 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements User
 
     @Override
     public User save(User user) {
+        if (user.getCity().getId() == null || user.getCity().getId() == 0) {
+            City city = this.cityService.findByName(user.getCity().getName());
+            if (city != null) {
+                user.setCity(city);
+            }
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }

@@ -12,7 +12,7 @@ public class UserControllerTest extends CrudControllerTest<User, UserDto, Long> 
     @Override
     protected User createValidObject() {
         return User.builder()
-                .displayName("name")
+                .name("name")
                 .username("username")
                 .password("password")
                 .cpf("09876543210")

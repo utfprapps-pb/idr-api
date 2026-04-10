@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface PropertyRepository extends JpaRepository<Property, Long>, PropertySpecExecutor {
 	//método que irá buscar as propriedades pelo id do usuario
-    List<Property> findAllByUserId(Long id);
+    List<Property> findAllByProducerId(Long id);
 }

@@ -33,8 +33,8 @@ public class PropertyServiceImpl extends CrudServiceImpl<Property, Long> impleme
 	}
 
 	@Override
-	public List<Property> findByUserId(Long id) {
-		return propertyRepository.findAllByUserId(id);
+	public List<Property> findByProducerId(Long id) {
+		return propertyRepository.findAllByProducerId(id);
 	}
 
     @Override
@@ -44,8 +44,26 @@ public class PropertyServiceImpl extends CrudServiceImpl<Property, Long> impleme
 
     @Override
     public Property save(Property entity, byte[] attachment) {
-        boolean isNew = (entity.getId() == 0);
-        entity.setUser(userService.findSelfUser());
+        boolean isNew = (entity.getId() == null || entity.getId() == 0);
+        if (isNew && (entity.getProducer().getId() == null || entity.getProducer().getId() == 0 )) {
+            /*
+                Caso não seja informado um email será gerado um username aleatório, que poderá ser ajustado
+                posteriormente. Para um produtor acessar o sistema o email deverá ser ajustado.
+             */
+            if (entity.getProducer().getUsername() == null) {
+                entity.getProducer().setUsername("agricultor_%d@idrparana.pr.gov.br".formatted(System.currentTimeMillis()));
+                entity.getProducer().setPassword("%d".formatted(System.currentTimeMillis()));
+            }
+            if (entity.getProducer().getCpf() == null) {
+                entity.getProducer().setCpf("%d".formatted(System.currentTimeMillis()));
+            }
+            if (entity.getProducer().getCity() == null || entity.getProducer().getCity().getId() == null) {
+                entity.getProducer().setCity(entity.getCity());
+            }
+
+            userService.save(entity.getProducer());
+        }
+
         super.save(entity);
         handleAttachmentSave(entity, attachment, isNew);
         return entity;
@@ -67,7 +85,7 @@ public class PropertyServiceImpl extends CrudServiceImpl<Property, Long> impleme
      * This should only be executed while only one attachment is allowed by property
      */
     private void handleAttachmentSave(Property entity, byte[] attachment, boolean isNew) {
-        if (attachment != null) {
+        if (attachment != null && attachment.length > 0) {
             // check if there is already an attachment
             List<PropertyAttachment> existing = propertyAttachmentService.findByPropertyId(entity.getId());
 

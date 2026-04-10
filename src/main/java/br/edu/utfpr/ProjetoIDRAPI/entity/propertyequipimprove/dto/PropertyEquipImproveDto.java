@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 @Data
 public class PropertyEquipImproveDto {
 
-    private long id;
+    private Long id;
 
     private String type;
 

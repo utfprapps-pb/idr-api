@@ -10,7 +10,7 @@ public class CityControllerTest extends CrudControllerTest<City, City, Long> {
     protected City createValidObject() {
         return City.builder()
                 .name("Test")
-                .cityRegion(Region.builder().id(1L).build())
+                .region(Region.builder().id(1L).build())
                 .build();
     }
 

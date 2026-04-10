@@ -38,7 +38,7 @@ public class ChangePasswordServiceImpl implements ChangePasswordService{
 		changePassword.setRecuperationEmail(user.getUsername());
 		changePassword.setRecuperationCode(getPasswordRecoveryCode(user.getId()));
 		changePassword.setCodeSubmissionDate(new Date());
-		changePassword.setUserDisplayName(user.getDisplayName());
+		changePassword.setUserDisplayName(user.getName());
 		
 		changePasswordRepository.save(changePassword);
 		

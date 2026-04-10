@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class PropertyController extends CrudController<Property, PropertyDto, Long> {
 
     private final PropertyService propertyService;
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     public PropertyController(PropertyService propertyService, ModelMapper modelMapper) {
         super(Property.class, PropertyDto.class);
@@ -44,12 +44,12 @@ public class PropertyController extends CrudController<Property, PropertyDto, Lo
 
     @GetMapping("/userProperty/{id}")
     public ResponseEntity<List<PropertyDto>> findByUserId(@PathVariable Long id) {
-        return ResponseEntity.ok(propertyService.findByUserId(id).stream().map(super::convertToDto).collect(Collectors.toList()));
+        return ResponseEntity.ok(propertyService.findByProducerId(id).stream().map(super::convertToDto).collect(Collectors.toList()));
     }
 
     @Override
     @GetMapping("{id}")
-    public ResponseEntity<PropertyDto> findOne(Long id) {
+    public ResponseEntity<PropertyDto> findOne(@PathVariable Long id) {
         Property property = propertyService.findOne(id);
         if (property == null) {
             return ResponseEntity.noContent().build();

@@ -6,13 +6,11 @@ import lombok.Data;
 @Data
 public class PropertyCollaboratorDto {
 
-    private long id;
+    private Long id;
 
-    private String collaboratorName;
+    private String name;
 
-    private Integer workHours;
+    private String hoursPerDay;
 
-    private Integer workDays;
-    
     private PropertyDto property;
 }

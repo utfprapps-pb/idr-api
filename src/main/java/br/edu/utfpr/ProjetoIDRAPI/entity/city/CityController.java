@@ -1,5 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.city;
 
+import br.edu.utfpr.ProjetoIDRAPI.entity.city.dto.CityDto;
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudController;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -9,16 +10,13 @@ import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudService;
 
 @RestController
 @RequestMapping("cities")
-public class CityController extends CrudController<City, City, Long> {
-
-	//Como cidade não tem um dto definido, quando chamado o extends do crud
-	//foi passado para ele duas cidade no lugar de uma city e um dto
+public class CityController extends CrudController<City, CityDto, Long> {
 
 	private final CityService cityService;
-	private ModelMapper modelMapper;
+	private final ModelMapper modelMapper;
 
 	public CityController(CityService cityService, ModelMapper modelMapper) {
-		super(City.class, City.class);
+		super(City.class, CityDto.class);
 		this.cityService = cityService;
 		this.modelMapper = modelMapper;
 	}
@@ -34,11 +32,11 @@ public class CityController extends CrudController<City, City, Long> {
 	}
 
 	@GetMapping("/findName/{name}")
-	public ResponseEntity<City> findByName(@PathVariable String name){
+	public ResponseEntity<CityDto> findByName(@PathVariable String name){
 		City entity = cityService.findByName(name);
 		
 		if(entity != null) {
-			return ResponseEntity.ok(cityService.findByName(name));
+			return ResponseEntity.ok(modelMapper.map(entity, CityDto.class));
     	} else {
     		return ResponseEntity.noContent().build();
     	}

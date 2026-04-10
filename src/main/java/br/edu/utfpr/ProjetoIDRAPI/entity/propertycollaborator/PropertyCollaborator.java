@@ -19,20 +19,15 @@ public class PropertyCollaborator {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @JsonIgnore
     @NotNull
     @ManyToOne
     private Property property;
 
-    @NotNull
-    private String collaboratorName;
+    private String name;
 
-    @NotNull
-    private Integer workHours;
-
-    @NotNull
-    private Integer workDays;
+    private String hoursPerDay;
 
 }

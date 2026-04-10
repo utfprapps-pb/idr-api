@@ -7,7 +7,7 @@ import br.edu.utfpr.ProjetoIDRAPI.entity.propertyattachment.PropertyAttachment;
 
 public interface PropertyService extends CrudService<Property, Long> {
 
-	List<Property> findByUserId(Long id);
+	List<Property> findByProducerId(Long id);
     List<PropertyAttachment> findAttachmentsById(Long id);
     Property save(Property entity, byte[] attachment);
 }

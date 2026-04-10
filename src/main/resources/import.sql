@@ -1,31 +1,31 @@
 --TABELA USERS
---senhas 123
-insert into users (cep, city, cpf, display_name, graduation_year, house_number, password, phone, professional_register, street, username) values ('1111.1111', 'Pato Branco', '111.111.111-11', 'Técnico 1', '1991', '01', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '1111', '1111', 'Rua teste1', 'tecnico1@idr.com');
-insert into users (cep, city, cpf, display_name, graduation_year, house_number, password, phone, professional_register, street, username) values ('2222.2222', 'Beltrao', '222.222.222-22', 'Técnico 2', '2002', '22', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '2222', '2222', 'Rua teste2', 'tecnico2@idr.com');
-insert into users (cep, city, cpf, display_name, graduation_year, house_number, password, phone, professional_register, street, username) values ('3333.3333', 'Palmas', '333.333.333-33', 'Técnico 3', '2013', '333', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '3333', '3333', 'Rua teste3', 'tecnico3@idr.com');
-insert into users (cep, city, cpf, display_name, graduation_year, house_number, password, phone, professional_register, street, username) values ('1111.1111', 'Pato Branco', '444.444.444-44', 'Agricultor 1', '1991', '01', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '1111', '1111', 'Rua teste1', 'agricultor1@idr.com');
-insert into users (cep, city, cpf, display_name, graduation_year, house_number, password, phone, professional_register, street, username) values ('2222.2222', 'Beltrao', '555.555.555-55', 'Agricultor 2', '2002', '22', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '2222', '2222', 'Rua teste2', 'agricultor2@idr.com');
-insert into users (cep, city, cpf, display_name, graduation_year, house_number, password, phone, professional_register, street, username) values ('3333.3333', 'Palmas', '666.666.666-66', 'Agricultor 3', '2013', '333', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '3333', '3333', 'Rua teste3', 'agricultor3@idr.com');
---TABELA PROPERTY
-insert into property (latitude, leased, longitude, occupation_area, total_area, user_id, name, city, state, naked_average_price, lease_average_price, farmer) values('1365', true, '1365', 'Ocupation Area1', '163.46', 4, 'Property 1', 'City 1', 'State 1', 1000.00, 500.00, 'Farmer 1');
-insert into property (latitude, leased, longitude, occupation_area, total_area, user_id, name, city, state, naked_average_price, lease_average_price, farmer) values('654', true, '654', 'Ocupation Area2', '634.13', 5, 'Property 2', 'City 2', 'State 2', 2000.00, 1000.00, 'Farmer 2');
-insert into property (latitude, leased, longitude, occupation_area, total_area, user_id, name, city, state, naked_average_price, lease_average_price, farmer) values('365', true, '365', 'Ocupation Area3', '389.16', 6, 'Property 3', 'City 3', 'State 3', 1500.00, 750.00, 'Farmer 3');
 --TABELA REGION
 insert into region (name) values ('Region 1');
 insert into region (name) values ('Region 2');
 insert into region (name) values ('Region 3');
 --TABELA CITY
-insert into city (city_region_id, name) values (1, 'City 1');
-insert into city (city_region_id, name) values (2, 'City 2');
-insert into city (city_region_id, name) values (3, 'City 3');
+insert into city (region_id, name, state) values (1, 'Pato Branco', 'PR');
+insert into city (region_id, name, state) values (2, 'Paranavaí', 'PR');
+insert into city (region_id, name, state) values (3, 'Curitiba', 'PR');
+-- TABELA USERS senhas 123
+insert into users (cep, city_id, cpf, name, graduation_year, house_number, password, phone, professional_register, street, username) values ('1111.1111', 1, '111.111.111-11', 'Técnico 1', '1991', '01', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '1111', '1111', 'Rua teste1', 'tecnico1@idr.com');
+insert into users (cep, city_id, cpf, name, graduation_year, house_number, password, phone, professional_register, street, username) values ('2222.2222', 2, '222.222.222-22', 'Técnico 2', '2002', '22', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '2222', '2222', 'Rua teste2', 'tecnico2@idr.com');
+insert into users (cep, city_id, cpf, name, graduation_year, house_number, password, phone, professional_register, street, username) values ('3333.3333', 3, '333.333.333-33', 'Técnico 3', '2013', '333', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '3333', '3333', 'Rua teste3', 'tecnico3@idr.com');
+insert into users (cep, city_id, cpf, name, graduation_year, house_number, password, phone, professional_register, street, username) values ('1111.1111', 1, '444.444.444-44', 'Agricultor 1', '1991', '01', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '1111', '1111', 'Rua teste1', 'agricultor1@idr.com');
+insert into users (cep, city_id, cpf, name, graduation_year, house_number, password, phone, professional_register, street, username) values ('2222.2222', 2, '555.555.555-55', 'Agricultor 2', '2002', '22', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '2222', '2222', 'Rua teste2', 'agricultor2@idr.com');
+insert into users (cep, city_id, cpf, name, graduation_year, house_number, password, phone, professional_register, street, username) values ('3333.3333', 3, '666.666.666-66', 'Agricultor 3', '2013', '333', '$2a$10$zVJ0LSYTBEhX7LEc1b2ND.07mCsRJo4NNfmfP6bQrUpH3DEBZuvA2', '3333', '3333', 'Rua teste3', 'agricultor3@idr.com');
+--TABELA PROPERTY
+insert into property (latitude, leased, longitude, total_area, producer_id, name, city_id, naked_average_price, lease_average_price) values('1365', true, '1365', '163.46', 4, 'Property 1', 1, 1000.00, 500.00);
+insert into property (latitude, leased, longitude, total_area, producer_id, name, city_id, naked_average_price, lease_average_price) values('654', true, '654', '634.13', 5, 'Property 2', 2, 2000.00, 1000.00);
+insert into property (latitude, leased, longitude, total_area, producer_id, name, city_id, naked_average_price, lease_average_price) values('365', true, '365', '389.16', 6, 'Property 3', 3, 1500.00, 750.00);
 --TABELA PROPERTY_EQUIP_IMPROVE
 insert into property_equip_improve (aquisition_date, name, percentage_cattle, property_id, quantity, type, unity_value, util_life, value_cattle) values ('2023-05-18', 'Equipament 1', '965.36', 3, 10, 'Test type', '135.13', 16, '136.16');
 insert into property_equip_improve (aquisition_date, name, percentage_cattle, property_id, quantity, type, unity_value, util_life, value_cattle) values ('2023-05-16', 'Equipament 2', '965.36', 1, 22, 'Test type', '135.13', 36, '136.16');
 insert into property_equip_improve (aquisition_date, name, percentage_cattle, property_id, quantity, type, unity_value, util_life, value_cattle) values ('2023-05-17', 'Equipament 3', '965.36', 1, 3, 'Test type', '135.13', 15, '136.16');
 --TABELA PROPERTY_COLLABORATOR
-insert into property_collaborator (collaborator_name, property_id, work_days, work_hours) values ('collaborator 1', 2, 7, 12);
-insert into property_collaborator (collaborator_name, property_id, work_days, work_hours) values ('collaborator 2', 3, 7, 8);
-insert into property_collaborator (collaborator_name, property_id, work_days, work_hours) values ('collaborator 3', 1, 7, 8);
+insert into property_collaborator (name, property_id, hours_per_day) values ('collaborator 1', 1, 8);
+insert into property_collaborator (name, property_id, hours_per_day) values ('collaborator 2', 2, 8);
+insert into property_collaborator (name, property_id, hours_per_day) values ('collaborator 3', 3, 8);
 --TABELA PROPERTY_AREA
 insert into property_area (property_id, dairy_cattle_farming, perennial_pasture, summer_plowing, winter_plowing) values (1, 123.32, 312.32, 32.2, 32.2);
 insert into property_area (property_id, dairy_cattle_farming, perennial_pasture, summer_plowing, winter_plowing) values (2, 123.32, 312.32, 32.2, 32.2);

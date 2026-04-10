@@ -2,7 +2,7 @@ package br.edu.utfpr.ProjetoIDRAPI.utils;
 
 public interface BaseUser {
 
-    long getId();
+    Long getId();
     String getUsername();
     String getCpf();
 }
