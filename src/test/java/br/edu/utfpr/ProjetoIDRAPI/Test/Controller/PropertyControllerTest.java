@@ -1,5 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
+import br.edu.utfpr.ProjetoIDRAPI.entity.city.City;
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudControllerTest;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.dto.PropertyDto;
@@ -26,7 +27,7 @@ public class PropertyControllerTest extends CrudControllerTest<Property, Propert
 
     @Override
     protected Property createValidObject() {
-        return Property.builder().occupationArea("Occupation Area 1").totalArea(BigDecimal.valueOf(123.32)).latitude(BigInteger.valueOf(1365)).longitude(BigInteger.valueOf(1365)).leased(true).user(User.builder().id(1L).build()).name("Property 1").city("City 1").state("State 1").nakedAveragePrice(1000.50).leaseAveragePrice(1000.50).farmer("Farmer 1").collaborators(List.of(PropertyCollaborator.builder().collaboratorName("Collaborator 1").workHours(3).workDays(2).build())).area(PropertyArea.builder().dairyCattleFarming(132.32).perennialPasture(132.32).summerPlowing(132.32).winterPlowing(132.32).build()).technicians(List.of(PropertyTechnician.builder().user(User.builder().id(1L).build()).build())).build();
+        return Property.builder().totalArea(BigDecimal.valueOf(123.32)).latitude(BigInteger.valueOf(1365)).longitude(BigInteger.valueOf(1365)).leased(true).producer(User.builder().id(1L).build()).name("Property 1").city(City.builder().id(1L).build()).nakedAveragePrice(1000.50).leaseAveragePrice(1000.50).collaborators(List.of(PropertyCollaborator.builder().name("Collaborator 1").hoursPerDay("3").build())).area(PropertyArea.builder().dairyCattleFarming(132.32).perennialPasture(132.32).summerPlowing(132.32).winterPlowing(132.32).build()).technicians(List.of(PropertyTechnician.builder().user(User.builder().id(1L).build()).build())).build();
     }
 
     @Override

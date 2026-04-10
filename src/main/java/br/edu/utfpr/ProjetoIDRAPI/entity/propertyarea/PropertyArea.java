@@ -15,7 +15,7 @@ public class PropertyArea {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @JsonIgnore
     @OneToOne

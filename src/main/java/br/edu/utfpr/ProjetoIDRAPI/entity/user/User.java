@@ -1,5 +1,6 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.user;
 
+import br.edu.utfpr.ProjetoIDRAPI.entity.city.City;
 import br.edu.utfpr.ProjetoIDRAPI.entity.permission.Permission;
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.annotation.ValidUser;
 import br.edu.utfpr.ProjetoIDRAPI.utils.BaseUser;
@@ -29,32 +30,35 @@ public class User implements UserDetails, BaseUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    //O username do usuário deve ser seu email.
+    @NotNull
+    private String name;
+
     @NotNull
     @Column(unique = true)
     private String username;
 
-    //Aqui no displayName é onde virá o nome do usuário.
-    @NotNull
-    private String displayName;
-
     @NotNull
     private String password;
+
+    @Transient
+    private String confirmPassword;
 
     @Column(unique = true)
     private String cpf;
 
-    private String city;
+    private String phone;
+
+    @ManyToOne
+    @JoinColumn(name = "city_id", referencedColumnName = "id")
+    private City city;
 
     private String cep;
 
     private String street;
 
     private String houseNumber;
-
-    private String phone;
 
     private String professionalRegister;
 

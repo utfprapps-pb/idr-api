@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController extends CrudController<User, UserDto, Long> {
 
     private final UserService userService;
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     public UserController(UserService userService, ModelMapper modelMapper) {
 		super(User.class, UserDto.class);

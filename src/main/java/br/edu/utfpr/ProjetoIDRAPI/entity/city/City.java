@@ -1,12 +1,9 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.city;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.region.Region;
-import jakarta.persistence.Entity;
+import br.edu.utfpr.ProjetoIDRAPI.enums.State;
+import jakarta.persistence.*;
 import org.hibernate.envers.Audited;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,12 +19,16 @@ public class City {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotNull
     private String name;
 
     @NotNull
     @ManyToOne
-    private Region cityRegion;
+    private Region region;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 2, nullable = false)
+    private State state;
 }

@@ -12,9 +12,8 @@ public class PropertyCollaboratorControllerTest extends CrudControllerTest<Prope
     protected PropertyCollaborator createValidObject() {
         return PropertyCollaborator.builder()
                 .property(Property.builder().id(1L).build())
-                .collaboratorName("Test")
-                .workHours(8)
-                .workDays(5)
+                .name("Test")
+                .hoursPerDay("8")
                 .build();
     }
 

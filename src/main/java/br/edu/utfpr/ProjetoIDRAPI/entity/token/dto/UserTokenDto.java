@@ -19,12 +19,12 @@ import org.springframework.security.core.GrantedAuthority;
 public class UserTokenDto {
     private String username;
 
-    private String displayName;
+    private String name;
     
     private Set<AuthorityDto> authorities;
     
     public UserTokenDto(User user) {
-    	this.displayName = user.getDisplayName();
+    	this.name = user.getName();
     	this.username = user.getUsername();
     	this.authorities = new HashSet<>();
     	
