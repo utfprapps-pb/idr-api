@@ -18,7 +18,7 @@ public class DiseaseServiceImpl extends CrudServiceImpl<Disease, Long> implement
 	
 	@Override
 	public Disease findByName(String name) {
-		return diseaseRepository.findByDiseaseName(name);
+		return diseaseRepository.findByName(name);
 	}
 
 	@Override

@@ -1,7 +1,7 @@
-package br.edu.utfpr.ProjetoIDRAPI.entity.disease;
+package br.edu.utfpr.ProjetoIDRAPI.entity.pest;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudController;
-import br.edu.utfpr.ProjetoIDRAPI.entity.disease.dto.DiseaseDto;
+import br.edu.utfpr.ProjetoIDRAPI.entity.pest.dto.PestDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,33 +12,33 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudService;
 
 @RestController
-@RequestMapping("diseases")
-public class DiseaseController extends CrudController<Disease, DiseaseDto, Long> {
-	private final DiseaseService diseaseService;
+@RequestMapping("pests")
+public class PestController extends CrudController<Pest, PestDto, Long> {
+	private final PestService pestService;
 	private final ModelMapper modelMapper;
 	
-	public DiseaseController(DiseaseService diseaseService, ModelMapper modelMapper) {
-		super(Disease.class, DiseaseDto.class);
-		this.diseaseService = diseaseService;
+	public PestController(PestService pestService, ModelMapper modelMapper) {
+		super(Pest.class, PestDto.class);
+		this.pestService = pestService;
 		this.modelMapper = modelMapper;
 	}
-
+	
 	@Override
-	protected CrudService<Disease, Long> getService() {
-		return this.diseaseService;
+	protected CrudService<Pest, Long> getService() {
+		return this.pestService;
 	}
-
+	
 	@Override
 	protected ModelMapper getModelMapper() {
 		return this.modelMapper;
 	}
 	
 	@GetMapping("/findName/{name}")
-	public ResponseEntity<DiseaseDto> findByName(@PathVariable String name){
-		Disease entity = diseaseService.findByName(name);
+	public ResponseEntity<PestDto> findByName(@PathVariable String name){
+		Pest entity = pestService.findByName(name);
 		
 		if(entity != null) {
-			return ResponseEntity.ok(super.convertToDto(diseaseService.findByName(name)));
+			return ResponseEntity.ok(super.convertToDto(pestService.findByName(name)));
 		} else {
     		return ResponseEntity.noContent().build();
     	}

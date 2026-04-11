@@ -9,7 +9,7 @@ public class DiseaseControllerTest extends CrudControllerTest<Disease, DiseaseDt
     @Override
     protected Disease createValidObject() {
         return Disease.builder()
-                .diseaseName("Teste")
+                .name("Teste")
                 .build();
     }
 

@@ -1,7 +1,7 @@
-package br.edu.utfpr.ProjetoIDRAPI.entity.disease;
+package br.edu.utfpr.ProjetoIDRAPI.entity.feed;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudController;
-import br.edu.utfpr.ProjetoIDRAPI.entity.disease.dto.DiseaseDto;
+import br.edu.utfpr.ProjetoIDRAPI.entity.feed.dto.FeedDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,20 +12,20 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudService;
 
 @RestController
-@RequestMapping("diseases")
-public class DiseaseController extends CrudController<Disease, DiseaseDto, Long> {
-	private final DiseaseService diseaseService;
+@RequestMapping("feeds")
+public class FeedController extends CrudController<Feed, FeedDto, Long> {
+	private final FeedService feedService;
 	private final ModelMapper modelMapper;
 	
-	public DiseaseController(DiseaseService diseaseService, ModelMapper modelMapper) {
-		super(Disease.class, DiseaseDto.class);
-		this.diseaseService = diseaseService;
+	public FeedController(FeedService feedService, ModelMapper modelMapper) {
+		super(Feed.class, FeedDto.class);
+		this.feedService = feedService;
 		this.modelMapper = modelMapper;
 	}
 
 	@Override
-	protected CrudService<Disease, Long> getService() {
-		return this.diseaseService;
+	protected CrudService<Feed, Long> getService() {
+		return this.feedService;
 	}
 
 	@Override
@@ -34,11 +34,11 @@ public class DiseaseController extends CrudController<Disease, DiseaseDto, Long>
 	}
 	
 	@GetMapping("/findName/{name}")
-	public ResponseEntity<DiseaseDto> findByName(@PathVariable String name){
-		Disease entity = diseaseService.findByName(name);
+	public ResponseEntity<FeedDto> findByName(@PathVariable String name){
+		Feed entity = feedService.findByName(name);
 		
 		if(entity != null) {
-			return ResponseEntity.ok(super.convertToDto(diseaseService.findByName(name)));
+			return ResponseEntity.ok(super.convertToDto(feedService.findByName(name)));
 		} else {
     		return ResponseEntity.noContent().build();
     	}

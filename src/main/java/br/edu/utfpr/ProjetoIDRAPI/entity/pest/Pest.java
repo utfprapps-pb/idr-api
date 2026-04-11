@@ -1,4 +1,4 @@
-package br.edu.utfpr.ProjetoIDRAPI.entity.disease;
+package br.edu.utfpr.ProjetoIDRAPI.entity.pest;
 
 import jakarta.persistence.Entity;
 import org.hibernate.envers.Audited;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Disease {
+public class Pest {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
