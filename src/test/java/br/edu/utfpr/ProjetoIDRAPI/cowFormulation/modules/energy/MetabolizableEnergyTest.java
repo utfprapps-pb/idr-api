@@ -3,9 +3,11 @@ package br.edu.utfpr.ProjetoIDRAPI.cowFormulation.modules.energy;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.domain.enums.ProductionStage;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.domain.model.AnimalContext;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.engine.intake.DryMatterIntakeCalculator;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -21,8 +23,8 @@ class MetabolizableEnergyTest {
     private DryMatterIntakeCalculator intakeMock;
 
     // TODO: DESCOMENTAR QUANDO IMPLEMENTADO
-//    @InjectMocks
-//    private MetabolizableEnergyCalculator emCalculator;
+    @InjectMocks
+    private MetabolizableEnergyCalculator emCalculator;
 
     @Test
     @DisplayName("Deve calcular EM baseado na concentração de NDT")
@@ -53,12 +55,12 @@ class MetabolizableEnergyTest {
         // TODO: DESCOMENTAR QUANDO IMPLEMENTADO
         // AÇÃO
         // Adapte o nome do método conforme a implementação real da Dayse
-//        BigDecimal resultadoEm = emCalculator.calculateRequirement(ctx);
+        BigDecimal resultadoEm = emCalculator.calculateRequirement(ctx, exigenciaElSimulada);
 
         // VALIDAÇÃO
         // Verifique se o mock foi chamado
-//        Assertions.assertNotNull(resultadoEm);
+        Assertions.assertNotNull(resultadoEm);
         // Exemplo de assert com margem de erro
-        // Assertions.assertEquals(2.667, resultadoEm.doubleValue(), 0.01);
+         Assertions.assertEquals(2.667, resultadoEm.doubleValue(), 0.01);
     }
 }

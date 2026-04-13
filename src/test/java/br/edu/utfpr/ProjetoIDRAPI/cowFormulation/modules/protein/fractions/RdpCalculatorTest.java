@@ -3,9 +3,11 @@ package br.edu.utfpr.ProjetoIDRAPI.cowFormulation.modules.protein.fractions;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.domain.enums.ProductionStage;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.core.domain.model.AnimalContext;
 import br.edu.utfpr.ProjetoIDRAPI.cowFormulation.engine.intake.DryMatterIntakeCalculator;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -21,9 +23,8 @@ class RdpCalculatorTest {
     @Mock
     private DryMatterIntakeCalculator intakeMock;
 
-    // TODO: DESCOMENTAR QUANDO IMPLEMENTADO
-//    @InjectMocks
-//    private RdpRequirementCalculator rdpCalculator;
+    @InjectMocks
+    private RumenUndegradableProteinCalculator rdpCalculator;
 
     @Test
     @DisplayName("Deve calcular PDR para Vaca em Lactação usando regressão")
@@ -44,34 +45,32 @@ class RdpCalculatorTest {
         // A fórmula final é: Regressão(% da dieta) * IMS
         when(intakeMock.calculatePredictedIntake(any())).thenReturn(20.0);
 
-        // TODO: DESCOMENTAR QUANDO IMPLEMENTADO
-        // AÇÃO
-//        BigDecimal pdrTotal = rdpCalculator.calculateRequirement(ctx);
+        BigDecimal pdrTotal = rdpCalculator.calculateTotalPUR(ctx);
 
-        // TODO: DESCOMENTAR QUANDO IMPLEMENTADO
-        // VALIDAÇÃO
-//        System.out.println("PDR Calculado (kg/dia): " + pdrTotal);
+        System.out.println("PDR Calculado (kg/dia): " + pdrTotal);
 
-        // Dica para o André:
-        // 1. Rode esse teste uma vez.
-        // 2. Pegue o valor impresso no console.
-        // 3. Valide na planilha Excel manualmente se bate.
-        // 4. Se bater, fixe o valor aqui no assert para garantir regressão futura.
-
-        // TODO: DESCOMENTAR QUANDO IMPLEMENTADO
-//        Assertions.assertNotNull(pdrTotal);
-//        Assertions.assertTrue(pdrTotal.compareTo(BigDecimal.ZERO) > 0, "PDR deve ser maior que zero");
+        Assertions.assertNotNull(pdrTotal);
+        Assertions.assertTrue(pdrTotal.compareTo(BigDecimal.ZERO) > 0, "PDR deve ser maior que zero");
     }
 
     @Test
     @DisplayName("Deve retornar Zero se não houver consumo (IMS=0)")
     void shouldReturnZeroIfIntakeIsZero() {
-        AnimalContext ctx = new AnimalContext();
+        AnimalContext ctx = AnimalContext.builder()
+                .stage(ProductionStage.LACTATING)
+                .projectedBodyWeight(new BigDecimal("453"))
+                .bodyWeight(new BigDecimal("453"))
+                .weightChangeGoal(new BigDecimal("0.0"))
+                .milkFatPct(new BigDecimal("3.94"))
+                .milkProteinPct(new BigDecimal("3.32"))
+                .milkYield(new BigDecimal("26"))
+                .balanceDate(LocalDate.of(2025, 8, 29))
+                .calvingDate(LocalDate.of(2025, 8, 29))
+                .build();
         when(intakeMock.calculatePredictedIntake(any())).thenReturn(0.0);
 
-        // TODO: DESCOMENTAR QUANDO IMPLEMENTADO
-//        BigDecimal result = rdpCalculator.calculateRequirement(ctx);
+        BigDecimal result = rdpCalculator.calculateTotalPUR(ctx);
 
-//        Assertions.assertEquals(BigDecimal.ZERO, result);
+        Assertions.assertEquals(new BigDecimal("0.000"), result);
     }
 }

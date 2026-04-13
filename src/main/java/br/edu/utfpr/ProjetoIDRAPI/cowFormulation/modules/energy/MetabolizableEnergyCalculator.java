@@ -26,11 +26,11 @@ public class MetabolizableEnergyCalculator {
         BigDecimal ndtKg = netEnergyExigency
                 .divide(NrcConstants.Energy.NDT_TO_NEL_SLOPE, MathContext.DECIMAL64)
                 .add(NrcConstants.Energy.NDT_TO_NEL_INTERCEPT)
-                .divide(NDT_TO_PERCENT, MathContext.DECIMAL64);
+                .divide(NrcConstants.Energy.NDT_TO_PERCENT, MathContext.DECIMAL64);
 
         // 3. Calcular NDT % (C64)
         // Fórmula: (NDT_kg * 100) / IMS
-        BigDecimal ndtPercentage = ndtKg.multiply(NDT_TO_PERCENT)
+        BigDecimal ndtPercentage = ndtKg.multiply(NrcConstants.Energy.NDT_TO_PERCENT)
                 .divide(BigDecimal.valueOf(ims), MathContext.DECIMAL64);
 
         // 4. Calcular EM Mcal/kg (Fórmula da Imagem)

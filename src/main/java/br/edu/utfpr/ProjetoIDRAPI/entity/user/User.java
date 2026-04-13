@@ -1,13 +1,10 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.user;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.permission.Permission;
-import br.edu.utfpr.ProjetoIDRAPI.entity.user.annotation.ValidUser;
 import br.edu.utfpr.ProjetoIDRAPI.utils.BaseUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.*;
 import org.hibernate.envers.Audited;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,13 +15,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-@Entity (name = "users")
+@Entity(name = "users")
 @Audited
-@Getter @Setter
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ValidUser
 public class User implements UserDetails, BaseUser {
 
     @Id

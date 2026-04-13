@@ -1,41 +1,42 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.property.impl;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.impl.CrudServiceImpl;
-
-import java.util.List;
-
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.PropertyRepository;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.PropertyService;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertyattachment.PropertyAttachment;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertyattachment.PropertyAttachmentService;
+import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PropertyServiceImpl extends CrudServiceImpl<Property, Long> implements PropertyService {
 
-	private final PropertyRepository propertyRepository;
+    private final PropertyRepository propertyRepository;
     private final PropertyAttachmentService propertyAttachmentService;
     private final UserService userService;
 
-	public PropertyServiceImpl(PropertyRepository propertyRepository, PropertyAttachmentService propertyAttachmentService, UserService userService) {
-		this.propertyRepository = propertyRepository;
+    public PropertyServiceImpl(PropertyRepository propertyRepository, PropertyAttachmentService propertyAttachmentService, UserService userService) {
+        this.propertyRepository = propertyRepository;
         this.propertyAttachmentService = propertyAttachmentService;
         this.userService = userService;
-	}
+    }
 
-	@Override
-	protected JpaRepository<Property, Long> getRepository() {
-		return this.propertyRepository;
-	}
+    @Override
+    protected JpaRepository<Property, Long> getRepository() {
+        return this.propertyRepository;
+    }
 
-	@Override
-	public List<Property> findByUserId(Long id) {
-		return propertyRepository.findAllByUserId(id);
-	}
+    @Override
+    public List<Property> findByUserId(Long id) {
+        return propertyRepository.findAllByUserId(id);
+    }
 
     @Override
     public List<PropertyAttachment> findAttachmentsById(Long id) {
@@ -45,7 +46,18 @@ public class PropertyServiceImpl extends CrudServiceImpl<Property, Long> impleme
     @Override
     public Property save(Property entity, byte[] attachment) {
         boolean isNew = (entity.getId() == 0);
-        entity.setUser(userService.findSelfUser());
+        User selfUser = userService.findSelfUser();
+        if (selfUser != null) {
+            entity.setUser(selfUser);
+        } else if (entity.getUser() != null) {
+            User existingUser = userService.findByName(entity.getUser().getUsername());
+            if (existingUser == null) {
+                throw new EntityNotFoundException("O usuário especificado na requisição não foi encontrado no banco de dados.");
+            }
+            entity.setUser(existingUser);
+        } else {
+            throw new IllegalArgumentException("Operação negada: Nenhum usuário autenticado ou usuário válido especificado no payload.");
+        }
         super.save(entity);
         handleAttachmentSave(entity, attachment, isNew);
         return entity;
@@ -58,9 +70,9 @@ public class PropertyServiceImpl extends CrudServiceImpl<Property, Long> impleme
     }
 
     @Override
-	public JpaSpecificationExecutor<Property> getSpecExecutor() {
-		return this.propertyRepository;
-	}
+    public JpaSpecificationExecutor<Property> getSpecExecutor() {
+        return this.propertyRepository;
+    }
 
     /**
      * Login to handle attachment save/delete

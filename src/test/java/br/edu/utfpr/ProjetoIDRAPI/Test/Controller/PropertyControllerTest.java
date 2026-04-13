@@ -2,41 +2,65 @@ package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudControllerTest;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
+import br.edu.utfpr.ProjetoIDRAPI.entity.property.PropertyRepository;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.dto.PropertyDto;
-import br.edu.utfpr.ProjetoIDRAPI.entity.propertyarea.PropertyArea;
-import br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator.PropertyCollaborator;
 import br.edu.utfpr.ProjetoIDRAPI.entity.propertytechnician.PropertyTechnician;
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
+import br.edu.utfpr.ProjetoIDRAPI.entity.user.UserRepository;
+import br.edu.utfpr.ProjetoIDRAPI.utils.TestUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class PropertyControllerTest extends CrudControllerTest<Property, PropertyDto, Long> {
 
+    @Autowired
+    private PropertyRepository propertyRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    private User savedOwner;
+    private User savedTechUser;
+
+    @BeforeEach
+    void setup() {
+        savedOwner = TestUtils.createValidUser("Owner");
+        userRepository.save(savedOwner);
+
+        savedTechUser = TestUtils.createValidUser("Tech");
+        userRepository.save(savedTechUser);
+    }
+
+    @Override
+    protected Long persistAndReturnId(Property entity) {
+        return propertyRepository.save(entity).getId();
+    }
+
+    @Override
+    protected void cleanUpDatabase() {
+        propertyRepository.deleteAll();
+        userRepository.deleteAll();
+    }
+
     @Override
     protected Property createValidObject() {
-        return Property.builder().ocupationArea("Occupation Area 1").totalArea(BigDecimal.valueOf(123.32)).latitude(BigInteger.valueOf(1365)).longitude(BigInteger.valueOf(1365)).leased(true).user(User.builder().id(1L).build()).name("Property 1").city("City 1").state("State 1").nakedAveragePrice(1000.50).leaseAveragePrice(1000.50).farmer("Farmer 1").collaborators(List.of(PropertyCollaborator.builder().collaboratorName("Collaborator 1").workHours(3).workDays(2).build())).area(PropertyArea.builder().dairyCattleFarming(132.32).perennialPasture(132.32).summerPlowing(132.32).winterPlowing(132.32).build()).technicians(List.of(PropertyTechnician.builder().user(User.builder().id(1L).build()).build())).build();
+        PropertyTechnician technician = TestUtils.createValidPropertyTechnician(savedTechUser);
+        return TestUtils.createValidProperty(savedOwner, List.of(technician));
     }
 
     @Override
     protected Property createInvalidObject() {
-        return Property.builder().build();
-    }
-
-    @Override
-    protected Long getValidId() {
-        return 1L;
+        return new Property();
     }
 
     @Override
@@ -44,8 +68,12 @@ public class PropertyControllerTest extends CrudControllerTest<Property, Propert
         return "/properties";
     }
 
+    @Override
+    protected Class<PropertyDto> getDtoClass() {
+        return PropertyDto.class;
+    }
+
     @Test
-    @Order(20)
     protected void createValidRegisterWithAttachment() throws JsonProcessingException {
         Property entity = createValidObject();
         String json = toJSON(entity);
@@ -54,15 +82,12 @@ public class PropertyControllerTest extends CrudControllerTest<Property, Propert
         body.add("property", new HttpEntity<>(json, createJsonHeaders()));
         body.add("attachment", createAttachment());
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(getURL(), requestEntity, Object.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody()).isNotNull();
+        restTestClient.post()
+                .uri(getURL())
+                .body(body)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody().jsonPath("$").isNotEmpty();
     }
 
     private HttpHeaders createJsonHeaders() {

@@ -1,6 +1,5 @@
 package br.edu.utfpr.ProjetoIDRAPI.security;
 
-import br.edu.utfpr.ProjetoIDRAPI.TestUtils;
 import br.edu.utfpr.ProjetoIDRAPI.entity.token.AuthService;
 import br.edu.utfpr.ProjetoIDRAPI.entity.user.User;
 import jakarta.servlet.FilterChain;
@@ -17,7 +16,9 @@ import org.springframework.security.core.Authentication;
 import java.io.IOException;
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static br.edu.utfpr.ProjetoIDRAPI.utils.TestUtils.createUser;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class JWTAuthenticationFilterTest {
@@ -39,7 +40,7 @@ class JWTAuthenticationFilterTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         request.setContent("{\"username\":\"testuser\",\"password\":\"password\"}".getBytes());
 
-        User user = TestUtils.createUser("testuser", "password");
+        User user = createUser("testuser", "password");
         when(authService.loadUserByUsername("testuser")).thenReturn(user);
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken("testuser", "password", Collections.emptyList());
@@ -70,7 +71,7 @@ class JWTAuthenticationFilterTest {
         Authentication authResult = mock(Authentication.class);
         when(authResult.getName()).thenReturn("testuser");
 
-        User user = TestUtils.createUser("testuser", "password");
+        User user = createUser("testuser", "password");
         when(authService.loadUserByUsername("testuser")).thenReturn(user);
 
         jwtAuthenticationFilter.successfulAuthentication(request, response, filterChain, authResult);

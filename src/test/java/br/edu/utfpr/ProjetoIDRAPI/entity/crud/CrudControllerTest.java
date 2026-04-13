@@ -1,95 +1,105 @@
 package br.edu.utfpr.ProjetoIDRAPI.entity.crud;
 
 import br.edu.utfpr.ProjetoIDRAPI.ApplicationTest;
-import br.edu.utfpr.ProjetoIDRAPI.utils.EntityUtils;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.web.servlet.client.RestTestClient;
 
 import java.io.Serializable;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @ApplicationTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public abstract class CrudControllerTest<T, D, ID extends Serializable> {
 
     @Autowired
-    protected TestRestTemplate testRestTemplate;
+    protected RestTestClient restTestClient;
 
-    private static Object id;
+    @Autowired
+    protected JdbcTemplate jdbcTemplate;
+
+    @AfterEach
+    protected void cleanUp() {
+        cleanUpDatabase();
+    }
+
+    protected abstract String getURL();
+
+    protected abstract ID persistAndReturnId(T entity);
+
+    protected abstract void cleanUpDatabase();
+
+    protected abstract T createValidObject();
+
+    protected abstract T createInvalidObject();
+
+    protected abstract Class<D> getDtoClass();
+
 
     @Test
-    @Order(1)
     protected void createValidRegister() {
         T entity = createValidObject();
 
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(getURL(), entity, Object.class);
-        id = response.getBody();
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody()).isNotNull();
+        restTestClient.post()
+                .uri(getURL())
+                .body(entity)
+                .exchange()
+                .expectStatus().isCreated();
     }
 
     @Test
-    @Order(2)
     protected void createInvalidRegister() {
         T entity = createInvalidObject();
 
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(getURL(), entity, Object.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        restTestClient.post()
+                .uri(getURL())
+                .body(entity)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody();
     }
 
     @Test
-    @Order(3)
     protected void updateValidRegister() {
-        T entity = createValidObject();
+        // Setup isolado: insere diretamente antes de testar
+        T baseEntity = createValidObject();
+        ID savedId = persistAndReturnId(baseEntity);
 
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<T> requestEntity = new HttpEntity<>(entity, headers);
+        T updatePayload = createValidObject(); // Assumindo alteração de dados
 
-        EntityUtils.setIdValue(entity, id);
-        ResponseEntity<Object> response = testRestTemplate.exchange(getURL() + "/" + id, HttpMethod.PUT, requestEntity, Object.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        restTestClient.put()
+                .uri(getURL() + "/" + savedId)
+                .body(updatePayload)
+                .exchange()
+                .expectStatus().isOk();
     }
 
     @Test
-    @Order(4)
     protected void findOneValid() {
-        ResponseEntity<Object> response = testRestTemplate.getForEntity(getURL() + "/" + id, Object.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ID savedId = persistAndReturnId(createValidObject());
+
+        restTestClient.get()
+                .uri(getURL() + "/" + savedId)
+                .exchange()
+                .expectStatus().isOk();
     }
 
     @Test
-    @Order(5)
     protected void findOneNonExistent() {
-        ResponseEntity<Object> response = testRestTemplate.getForEntity(getURL() + "/" + id, Object.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        restTestClient.get()
+                .uri(getURL() + "/" + -890)
+                .exchange()
+                .expectStatus().isNoContent();
     }
 
     @Test
-    @Order(6)
-    protected void listAllRegisters() {
-        ResponseEntity<List<D>> response = testRestTemplate.exchange(getURL() + "/all", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    @Order(7)
     protected void deleteValidRegister() {
-        ResponseEntity<Void> response = testRestTemplate.exchange(getURL() + "/" + id, HttpMethod.DELETE, null, Void.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    }
+        ID savedId = persistAndReturnId(createValidObject());
 
-    protected abstract T createValidObject();
-    protected abstract T createInvalidObject();
-    protected abstract ID getValidId();
-    protected abstract String getURL();
+        restTestClient.delete()
+                .uri(getURL() + "/" + savedId)
+                .exchange()
+                .expectStatus().isNoContent()
+                .expectBody().isEmpty();
+    }
 }

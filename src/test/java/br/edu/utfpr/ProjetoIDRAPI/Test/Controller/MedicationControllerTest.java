@@ -2,24 +2,43 @@ package br.edu.utfpr.ProjetoIDRAPI.Test.Controller;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudControllerTest;
 import br.edu.utfpr.ProjetoIDRAPI.entity.medication.Medication;
+import br.edu.utfpr.ProjetoIDRAPI.entity.medication.MedicationRepository;
 import br.edu.utfpr.ProjetoIDRAPI.entity.medication.dto.MedicationDto;
+import br.edu.utfpr.ProjetoIDRAPI.utils.TestUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class MedicationControllerTest extends CrudControllerTest<Medication, MedicationDto, Long> {
 
+    @Autowired
+    private MedicationRepository medicationRepository;
+
     @Override
-    protected Medication createValidObject() {
-        return Medication.builder()
-                .appliedDose("Test")
-                .applicationWay("Test")
-                .build();
+    protected Long persistAndReturnId(Medication entity) {
+        return medicationRepository.save(entity).getId();
     }
 
     @Override
-    protected Medication createInvalidObject() { return Medication.builder().build(); }
+    protected void cleanUpDatabase() {
+        medicationRepository.deleteAll();
+    }
 
     @Override
-    protected Long getValidId() { return 1L; }
+    protected Medication createValidObject() {
+        return TestUtils.createValidMedication();
+    }
 
     @Override
-    protected String getURL() { return "/medications"; }
+    protected Medication createInvalidObject() {
+        return new Medication();
+    }
+
+    @Override
+    protected String getURL() {
+        return "/medications";
+    }
+
+    @Override
+    protected Class<MedicationDto> getDtoClass() {
+        return MedicationDto.class;
+    }
 }
