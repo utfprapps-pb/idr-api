@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>br.edu.utfpr.ProjetoIDRAPI.entity.animal.Animal</OriginalElement>
+  <nodes>
+    <node x="366.6136743890743" y="2530.8859513210514">br.edu.utfpr.ProjetoIDRAPI.entity.region.Region</node>
+    <node x="1802.0577770817094" y="2274.031926576068">br.edu.utfpr.ProjetoIDRAPI.entity.permission.Permission</node>
+    <node x="1397.65205111954" y="2017.9055712247978">br.edu.utfpr.ProjetoIDRAPI.entity.user.User</node>
+    <node x="-136.90210683192186" y="-232.98160586130734">br.edu.utfpr.ProjetoIDRAPI.entity.mastitis.Mastitis</node>
+    <node x="343.4901072053335" y="770.2279807366317">br.edu.utfpr.ProjetoIDRAPI.entity.landproduct.LandProduct</node>
+    <node x="1053.2417769692247" y="2027.2988031032182">br.edu.utfpr.ProjetoIDRAPI.entity.propertytechnician.PropertyTechnician</node>
+    <node x="1102.6724313212412" y="1640.0125077151436">br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator.PropertyCollaborator</node>
+    <node x="20.766040314982092" y="197.66420031569328">br.edu.utfpr.ProjetoIDRAPI.entity.pregnancydiagnose.PregnancyDiagnose</node>
+    <node x="1513.242999932866" y="245.18455676886742">br.edu.utfpr.ProjetoIDRAPI.entity.feed.Feed</node>
+    <node x="-811.9441995387649" y="595.9515444244184">br.edu.utfpr.ProjetoIDRAPI.entity.medication.Medication</node>
+    <node x="2453.9500397914126" y="993.2889305543986">br.edu.utfpr.ProjetoIDRAPI.entity.disease.Disease</node>
+    <node x="698.555982100153" y="720.4906240768669">br.edu.utfpr.ProjetoIDRAPI.entity.pest.Pest</node>
+    <node x="-373.51247217817877" y="1993.7368654713164">br.edu.utfpr.ProjetoIDRAPI.entity.propertyequipimprove.PropertyEquipImprove</node>
+    <node x="-1325.0" y="914.3001949668667">br.edu.utfpr.ProjetoIDRAPI.entity.productcategory.ProductCategory</node>
+    <node x="186.3707464126487" y="2530.8859513210514">br.edu.utfpr.ProjetoIDRAPI.enums.State</node>
+    <node x="-834.1946536961004" y="-306.0">br.edu.utfpr.ProjetoIDRAPI.enums.Reason</node>
+    <node x="-869.0601973369864" y="-74.83379596353575">br.edu.utfpr.ProjetoIDRAPI.entity.animalsales.AnimalSales</node>
+    <node x="1733.5019142217225" y="67.91334616989843">br.edu.utfpr.ProjetoIDRAPI.enums.FeedType</node>
+    <node x="-455.6085345148156" y="135.26391218115327">br.edu.utfpr.ProjetoIDRAPI.entity.animal.Animal</node>
+    <node x="-373.51247217817877" y="1634.4927845510865">br.edu.utfpr.ProjetoIDRAPI.entity.foragedisponibility.ForageDisponibility</node>
+    <node x="813.094730234187" y="983.4309061955646">br.edu.utfpr.ProjetoIDRAPI.entity.cultivationpest.CultivationPest</node>
+    <node x="-534.5318725901903" y="-242.3202113660475">br.edu.utfpr.ProjetoIDRAPI.entity.animaldiseases.AnimalDiseases</node>
+    <node x="180.3707464126487" y="2300.2744745628784">br.edu.utfpr.ProjetoIDRAPI.entity.city.City</node>
+    <node x="-301.67160988129353" y="1467.2487036308567">br.edu.utfpr.ProjetoIDRAPI.entity.propertyattachment.PropertyAttachment</node>
+    <node x="2170.554696516214" y="865.7053404189444">br.edu.utfpr.ProjetoIDRAPI.entity.cultivationdisease.CultivationDisease</node>
+    <node x="423.2208584423679" y="-270.89159133875364">br.edu.utfpr.ProjetoIDRAPI.entity.changepassword.ChangePassword</node>
+    <node x="750.6282629766774" y="-270.89159133875364">br.edu.utfpr.ProjetoIDRAPI.entity.email.Email</node>
+    <node x="-65.55872859421288" y="524.6882890209258">br.edu.utfpr.ProjetoIDRAPI.entity.animalpurchases.AnimalPurchases</node>
+    <node x="-1103.9458038484609" y="18.38880293611669">br.edu.utfpr.ProjetoIDRAPI.enums.Destination</node>
+    <node x="869.9439764773329" y="2348.2744745628784">br.edu.utfpr.ProjetoIDRAPI.entity.propertyarea.PropertyArea</node>
+    <node x="-445.6085345148156" y="682.6831144072679">br.edu.utfpr.ProjetoIDRAPI.entity.breed.Breed</node>
+    <node x="94.87074641264871" y="1610.4927845510865">br.edu.utfpr.ProjetoIDRAPI.entity.property.Property</node>
+    <node x="-1050.3432113216472" y="846.7177061781335">br.edu.utfpr.ProjetoIDRAPI.entity.product.Product</node>
+    <node x="-165.21782021134436" y="2300.2744745628784">br.edu.utfpr.ProjetoIDRAPI.entity.perennialanualforage.PerennialAnualForage</node>
+    <node x="-909.4074902154643" y="243.26391218115327">br.edu.utfpr.ProjetoIDRAPI.entity.insemination.Insemination</node>
+    <node x="-1012.093248558707" y="1186.7765130070159">br.edu.utfpr.ProjetoIDRAPI.entity.activeprinciple.ActivePrinciple</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.propertytechnician.PropertyTechnician" target="br.edu.utfpr.ProjetoIDRAPI.entity.property.Property" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.animalsales.AnimalSales" target="br.edu.utfpr.ProjetoIDRAPI.entity.animal.Animal" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.property.Property" target="br.edu.utfpr.ProjetoIDRAPI.entity.propertytechnician.PropertyTechnician" relationship="TO_MANY">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.cultivationpest.CultivationPest" target="br.edu.utfpr.ProjetoIDRAPI.entity.feed.Feed" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.animaldiseases.AnimalDiseases" target="br.edu.utfpr.ProjetoIDRAPI.entity.animal.Animal" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.propertyarea.PropertyArea" target="br.edu.utfpr.ProjetoIDRAPI.entity.property.Property" relationship="TO_ONE">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.property.Property" target="br.edu.utfpr.ProjetoIDRAPI.entity.propertyarea.PropertyArea" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.propertytechnician.PropertyTechnician" target="br.edu.utfpr.ProjetoIDRAPI.entity.user.User" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.cultivationdisease.CultivationDisease" target="br.edu.utfpr.ProjetoIDRAPI.entity.disease.Disease" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.mastitis.Mastitis" target="br.edu.utfpr.ProjetoIDRAPI.entity.animal.Animal" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.animalpurchases.AnimalPurchases" target="br.edu.utfpr.ProjetoIDRAPI.entity.animal.Animal" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.property.Property" target="br.edu.utfpr.ProjetoIDRAPI.entity.city.City" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.insemination.Insemination" target="br.edu.utfpr.ProjetoIDRAPI.entity.animal.Animal" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.user.User" target="br.edu.utfpr.ProjetoIDRAPI.entity.city.City" relationship="TO_ONE">
+      <point x="0.0" y="0.0" />
+      <point x="954.0" y="2014.0" />
+      <point x="954.0" y="2014.0" />
+      <point x="816.0" y="1977.0" />
+      <point x="816.0" y="1977.0" />
+      <point x="748.0" y="1963.0" />
+      <point x="748.0" y="1963.0" />
+      <point x="684.0" y="1954.0" />
+      <point x="684.0" y="1954.0" />
+      <point x="623.0" y="1951.0" />
+      <point x="1308.9375" y="2336.9375" />
+      <point x="1339.75" y="2195.0625" />
+      <point x="1339.75" y="2220.0625" />
+      <point x="1339.75" y="2291.875" />
+      <point x="1339.75" y="2423.125" />
+      <point x="1339.75" y="2719.0" />
+      <point x="1029.875" y="2719.0" />
+      <point x="884.6875" y="2719.0" />
+      <point x="884.6875" y="2654.0" />
+      <point x="681.3125" y="2654.0" />
+      <point x="615.6875" y="2580.25" />
+      <point x="594.921875" y="2520.53125" />
+      <point x="495.3125" y="2436.546875" />
+      <point x="591.921875" y="2578.53125" />
+      <point x="470.828125" y="2439.859375" />
+      <point x="592.921875" y="2639.53125" />
+      <point x="583.746835" y="2639.53125" />
+      <point x="565.2874300000001" y="2609.71237" />
+      <point x="557.90625" y="2626.359375" />
+      <point x="520.03125" y="2560.40625" />
+      <point x="459.484375" y="2447.125" />
+      <point x="449.0" y="2429.0" />
+      <point x="449.0" y="2429.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.landproduct.LandProduct" target="br.edu.utfpr.ProjetoIDRAPI.entity.property.Property" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.propertyequipimprove.PropertyEquipImprove" target="br.edu.utfpr.ProjetoIDRAPI.entity.property.Property" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.property.Property" target="br.edu.utfpr.ProjetoIDRAPI.entity.user.User" relationship="TO_ONE">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.cultivationdisease.CultivationDisease" target="br.edu.utfpr.ProjetoIDRAPI.entity.feed.Feed" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.animalsales.AnimalSales" target="br.edu.utfpr.ProjetoIDRAPI.enums.Reason" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.cultivationpest.CultivationPest" target="br.edu.utfpr.ProjetoIDRAPI.entity.property.Property" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.city.City" target="br.edu.utfpr.ProjetoIDRAPI.entity.region.Region" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.user.User" target="br.edu.utfpr.ProjetoIDRAPI.entity.permission.Permission" relationship="TO_MANY">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.medication.Medication" target="br.edu.utfpr.ProjetoIDRAPI.entity.product.Product" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.propertyattachment.PropertyAttachment" target="br.edu.utfpr.ProjetoIDRAPI.entity.property.Property" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.foragedisponibility.ForageDisponibility" target="br.edu.utfpr.ProjetoIDRAPI.entity.property.Property" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.feed.Feed" target="br.edu.utfpr.ProjetoIDRAPI.enums.FeedType" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.animal.Animal" target="br.edu.utfpr.ProjetoIDRAPI.entity.breed.Breed" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.product.Product" target="br.edu.utfpr.ProjetoIDRAPI.entity.productcategory.ProductCategory" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.perennialanualforage.PerennialAnualForage" target="br.edu.utfpr.ProjetoIDRAPI.entity.property.Property" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.city.City" target="br.edu.utfpr.ProjetoIDRAPI.enums.State" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.animal.Animal" target="br.edu.utfpr.ProjetoIDRAPI.entity.property.Property" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.pregnancydiagnose.PregnancyDiagnose" target="br.edu.utfpr.ProjetoIDRAPI.entity.animal.Animal" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator.PropertyCollaborator" target="br.edu.utfpr.ProjetoIDRAPI.entity.property.Property" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.medication.Medication" target="br.edu.utfpr.ProjetoIDRAPI.entity.animal.Animal" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.product.Product" target="br.edu.utfpr.ProjetoIDRAPI.entity.activeprinciple.ActivePrinciple" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.property.Property" target="br.edu.utfpr.ProjetoIDRAPI.entity.propertycollaborator.PropertyCollaborator" relationship="TO_MANY">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.cultivationdisease.CultivationDisease" target="br.edu.utfpr.ProjetoIDRAPI.entity.property.Property" relationship="TO_ONE">
+      <point x="0.0" y="0.0" />
+      <point x="2124.0" y="907.0" />
+      <point x="2124.0" y="907.0" />
+      <point x="1990.0" y="869.0" />
+      <point x="1990.0" y="869.0" />
+      <point x="1936.0" y="857.0" />
+      <point x="1936.0" y="857.0" />
+      <point x="1879.0" y="847.0" />
+      <point x="1879.0" y="847.0" />
+      <point x="1819.0" y="839.0" />
+      <point x="1819.0" y="839.0" />
+      <point x="1758.0" y="834.0" />
+      <point x="1758.0" y="834.0" />
+      <point x="1694.0" y="833.0" />
+      <point x="1694.0" y="833.0" />
+      <point x="1630.0" y="836.0" />
+      <point x="1630.0" y="836.0" />
+      <point x="1565.0" y="844.0" />
+      <point x="1565.0" y="844.0" />
+      <point x="1499.0" y="857.0" />
+      <point x="1499.0" y="857.0" />
+      <point x="1434.0" y="875.0" />
+      <point x="1434.0" y="875.0" />
+      <point x="1367.0" y="898.0" />
+      <point x="1367.0" y="898.0" />
+      <point x="1301.0" y="926.0" />
+      <point x="1301.0" y="926.0" />
+      <point x="1233.0" y="958.0" />
+      <point x="1233.0" y="958.0" />
+      <point x="1166.0" y="995.0" />
+      <point x="1166.0" y="995.0" />
+      <point x="1097.0" y="1036.0" />
+      <point x="1097.0" y="1036.0" />
+      <point x="1043.0" y="1036.0" />
+      <point x="1043.0" y="1184.0" />
+      <point x="889.0" y="1184.0" />
+      <point x="889.0" y="1184.0" />
+      <point x="819.0" y="1240.0" />
+      <point x="819.0" y="1240.0" />
+      <point x="751.0" y="1298.0" />
+      <point x="751.0" y="1298.0" />
+      <point x="619.0" y="1415.0" />
+      <point x="619.0" y="1415.0" />
+      <point x="450.0" y="1576.0" />
+      <point x="450.0" y="1576.0" />
+      <point x="304.0" y="1719.0" />
+      <point x="304.0" y="1719.0" />
+      <point x="258.0" y="1766.0" />
+      <point x="258.0" y="1766.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.animalsales.AnimalSales" target="br.edu.utfpr.ProjetoIDRAPI.enums.Destination" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="br.edu.utfpr.ProjetoIDRAPI.entity.cultivationpest.CultivationPest" target="br.edu.utfpr.ProjetoIDRAPI.entity.pest.Pest" relationship="TO_ONE">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+  </edges>
+  <settings layout="Balloons" zoom="0.64" showDependencies="true" x="327.7960610156249" y="189.5625" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

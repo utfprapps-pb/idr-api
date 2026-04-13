@@ -65,7 +65,7 @@ public class User implements UserDetails, BaseUser {
     private String graduationYear;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "users_permission",
+    @JoinTable(name = "user_permissions",
             joinColumns = @JoinColumn(
                     name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(

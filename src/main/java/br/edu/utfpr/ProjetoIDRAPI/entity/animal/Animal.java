@@ -2,6 +2,8 @@ package br.edu.utfpr.ProjetoIDRAPI.entity.animal;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.breed.Breed;
 import br.edu.utfpr.ProjetoIDRAPI.entity.property.Property;
+import br.edu.utfpr.ProjetoIDRAPI.enums.Sex;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,12 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.Entity;
 import org.hibernate.envers.Audited;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 
 @Entity @Audited
@@ -43,8 +40,9 @@ public class Animal {
 
     private String identifier;
 
-    //Sexo do animal(M ou F)
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 1, nullable = false)
+    private Sex sex;
 
     //Condição de Nascimento(Vivo ou Morto)
     private String bornCondition;
