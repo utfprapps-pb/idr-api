@@ -18,7 +18,7 @@ public class PropertyDto {
 	
     private String occupationArea;
     
-    private BigDecimal totalArea;
+    private TotalAreaDto totalArea;
 
     private BigInteger latitude;
     
