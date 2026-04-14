@@ -36,8 +36,8 @@ public abstract class CrudController<T, D, ID extends Serializable> {
 	@PutMapping("{id}")
 	public ResponseEntity<D> update(@RequestBody @Valid D dto, @PathVariable ID id) {
 		T entity = getModelMapper().map(dto, this.typeClass);
-		getService().save(entity);
-		return ResponseEntity.status(HttpStatus.OK).build();
+		T updatedEntity = getService().update(id, entity);
+		return ResponseEntity.ok(this.convertToDto(updatedEntity));
 	}
 
     @GetMapping("/all")

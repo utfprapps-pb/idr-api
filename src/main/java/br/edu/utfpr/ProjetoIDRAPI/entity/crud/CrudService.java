@@ -18,4 +18,5 @@ public interface CrudService <T, ID extends Serializable> {
 
 	Page<T> search(SearchRequest request);
 
+	T update(ID id, T entity);
 }
