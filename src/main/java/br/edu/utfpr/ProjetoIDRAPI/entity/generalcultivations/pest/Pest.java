@@ -1,4 +1,4 @@
-package br.edu.utfpr.ProjetoIDRAPI.entity.generalcultivations.pests;
+package br.edu.utfpr.ProjetoIDRAPI.entity.generalcultivations.pest;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -14,8 +14,8 @@ import org.hibernate.envers.Audited;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "pests")
-public class Pests {
+@Table(name = "pest")
+public class Pest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
