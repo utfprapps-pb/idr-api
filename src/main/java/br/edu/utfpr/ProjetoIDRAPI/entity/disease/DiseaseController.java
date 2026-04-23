@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudService;
 
 @RestController
-@RequestMapping("diseases")
+@RequestMapping("general-cultivations/diseases")
 public class DiseaseController extends CrudController<Disease, DiseaseDto, Long> {
 	private final DiseaseService diseaseService;
 	private ModelMapper modelMapper;

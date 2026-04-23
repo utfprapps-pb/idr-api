@@ -5,11 +5,13 @@ import java.util.List;
 
 import br.edu.utfpr.ProjetoIDRAPI.search.SearchHandler;
 import br.edu.utfpr.ProjetoIDRAPI.search.request.SearchRequest;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudService;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.transaction.annotation.Transactional;
 
 public abstract class CrudServiceImpl <T, ID extends Serializable> implements CrudService<T, ID>{
 	protected abstract JpaRepository<T, ID> getRepository();
@@ -32,6 +34,16 @@ public abstract class CrudServiceImpl <T, ID extends Serializable> implements Cr
 	@Override
 	public void delete(ID id) {
 		getRepository().deleteById(id);
+	}
+
+	@Transactional
+	@Override
+	public T update(final ID id, final T entity) {
+		final T entitySaved = getRepository().findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Entity with id " + id + " not found"));
+
+		BeanUtils.copyProperties(entity, entitySaved, "id");
+		return entitySaved;
 	}
 
 	/**

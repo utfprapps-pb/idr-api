@@ -23,7 +23,7 @@ public class PropertyDto {
 
     private CityDto city;
     
-    private BigDecimal totalArea;
+    private TotalAreaDto totalArea;
 
     private BigInteger latitude;
     

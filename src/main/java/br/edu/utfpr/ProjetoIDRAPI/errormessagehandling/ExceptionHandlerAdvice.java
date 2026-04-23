@@ -50,4 +50,10 @@ public class ExceptionHandlerAdvice {
 		return new ApiError(HttpStatus.BAD_REQUEST.value(), "O campo informado não existe!", request.getServletPath(), null);
 	}
 
+	@ExceptionHandler(IllegalArgumentException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ApiError handleIllegalArgumentException(IllegalArgumentException exception, HttpServletRequest request) {
+		return new ApiError(HttpStatus.NOT_FOUND.value(), exception.getMessage(), request.getServletPath(), null);
+	}
+
 }

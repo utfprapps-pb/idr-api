@@ -1,24 +1,26 @@
-package br.edu.utfpr.ProjetoIDRAPI.entity.disease;
+package br.edu.utfpr.ProjetoIDRAPI.entity.generalcultivations.pest;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import org.hibernate.envers.Audited;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.Audited;
 
-@Entity @Audited
+@Entity
+@Audited
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "disease")
-public class Disease {
-	@Id
+@Table(name = "pest")
+public class Pest {
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
-	
-	@NotBlank
-	private String name;
+    private Long id;
+
+    @NotBlank
+    private String name;
 }
