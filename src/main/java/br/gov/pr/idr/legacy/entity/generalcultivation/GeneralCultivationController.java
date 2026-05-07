@@ -1,8 +1,8 @@
-package br.edu.utfpr.ProjetoIDRAPI.entity.generalcultivations;
+package br.gov.pr.idr.legacy.entity.generalcultivation;
 
-import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudController;
-import br.edu.utfpr.ProjetoIDRAPI.entity.crud.CrudService;
-import br.edu.utfpr.ProjetoIDRAPI.entity.generalcultivations.dto.GeneralCultivationDto;
+import br.gov.pr.idr.legacy.entity.crud.CrudController;
+import br.gov.pr.idr.legacy.entity.crud.CrudService;
+import br.gov.pr.idr.legacy.entity.generalcultivation.dto.GeneralCultivationDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
