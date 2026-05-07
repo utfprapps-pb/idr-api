@@ -1,9 +1,9 @@
-package br.edu.utfpr.ProjetoIDRAPI.entity.generalcultivations.impl;
+package br.gov.pr.idr.legacy.entity.generalcultivation.impl;
 
-import br.edu.utfpr.ProjetoIDRAPI.entity.crud.impl.CrudServiceImpl;
-import br.edu.utfpr.ProjetoIDRAPI.entity.generalcultivations.GeneralCultivation;
-import br.edu.utfpr.ProjetoIDRAPI.entity.generalcultivations.GeneralCultivationRepository;
-import br.edu.utfpr.ProjetoIDRAPI.entity.generalcultivations.GeneralCultivationService;
+import br.gov.pr.idr.legacy.entity.crud.impl.CrudServiceImpl;
+import br.gov.pr.idr.legacy.entity.generalcultivation.GeneralCultivation;
+import br.gov.pr.idr.legacy.entity.generalcultivation.GeneralCultivationRepository;
+import br.gov.pr.idr.legacy.entity.generalcultivation.GeneralCultivationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

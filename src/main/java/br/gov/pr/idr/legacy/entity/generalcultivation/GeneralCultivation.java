@@ -1,4 +1,4 @@
-package br.edu.utfpr.ProjetoIDRAPI.entity.generalcultivations;
+package br.gov.pr.idr.legacy.entity.generalcultivation;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
