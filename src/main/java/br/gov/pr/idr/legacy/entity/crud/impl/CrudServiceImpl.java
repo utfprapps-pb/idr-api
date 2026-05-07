@@ -1,0 +1,61 @@
+package br.gov.pr.idr.legacy.entity.crud.impl;
+
+import java.io.Serializable;
+import java.util.List;
+
+import br.gov.pr.idr.legacy.search.SearchHandler;
+import br.gov.pr.idr.legacy.search.request.SearchRequest;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import br.gov.pr.idr.legacy.entity.crud.CrudService;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.transaction.annotation.Transactional;
+
+public abstract class CrudServiceImpl <T, ID extends Serializable> implements CrudService<T, ID>{
+	protected abstract JpaRepository<T, ID> getRepository();
+	
+	@Override
+	public T save(T entity) {
+		return getRepository().save(entity);
+	}
+	
+	@Override
+	public T findOne(ID id) {
+		return getRepository().findById(id).orElse(null);
+	}
+
+	@Override
+	public List<T> findAll() {
+		return getRepository().findAll();
+	}
+
+	@Override
+	public void delete(ID id) {
+		getRepository().deleteById(id);
+	}
+
+	@Transactional
+	@Override
+	public T update(final ID id, final T entity) {
+		final T entitySaved = getRepository().findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Entity with id " + id + " not found"));
+
+		BeanUtils.copyProperties(entity, entitySaved, "id");
+		return entitySaved;
+	}
+
+	/**
+	 * This method is not implemented by default.
+	 * It should be implemented by the service that needs to use the search functionality.
+	 * @return JpaSpecificationExecutor<T>
+	 */
+	public JpaSpecificationExecutor<T> getSpecExecutor() {
+		return null;
+	}
+
+	public Page<T> search(SearchRequest request) {
+		return new SearchHandler<>(getSpecExecutor()).handle(request);
+	}
+}
