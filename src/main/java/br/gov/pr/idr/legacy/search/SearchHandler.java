@@ -27,13 +27,18 @@ public class SearchHandler<E> {
     public Page<E> handle(SearchRequest searchRequest) {
         List<Specification<E>> specifications = createSpecifications(searchRequest.getFilters());
         Pageable pageable = PageRequest.of(searchRequest.getPage(), searchRequest.getRows(), SearchSortAdapter.adapt(searchRequest.getSort()));
-        return executor.findAll(
-            Specification.where(specifications.stream().reduce(Specification::and).orElse(null)),
-            pageable
-        );
+        
+        Specification<E> combinedSpec = specifications.stream()
+                .reduce(Specification::and)
+                .orElse((root, query, criteriaBuilder) -> criteriaBuilder.conjunction());
+
+        return executor.findAll(combinedSpec, pageable);
     }
 
     public List<Specification<E>> createSpecifications(List<SearchFilter> filters) {
+        if (filters == null) {
+            return List.of();
+        }
         return filters.stream()
                 .map(this::buildSpecification)
                 .collect(Collectors.toList());
