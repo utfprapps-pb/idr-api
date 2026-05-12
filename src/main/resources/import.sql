@@ -71,9 +71,9 @@ insert into plague (plague_name) values ('Plague 1');
 insert into plague (plague_name) values ('Plague 2');
 insert into plague (plague_name) values ('Plague 3');
 --TABELA DISEASE
-insert into disease (disease_name) values ('Disease 1');
-insert into disease (disease_name) values ('Disease 2');
-insert into disease (disease_name) values ('Disease 3');
+insert into disease (name) values ('Disease 1');
+insert into disease (name) values ('Disease 2');
+insert into disease (name) values ('Disease 3');
 --TABELA VEGETABLE_DISEASE
 insert into vegetable_disease (date, culture_id, disease_id, property_id, infestation_type) values ('2021-12-30', 3, 1, 2, 'InfestationType 1');
 insert into vegetable_disease (date, culture_id, disease_id, property_id, infestation_type) values ('2022-06-15', 2, 3, 2, 'InfestationType 2');

@@ -22,8 +22,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
-
 
 @Configuration
 @EnableWebSecurity
@@ -54,15 +52,16 @@ public class WebSecurity {
 
         http.exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(authenticationEntryPoint));
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers(antMatcher(HttpMethod.POST,"/users/**")).permitAll()
-                .requestMatchers(antMatcher(HttpMethod.POST,"/tokenAuth/refreshToken/**")).permitAll()
-                .requestMatchers(antMatcher("/error/**")).permitAll()
-                .requestMatchers(antMatcher("/v3/**")).permitAll()
-                .requestMatchers(antMatcher("/swagger-ui/**")).permitAll()
-                .requestMatchers(antMatcher("/webjars/**")).permitAll()
+                .requestMatchers(HttpMethod.POST,"/users/**").permitAll()
+                .requestMatchers(HttpMethod.POST,"/tokenAuth/refreshToken/**").permitAll()
+                .requestMatchers("/error/**").permitAll()
+                .requestMatchers("/v3/**").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/webjars/**").permitAll()
                 .anyRequest().authenticated()
         );
         http.authenticationManager(authenticationManager)
+
                 //Filtro da Autenticação
                 .addFilter(new JWTAuthenticationFilter(authenticationManager, authService) )
                 //Filtro da Autorizaçao
