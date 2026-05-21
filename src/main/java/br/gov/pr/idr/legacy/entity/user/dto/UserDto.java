@@ -1,6 +1,5 @@
 package br.gov.pr.idr.legacy.entity.user.dto;
 
-import br.gov.pr.idr.legacy.entity.city.dto.CityDto;
 import br.gov.pr.idr.legacy.utils.BaseUser;
 import lombok.Data;
 
@@ -28,8 +27,6 @@ public class UserDto implements BaseUser {
     private String cep;
 
     private String street;
-
-    private CityDto city;
 
     private String houseNumber;
 

@@ -57,9 +57,6 @@ public class PropertyServiceImpl extends CrudServiceImpl<Property, Long> impleme
             if (entity.getProducer().getCpf() == null) {
                 entity.getProducer().setCpf("%d".formatted(System.currentTimeMillis()));
             }
-            if (entity.getProducer().getCity() == null || entity.getProducer().getCity().getId() == null) {
-                entity.getProducer().setCity(entity.getCity());
-            }
 
             userService.save(entity.getProducer());
         }

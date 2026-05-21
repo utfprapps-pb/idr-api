@@ -1,14 +1,10 @@
 package br.gov.pr.idr.legacy.entity.user;
 
-import br.gov.pr.idr.legacy.entity.city.City;
-import br.gov.pr.idr.legacy.entity.permission.Permission;
 import br.gov.pr.idr.legacy.entity.user.annotation.ValidUser;
 import br.gov.pr.idr.legacy.utils.BaseUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.*;
 import org.hibernate.envers.Audited;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,11 +13,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
-@Entity (name = "users")
+@Entity(name = "users")
 @Audited
-@Getter @Setter
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -50,10 +46,6 @@ public class User implements UserDetails, BaseUser {
 
     private String phone;
 
-    @ManyToOne
-    @JoinColumn(name = "city_id", referencedColumnName = "id")
-    private City city;
-
     private String cep;
 
     private String street;
@@ -64,19 +56,11 @@ public class User implements UserDetails, BaseUser {
 
     private String graduationYear;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "users_permission",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "permission_id", referencedColumnName = "id"))
-    private Set<Permission> userPermissions;
-
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.addAll(this.userPermissions);
+//        authorities.addAll(this.userPermissions);
         return authorities;
     }
 

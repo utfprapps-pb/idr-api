@@ -52,7 +52,7 @@ public class WebSecurity {
 
         http.exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(authenticationEntryPoint));
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers(HttpMethod.POST,"/users/**").permitAll()
+                .requestMatchers(HttpMethod.POST,"/v1/users/**").permitAll()
                 .requestMatchers(HttpMethod.POST,"/tokenAuth/refreshToken/**").permitAll()
                 .requestMatchers("/error/**").permitAll()
                 .requestMatchers("/v3/**").permitAll()

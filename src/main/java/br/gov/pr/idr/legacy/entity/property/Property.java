@@ -1,6 +1,5 @@
 package br.gov.pr.idr.legacy.entity.property;
 
-import br.gov.pr.idr.legacy.entity.city.City;
 import br.gov.pr.idr.legacy.entity.propertyarea.PropertyArea;
 import br.gov.pr.idr.legacy.entity.propertycollaborator.PropertyCollaborator;
 import br.gov.pr.idr.legacy.entity.propertytechnician.PropertyTechnician;
@@ -30,10 +29,10 @@ public class Property {
     @ManyToOne
     @JoinColumn(name = "producer_id")
     private User producer;
-
-    @ManyToOne
-    @JoinColumn(name = "city_id")
-    private City city;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "city_id")
+//    private City city;
 
     private BigDecimal totalArea;
 

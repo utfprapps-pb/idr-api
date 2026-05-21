@@ -1,9 +1,6 @@
 package br.gov.pr.idr.legacy.entity.user.impl;
 
-import br.gov.pr.idr.legacy.entity.city.City;
-import br.gov.pr.idr.legacy.entity.city.CityService;
 import br.gov.pr.idr.legacy.entity.crud.impl.CrudServiceImpl;
-
 import br.gov.pr.idr.legacy.entity.user.User;
 import br.gov.pr.idr.legacy.entity.user.UserRepository;
 import br.gov.pr.idr.legacy.entity.user.UserService;
@@ -19,18 +16,16 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements User
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final CityService cityService;
 
-    public UserServiceImpl(UserRepository userRepository, CityService cityService, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
-        this.cityService = cityService;
     }
 
-	@Override
-	protected JpaRepository<User, Long> getRepository() {
-		return this.userRepository;
-	}
+    @Override
+    protected JpaRepository<User, Long> getRepository() {
+        return this.userRepository;
+    }
 
     @Override
     public JpaSpecificationExecutor<User> getSpecExecutor() {
@@ -39,20 +34,14 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements User
 
     @Override
     public User save(User user) {
-        if (user.getCity().getId() == null || user.getCity().getId() == 0) {
-            City city = this.cityService.findByName(user.getCity().getName());
-            if (city != null) {
-                user.setCity(city);
-            }
-        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
-	
-	@Override
-	public User findByName(String username) {
-		return userRepository.findByUsername(username);
-	}
+
+    @Override
+    public User findByName(String username) {
+        return userRepository.findByUsername(username);
+    }
 
     @Override
     public User findSelfUser() {

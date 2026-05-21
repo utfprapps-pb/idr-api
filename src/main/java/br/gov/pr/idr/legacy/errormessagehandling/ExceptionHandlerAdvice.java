@@ -1,8 +1,12 @@
 package br.gov.pr.idr.legacy.errormessagehandling;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import br.gov.pr.idr.domain.shared.exceptions.DomainException;
+import br.gov.pr.idr.domain.shared.validation.DomainError;
 import org.hibernate.query.SemanticException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -56,4 +60,22 @@ public class ExceptionHandlerAdvice {
 		return new ApiError(HttpStatus.NOT_FOUND.value(), exception.getMessage(), request.getServletPath(), null);
 	}
 
+	@ExceptionHandler(DomainException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ApiError handleDomainException(DomainException exception, HttpServletRequest request) {
+		Map<String, String> domainErrors = new HashMap<>();
+
+		String allErrors = exception.getErrors().stream()
+				.map(DomainError::message)
+				.collect(Collectors.joining("; "));
+
+		domainErrors.put("domainErrors", allErrors);
+
+		return new ApiError(
+				HttpStatus.BAD_REQUEST.value(),
+				"Erro de domínio",
+				request.getServletPath(),
+				domainErrors
+		);
+	}
 }
