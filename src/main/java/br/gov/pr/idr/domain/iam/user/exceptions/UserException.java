@@ -6,7 +6,7 @@ import java.util.List;
 
 public class UserException extends DomainException {
 
-    protected UserException(String message) {
+    public UserException(String message) {
         super(message, List.of());
     }
 }

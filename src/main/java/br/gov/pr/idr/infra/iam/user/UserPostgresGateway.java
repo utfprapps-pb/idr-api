@@ -21,7 +21,6 @@ public class UserPostgresGateway implements UserGateway {
     private final CityJPARepository cityRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     @Override
     public User create(User user) {
         final var encodePassword = passwordEncoder.encode(user.getPassword().pasword());
@@ -41,5 +40,10 @@ public class UserPostgresGateway implements UserGateway {
     @Override
     public boolean existsByUsername(String username) {
         return repository.existsByUsername(username);
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return repository.findByUsername(username).map(UserJPAEntity::toDomain);
     }
 }
