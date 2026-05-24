@@ -1,7 +1,5 @@
 package br.gov.pr.idr.legacy.entity.user;
 
-import br.gov.pr.idr.legacy.entity.user.annotation.ValidUser;
-import br.gov.pr.idr.legacy.utils.BaseUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -21,8 +19,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ValidUser
-public class User implements UserDetails, BaseUser {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

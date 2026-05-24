@@ -14,9 +14,9 @@ public record CPF(String value) {
         if (value == null || value.isBlank()) {
             throw new CPFException("CPF não pode ser nulo ou vazio!");
         }
-        if (!pattern.matcher(value).matches()) {
-            throw new CPFException("CPF inválido!");
-        }
+//        if (!pattern.matcher(value).matches()) {
+//            throw new CPFException("CPF inválido!");
+//        }
 
     }
 

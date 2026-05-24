@@ -61,7 +61,7 @@ public class UserJPAEntity implements UserDetails {
     private String graduationYear;
     private Instant createdAt;
     private Instant updatedAt;
-    private Boolean active;
+    private boolean active;
 
     @ManyToOne
     @JoinColumn(name = "city_id", referencedColumnName = "id")

@@ -4,7 +4,6 @@ import br.gov.pr.idr.legacy.entity.propertyarea.PropertyArea;
 import br.gov.pr.idr.legacy.entity.propertyattachment.PropertyAttachmentDTO;
 import br.gov.pr.idr.legacy.entity.propertycollaborator.PropertyCollaborator;
 import br.gov.pr.idr.legacy.entity.propertytechnician.PropertyTechnician;
-import br.gov.pr.idr.legacy.entity.user.dto.UserDto;
 import lombok.Data;
 
 import java.math.BigInteger;
@@ -17,7 +16,7 @@ public class PropertyDto {
 
     private String name;
 
-    private UserDto producer;
+//    private UserDto producer;
 
     private TotalAreaDto totalArea;
 
