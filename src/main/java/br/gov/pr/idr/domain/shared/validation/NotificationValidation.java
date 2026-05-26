@@ -40,7 +40,7 @@ public class NotificationValidation implements ValidationHandler {
         return this.errors;
     }
 
-    public boolean hasErrors() {
+    public boolean hasError() {
         return !this.errors.isEmpty();
     }
 }
