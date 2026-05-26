@@ -60,4 +60,10 @@ public class UserController {
     public Pagination<GetUserResponse> search(@RequestBody SearchQuery searchQuery) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity<GetUserResponse> byUserName(@PathVariable String username) {
+        final var output = this.findUserByUsernameUseCase.execute(username);
+        return ResponseEntity.ok(GetUserResponse.from(output));
+    }
 }

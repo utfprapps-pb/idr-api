@@ -56,7 +56,6 @@ public class CreateUserUseCase extends UseCase<CreateUserCommand, CreateUserOutp
             throw new NotificationException("CPF já cadastrado para outro usuário", notification);
         }
 
-
         return CreateUserOutput.from(userGateway.create(user));
     }
 }
