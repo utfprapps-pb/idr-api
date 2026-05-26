@@ -1,11 +1,11 @@
 package br.gov.pr.idr.application.iam.user.retries;
 
-import br.gov.pr.idr.application.shared.ManagedUseCase;
+import br.gov.pr.idr.application.shared.QueryUseCase;
 import br.gov.pr.idr.application.shared.UseCase;
 import br.gov.pr.idr.domain.iam.user.UserGateway;
 import br.gov.pr.idr.domain.iam.user.exceptions.UserException;
 
-@ManagedUseCase
+@QueryUseCase
 public class FindUserByUsernameUseCase extends UseCase<String, FindUserByUsernameOutput> {
 
     private final UserGateway userGateway;

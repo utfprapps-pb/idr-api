@@ -45,7 +45,6 @@ public class User extends AggregateRoot<UserID> {
          final boolean active,
          Set<Permission> permissions
     ) {
-        super(id);
         this.name = name;
         this.username = username;
         this.password = password;
@@ -61,6 +60,7 @@ public class User extends AggregateRoot<UserID> {
         this.updatedAt = updatedAt;
         this.active = active;
         this.permissions = permissions;
+        super(id);
     }
 
     public static User create(final String name,

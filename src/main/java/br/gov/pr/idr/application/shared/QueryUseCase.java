@@ -1,7 +1,7 @@
 package br.gov.pr.idr.application.shared;
 
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.annotation.*;
 
@@ -12,8 +12,8 @@ import java.lang.annotation.*;
 */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Transactional
+@Transactional(readOnly = true)
 @Documented
 @Service
-public @interface ManagedUseCase {
+public @interface QueryUseCase {
 }

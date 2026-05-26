@@ -2,6 +2,7 @@ package br.gov.pr.idr.infra.iam.user;
 
 import br.gov.pr.idr.domain.iam.user.User;
 import br.gov.pr.idr.domain.iam.user.UserGateway;
+import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.infra.iam.user.persistence.UserJPAEntity;
@@ -40,6 +41,11 @@ public class UserPostgresGateway implements UserGateway {
     @Override
     public boolean existsByUsername(String username) {
         return repository.existsByUsername(username);
+    }
+
+    @Override
+    public boolean existsById(final UserID id) {
+        return repository.existsById(id.id());
     }
 
     @Override

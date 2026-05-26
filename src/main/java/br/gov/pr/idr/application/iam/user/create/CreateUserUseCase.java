@@ -1,6 +1,6 @@
 package br.gov.pr.idr.application.iam.user.create;
 
-import br.gov.pr.idr.application.shared.ManagedUseCase;
+import br.gov.pr.idr.application.shared.CommandUseCase;
 import br.gov.pr.idr.application.shared.UseCase;
 import br.gov.pr.idr.domain.iam.user.User;
 import br.gov.pr.idr.domain.iam.user.UserGateway;
@@ -12,7 +12,7 @@ import br.gov.pr.idr.domain.shared.validation.NotificationValidation;
 
 import java.util.Collections;
 
-@ManagedUseCase
+@CommandUseCase
 public class CreateUserUseCase extends UseCase<CreateUserCommand, CreateUserOutput> {
 
     private final UserGateway userGateway;
@@ -44,7 +44,7 @@ public class CreateUserUseCase extends UseCase<CreateUserCommand, CreateUserOutp
 
         user.validate(notification);
 
-        if (notification.hasErrors()) {
+        if (notification.hasError()) {
             throw new NotificationException("Erro ao criar usuário", notification);
         }
 

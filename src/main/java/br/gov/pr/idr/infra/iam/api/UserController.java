@@ -46,7 +46,10 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) return ResponseEntity.noContent().build();
 
-        final String userName = authentication.getPrincipal() != null ? authentication.getPrincipal().toString() : null;
+        final Object principal = authentication.getPrincipal();
+        if (principal == null) return ResponseEntity.noContent().build();
+
+        final String userName = principal.toString();
         if (userName == null) return ResponseEntity.noContent().build();
 
         final var output = findUserByUsernameUseCase.execute(userName);
