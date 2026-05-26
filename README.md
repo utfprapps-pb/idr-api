@@ -38,6 +38,8 @@ Cada contexto em `br.pr.gov.idr_parana` segue a estrutura:
 
 ---
 
+![img.png](assets/img.png)
+
 ## 🗺️ Mapeamento de Contextos Delimitados
 
 Abaixo estão definidos os contextos e as entidades que devem ser migradas para cada um:
