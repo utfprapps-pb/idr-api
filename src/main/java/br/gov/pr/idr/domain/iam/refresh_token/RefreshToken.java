@@ -59,6 +59,10 @@ public class RefreshToken extends Entity<RefreshTokenID> {
         return new RefreshToken(id, token, userId, username, expiresAt, createdAt, revoked);
     }
 
+    public void revoke() {
+        this.revoked = true;
+    }
+
     public boolean isExpired() {
         return Instant.now().isAfter(this.expiresAt);
     }

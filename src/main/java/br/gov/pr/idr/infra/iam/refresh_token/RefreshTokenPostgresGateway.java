@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,14 +30,15 @@ public class RefreshTokenPostgresGateway implements RefreshTokenGateway {
     }
 
     @Override
-    @Transactional
-    public void revokeAllByUserId(final UUID userId) {
-        repository.revokeAllByUserId(userId);
+    public List<RefreshToken> findAllByUserId(final UUID userId) {
+        return repository.findAllByUserId(userId).stream()
+                .map(RefreshTokenJPAEntity::toDomain)
+                .toList();
     }
 
     @Override
     @Transactional
-    public void deleteExpiredAndRevoked() {
-        repository.deleteExpiredAndRevoked(Instant.now());
+    public void deleteExpiredAndRevoked(final Instant now) {
+        repository.deleteExpiredAndRevoked(now);
     }
 }

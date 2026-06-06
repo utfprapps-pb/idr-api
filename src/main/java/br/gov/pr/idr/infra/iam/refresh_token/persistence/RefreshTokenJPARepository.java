@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,13 +14,10 @@ public interface RefreshTokenJPARepository extends JpaRepository<RefreshTokenJPA
 
     Optional<RefreshTokenJPAEntity> findByToken(String token);
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE RefreshToken t SET t.revoked = true WHERE t.userId = :userId")
-    void revokeAllByUserId(UUID userId);
+    List<RefreshTokenJPAEntity> findAllByUserId(UUID userId);
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM RefreshToken t WHERE t.expiresAt < :now OR t.revoked = true")
-    void deleteExpiredAndRevoked(Instant now);
+    @Query("DELETE FROM RefreshToken t WHERE t.expiresAt < :deleteBeforeAt OR t.revoked = true")
+    void deleteExpiredAndRevoked(Instant deleteBeforeAt);
 }

@@ -1,5 +1,7 @@
 package br.gov.pr.idr.domain.iam.refresh_token;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,7 +11,7 @@ public interface RefreshTokenGateway {
 
     Optional<RefreshToken> findByToken(final String token);
 
-    void revokeAllByUserId(final UUID userId);
+    List<RefreshToken> findAllByUserId(final UUID userId);
 
-    void deleteExpiredAndRevoked();
+    void deleteExpiredAndRevoked(final Instant now);
 }
