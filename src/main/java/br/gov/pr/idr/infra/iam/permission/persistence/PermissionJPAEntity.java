@@ -2,10 +2,7 @@ package br.gov.pr.idr.infra.iam.permission.persistence;
 
 import br.gov.pr.idr.domain.iam.permission.Permission;
 import br.gov.pr.idr.domain.iam.permission.PermissionID;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,17 +11,20 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.UUID;
+
 @Entity(name = "Permission")
 @AllArgsConstructor
 @NoArgsConstructor
 @Audited
 @Getter
 @Setter
+@Table(name = "users_permission")
 public class PermissionJPAEntity implements GrantedAuthority {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(nullable = false, updatable = false)
+    private UUID id;
 
     @NotBlank
     private String name;

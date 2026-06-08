@@ -4,26 +4,19 @@ import br.gov.pr.idr.domain.iam.permission.Permission;
 import br.gov.pr.idr.domain.iam.user.User;
 import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
-import br.gov.pr.idr.domain.iam.user.vo.Password;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.infra.iam.permission.persistence.PermissionJPAEntity;
-import br.gov.pr.idr.infra.property_management.city.persistence.CityJPAEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.envers.Audited;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity(name = "User")
@@ -31,13 +24,13 @@ import java.util.stream.Collectors;
 @Audited
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserJPAEntity implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(nullable = false, updatable = false)
+    private UUID id;
 
     @NotBlank
     private String name;
@@ -63,11 +56,10 @@ public class UserJPAEntity implements UserDetails {
     private Instant updatedAt;
     private boolean active;
 
-    @ManyToOne
-    @JoinColumn(name = "city_id", referencedColumnName = "id")
-    private CityJPAEntity city;
+    @Column(name = "city_id", nullable = false)
+    private UUID cityID;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_permission",
             joinColumns = @JoinColumn(
                     name = "user_id", referencedColumnName = "id"),
@@ -77,6 +69,7 @@ public class UserJPAEntity implements UserDetails {
 
     @Override
     @JsonIgnore
+    @NullMarked
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return new ArrayList<>(this.userPermissions);
     }
@@ -86,7 +79,7 @@ public class UserJPAEntity implements UserDetails {
         return password;
     }
 
-    public static UserJPAEntity from(final User user, final CityJPAEntity city, final String encodePassword) {
+    public static UserJPAEntity from(final User user,  final String encodePassword) {
         return new UserJPAEntity(
                 user.getId().id(),
                 user.getName(),
@@ -102,7 +95,7 @@ public class UserJPAEntity implements UserDetails {
                 user.getCreatedAt(),
                 user.getUpdatedAt(),
                 user.isActive(),
-                city,
+                user.getCityID().id(),
                 fromDomainPermissions(user.getPermissions()));
     }
 
@@ -111,10 +104,9 @@ public class UserJPAEntity implements UserDetails {
                 UserID.from(this.id),
                 this.name,
                 this.username,
-                Password.from(this.password, this.password),
                 CPF.from(this.cpf),
                 this.phone,
-                CityID.from(this.getCityId()),
+                CityID.from(this.cityID),
                 this.cep,
                 this.street,
                 this.houseNumber,
@@ -125,12 +117,6 @@ public class UserJPAEntity implements UserDetails {
                 this.active,
                 this.getDomainPermissions()
         );
-    }
-
-    private Long getCityId() {
-        return Optional.ofNullable(this.city)
-                .map(CityJPAEntity::getId)
-                .orElse(null);
     }
 
     private Set<Permission> getDomainPermissions() {

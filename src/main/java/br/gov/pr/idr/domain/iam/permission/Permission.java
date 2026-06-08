@@ -11,6 +11,7 @@ public class Permission extends Entity<PermissionID> {
     Permission(final PermissionID id, final String name) {
         super(id);
         this.name = name;
+        super.selfValidate();
     }
 
     public static Permission create(final String name) {
@@ -24,7 +25,7 @@ public class Permission extends Entity<PermissionID> {
     @Override
     public void validate(ValidationHandler handler) {
         if (this.name == null || this.name.isBlank()) {
-            handler.append(DomainError.from("Nome da permissão não pode ser nulo ou vazio."));
+            handler.append(DomainError.from("name", "Nome da permissão não pode ser nulo ou vazio."));
         }
     }
 

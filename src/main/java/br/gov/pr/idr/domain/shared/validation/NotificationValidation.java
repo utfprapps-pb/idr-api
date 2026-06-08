@@ -30,7 +30,7 @@ public class NotificationValidation implements ValidationHandler {
         } catch (final DomainException e) {
             this.errors.addAll(e.getErrors());
         } catch (RuntimeException t) {
-            this.errors.add(new DomainError(t.getMessage()));
+            this.errors.add(DomainError.from("error", t.getMessage()));
         }
         return null;
     }

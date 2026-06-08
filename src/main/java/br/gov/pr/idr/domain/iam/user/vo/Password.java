@@ -6,23 +6,26 @@ import java.util.regex.Pattern;
 
 public record Password(String pasword, String confirmPassword) {
 
-    //TODO
-    static final Pattern pattern = Pattern.compile("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])");
+    static final int MIN_LENGTH = 8;
+    static final Pattern COMPLEXITY = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).+$");
 
     public Password {
-
         if (pasword == null || pasword.isBlank()) {
-            throw new PasswordException("Senha não pode ser nula ou vazia");
+            throw new PasswordException("password", "Senha não pode ser nula ou vazia");
         }
         if (confirmPassword == null || confirmPassword.isBlank()) {
-            throw new PasswordException("Confirmação de senha não pode ser nula ou vazia");
+            throw new PasswordException("confirmPassword", "Confirmação de senha não pode ser nula ou vazia");
         }
         if (!pasword.equals(confirmPassword)) {
-            throw new PasswordException("Senhas não conferem");
+            throw new PasswordException("password", "Senhas não conferem");
         }
-//        if (!pattern.matcher(pasword).matches()) {
-//            throw new PasswordException("A senha deve conter pelo menos um número, uma letra minúscula e uma letra maiúscula");
-//        }
+        if (pasword.length() < MIN_LENGTH) {
+            throw new PasswordException("password", "Senha deve ter no mínimo %d caracteres".formatted(MIN_LENGTH));
+        }
+        if (!COMPLEXITY.matcher(pasword).matches()) {
+            throw new PasswordException("password",
+                    "Senha deve conter ao menos uma letra maiúscula, uma minúscula, um número e um caractere especial");
+        }
     }
 
     public static Password from(final String pasword, final String confirmPassword) {

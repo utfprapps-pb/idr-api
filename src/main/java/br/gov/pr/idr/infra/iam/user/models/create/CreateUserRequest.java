@@ -1,5 +1,7 @@
 package br.gov.pr.idr.infra.iam.user.models.create;
 
+import java.util.UUID;
+
 public record CreateUserRequest(
         String name,
         String username,
@@ -11,7 +13,7 @@ public record CreateUserRequest(
         String professionalRegister,
         String cep,
         String street,
-        Long cityId,
+        UUID cityId,
         String houseNumber
 ) {
 }

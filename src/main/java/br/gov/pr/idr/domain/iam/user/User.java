@@ -20,7 +20,7 @@ public class User extends AggregateRoot<UserID> {
     private Instant updatedAt;
     private boolean active;
     private String phone;
-    private CityID city;
+    private CityID cityID;
     private String cep;
     private String street;
     private String houseNumber;
@@ -34,7 +34,7 @@ public class User extends AggregateRoot<UserID> {
          final Password password,
          final CPF cpf,
          final String phone,
-         final CityID city,
+         final CityID cityID,
          final String cep,
          final String street,
          final String houseNumber,
@@ -45,12 +45,13 @@ public class User extends AggregateRoot<UserID> {
          final boolean active,
          Set<Permission> permissions
     ) {
+        super(id);
         this.name = name;
         this.username = username;
         this.password = password;
         this.cpf = cpf;
         this.phone = phone;
-        this.city = city;
+        this.cityID = cityID;
         this.cep = cep;
         this.street = street;
         this.houseNumber = houseNumber;
@@ -60,7 +61,7 @@ public class User extends AggregateRoot<UserID> {
         this.updatedAt = updatedAt;
         this.active = active;
         this.permissions = permissions;
-        super(id);
+        super.selfValidate();
     }
 
     public static User create(final String name,
@@ -84,7 +85,6 @@ public class User extends AggregateRoot<UserID> {
     public static User with(final UserID id,
                             final String name,
                             final String username,
-                            final Password password,
                             final CPF cpf,
                             final String phone,
                             final CityID city,
@@ -98,7 +98,7 @@ public class User extends AggregateRoot<UserID> {
                             final boolean active,
                             final Set<Permission> permissions
     ) {
-        return new User(id, name, username, password, cpf, phone, city, cep, street, houseNumber, professionalRegister,
+        return new User(id, name, username, null, cpf, phone, city, cep, street, houseNumber, professionalRegister,
                 graduationYear, createdAt, updatedAt, active, permissions);
     }
 
@@ -114,7 +114,7 @@ public class User extends AggregateRoot<UserID> {
                        final Set<Permission> permissions
     ) {
         this.phone = phone;
-        this.city = city;
+        this.cityID = city;
         this.cep = cep;
         this.street = street;
         this.houseNumber = houseNumber;
@@ -124,22 +124,20 @@ public class User extends AggregateRoot<UserID> {
         this.active = active;
         this.updatedAt = Instant.now();
         this.permissions = permissions;
+        super.selfValidate();
         return this;
     }
 
     @Override
     public void validate(ValidationHandler handler) {
         if (this.name == null || this.name.isBlank()) {
-            handler.append(DomainError.from("Nome do usuário não pode ser nulo"));
+            handler.append(DomainError.from("name", "Nome do usuário não pode ser nulo"));
         }
         if (this.username == null || this.username.isBlank()) {
-            handler.append(DomainError.from("UserName não pode ser nulo"));
-        }
-        if (this.password == null) {
-            handler.append(DomainError.from("Senha não pode ser nula"));
+            handler.append(DomainError.from("username", "UserName não pode ser nulo"));
         }
         if (this.cpf == null) {
-            handler.append(DomainError.from("CPF não pode ser nulo"));
+            handler.append(DomainError.from("cpf", "CPF não pode ser nulo"));
         }
     }
 
@@ -175,8 +173,8 @@ public class User extends AggregateRoot<UserID> {
         return phone;
     }
 
-    public CityID getCity() {
-        return city;
+    public CityID getCityID() {
+        return cityID;
     }
 
     public String getCep() {

@@ -1,5 +1,7 @@
 package br.gov.pr.idr.application.iam.user.create;
 
+import java.util.UUID;
+
 public record CreateUserCommand(
         String name,
         String username,
@@ -11,7 +13,7 @@ public record CreateUserCommand(
         String professionalRegister,
         String cep,
         String street,
-        Long cityId,
+        UUID cityId,
         String houseNumber
 ) {
 
@@ -25,7 +27,7 @@ public record CreateUserCommand(
                                          final String professionalRegister,
                                          final String cep,
                                          final String street,
-                                         final Long cityId,
+                                         final UUID cityId,
                                          final String houseNumber) {
         return new CreateUserCommand(name, username, password, confirmPassword, cpf, phone, graduationYear, professionalRegister,
                 cep, street, cityId, houseNumber);

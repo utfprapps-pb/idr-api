@@ -1,5 +1,8 @@
-package br.gov.pr.idr.domain.property_management.city;
+package br.gov.pr.idr.domain.property_management.city.vo;
 
+import br.gov.pr.idr.domain.shared.ValueObject;
+
+@ValueObject
 public enum State {
     AC("Acre"),
     AL("Alagoas"),

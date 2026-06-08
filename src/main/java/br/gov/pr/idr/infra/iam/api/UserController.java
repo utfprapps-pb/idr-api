@@ -11,7 +11,6 @@ import br.gov.pr.idr.infra.iam.user.models.retries.GetUserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final CreateUserUseCase createUserUseCase;
-    private final FindUserByUsernameUseCase findUserByUsernameUseCase;
 
     @PostMapping
     public ResponseEntity<CreateUserResponse> create(@RequestBody CreateUserRequest request) {
@@ -42,18 +40,11 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<GetUserResponse> me() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<GetUserResponse> me(Authentication authentication) {
         if (authentication == null) return ResponseEntity.noContent().build();
-
-        final Object principal = authentication.getPrincipal();
-        if (principal == null) return ResponseEntity.noContent().build();
-
-        final String userName = principal.toString();
-        if (userName == null) return ResponseEntity.noContent().build();
-
-        final var output = findUserByUsernameUseCase.execute(userName);
-        return ResponseEntity.ok(GetUserResponse.from(output));
+        var username = authentication.getPrincipal();
+        if (username == null) return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(GetUserResponse.from(username.toString()));
     }
 
     @PostMapping("/search")
@@ -61,9 +52,4 @@ public class UserController {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
-    @GetMapping("/username/{username}")
-    public ResponseEntity<GetUserResponse> byUserName(@PathVariable String username) {
-        final var output = this.findUserByUsernameUseCase.execute(username);
-        return ResponseEntity.ok(GetUserResponse.from(output));
-    }
 }
