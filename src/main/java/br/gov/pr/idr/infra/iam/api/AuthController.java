@@ -27,13 +27,11 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthLoginResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
-        final var output = rotateRefreshTokenUseCase.execute(
-                RotateRefreshTokenCommand.from(request.token(), jwtProperties.refreshTokenExpirationDays())
-        );
-
+        final var command = RotateRefreshTokenCommand.from(request.token(),
+                                                                        jwtProperties.refreshTokenExpirationDays());
+        final var output = rotateRefreshTokenUseCase.execute(command);
         final var userDetails = userDetailsService.loadUserByUsername(output.username());
-
-        return ResponseEntity.ok(new AuthLoginResponse(
+        return ResponseEntity.ok(AuthLoginResponse.from(
                 jwtService.generateToken(userDetails),
                 output.newRefreshToken()
         ));
