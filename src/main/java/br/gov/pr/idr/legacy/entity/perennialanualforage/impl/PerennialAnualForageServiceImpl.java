@@ -21,7 +21,8 @@ public class PerennialAnualForageServiceImpl extends CrudServiceImpl<PerennialAn
 
     @Override
     public List<PerennialAnualForage> findByPropertyId(Long id) {
-        return perennialAnualForageRepository.findAllByPropertyId(id);
+        return null;
+//        return perennialAnualForageRepository.findAllByPropertyId(id);
     }
 
     @Override

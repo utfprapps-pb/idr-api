@@ -1,7 +1,6 @@
 package br.gov.pr.idr.legacy.entity.animal;
 
 import br.gov.pr.idr.legacy.entity.breed.Breed;
-import br.gov.pr.idr.legacy.entity.property.Property;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,9 +27,9 @@ public class Animal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull
-    @ManyToOne
-    private Property property;
+//    @NotNull
+//    @ManyToOne
+//    private Property property;
 
     @ManyToOne
     private Animal animalMother;

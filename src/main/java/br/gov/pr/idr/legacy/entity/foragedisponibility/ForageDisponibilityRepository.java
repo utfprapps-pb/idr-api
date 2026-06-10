@@ -11,9 +11,9 @@ public interface ForageDisponibilityRepository extends
         JpaRepository<ForageDisponibility, Long>,
         JpaSpecificationExecutor<ForageDisponibility> {
 
-    @Query("SELECT fd FROM ForageDisponibility fd JOIN FETCH fd.property WHERE fd.property.id = :propertyId")
-    List<ForageDisponibility> findByPropertyIdWithProperty(@Param("propertyId") Long propertyId);
+//    @Query("SELECT fd FROM ForageDisponibility fd JOIN FETCH fd.property WHERE fd.property.id = :propertyId")
+//    List<ForageDisponibility> findByPropertyIdWithProperty(@Param("propertyId") Long propertyId);
 
-    List<ForageDisponibility> findByProperty_Id(Long propertyId);
+//    List<ForageDisponibility> findByProperty_Id(Long propertyId);
 
 }

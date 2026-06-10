@@ -33,7 +33,7 @@ public class ForageDisponibilityServiceImpl extends CrudServiceImpl<ForageDispon
 
 	@Override
 	public List<ForageDisponibilityDto> findByPropertyId(Long propertyId) {
-		List<ForageDisponibility> list = forageRepository.findByPropertyIdWithProperty(propertyId);
+		List<ForageDisponibility> list = null;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		return list.stream()

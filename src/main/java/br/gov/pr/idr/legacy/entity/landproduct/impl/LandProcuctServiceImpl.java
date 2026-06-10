@@ -25,6 +25,7 @@ public class LandProcuctServiceImpl extends CrudServiceImpl<LandProduct, Long> i
 
     @Override
     public List<LandProduct> findByPropertyId(Long id) {
-        return productUseRepository.findAllByPropertyId(id);
+        return null;
+//        return productUseRepository.findAllByPropertyId(id);
     }
 }

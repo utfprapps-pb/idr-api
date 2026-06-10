@@ -2,9 +2,7 @@ package br.gov.pr.idr.legacy.entity.foragedisponibility;
 
 import java.time.LocalDate;
 
-import br.gov.pr.idr.legacy.entity.property.Property;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,9 +39,9 @@ public class ForageDisponibility {
 
 	private Float kgCows;
 
-	 @NotNull
-	 @ManyToOne(fetch = FetchType.LAZY)
-	 @JoinColumn(name = "property_id")
-	 private Property property;
+//	 @NotNull
+//	 @ManyToOne(fetch = FetchType.LAZY)
+//	 @JoinColumn(name = "property_id")
+//	 private Property property;
 
 }

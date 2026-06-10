@@ -26,7 +26,8 @@ public class PropertyEquipImproveServiceImpl extends CrudServiceImpl<PropertyEqu
 
     @Override
     public List<PropertyEquipImprove> findByPropertyId(Long id) {
-        return equipImproveRepository.findAllByPropertyId(id);
+        return null;
+//        return equipImproveRepository.findAllByPropertyId(id);
     }
 
 }

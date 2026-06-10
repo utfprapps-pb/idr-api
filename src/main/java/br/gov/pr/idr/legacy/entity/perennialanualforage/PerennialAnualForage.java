@@ -1,6 +1,5 @@
 package br.gov.pr.idr.legacy.entity.perennialanualforage;
 
-import br.gov.pr.idr.legacy.entity.property.Property;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,9 +26,9 @@ public class PerennialAnualForage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull
-    @ManyToOne
-    private Property property;
+//    @NotNull
+//    @ManyToOne
+//    private Property property;
 
     private String type;
 
