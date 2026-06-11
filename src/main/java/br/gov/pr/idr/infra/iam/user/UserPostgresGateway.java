@@ -4,6 +4,8 @@ import br.gov.pr.idr.domain.iam.user.User;
 import br.gov.pr.idr.domain.iam.user.UserGateway;
 import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
+import br.gov.pr.idr.domain.shared.search.Pagination;
+import br.gov.pr.idr.domain.shared.search.SearchQuery;
 import br.gov.pr.idr.infra.iam.user.persistence.UserJPAEntity;
 import br.gov.pr.idr.infra.iam.user.persistence.UserJPARepository;
 import lombok.RequiredArgsConstructor;
@@ -44,5 +46,10 @@ public class UserPostgresGateway implements UserGateway {
     @Override
     public Optional<User> findByUsername(String username) {
         return repository.findByUsername(username).map(UserJPAEntity::toDomain);
+    }
+
+    @Override
+    public Pagination<User> search(SearchQuery query) {
+        return null;
     }
 }

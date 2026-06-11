@@ -1,4 +1,4 @@
-package br.gov.pr.idr.infra.iam.security;
+package br.gov.pr.idr.infra.iam.security.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

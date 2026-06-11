@@ -1,4 +1,4 @@
-package br.gov.pr.idr.application.iam.user.retries;
+package br.gov.pr.idr.application.iam.user.retries.find;
 
 import br.gov.pr.idr.application.shared.QueryUseCase;
 import br.gov.pr.idr.application.shared.UseCase;

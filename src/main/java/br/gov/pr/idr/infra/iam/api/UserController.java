@@ -2,7 +2,6 @@ package br.gov.pr.idr.infra.iam.api;
 
 import br.gov.pr.idr.application.iam.user.create.CreateUserCommand;
 import br.gov.pr.idr.application.iam.user.create.CreateUserUseCase;
-import br.gov.pr.idr.application.iam.user.retries.FindUserByUsernameUseCase;
 import br.gov.pr.idr.domain.shared.search.Pagination;
 import br.gov.pr.idr.domain.shared.search.SearchQuery;
 import br.gov.pr.idr.infra.iam.user.models.create.CreateUserRequest;

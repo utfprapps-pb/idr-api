@@ -2,7 +2,7 @@ package br.gov.pr.idr.infra.iam.api;
 
 import br.gov.pr.idr.application.iam.refresh_token.rotate.RotateRefreshTokenCommand;
 import br.gov.pr.idr.application.iam.refresh_token.rotate.RotateRefreshTokenUseCase;
-import br.gov.pr.idr.infra.iam.security.JwtService;
+import br.gov.pr.idr.infra.iam.security.jwt.JwtService;
 import br.gov.pr.idr.infra.iam.security.config.JwtProperties;
 import br.gov.pr.idr.infra.iam.user.models.auth.AuthLoginResponse;
 import br.gov.pr.idr.infra.iam.user.models.auth.RefreshTokenRequest;

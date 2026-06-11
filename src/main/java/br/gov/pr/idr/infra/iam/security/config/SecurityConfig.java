@@ -1,15 +1,14 @@
 package br.gov.pr.idr.infra.iam.security.config;
 
 import br.gov.pr.idr.application.iam.refresh_token.issue.IssueRefreshTokenUseCase;
-import br.gov.pr.idr.infra.iam.security.JwtAuthenticationFilter;
-import br.gov.pr.idr.infra.iam.security.JwtAuthorizationFilter;
-import br.gov.pr.idr.infra.iam.security.JwtService;
+import br.gov.pr.idr.infra.iam.security.jwt.JwtAuthenticationFilter;
+import br.gov.pr.idr.infra.iam.security.jwt.JwtAuthorizationFilter;
+import br.gov.pr.idr.infra.iam.security.jwt.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -31,7 +30,6 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@Profile("!test")
 @EnableConfigurationProperties(JwtProperties.class)
 public class SecurityConfig {
 

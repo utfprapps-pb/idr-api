@@ -1,16 +1,62 @@
 package br.gov.pr.idr.domain.property_management.city;
 
-import br.gov.pr.idr.domain.shared.Entity;
+import br.gov.pr.idr.domain.property_management.city.vo.State;
+import br.gov.pr.idr.domain.property_management.region.RegionID;
+import br.gov.pr.idr.domain.shared.AggregateRoot;
+import br.gov.pr.idr.domain.shared.validation.DomainError;
 import br.gov.pr.idr.domain.shared.validation.ValidationHandler;
 
-public class City extends Entity<CityID> {
+public class City extends AggregateRoot<CityID> {
 
-    protected City(CityID id) {
+    private final String name;
+    private final State state;
+    private RegionID regionId;
+
+    protected City(final CityID id, final String name, final State state, final RegionID regionId) {
         super(id);
+        this.name = name;
+        this.state = state;
+        this.regionId = regionId;
+        selfValidate();
     }
+
+    public static City with(final CityID id, final String name, final State state, final RegionID regionId){
+        return new City(id, name, state, regionId);
+    }
+
+    public static City create(final String name, final State state, final RegionID regionId) {
+        return new City(CityID.unique(), name, state, regionId);
+    }
+
+    public City update(final RegionID regionId) {
+        this.regionId = regionId;
+        selfValidate();
+        return this;
+    }
+
 
     @Override
     public void validate(ValidationHandler handler) {
+        if (this.name == null || this.name.isBlank()) {
+            handler.append(DomainError.from("O nome da cidade é obrigatório"));
+        }
+        if (this.state == null) {
+            handler.append(DomainError.from("O estado da cidade é obrigatório"));
+        }
+        if (this.regionId == null) {
+            handler.append(DomainError.from("A região da cidade é obrigatória"));
+        }
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public RegionID getRegionId() {
+        return regionId;
     }
 }

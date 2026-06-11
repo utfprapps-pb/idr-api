@@ -11,7 +11,6 @@ public record CityID(UUID id) implements Identifier {
         Objects.requireNonNull(id, "CityID não pode ser nulo");
     }
 
-
     public static CityID unique() {
         return from(UUID.randomUUID());
     }

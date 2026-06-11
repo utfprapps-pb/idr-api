@@ -1,4 +1,4 @@
-package br.gov.pr.idr.infra.iam.security;
+package br.gov.pr.idr.infra.iam.security.jwt;
 
 import br.gov.pr.idr.application.iam.refresh_token.issue.IssueRefreshTokenCommand;
 import br.gov.pr.idr.application.iam.refresh_token.issue.IssueRefreshTokenUseCase;

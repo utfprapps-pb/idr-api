@@ -78,7 +78,7 @@ public class User extends AggregateRoot<UserID> {
                               final Set<Permission> permissions
     ) {
         return new User(UserID.unique(), name, username, password, cpf, phone, city, cep, street, houseNumber,
-                professionalRegister, graduationYear, Instant.now(), Instant.now(), true, permissions);
+                professionalRegister, graduationYear, Instant.now(), Instant.now(), false, permissions);
 
     }
 

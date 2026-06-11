@@ -1,4 +1,4 @@
-package br.gov.pr.idr.infra.iam.security;
+package br.gov.pr.idr.infra.iam.security.jwt;
 
 import br.gov.pr.idr.infra.iam.security.config.JwtProperties;
 import com.auth0.jwt.JWT;
