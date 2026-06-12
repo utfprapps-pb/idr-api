@@ -5,7 +5,7 @@ import br.gov.pr.idr.domain.shared.validation.DomainError;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class DomainException extends RuntimeException {
+public class DomainException extends RuntimeException {
 
     private final String context;
     protected final transient List<DomainError> errors;
@@ -14,6 +14,10 @@ public abstract class DomainException extends RuntimeException {
         super(formatMessage(context, errors));
         this.context = context;
         this.errors = errors;
+    }
+
+    public static DomainException from(final String context) {
+        return new DomainException(context, List.of());
     }
 
     public String getContext() {

@@ -9,4 +9,10 @@ public record CreateCityCommand(
         State state,
         UUID regionId
 ) {
+
+    public static CreateCityCommand from(String name,
+                                         State state,
+                                         UUID regionId) {
+        return new CreateCityCommand(name, state, regionId);
+    }
 }
