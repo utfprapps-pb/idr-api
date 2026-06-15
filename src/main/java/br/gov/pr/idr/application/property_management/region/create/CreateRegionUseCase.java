@@ -1,13 +1,13 @@
 package br.gov.pr.idr.application.property_management.region.create;
 
-import br.gov.pr.idr.application.shared.QueryUseCase;
+import br.gov.pr.idr.application.shared.CommandUseCase;
 import br.gov.pr.idr.application.shared.UseCase;
 import br.gov.pr.idr.domain.property_management.region.Region;
 import br.gov.pr.idr.domain.property_management.region.RegionGateway;
 import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
 import br.gov.pr.idr.domain.shared.validation.NotificationValidation;
 
-@QueryUseCase
+@CommandUseCase
 public class CreateRegionUseCase extends UseCase<CreateRegionCommand, CreateRegionOutput> {
 
     private final RegionGateway regionGateway;

@@ -8,7 +8,7 @@ import br.gov.pr.idr.domain.shared.validation.ValidationHandler;
 
 public class City extends AggregateRoot<CityID> {
 
-    private final String name;
+    private String name;
     private final State state;
     private RegionID regionId;
 
@@ -28,8 +28,9 @@ public class City extends AggregateRoot<CityID> {
         return new City(CityID.unique(), name, state, regionId);
     }
 
-    public City update(final RegionID regionId) {
+    public City update(final RegionID regionId, final String name) {
         this.regionId = regionId;
+        this.name = name;
         selfValidate();
         return this;
     }

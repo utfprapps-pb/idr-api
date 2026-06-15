@@ -1,6 +1,6 @@
 package br.gov.pr.idr.application.property_management.city.create;
 
-import br.gov.pr.idr.application.shared.QueryUseCase;
+import br.gov.pr.idr.application.shared.CommandUseCase;
 import br.gov.pr.idr.application.shared.UseCase;
 import br.gov.pr.idr.domain.property_management.city.City;
 import br.gov.pr.idr.domain.property_management.city.CityGateway;
@@ -9,7 +9,7 @@ import br.gov.pr.idr.domain.property_management.region.RegionID;
 import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
 import br.gov.pr.idr.domain.shared.validation.NotificationValidation;
 
-@QueryUseCase
+@CommandUseCase
 public class CreateCityUseCase extends UseCase<CreateCityCommand, CreateCityOutput> {
 
     private final CityGateway cityGateway;

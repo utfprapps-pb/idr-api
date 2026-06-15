@@ -9,6 +9,7 @@ import br.gov.pr.idr.domain.iam.user.vo.Password;
 import br.gov.pr.idr.domain.property_management.city.CityGateway;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.validation.DomainError;
 import br.gov.pr.idr.domain.shared.validation.NotificationValidation;
 
 import java.util.Collections;
@@ -49,11 +50,13 @@ public class CreateUserUseCase extends UseCase<CreateUserCommand, CreateUserOutp
         final var notification = NotificationValidation.create();
 
         if (userGateway.existsByUsername(userName)) {
-            throw new NotificationException("Username já cadastrado para outro usuário", notification);
+            throw new NotificationException(notification.append(
+                    DomainError.from("username", "Username já cadastrado para outro usuário")));
         }
 
         if (userGateway.existsByCPF(cpf)) {
-            throw new NotificationException("CPF já cadastrado para outro usuário", notification);
+            throw new NotificationException(notification.append(
+                    DomainError.from("cpf", "CPF já cadastrado para outro usuário")));
         }
 
         if (!cityGateway.existsById(cityId)) {
