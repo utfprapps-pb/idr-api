@@ -3,8 +3,12 @@ package br.gov.pr.idr.infra.property_management.region;
 import br.gov.pr.idr.domain.property_management.region.Region;
 import br.gov.pr.idr.domain.property_management.region.RegionGateway;
 import br.gov.pr.idr.domain.property_management.region.RegionID;
+import br.gov.pr.idr.domain.shared.search.Pagination;
+import br.gov.pr.idr.domain.shared.search.SearchQuery;
 import br.gov.pr.idr.infra.property_management.region.persistence.RegionJPAEntity;
 import br.gov.pr.idr.infra.property_management.region.persistence.RegionJPARepository;
+import br.gov.pr.idr.infra.property_management.region.persistence.RegionSpecification;
+import br.gov.pr.idr.infra.shared.support.PageRequestFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +33,7 @@ public class RegionPostgresGateway implements RegionGateway {
 
     @Override
     public boolean existsByDescription(final String description) {
-        return repository.existsByDescriptionIgnoreCase(description);
+        return repository.existsByDescription(description);
     }
 
     @Override
@@ -40,5 +44,14 @@ public class RegionPostgresGateway implements RegionGateway {
     @Override
     public Region update(final Region region) {
         return this.save(region);
+    }
+
+    @Override
+    public Pagination<Region> search(SearchQuery query) {
+        final var terms = query.terms() != null ? query.terms().trim() : "";
+        final var pageRequest = PageRequestFactory.from(query, "description");
+        final var page = repository.findAll(RegionSpecification.withTerms(terms), pageRequest);
+        return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(),
+                page.map(RegionJPAEntity::toAggregate).toList());
     }
 }

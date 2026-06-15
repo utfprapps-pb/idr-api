@@ -1,10 +1,12 @@
 package br.gov.pr.idr.infra.property_management.region.persistence;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.UUID;
 
-public interface RegionJPARepository extends JpaRepository<RegionJPAEntity, UUID> {
+public interface RegionJPARepository extends JpaRepository<RegionJPAEntity, UUID>,
+        JpaSpecificationExecutor<RegionJPAEntity> {
 
-    boolean existsByDescriptionIgnoreCase(final String description);
+    boolean existsByDescription(final String description);
 }

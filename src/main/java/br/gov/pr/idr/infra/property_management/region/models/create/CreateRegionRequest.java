@@ -1,4 +1,4 @@
-package br.gov.pr.idr.infra.property_management.region.models;
+package br.gov.pr.idr.infra.property_management.region.models.create;
 
 import jakarta.validation.constraints.NotBlank;
 

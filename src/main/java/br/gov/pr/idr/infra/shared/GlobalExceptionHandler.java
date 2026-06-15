@@ -3,6 +3,7 @@ package br.gov.pr.idr.infra.shared;
 import br.gov.pr.idr.domain.shared.exceptions.DomainException;
 import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -24,6 +25,13 @@ public class GlobalExceptionHandler {
             errors.add(FieldError.from(error.getField(), error.getDefaultMessage()))
         );
         return new ErrorResponse(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Erro de validação", errors);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        return new ErrorResponse(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Corpo da requisição ausente ou inválido",
+                List.of(FieldError.from(ERROR, "O corpo da requisição é obrigatório")));
     }
 
     @ExceptionHandler(NotificationException.class)
