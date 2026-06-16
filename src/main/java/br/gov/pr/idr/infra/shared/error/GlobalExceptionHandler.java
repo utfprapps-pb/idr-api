@@ -1,4 +1,4 @@
-package br.gov.pr.idr.infra.shared;
+package br.gov.pr.idr.infra.shared.error;
 
 import br.gov.pr.idr.domain.shared.exceptions.DomainException;
 import br.gov.pr.idr.domain.shared.exceptions.NotificationException;

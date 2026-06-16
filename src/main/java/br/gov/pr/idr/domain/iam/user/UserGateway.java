@@ -1,8 +1,8 @@
 package br.gov.pr.idr.domain.iam.user;
 
+import br.gov.pr.idr.domain.iam.user.query.SearchUserQuery;
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
 import br.gov.pr.idr.domain.shared.search.Pagination;
-import br.gov.pr.idr.domain.shared.search.SearchQuery;
 
 import java.util.Optional;
 
@@ -18,5 +18,5 @@ public interface UserGateway {
 
     Optional<User> findByUsername(final String username);
 
-    Pagination<User> search(final SearchQuery query);
+    Pagination<User> search(final SearchUserQuery query);
 }

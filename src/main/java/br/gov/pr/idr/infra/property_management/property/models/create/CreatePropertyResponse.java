@@ -1,4 +1,4 @@
-package br.gov.pr.idr.infra.property_management.property.models;
+package br.gov.pr.idr.infra.property_management.property.models.create;
 
 import br.gov.pr.idr.application.property_management.property.create.CreatePropertyOutput;
 

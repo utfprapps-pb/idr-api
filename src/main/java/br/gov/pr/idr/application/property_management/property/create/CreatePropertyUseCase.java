@@ -10,6 +10,7 @@ import br.gov.pr.idr.domain.property_management.city.CityGateway;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.domain.property_management.property.Property;
 import br.gov.pr.idr.domain.property_management.property.PropertyGateway;
+import br.gov.pr.idr.domain.property_management.property.collaborator.PropertyCollaborator;
 import br.gov.pr.idr.domain.property_management.property.vo.Coord;
 import br.gov.pr.idr.domain.shared.exceptions.NotFoundException;
 
@@ -43,9 +44,15 @@ public class CreatePropertyUseCase extends UseCase<CreatePropertyCommand, Create
             throw NotFoundException.with(User.class, userId);
         }
 
+        final var technicianIds = command.technicianIds().stream().map(UserID::from).toList();
+        final var collaborators = command.collaborators().stream()
+                .map(c -> PropertyCollaborator.create(c.name(), c.hoursPerDay()))
+                .toList();
+
         final var property = Property.create(command.name(), coord, command.totalArea(), command.leased(),
                 command.nakedAveragePrice(), command.leaseAveragePrice(), command.dairyCattleFarming(),
-                command.perennialPasture(), command.summerPlowing(), command.winterPlowing(), userId, cityId);
+                command.perennialPasture(), command.summerPlowing(), command.winterPlowing(), userId, cityId,
+                technicianIds, collaborators);
 
         return CreatePropertyOutput.from(propertyGateway.save(property));
     }

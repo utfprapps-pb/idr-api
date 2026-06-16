@@ -4,7 +4,9 @@ import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.domain.property_management.property.Property;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
+import br.gov.pr.idr.domain.property_management.property.collaborator.PropertyCollaborator;
 import br.gov.pr.idr.domain.property_management.property.vo.Coord;
+import br.gov.pr.idr.infra.property_management.property.persistence.collaborator.PropertyCollaboratorJPAEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "Property")
@@ -36,11 +39,20 @@ public class PropertyJPAEntity {
     private Double summerPlowing;
     private Double winterPlowing;
 
-    @JoinColumn(name = "producer_id", nullable = false)
+    @Column(name = "producer_id", nullable = false)
     private UUID producerId;
 
-    @JoinColumn(name = "city_id", nullable = false)
+    @Column(name = "city_id", nullable = false)
     private UUID cityId;
+
+    @ElementCollection
+    @CollectionTable(name = "property_technician", joinColumns = @JoinColumn(name = "property_id"))
+    @Column(name = "user_id", nullable = false)
+    private List<UUID> technicianIds;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "property_id", nullable = false)
+    private List<PropertyCollaboratorJPAEntity> collaborators;
 
     public static PropertyJPAEntity fromDomain(final Property property) {
         return new PropertyJPAEntity(
@@ -52,16 +64,21 @@ public class PropertyJPAEntity {
                 property.getLeased(),
                 property.getNakedAveragePrice(),
                 property.getLeaseAveragePrice(),
-                property.getDairyCattleFarming(),
-                property.getPerennialPasture(),
-                property.getSummerPlowing(),
-                property.getWinterPlowing(),
+                property.getDairyCattleFarmingArea(),
+                property.getPerennialPastureArea(),
+                property.getSummerPlowingArea(),
+                property.getWinterPlowingArea(),
                 property.getProducerId().id(),
-                property.getCityId().id()
+                property.getCityId().id(),
+                property.getTechnicianIds().stream().map(UserID::id).toList(),
+                property.getCollaborators().stream().map(PropertyCollaboratorJPAEntity::fromDomain).toList()
         );
     }
 
     public Property toDomain() {
+        final List<PropertyCollaborator> collaborators = this.collaborators.stream()
+                .map(PropertyCollaboratorJPAEntity::toDomain)
+                .toList();
         return Property.with(
                 PropertyID.from(this.id),
                 this.name,
@@ -75,7 +92,9 @@ public class PropertyJPAEntity {
                 this.summerPlowing,
                 this.winterPlowing,
                 UserID.from(this.producerId),
-                CityID.from(this.cityId)
+                CityID.from(this.cityId),
+                this.technicianIds.stream().map(UserID::from).toList(),
+                collaborators
         );
     }
 }

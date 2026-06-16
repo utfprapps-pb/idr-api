@@ -35,7 +35,7 @@ public class CityController {
       return ResponseEntity.ok(CreateCityResponse.from(output));
    }
 
-   @GetMapping
+   @GetMapping("/search")
    public ResponseEntity<Pagination<ListCityQueryResult>> list(
            @RequestParam(defaultValue = "0") int page,
            @RequestParam(defaultValue = "10") int perPage,

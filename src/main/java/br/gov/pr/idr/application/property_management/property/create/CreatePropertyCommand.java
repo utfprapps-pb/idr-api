@@ -1,6 +1,7 @@
 package br.gov.pr.idr.application.property_management.property.create;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 public record CreatePropertyCommand(String name,
@@ -15,7 +16,11 @@ public record CreatePropertyCommand(String name,
                                     Double summerPlowing,
                                     Double winterPlowing,
                                     UUID producerId,
-                                    UUID cityId) {
+                                    UUID cityId,
+                                    List<UUID> technicianIds,
+                                    List<CollaboratorData> collaborators) {
+
+    public record CollaboratorData(String name, String hoursPerDay) {}
 
     public static CreatePropertyCommand from(String name,
                                              BigDecimal latitude,
@@ -29,11 +34,14 @@ public record CreatePropertyCommand(String name,
                                              Double summerPlowing,
                                              Double winterPlowing,
                                              UUID producerId,
-                                             UUID cityId
+                                             UUID cityId,
+                                             List<UUID> technicianIds,
+                                             List<CollaboratorData> collaborators
     ) {
         return new CreatePropertyCommand(name, latitude, longitude, totalArea, leased, nakedAveragePrice,
                 leaseAveragePrice, dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing, producerId,
-                cityId);
+                cityId, technicianIds == null ? List.of() : technicianIds,
+                collaborators == null ? List.of() : collaborators);
     }
 
 }

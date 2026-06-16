@@ -1,4 +1,4 @@
-package br.gov.pr.idr.infra.shared;
+package br.gov.pr.idr.infra.shared.error;
 
 public record FieldError(String field, String message) {
 

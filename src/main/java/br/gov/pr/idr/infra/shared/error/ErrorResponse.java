@@ -1,4 +1,4 @@
-package br.gov.pr.idr.infra.shared;
+package br.gov.pr.idr.infra.shared.error;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -6,8 +6,8 @@ import br.gov.pr.idr.domain.shared.validation.ValidationHandler;
 
 public class PropertyCollaborator extends Entity<PropertyCollaboratorID> {
 
-    private String name;
-    private String hoursPerDay;
+    private final String name;
+    private final String hoursPerDay;
 
     protected PropertyCollaborator(final PropertyCollaboratorID id,
                                    final String name,
@@ -22,11 +22,14 @@ public class PropertyCollaborator extends Entity<PropertyCollaboratorID> {
     public static PropertyCollaborator create(final String name,
                                               final String hoursPerDay
     ) {
-        return new PropertyCollaborator(
-                PropertyCollaboratorID.unique(),
-                name,
-                hoursPerDay
-        );
+        return new PropertyCollaborator(PropertyCollaboratorID.unique(), name, hoursPerDay);
+    }
+
+    public static PropertyCollaborator with(final PropertyCollaboratorID id,
+                                            final String name,
+                                            final String hoursPerDay
+    ) {
+        return new PropertyCollaborator(id, name, hoursPerDay);
     }
 
 
@@ -38,6 +41,13 @@ public class PropertyCollaborator extends Entity<PropertyCollaboratorID> {
         if (this.hoursPerDay == null || this.hoursPerDay.isBlank()) {
             handler.append(DomainError.from("Horas de trabalho é obrigatório"));
         }
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getHoursPerDay() {
+        return hoursPerDay;
     }
 }

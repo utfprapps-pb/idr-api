@@ -43,7 +43,7 @@ public class RegionController {
         return ResponseEntity.ok(UpdateRegionResponse.from(output));
     }
 
-    @GetMapping
+    @GetMapping("/search")
     public ResponseEntity<Pagination<ListRegionOutput>> list(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int perPage,
