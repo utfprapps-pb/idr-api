@@ -2,6 +2,7 @@ package br.gov.pr.idr.infra.property_management.api;
 
 import br.gov.pr.idr.application.property_management.region.create.CreateRegionCommand;
 import br.gov.pr.idr.application.property_management.region.create.CreateRegionUseCase;
+import br.gov.pr.idr.application.property_management.region.delete.DeleteRegionUseCase;
 import br.gov.pr.idr.application.property_management.region.update.UpdateRegionCommand;
 import br.gov.pr.idr.application.property_management.region.update.UpdateRegionUseCase;
 import br.gov.pr.idr.domain.shared.search.Pagination;
@@ -27,6 +28,7 @@ public class RegionController {
     private final CreateRegionUseCase createRegionUseCase;
     private final UpdateRegionUseCase updateRegionUseCase;
     private final ListRegionUseCase listRegionUseCase;
+    private final DeleteRegionUseCase deleteRegionUseCase;
 
     @PostMapping
     public ResponseEntity<CreateRegionResponse> create(@RequestBody @Valid CreateRegionRequest request) {
@@ -41,6 +43,12 @@ public class RegionController {
         final var command = new UpdateRegionCommand(id, request.description());
         final var output = updateRegionUseCase.execute(command);
         return ResponseEntity.ok(UpdateRegionResponse.from(output));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        this.deleteRegionUseCase.execute(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/search")

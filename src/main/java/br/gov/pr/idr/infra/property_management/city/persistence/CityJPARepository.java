@@ -11,7 +11,10 @@ import java.util.UUID;
 
 public interface CityJPARepository extends JpaRepository<CityJPAEntity, UUID> {
 
-    @Query("SELECT new br.gov.pr.idr.domain.property_management.city.query.ListCityQueryResult(c.id, c.name, c.state, r.id, r.description) " +
+    boolean existsByRegionId(UUID regionId);
+
+    @Query("SELECT new br.gov.pr.idr.domain.property_management.city.query.ListCityQueryResult(c.id, c.name, c.state, " +
+            "r.id, r.description) " +
             "FROM City c " +
             "LEFT JOIN RegionJPAEntity r ON c.regionId = r.id " +
             "WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :terms, '%'))")

@@ -54,4 +54,9 @@ public class RegionPostgresGateway implements RegionGateway {
         return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(),
                 page.map(RegionJPAEntity::toAggregate).toList());
     }
+
+    @Override
+    public void deleteById(final RegionID id) {
+        repository.deleteById(id.id());
+    }
 }

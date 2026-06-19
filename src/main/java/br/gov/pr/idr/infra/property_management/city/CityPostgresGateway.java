@@ -4,6 +4,7 @@ import br.gov.pr.idr.domain.property_management.city.City;
 import br.gov.pr.idr.domain.property_management.city.CityGateway;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.domain.property_management.city.query.ListCityQueryResult;
+import br.gov.pr.idr.domain.property_management.region.RegionID;
 import br.gov.pr.idr.domain.shared.search.Pagination;
 import br.gov.pr.idr.domain.shared.search.SearchQuery;
 import br.gov.pr.idr.infra.property_management.city.persistence.CityJPAEntity;
@@ -48,5 +49,15 @@ public class CityPostgresGateway implements CityGateway {
         final var pageRequest = PageRequestFactory.from(query);
         final var page = repository.search(terms, pageRequest);
         return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(), page.getContent());
+    }
+
+    @Override
+    public void deleteById(final CityID id) {
+        repository.deleteById(id.id());
+    }
+
+    @Override
+    public boolean existsByRegionId(final RegionID regionId) {
+        return repository.existsByRegionId(regionId.id());
     }
 }

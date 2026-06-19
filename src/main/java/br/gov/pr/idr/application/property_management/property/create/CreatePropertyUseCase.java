@@ -2,12 +2,13 @@ package br.gov.pr.idr.application.property_management.property.create;
 
 import br.gov.pr.idr.application.shared.CommandUseCase;
 import br.gov.pr.idr.application.shared.UseCase;
-import br.gov.pr.idr.domain.iam.user.User;
-import br.gov.pr.idr.domain.iam.user.UserGateway;
 import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.domain.property_management.city.City;
 import br.gov.pr.idr.domain.property_management.city.CityGateway;
 import br.gov.pr.idr.domain.property_management.city.CityID;
+import br.gov.pr.idr.domain.property_management.producer.Producer;
+import br.gov.pr.idr.domain.property_management.producer.ProducerGateway;
+import br.gov.pr.idr.domain.property_management.producer.ProducerID;
 import br.gov.pr.idr.domain.property_management.property.Property;
 import br.gov.pr.idr.domain.property_management.property.PropertyGateway;
 import br.gov.pr.idr.domain.property_management.property.collaborator.PropertyCollaborator;
@@ -19,20 +20,20 @@ public class CreatePropertyUseCase extends UseCase<CreatePropertyCommand, Create
 
     private final PropertyGateway propertyGateway;
     private final CityGateway cityGateway;
-    private final UserGateway userGateway;
+    private final ProducerGateway producerGateway;
 
     public CreatePropertyUseCase(final PropertyGateway propertyGateway,
                                  final CityGateway cityGateway,
-                                 final UserGateway userGateway
+                                 final ProducerGateway producerGateway
     ) {
         this.propertyGateway = propertyGateway;
         this.cityGateway = cityGateway;
-        this.userGateway = userGateway;
+        this.producerGateway = producerGateway;
     }
 
     @Override
     public CreatePropertyOutput execute(CreatePropertyCommand command) {
-        final var userId = UserID.from(command.producerId());
+        final var producerId = ProducerID.from(command.producerId());
         final var cityId = CityID.from(command.cityId());
         final var coord = Coord.from(command.latitude(), command.longitude());
 
@@ -40,8 +41,8 @@ public class CreatePropertyUseCase extends UseCase<CreatePropertyCommand, Create
             throw NotFoundException.with(City.class, cityId);
         }
 
-        if (!userGateway.existsById(userId)) {
-            throw NotFoundException.with(User.class, userId);
+        if (!producerGateway.existsById(producerId)) {
+            throw NotFoundException.with(Producer.class, producerId);
         }
 
         final var technicianIds = command.technicianIds().stream().map(UserID::from).toList();
@@ -49,9 +50,9 @@ public class CreatePropertyUseCase extends UseCase<CreatePropertyCommand, Create
                 .map(c -> PropertyCollaborator.create(c.name(), c.hoursPerDay()))
                 .toList();
 
-        final var property = Property.create(command.name(), coord, command.totalArea(), command.leased(),
+        final var property = Property.create(command.name(), coord,
                 command.nakedAveragePrice(), command.leaseAveragePrice(), command.dairyCattleFarming(),
-                command.perennialPasture(), command.summerPlowing(), command.winterPlowing(), userId, cityId,
+                command.perennialPasture(), command.summerPlowing(), command.winterPlowing(), producerId, cityId,
                 technicianIds, collaborators);
 
         return CreatePropertyOutput.from(propertyGateway.save(property));

@@ -11,8 +11,6 @@ import java.util.UUID;
 public record CreatePropertyRequest(@NotBlank(message = "Nome não pode ser nulo") String name,
                                     @NotNull(message = "Latitude não pode ser nulo") BigDecimal latitude,
                                     @NotNull(message = "Longitue não pode ser nulo") BigDecimal longitude,
-                                    BigDecimal totalArea,
-                                    Boolean leased,
                                     BigDecimal nakedAveragePrice,
                                     BigDecimal leaseAveragePrice,
                                     Double dairyCattleFarming,

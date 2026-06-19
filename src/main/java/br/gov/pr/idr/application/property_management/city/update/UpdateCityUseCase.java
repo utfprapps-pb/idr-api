@@ -22,7 +22,7 @@ public class UpdateCityUseCase extends UseCase<UpdateCityCommand, UpdateCityOutp
 
     @Override
     public UpdateCityOutput execute(final UpdateCityCommand command) {
-        final var cityId = CityID.from(command.regionId());
+        final var cityId = CityID.from(command.cityId());
         final var regionId = RegionID.from(command.regionId());
         final var name = command.name();
         final var notification = NotificationValidation.create();

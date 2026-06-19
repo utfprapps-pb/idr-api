@@ -5,6 +5,7 @@ import br.gov.pr.idr.application.iam.refresh_token.issue.IssueRefreshTokenUseCas
 import br.gov.pr.idr.infra.iam.user.models.auth.AuthLoginRequest;
 import br.gov.pr.idr.infra.iam.user.models.auth.AuthLoginResponse;
 import br.gov.pr.idr.infra.iam.user.persistence.UserJPAEntity;
+import br.gov.pr.idr.infra.shared.error.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,12 +13,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -51,6 +57,27 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 credentials.password()
         );
         return getAuthenticationManager().authenticate(authToken);
+    }
+
+    @Override
+    @SneakyThrows
+    protected void unsuccessfulAuthentication(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AuthenticationException failed
+    ) {
+        if (failed instanceof DisabledException) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            objectMapper.writeValue(response.getWriter(), new ErrorResponse(
+                    LocalDateTime.now(),
+                    HttpStatus.FORBIDDEN.value(),
+                    "Seu cadastro está inativo, solicite há um administrador para ativá-lo",
+                    List.of()
+            ));
+            return;
+        }
+        super.unsuccessfulAuthentication(request, response, failed);
     }
 
     @Override

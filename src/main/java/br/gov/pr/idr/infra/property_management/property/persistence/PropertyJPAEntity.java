@@ -2,6 +2,7 @@ package br.gov.pr.idr.infra.property_management.property.persistence;
 
 import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.domain.property_management.city.CityID;
+import br.gov.pr.idr.domain.property_management.producer.ProducerID;
 import br.gov.pr.idr.domain.property_management.property.Property;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.property_management.property.collaborator.PropertyCollaborator;
@@ -30,8 +31,6 @@ public class PropertyJPAEntity {
     private String name;
     private BigDecimal latitude;
     private BigDecimal longitude;
-    private BigDecimal totalArea;
-    private Boolean leased;
     private BigDecimal nakedAveragePrice;
     private BigDecimal leaseAveragePrice;
     private Double dairyCattleFarming;
@@ -60,8 +59,6 @@ public class PropertyJPAEntity {
                 property.getName(),
                 property.getCoord().latitude(),
                 property.getCoord().longitude(),
-                property.getTotalArea(),
-                property.getLeased(),
                 property.getNakedAveragePrice(),
                 property.getLeaseAveragePrice(),
                 property.getDairyCattleFarmingArea(),
@@ -76,25 +73,22 @@ public class PropertyJPAEntity {
     }
 
     public Property toDomain() {
-        final List<PropertyCollaborator> collaborators = this.collaborators.stream()
-                .map(PropertyCollaboratorJPAEntity::toDomain)
-                .toList();
         return Property.with(
                 PropertyID.from(this.id),
                 this.name,
                 Coord.from(this.latitude, this.longitude),
-                this.totalArea,
-                this.leased,
                 this.nakedAveragePrice,
                 this.leaseAveragePrice,
                 this.dairyCattleFarming,
                 this.perennialPasture,
                 this.summerPlowing,
                 this.winterPlowing,
-                UserID.from(this.producerId),
+                ProducerID.from(this.producerId),
                 CityID.from(this.cityId),
                 this.technicianIds.stream().map(UserID::from).toList(),
-                collaborators
+                this.collaborators.stream()
+                                  .map(PropertyCollaboratorJPAEntity::toDomain)
+                                  .toList()
         );
     }
 }

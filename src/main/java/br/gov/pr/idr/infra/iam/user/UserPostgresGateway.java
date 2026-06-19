@@ -30,6 +30,11 @@ public class UserPostgresGateway implements UserGateway {
     }
 
     @Override
+    public User update(User user) {
+        return repository.save(UserJPAEntity.from(user, user.getPassword().pasword())).toDomain();
+    }
+
+    @Override
     public boolean existsByCPF(final CPF cpf) {
         return repository.existsByCpf(cpf.value());
     }
@@ -47,6 +52,11 @@ public class UserPostgresGateway implements UserGateway {
     @Override
     public Optional<User> findByUsername(String username) {
         return repository.findByUsername(username).map(UserJPAEntity::toDomain);
+    }
+
+    @Override
+    public Optional<User> findById(final UserID id) {
+        return repository.findById(id.id()).map(UserJPAEntity::toDomain);
     }
 
     @Override

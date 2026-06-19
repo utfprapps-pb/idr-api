@@ -2,6 +2,7 @@ package br.gov.pr.idr.infra.property_management.api;
 
 import br.gov.pr.idr.application.property_management.city.create.CreateCityCommand;
 import br.gov.pr.idr.application.property_management.city.create.CreateCityUseCase;
+import br.gov.pr.idr.application.property_management.city.delete.DeleteCityUseCase;
 import br.gov.pr.idr.application.property_management.city.retrieve.list.ListCityUseCase;
 import br.gov.pr.idr.application.property_management.city.update.UpdateCityCommand;
 import br.gov.pr.idr.application.property_management.city.update.UpdateCityUseCase;
@@ -27,6 +28,7 @@ public class CityController {
    private final CreateCityUseCase createCityUseCase;
    private final ListCityUseCase listCityUseCase;
    private final UpdateCityUseCase updateCityUseCase;
+   private final DeleteCityUseCase deleteCityUseCase;
 
    @PostMapping
    public ResponseEntity<CreateCityResponse> create(@RequestBody @Valid CreateCityRequest request) {
@@ -53,5 +55,11 @@ public class CityController {
       final var command = UpdateCityCommand.from(id, request.regionId(), request.name());
       final var output = updateCityUseCase.execute(command);
       return ResponseEntity.ok(UpdateCityResponse.from(output));
+   }
+
+   @DeleteMapping("/{id}")
+   public ResponseEntity<Void> delete(@PathVariable UUID id) {
+      this.deleteCityUseCase.execute(id);
+      return ResponseEntity.noContent().build();
    }
 }

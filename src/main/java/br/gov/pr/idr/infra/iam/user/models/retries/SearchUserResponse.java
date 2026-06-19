@@ -1,6 +1,7 @@
 package br.gov.pr.idr.infra.iam.user.models.retries;
 
 import br.gov.pr.idr.application.iam.user.retries.search.SearchUserOutput;
+import br.gov.pr.idr.domain.iam.user.UserRole;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -14,7 +15,8 @@ public record SearchUserResponse(
         String graduationYear,
         UUID cityId,
         boolean active,
-        Instant createdAt
+        Instant createdAt,
+        UserRole role
 ) {
 
     public static SearchUserResponse from(final SearchUserOutput output) {
@@ -27,7 +29,8 @@ public record SearchUserResponse(
                 output.graduationYear(),
                 output.cityId(),
                 output.active(),
-                output.createdAt()
+                output.createdAt(),
+                output.role()
         );
     }
 }

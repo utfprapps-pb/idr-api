@@ -19,4 +19,5 @@ public interface RegionGateway {
 
     Pagination<Region> search(final SearchQuery query);
 
+    void deleteById(final RegionID id);
 }

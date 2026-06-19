@@ -2,6 +2,7 @@ package br.gov.pr.idr.domain.property_management.property;
 
 import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.domain.property_management.city.CityID;
+import br.gov.pr.idr.domain.property_management.producer.ProducerID;
 import br.gov.pr.idr.domain.property_management.property.collaborator.PropertyCollaborator;
 import br.gov.pr.idr.domain.property_management.property.vo.Coord;
 import br.gov.pr.idr.domain.shared.AggregateRoot;
@@ -13,33 +14,29 @@ import java.util.List;
 
 public class Property extends AggregateRoot<PropertyID> {
 
-    private final String name;
-    private BigDecimal totalArea;
-    private boolean isLeased;
-    private final BigDecimal nakedAveragePrice;
-    private final BigDecimal leaseAveragePrice;
-    private final Double dairyCattleFarmingArea;
-    private final Double perennialPastureArea;
-    private final Double summerPlowingArea;
-    private final Double winterPlowingArea;
-    private final UserID producerId;
-    private final CityID cityId;
-    private final Coord coord;
-    private final List<PropertyCollaborator> collaborators;
-    private final List<UserID> technicianIds;
+    private String name;
+    private Coord coord;
+    private BigDecimal nakedAveragePrice;
+    private BigDecimal leaseAveragePrice;
+    private Double dairyCattleFarmingArea;
+    private Double perennialPastureArea;
+    private Double summerPlowingArea;
+    private Double winterPlowingArea;
+    private CityID cityId;
+    private List<PropertyCollaborator> collaborators;
+    private List<UserID> technicianIds;
+    private ProducerID producerId;
 
     protected Property(final PropertyID id,
                        final String name,
                        final Coord coord,
-                       final BigDecimal totalArea,
-                       final Boolean isLeased,
                        final BigDecimal nakedAveragePrice,
                        final BigDecimal leaseAveragePrice,
                        final Double dairyCattleFarmingArea,
                        final Double perennialPastureArea,
                        final Double summerPlowingArea,
                        final Double winterPlowingArea,
-                       final UserID producerId,
+                       final ProducerID producerId,
                        final CityID cityId,
                        final List<PropertyCollaborator> collaborators,
                        final List<UserID> technicianIds
@@ -47,8 +44,6 @@ public class Property extends AggregateRoot<PropertyID> {
         super(id);
         this.name = name;
         this.coord = coord;
-        this.totalArea = totalArea;
-        this.isLeased = isLeased;
         this.nakedAveragePrice = nakedAveragePrice;
         this.leaseAveragePrice = leaseAveragePrice;
         this.dairyCattleFarmingArea = dairyCattleFarmingArea;
@@ -64,43 +59,68 @@ public class Property extends AggregateRoot<PropertyID> {
 
     public static Property create(final String name,
                                   final Coord coord,
-                                  final BigDecimal totalArea,
-                                  final Boolean leased,
                                   final BigDecimal nakedAveragePrice,
                                   final BigDecimal leaseAveragePrice,
                                   final Double dairyCattleFarming,
                                   final Double perennialPasture,
                                   final Double summerPlowing,
                                   final Double winterPlowing,
-                                  final UserID producerId,
+                                  final ProducerID producerId,
                                   final CityID cityId,
                                   final List<UserID> technicianIds,
                                   final List<PropertyCollaborator> collaborators
     ) {
-        return new Property(PropertyID.unique(), name, coord, totalArea, leased, nakedAveragePrice, leaseAveragePrice,
-                            dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing, producerId,
-                            cityId, collaborators, technicianIds);
+        return new Property(PropertyID.unique(), name, coord, nakedAveragePrice, leaseAveragePrice,
+                dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing,
+                producerId, cityId, collaborators, technicianIds);
     }
 
     public static Property with(final PropertyID id,
                                 final String name,
                                 final Coord coord,
-                                final BigDecimal totalArea,
-                                final Boolean leased,
                                 final BigDecimal nakedAveragePrice,
                                 final BigDecimal leaseAveragePrice,
                                 final Double dairyCattleFarming,
                                 final Double perennialPasture,
                                 final Double summerPlowing,
                                 final Double winterPlowing,
-                                final UserID producerId,
+                                final ProducerID producerId,
                                 final CityID cityId,
                                 final List<UserID> technicianIds,
                                 final List<PropertyCollaborator> collaborators
     ) {
-        return new Property(id, name, coord, totalArea, leased, nakedAveragePrice, leaseAveragePrice,
-                dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing, producerId,
-                cityId, collaborators, technicianIds);
+        return new Property(id, name, coord, nakedAveragePrice, leaseAveragePrice,
+                dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing,
+                producerId, cityId, collaborators, technicianIds);
+    }
+
+    public Property update(final String name,
+                           final Coord coord,
+                           final BigDecimal nakedAveragePrice,
+                           final BigDecimal leaseAveragePrice,
+                           final Double dairyCattleFarming,
+                           final Double perennialPasture,
+                           final Double summerPlowing,
+                           final Double winterPlowing,
+                           final ProducerID producerId,
+                           final CityID cityId,
+                           final List<UserID> technicianIds,
+                           final List<PropertyCollaborator> collaborators
+    ) {
+        this.name = name;
+        this.coord = coord;
+        this.nakedAveragePrice = nakedAveragePrice;
+        this.leaseAveragePrice = leaseAveragePrice;
+        this.dairyCattleFarmingArea = dairyCattleFarming;
+        this.perennialPastureArea = perennialPasture;
+        this.summerPlowingArea = summerPlowing;
+        this.winterPlowingArea = winterPlowing;
+        this.producerId = producerId;
+        this.cityId = cityId;
+        this.technicianIds = technicianIds;
+        this.collaborators = collaborators;
+        selfValidate();
+        return this;
     }
 
     @Override
@@ -139,59 +159,27 @@ public class Property extends AggregateRoot<PropertyID> {
         }
     }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public Coord getCoord() {
-        return coord;
-    }
+    public Coord getCoord() { return coord; }
 
-    public BigDecimal getTotalArea() {
-        return totalArea;
-    }
+    public BigDecimal getNakedAveragePrice() { return nakedAveragePrice; }
 
-    public Boolean getLeased() {
-        return isLeased;
-    }
+    public BigDecimal getLeaseAveragePrice() { return leaseAveragePrice; }
 
-    public BigDecimal getNakedAveragePrice() {
-        return nakedAveragePrice;
-    }
+    public Double getDairyCattleFarmingArea() { return dairyCattleFarmingArea; }
 
-    public BigDecimal getLeaseAveragePrice() {
-        return leaseAveragePrice;
-    }
+    public Double getPerennialPastureArea() { return perennialPastureArea; }
 
-    public Double getDairyCattleFarmingArea() {
-        return dairyCattleFarmingArea;
-    }
+    public Double getSummerPlowingArea() { return summerPlowingArea; }
 
-    public Double getPerennialPastureArea() {
-        return perennialPastureArea;
-    }
+    public Double getWinterPlowingArea() { return winterPlowingArea; }
 
-    public Double getSummerPlowingArea() {
-        return summerPlowingArea;
-    }
+    public ProducerID getProducerId() { return producerId; }
 
-    public Double getWinterPlowingArea() {
-        return winterPlowingArea;
-    }
+    public CityID getCityId() { return cityId; }
 
-    public UserID getProducerId() {
-        return producerId;
-    }
+    public List<PropertyCollaborator> getCollaborators() { return collaborators; }
 
-    public CityID getCityId() {
-        return cityId;
-    }
-
-    public List<PropertyCollaborator> getCollaborators() {
-        return collaborators;
-    }
-
-    public List<UserID> getTechnicianIds() {
-        return technicianIds;
-    }
+    public List<UserID> getTechnicianIds() { return technicianIds; }
 }

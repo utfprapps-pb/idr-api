@@ -13,8 +13,7 @@ public record ListCityQueryResult(UUID id,
     }
 
     public ListCityQueryResult(UUID id, String name, State state, UUID regionId, String regionName) {
-        final var formattedName = state != null ? name + " - " + state : name;
-        this(id, formattedName, state, new Region(regionId, regionName));
+        this(id, name, state, new Region(regionId, regionName));
     }
 
 }

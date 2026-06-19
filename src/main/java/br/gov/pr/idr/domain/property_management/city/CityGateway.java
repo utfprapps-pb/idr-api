@@ -1,6 +1,7 @@
 package br.gov.pr.idr.domain.property_management.city;
 
 import br.gov.pr.idr.domain.property_management.city.query.ListCityQueryResult;
+import br.gov.pr.idr.domain.property_management.region.RegionID;
 import br.gov.pr.idr.domain.shared.search.Pagination;
 import br.gov.pr.idr.domain.shared.search.SearchQuery;
 
@@ -17,4 +18,8 @@ public interface CityGateway {
     City update(final City city);
 
     Pagination<ListCityQueryResult> search(final SearchQuery query);
+
+    void deleteById(final CityID id);
+
+    boolean existsByRegionId(final RegionID regionId);
 }

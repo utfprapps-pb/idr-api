@@ -10,6 +10,8 @@ public interface UserGateway {
 
     User create(final User user);
 
+    User update(final User user);
+
     boolean existsByCPF(final CPF cpf);
 
     boolean existsByUsername(final String username);
@@ -17,6 +19,8 @@ public interface UserGateway {
     boolean existsById(final UserID id);
 
     Optional<User> findByUsername(final String username);
+
+    Optional<User> findById(final UserID id);
 
     Pagination<User> search(final SearchUserQuery query);
 }

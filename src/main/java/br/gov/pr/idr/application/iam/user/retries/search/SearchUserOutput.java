@@ -1,6 +1,7 @@
 package br.gov.pr.idr.application.iam.user.retries.search;
 
 import br.gov.pr.idr.domain.iam.user.User;
+import br.gov.pr.idr.domain.iam.user.UserRole;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -14,10 +15,12 @@ public record SearchUserOutput(
         String graduationYear,
         UUID cityId,
         boolean active,
-        Instant createdAt
+        Instant createdAt,
+        UserRole role
 ) {
 
     public static SearchUserOutput from(final User user) {
+        final var permission = user.getPermissions().stream().findFirst().orElse(null);
         return new SearchUserOutput(
                 user.getId().id(),
                 user.getName(),
@@ -27,7 +30,8 @@ public record SearchUserOutput(
                 user.getGraduationYear(),
                 user.getCityID().id(),
                 user.isActive(),
-                user.getCreatedAt()
+                user.getCreatedAt(),
+                permission != null ? permission.getRole() : null
         );
     }
 }

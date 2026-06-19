@@ -5,6 +5,8 @@ import br.gov.pr.idr.infra.iam.security.jwt.JwtAuthenticationFilter;
 import br.gov.pr.idr.infra.iam.security.jwt.JwtAuthorizationFilter;
 import br.gov.pr.idr.infra.iam.security.jwt.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -52,7 +54,9 @@ public class SecurityConfig {
 
     @Bean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        return new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     @Bean
@@ -66,9 +70,15 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/v1/users/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/cities/search").permitAll()
                         .requestMatchers("/error/**", "/v3/**", "/swagger-ui/**", "/webjars/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/users/me").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/v1/users/search").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/v1/users/{id}").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/v1/users/*/permissions").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/v1/users/*/active").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtService, objectMapper(), issueRefreshTokenUseCase, jwtProperties.refreshTokenExpirationDays()))

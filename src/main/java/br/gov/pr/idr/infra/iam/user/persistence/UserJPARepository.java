@@ -17,8 +17,8 @@ public interface UserJPARepository extends JpaRepository<UserJPAEntity, UUID> {
 
     Optional<UserJPAEntity> findByUsername(String username);
 
-    @Query("SELECT u FROM User u WHERE u.active = :active AND " +
+    @Query("SELECT u FROM User u WHERE (:active IS NULL OR u.active = :active) AND " +
             "(:terms = '' OR LOWER(u.name) LIKE LOWER(CONCAT('%', :terms, '%')) " +
             "OR LOWER(u.username) LIKE LOWER(CONCAT('%', :terms, '%')))")
-    Page<UserJPAEntity> search(@Param("terms") String terms, @Param("active") boolean active, Pageable pageable);
+    Page<UserJPAEntity> search(@Param("terms") String terms, @Param("active") Boolean active, Pageable pageable);
 }

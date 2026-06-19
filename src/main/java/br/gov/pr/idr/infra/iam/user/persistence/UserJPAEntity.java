@@ -4,6 +4,7 @@ import br.gov.pr.idr.domain.iam.permission.Permission;
 import br.gov.pr.idr.domain.iam.user.User;
 import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
+import br.gov.pr.idr.domain.iam.user.vo.Password;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.infra.iam.permission.persistence.PermissionJPAEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -59,12 +60,8 @@ public class UserJPAEntity implements UserDetails {
     @Column(name = "city_id", nullable = false)
     private UUID cityID;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "users_permission",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "permission_id", referencedColumnName = "id"))
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
     private Set<PermissionJPAEntity> userPermissions;
 
     @Override
@@ -77,6 +74,11 @@ public class UserJPAEntity implements UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return active;
     }
 
     public static UserJPAEntity from(final User user,  final String encodePassword) {
@@ -104,6 +106,7 @@ public class UserJPAEntity implements UserDetails {
                 UserID.from(this.id),
                 this.name,
                 this.username,
+                Password.from(this.password, this.password),
                 CPF.from(this.cpf),
                 this.phone,
                 CityID.from(this.cityID),

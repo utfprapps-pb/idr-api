@@ -8,8 +8,6 @@ import java.util.UUID;
 public record SearchPropertyOutput(
         UUID id,
         String name,
-        BigDecimal totalArea,
-        boolean leased,
         BigDecimal nakedAveragePrice,
         BigDecimal leaseAveragePrice,
         UUID producerId,
@@ -20,8 +18,6 @@ public record SearchPropertyOutput(
         return new SearchPropertyOutput(
                 property.getId().id(),
                 property.getName(),
-                property.getTotalArea(),
-                property.getLeased(),
                 property.getNakedAveragePrice(),
                 property.getLeaseAveragePrice(),
                 property.getProducerId().id(),

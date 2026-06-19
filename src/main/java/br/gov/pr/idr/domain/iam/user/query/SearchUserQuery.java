@@ -2,7 +2,7 @@ package br.gov.pr.idr.domain.iam.user.query;
 
 import br.gov.pr.idr.domain.shared.search.SearchQuery;
 
-public record SearchUserQuery(SearchQuery query, boolean active) {
+public record SearchUserQuery(SearchQuery query, Boolean active) {
 
     public static SearchUserQuery from(
                                final int page,
