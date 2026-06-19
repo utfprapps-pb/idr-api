@@ -85,6 +85,7 @@ public class User extends AggregateRoot<UserID> {
     public static User with(final UserID id,
                             final String name,
                             final String username,
+                            final Password password,
                             final CPF cpf,
                             final String phone,
                             final CityID city,
@@ -98,7 +99,7 @@ public class User extends AggregateRoot<UserID> {
                             final boolean active,
                             final Set<Permission> permissions
     ) {
-        return new User(id, name, username, null, cpf, phone, city, cep, street, houseNumber, professionalRegister,
+        return new User(id, name, username, password, cpf, phone, city, cep, street, houseNumber, professionalRegister,
                 graduationYear, createdAt, updatedAt, active, permissions);
     }
 
