@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-vindo ao IDR</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #40A527;
+            color: #ffffff;
+            padding: 24px 32px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+        .body {
+            padding: 32px;
+            color: #333333;
+        }
+        .body p {
+            line-height: 1.6;
+            margin: 0 0 16px;
+        }
+        .info-box {
+            background-color: #f0f9ec;
+            border-left: 4px solid #40A527;
+            border-radius: 4px;
+            padding: 16px 20px;
+            margin: 24px 0;
+        }
+        .info-box p {
+            margin: 0;
+            font-size: 14px;
+            color: #2d7a1a;
+        }
+        .footer {
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 16px 32px;
+            font-size: 12px;
+            color: #888888;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Bem-vindo ao IDR</h1>
+    </div>
+    <div class="body">
+        <p>Olá, <strong th:text="${userName}">Usuário</strong>!</p>
+        <p>Sua conta foi criada com sucesso. Estamos felizes em tê-lo conosco no sistema IDR.</p>
+        <div class="info-box">
+            <p>Você já pode acessar o sistema com as credenciais cadastradas. Caso tenha alguma dúvida, entre em contato com o suporte.</p>
+        </div>
+        <p>Atenciosamente,<br><strong>Equipe IDR</strong></p>
+    </div>
+    <div class="footer">
+        <p>Este é um e-mail automático. Por favor, não responda.</p>
+    </div>
+</div>
+</body>
+</html>

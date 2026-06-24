@@ -4,10 +4,12 @@ import br.gov.pr.idr.application.shared.CommandUseCase;
 import br.gov.pr.idr.application.shared.UseCase;
 import br.gov.pr.idr.domain.iam.user.User;
 import br.gov.pr.idr.domain.iam.user.UserGateway;
+import br.gov.pr.idr.domain.iam.user.events.UserCreatedEvent;
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
 import br.gov.pr.idr.domain.iam.user.vo.Password;
 import br.gov.pr.idr.domain.property_management.city.CityGateway;
 import br.gov.pr.idr.domain.property_management.city.CityID;
+import br.gov.pr.idr.domain.shared.events.DomainEventPublisher;
 import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
 import br.gov.pr.idr.domain.shared.validation.DomainError;
 import br.gov.pr.idr.domain.shared.validation.NotificationValidation;
@@ -19,11 +21,14 @@ public class CreateUserUseCase extends UseCase<CreateUserCommand, CreateUserOutp
 
     private final UserGateway userGateway;
     private final CityGateway cityGateway;
+    private final DomainEventPublisher eventPublisher;
 
     public CreateUserUseCase(UserGateway userGateway,
-                             CityGateway cityGateway) {
+                             CityGateway cityGateway,
+                             DomainEventPublisher eventPublisher) {
         this.userGateway = userGateway;
         this.cityGateway = cityGateway;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -64,6 +69,8 @@ public class CreateUserUseCase extends UseCase<CreateUserCommand, CreateUserOutp
                     "Cidade com id %s não foi encontrada".formatted(command.cityId().toString()), notification);
         }
 
-        return CreateUserOutput.from(userGateway.create(user));
+        final var createdUser = userGateway.create(user);
+        eventPublisher.publish(new UserCreatedEvent(createdUser.getUsername(), createdUser.getName()));
+        return CreateUserOutput.from(createdUser);
     }
 }

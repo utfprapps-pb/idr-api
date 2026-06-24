@@ -49,6 +49,27 @@ public class SpringEmailGateway implements SendEmailGateway {
     }
 
     @Override
+    public void sendWelcome(final String toEmail, final String userName) {
+        final var ctx = new Context();
+        ctx.setVariable("userName", userName);
+
+        final String htmlBody = templateEngine.process("email/welcome", ctx);
+
+        try {
+            final MimeMessage message = mailSender.createMimeMessage();
+            final MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setFrom(from);
+            helper.setTo(toEmail);
+            helper.setSubject("Bem-vindo ao IDR");
+            helper.setText(htmlBody, true);
+            mailSender.send(message);
+        } catch (Exception e) {
+            log.error("Falha ao enviar e-mail de boas-vindas para {}: {}", toEmail, e.getMessage(), e);
+            throw new RuntimeException("Falha ao enviar e-mail de boas-vindas", e);
+        }
+    }
+
+    @Override
     public void sendPasswordResetConfirmation(final String toEmail, final String userName) {
         final var ctx = new Context();
         ctx.setVariable("userName", userName);
