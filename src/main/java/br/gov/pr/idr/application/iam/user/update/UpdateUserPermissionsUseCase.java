@@ -1,7 +1,6 @@
 package br.gov.pr.idr.application.iam.user.update;
 
 import br.gov.pr.idr.application.shared.CommandUseCase;
-import br.gov.pr.idr.application.shared.UseCase;
 import br.gov.pr.idr.application.shared.VoidUseCase;
 import br.gov.pr.idr.domain.iam.permission.Permission;
 import br.gov.pr.idr.domain.iam.user.UserGateway;
@@ -39,7 +38,7 @@ public class UpdateUserPermissionsUseCase extends VoidUseCase<UpdateUserPermissi
                 user.getHouseNumber(),
                 user.getProfessionalRegister(),
                 user.getGraduationYear(),
-                null,
+                user.getPassword(),
                 user.isActive(),
                 Set.of(newPermission)
         );

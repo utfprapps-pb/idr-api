@@ -47,10 +47,6 @@ public class Permission extends Entity<PermissionID> {
         return role;
     }
 
-    public String getName() {
-        return role != null ? role.name() : null;
-    }
-
     public boolean isReadOnly() {
         return readOnly;
     }

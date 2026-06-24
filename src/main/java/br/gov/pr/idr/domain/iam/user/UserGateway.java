@@ -12,6 +12,8 @@ public interface UserGateway {
 
     User update(final User user);
 
+    void updatePassword(final User user, final String encodedPassword);
+
     boolean existsByCPF(final CPF cpf);
 
     boolean existsByUsername(final String username);

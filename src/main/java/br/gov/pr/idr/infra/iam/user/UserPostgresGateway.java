@@ -67,4 +67,9 @@ public class UserPostgresGateway implements UserGateway {
         return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(),
                 page.getContent().stream().map(UserJPAEntity::toDomain).toList());
     }
+
+    @Override
+    public void updatePassword(User user, String encodedPassword) {
+        repository.save(UserJPAEntity.from(user, encodedPassword)).toDomain();
+    }
 }
