@@ -32,13 +32,10 @@ public enum State {
     SE("Sergipe"),
     TO("Tocantins");
 
-    private final String name;
+    final String name;
 
     State(String nome) {
         this.name = nome;
     }
 
-    public String getNome() {
-        return name;
-    }
 }

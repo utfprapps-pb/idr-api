@@ -1,6 +1,5 @@
 package br.gov.pr.idr.application.iam.user.retries.find;
 
-import br.gov.pr.idr.domain.iam.permission.Permission;
 import br.gov.pr.idr.domain.iam.user.User;
 import br.gov.pr.idr.domain.iam.user.UserRole;
 

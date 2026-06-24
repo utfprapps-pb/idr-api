@@ -1,0 +1,131 @@
+package br.gov.pr.idr.infra.property_management.property;
+
+import br.gov.pr.idr.domain.property_management.city.CityID;
+import br.gov.pr.idr.domain.property_management.producer.ProducerID;
+import br.gov.pr.idr.domain.property_management.property.Property;
+import br.gov.pr.idr.domain.property_management.property.PropertyID;
+import br.gov.pr.idr.domain.property_management.property.query.GetPropertyQueryResult;
+import br.gov.pr.idr.domain.property_management.property.vo.Coord;
+import br.gov.pr.idr.infra.property_management.property.persistence.PropertyJPAEntity;
+import br.gov.pr.idr.infra.property_management.property.persistence.PropertyJPARepository;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+@DisplayName("PropertyPostgresGateway")
+class PropertyPostgresGatewayTest {
+
+    @Mock PropertyJPARepository repository;
+    @Mock PropertyJPAEntity entityMock;
+    @InjectMocks PropertyPostgresGateway gateway;
+
+    private Property validProperty() {
+        return Property.with(
+                PropertyID.unique(), "Fazenda",
+                Coord.from(new BigDecimal("-25.43"), new BigDecimal("-49.27")),
+                BigDecimal.ZERO, BigDecimal.ZERO, 0.0, 0.0, 0.0, 0.0,
+                ProducerID.from(UUID.randomUUID()),
+                CityID.from(UUID.randomUUID()),
+                List.of(), List.of()
+        );
+    }
+
+    @Test
+    @DisplayName("deve salvar propriedade e retornar domínio")
+    void shouldSaveProperty() {
+        when(repository.save(any())).thenReturn(entityMock);
+        when(entityMock.toDomain()).thenReturn(validProperty());
+
+        final var result = gateway.save(validProperty());
+
+        assertNotNull(result);
+        verify(repository).save(any());
+    }
+
+    @Test
+    @DisplayName("deve retornar Optional com propriedade quando encontrada por ID")
+    void shouldFindByIdWhenFound() {
+        final var id = PropertyID.unique();
+        when(repository.findById(id.id())).thenReturn(Optional.of(entityMock));
+        when(entityMock.toDomain()).thenReturn(validProperty());
+
+        final var result = gateway.findById(id);
+
+        assertTrue(result.isPresent());
+    }
+
+    @Test
+    @DisplayName("deve retornar Optional vazio quando não encontrada")
+    void shouldReturnEmptyWhenNotFound() {
+        final var id = PropertyID.unique();
+        when(repository.findById(id.id())).thenReturn(Optional.empty());
+
+        final var result = gateway.findById(id);
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    @DisplayName("deve retornar resultado detalhado por ID")
+    void shouldFindByIdWithDetails() {
+        final var id = PropertyID.unique();
+        final var queryResult = new GetPropertyQueryResult(
+                id.id(), "Fazenda", null, null, 0.0, 0.0, 0.0, 0.0,
+                null, null, UUID.randomUUID(), "Produtor",
+                UUID.randomUUID(), "Curitiba", null, null
+        );
+        when(repository.findByIdWithDetails(id.id())).thenReturn(Optional.of(queryResult));
+
+        final var result = gateway.findByIdWithDetails(id);
+
+        assertTrue(result.isPresent());
+        assertEquals("Fazenda", result.get().name());
+    }
+
+    @Test
+    @DisplayName("deve verificar existência por ID")
+    void shouldCheckExistsById() {
+        final var id = PropertyID.unique();
+        when(repository.existsById(id.id())).thenReturn(true);
+
+        assertTrue(gateway.existsById(id));
+    }
+
+    @Test
+    @DisplayName("deve deletar propriedade por ID")
+    void shouldDeleteById() {
+        final var id = PropertyID.unique();
+
+        gateway.deleteById(id);
+
+        verify(repository).deleteById(id.id());
+    }
+
+    @Test
+    @DisplayName("deve retornar paginação na busca")
+    void shouldReturnPaginationOnSearch() {
+        final var page = new PageImpl<>(List.of(entityMock));
+        when(repository.search(any(), any(Pageable.class))).thenReturn(page);
+        when(entityMock.toDomain()).thenReturn(validProperty());
+
+        final var query = br.gov.pr.idr.domain.shared.search.SearchQuery.from(0, 10, "", "name", "asc");
+        final var result = gateway.search(query);
+
+        assertEquals(1, result.total());
+    }
+}
