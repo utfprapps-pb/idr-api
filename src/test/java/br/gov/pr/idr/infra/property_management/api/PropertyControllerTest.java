@@ -89,7 +89,7 @@ class PropertyControllerTest {
         final var city = new GetPropertyQueryResult.City(UUID.randomUUID(), "Curitiba");
         final var result = new GetPropertyQueryResult(id, "Fazenda", BigDecimal.TEN, BigDecimal.ONE,
                 0.0, 0.0, 0.0, 0.0, BigDecimal.valueOf(-25.4), BigDecimal.valueOf(-49.2),
-                producer, city, List.of(), List.of());
+                null, null, producer, city, List.of(), List.of());
         when(getPropertyByIdUseCase.execute(any())).thenReturn(result);
 
         mockMvc.perform(get("/v1/properties/" + id))

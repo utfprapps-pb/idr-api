@@ -21,6 +21,7 @@ class GetPropertyQueryResultTest {
                 BigDecimal.ZERO, BigDecimal.ZERO,
                 0.0, 0.0, 0.0, 0.0,
                 null, null,
+                null, null,
                 PRODUCER_ID, "Produtor",
                 CITY_ID, "Curitiba",
                 techniciansStr, collaboratorsStr

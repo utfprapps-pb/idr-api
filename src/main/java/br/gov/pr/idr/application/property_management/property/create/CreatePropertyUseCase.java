@@ -24,8 +24,7 @@ public class CreatePropertyUseCase extends UseCase<CreatePropertyCommand, Create
 
     public CreatePropertyUseCase(final PropertyGateway propertyGateway,
                                  final CityGateway cityGateway,
-                                 final ProducerGateway producerGateway
-    ) {
+                                 final ProducerGateway producerGateway) {
         this.propertyGateway = propertyGateway;
         this.cityGateway = cityGateway;
         this.producerGateway = producerGateway;
@@ -45,15 +44,21 @@ public class CreatePropertyUseCase extends UseCase<CreatePropertyCommand, Create
             throw NotFoundException.with(Producer.class, producerId);
         }
 
-        final var technicianIds = command.technicianIds().stream().map(UserID::from).toList();
-        final var collaborators = command.collaborators().stream()
+        final var technicianIds = command
+                .technicianIds()
+                .stream()
+                .map(UserID::from)
+                .toList();
+        final var collaborators = command
+                .collaborators()
+                .stream()
                 .map(c -> PropertyCollaborator.create(c.name(), c.hoursPerDay()))
                 .toList();
 
-        final var property = Property.create(command.name(), coord,
-                command.nakedAveragePrice(), command.leaseAveragePrice(), command.dairyCattleFarming(),
-                command.perennialPasture(), command.summerPlowing(), command.winterPlowing(), producerId, cityId,
-                technicianIds, collaborators);
+        final var property = Property.create(command.name(), coord, command.nakedAveragePrice(),
+                                             command.leaseAveragePrice(), command.dairyCattleFarming(),
+                                             command.perennialPasture(), command.summerPlowing(),
+                                             command.winterPlowing(), producerId, cityId, technicianIds, collaborators);
 
         return CreatePropertyOutput.from(propertyGateway.save(property));
     }

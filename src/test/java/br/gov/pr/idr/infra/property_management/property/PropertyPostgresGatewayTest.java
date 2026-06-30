@@ -86,7 +86,7 @@ class PropertyPostgresGatewayTest {
         final var id = PropertyID.unique();
         final var queryResult = new GetPropertyQueryResult(
                 id.id(), "Fazenda", null, null, 0.0, 0.0, 0.0, 0.0,
-                null, null, UUID.randomUUID(), "Produtor",
+                null, null, null, null, UUID.randomUUID(), "Produtor",
                 UUID.randomUUID(), "Curitiba", null, null
         );
         when(repository.findByIdWithDetails(id.id())).thenReturn(Optional.of(queryResult));

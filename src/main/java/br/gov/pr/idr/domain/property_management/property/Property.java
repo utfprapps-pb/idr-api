@@ -10,6 +10,7 @@ import br.gov.pr.idr.domain.shared.validation.DomainError;
 import br.gov.pr.idr.domain.shared.validation.ValidationHandler;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 
 public class Property extends AggregateRoot<PropertyID> {
@@ -26,6 +27,8 @@ public class Property extends AggregateRoot<PropertyID> {
     private List<PropertyCollaborator> collaborators;
     private List<UserID> technicianIds;
     private ProducerID producerId;
+    private Long version;
+    private Instant updatedAt;
 
     protected Property(final PropertyID id,
                        final String name,
@@ -39,7 +42,9 @@ public class Property extends AggregateRoot<PropertyID> {
                        final ProducerID producerId,
                        final CityID cityId,
                        final List<PropertyCollaborator> collaborators,
-                       final List<UserID> technicianIds
+                       final List<UserID> technicianIds,
+                       final Long version,
+                       final Instant updatedAt
     ) {
         super(id);
         this.name = name;
@@ -54,6 +59,8 @@ public class Property extends AggregateRoot<PropertyID> {
         this.cityId = cityId;
         this.collaborators = collaborators;
         this.technicianIds = technicianIds;
+        this.version = version;
+        this.updatedAt = updatedAt;
         selfValidate();
     }
 
@@ -72,7 +79,7 @@ public class Property extends AggregateRoot<PropertyID> {
     ) {
         return new Property(PropertyID.unique(), name, coord, nakedAveragePrice, leaseAveragePrice,
                 dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing,
-                producerId, cityId, collaborators, technicianIds);
+                producerId, cityId, collaborators, technicianIds, null, null);
     }
 
     public static Property with(final PropertyID id,
@@ -91,7 +98,28 @@ public class Property extends AggregateRoot<PropertyID> {
     ) {
         return new Property(id, name, coord, nakedAveragePrice, leaseAveragePrice,
                 dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing,
-                producerId, cityId, collaborators, technicianIds);
+                producerId, cityId, collaborators, technicianIds, null, null);
+    }
+
+    public static Property with(final PropertyID id,
+                                final String name,
+                                final Coord coord,
+                                final BigDecimal nakedAveragePrice,
+                                final BigDecimal leaseAveragePrice,
+                                final Double dairyCattleFarming,
+                                final Double perennialPasture,
+                                final Double summerPlowing,
+                                final Double winterPlowing,
+                                final ProducerID producerId,
+                                final CityID cityId,
+                                final List<UserID> technicianIds,
+                                final List<PropertyCollaborator> collaborators,
+                                final Long version,
+                                final Instant updatedAt
+    ) {
+        return new Property(id, name, coord, nakedAveragePrice, leaseAveragePrice,
+                dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing,
+                producerId, cityId, collaborators, technicianIds, version, updatedAt);
     }
 
     public Property update(final String name,
@@ -182,4 +210,8 @@ public class Property extends AggregateRoot<PropertyID> {
     public List<PropertyCollaborator> getCollaborators() { return collaborators; }
 
     public List<UserID> getTechnicianIds() { return technicianIds; }
+
+    public Long getVersion() { return version; }
+
+    public Instant getUpdatedAt() { return updatedAt; }
 }

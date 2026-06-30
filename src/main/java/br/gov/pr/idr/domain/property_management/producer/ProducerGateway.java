@@ -18,5 +18,7 @@ public interface ProducerGateway {
 
     boolean existsByCpf(final CPF cpf);
 
+    Optional<Producer> findByCpf(final CPF cpf);
+
     Pagination<Producer> search(final SearchQuery query);
 }

@@ -5,7 +5,6 @@ import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.domain.property_management.producer.ProducerID;
 import br.gov.pr.idr.domain.property_management.property.Property;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
-import br.gov.pr.idr.domain.property_management.property.collaborator.PropertyCollaborator;
 import br.gov.pr.idr.domain.property_management.property.vo.Coord;
 import br.gov.pr.idr.infra.property_management.property.persistence.collaborator.PropertyCollaboratorJPAEntity;
 import jakarta.persistence.*;
@@ -13,8 +12,10 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,6 +54,13 @@ public class PropertyJPAEntity {
     @JoinColumn(name = "property_id", nullable = false)
     private List<PropertyCollaboratorJPAEntity> collaborators;
 
+    @Version
+    private Long version;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
     public static PropertyJPAEntity fromDomain(final Property property) {
         return new PropertyJPAEntity(
                 property.getId().id(),
@@ -68,7 +76,9 @@ public class PropertyJPAEntity {
                 property.getProducerId().id(),
                 property.getCityId().id(),
                 property.getTechnicianIds().stream().map(UserID::id).toList(),
-                property.getCollaborators().stream().map(PropertyCollaboratorJPAEntity::fromDomain).toList()
+                property.getCollaborators().stream().map(PropertyCollaboratorJPAEntity::fromDomain).toList(),
+                property.getVersion(),
+                property.getUpdatedAt()
         );
     }
 
@@ -88,7 +98,9 @@ public class PropertyJPAEntity {
                 this.technicianIds.stream().map(UserID::from).toList(),
                 this.collaborators.stream()
                                   .map(PropertyCollaboratorJPAEntity::toDomain)
-                                  .toList()
+                                  .toList(),
+                this.version,
+                this.updatedAt
         );
     }
 }

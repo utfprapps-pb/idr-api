@@ -2,6 +2,7 @@ package br.gov.pr.idr.infra.shared.error;
 
 import br.gov.pr.idr.domain.shared.exceptions.DomainException;
 import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.exceptions.UnprocessableEntityException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -32,6 +33,12 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
         return new ErrorResponse(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Corpo da requisição ausente ou inválido",
                 List.of(FieldError.from(ERROR, "O corpo da requisição é obrigatório")));
+    }
+
+    @ExceptionHandler(UnprocessableEntityException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErrorResponse handleUnprocessableEntityException(UnprocessableEntityException ex) {
+        return buildDomainErrorResponse(ex);
     }
 
     @ExceptionHandler(NotificationException.class)

@@ -76,7 +76,7 @@ class ProducerControllerTest {
     @DisplayName("GET /v1/producers/{id} deve retornar produtor por ID")
     void shouldGetProducerById() throws Exception {
         final var id = UUID.randomUUID();
-        final var output = new GetProducerByIdOutput(id, "João", "529.982.247-25");
+        final var output = new GetProducerByIdOutput(id, "João", "529.982.247-25", null, null);
         when(getProducerByIdUseCase.execute(any())).thenReturn(output);
 
         mockMvc.perform(get("/v1/producers/" + id))

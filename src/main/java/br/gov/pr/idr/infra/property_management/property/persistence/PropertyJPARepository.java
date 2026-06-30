@@ -21,6 +21,7 @@ public interface PropertyJPARepository extends JpaRepository<PropertyJPAEntity, 
                 p.id, p.name, p.nakedAveragePrice, p.leaseAveragePrice,
                 p.dairyCattleFarming, p.perennialPasture, p.summerPlowing, p.winterPlowing,
                 p.latitude, p.longitude,
+                p.version, p.updatedAt,
                 producer.id, producer.name,
                 city.id, city.name,
                 (SELECT LISTAGG(CONCAT(cast(techId as String), '|', u.name), ',')

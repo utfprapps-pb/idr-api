@@ -1,6 +1,7 @@
 package br.gov.pr.idr.domain.property_management.property.query;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +17,8 @@ public record GetPropertyQueryResult(
         Double winterPlowingArea,
         BigDecimal latitude,
         BigDecimal longitude,
+        Long version,
+        Instant updatedAt,
         Producer producer,
         City city,
         List<Technician> technicians,
@@ -33,13 +36,14 @@ public record GetPropertyQueryResult(
             Double dairyCattleFarmingArea, Double perennialPastureArea,
             Double summerPlowingArea, Double winterPlowingArea,
             BigDecimal latitude, BigDecimal longitude,
+            Long version, Instant updatedAt,
             UUID producerId, String producerName,
             UUID cityId, String cityName,
             String techniciansStr, String collaboratorsStr
     ) {
         this(id, name, nakedAveragePrice, leaseAveragePrice,
                 dairyCattleFarmingArea, perennialPastureArea, summerPlowingArea, winterPlowingArea,
-                latitude, longitude,
+                latitude, longitude, version, updatedAt,
                 new Producer(producerId, producerName),
                 new City(cityId, cityName),
                 parseTechnicians(techniciansStr),

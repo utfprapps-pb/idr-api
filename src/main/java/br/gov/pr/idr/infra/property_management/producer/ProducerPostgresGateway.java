@@ -46,6 +46,11 @@ public class ProducerPostgresGateway implements ProducerGateway {
     }
 
     @Override
+    public Optional<Producer> findByCpf(final CPF cpf) {
+        return repository.findByCpf(cpf.value()).map(ProducerJPAEntity::toDomain);
+    }
+
+    @Override
     public Pagination<Producer> search(final SearchQuery query) {
         final var terms = query.terms() != null ? query.terms().trim() : "";
         final var pageRequest = PageRequestFactory.from(query);
