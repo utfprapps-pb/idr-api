@@ -1,4 +1,7 @@
 --TABELA USERS
+-- ADMIN user (senha: Admin@123) — UUIDs fixos para permitir a referência cruzada no seed
+insert into users (id, active, cep, city_id, cpf, name, graduation_year, house_number, password, phone, professional_register, street, username) values ('a0000000-0000-0000-0000-000000000001', true, '00000-000', 1, '000.000.000-00', 'Administrador', '2000', '0', '$2a$10$N.kz4TrAe5b8PGmAfCLaAeBBr2JuXxdwQ9HlBTjV6VJmCg5VPbL3i', '0000', '0000', 'Rua Admin', 'admin@idr.com');
+insert into users_permission (id, role, read_only, user_id) values ('a0000000-0000-0000-0000-000000000002', 'ADMIN', false, 'a0000000-0000-0000-0000-000000000001');
 --TABELA REGION
 -- insert into region (name) values ('Region 1');
 -- insert into region (name) values ('Region 2');

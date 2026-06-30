@@ -1,6 +1,6 @@
 
 ## Cadastro de Propriedades
-- Colocar os atributos relacionados a àrea que estão em uma classe separada (PropertyArea) na própria classe de propriedade.
+- Colocar os atributos relacionados a àrea que estão em uma classe separada (PropertyArea) na própria classe de propriedade. OK
 - Atributo de produtor (private User producer) será um usuário do sistema, que poderá ser um novo usuário, geralmente no 
 - cadastro de uma propriedade um novo usuário será criado, mas também poderá haver casos em que uma nova propriedade estará 
 - relacionada com um cadastro existente. Ao cadastrar uma propriedade o usuário irá informar os dados do produtor: 
@@ -69,5 +69,4 @@ Responsável pela segurança, usuários e permissões de acesso.
 ## 🚀 Guia de Migração (Best Practices)
 1. **Domínio Primeiro:** Ao migrar uma entidade, comece criando o modelo puro no `domain` com métodos estáticos de fábrica (Effective Java).
 2. **DTOs:** Utilize `records` para `Request` e `Response` na camada de infraestrutura.
-3. **Mapeamento:** Utilize o **MapStruct** (com `componentModel = "spring"`) para converter entre Domínio e JPA.
-4. **Desacoplamento:** A camada de aplicação não deve conhecer o JPA ou o Controller. Ela se comunica apenas através de Portas (Interfaces).
+3. **Desacoplamento:** A camada de aplicação não deve conhecer o JPA ou o Controller. Ela se comunica apenas através de Portas (Interfaces).
