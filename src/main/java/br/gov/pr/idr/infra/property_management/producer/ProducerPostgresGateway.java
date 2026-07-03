@@ -4,8 +4,8 @@ import br.gov.pr.idr.domain.iam.user.vo.CPF;
 import br.gov.pr.idr.domain.property_management.producer.Producer;
 import br.gov.pr.idr.domain.property_management.producer.ProducerGateway;
 import br.gov.pr.idr.domain.property_management.producer.ProducerID;
-import br.gov.pr.idr.domain.shared.search.Pagination;
-import br.gov.pr.idr.domain.shared.search.SearchQuery;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.property_management.producer.persistence.ProducerJPAEntity;
 import br.gov.pr.idr.infra.property_management.producer.persistence.ProducerJPARepository;
 import br.gov.pr.idr.infra.shared.support.PageRequestFactory;
@@ -52,9 +52,8 @@ public class ProducerPostgresGateway implements ProducerGateway {
 
     @Override
     public Pagination<Producer> search(final SearchQuery query) {
-        final var terms = query.terms() != null ? query.terms().trim() : "";
         final var pageRequest = PageRequestFactory.from(query);
-        final var page = repository.search(terms, pageRequest);
+        final var page = repository.search(PageRequestFactory.terms(query.terms()), pageRequest);
         return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(),
                 page.getContent().stream().map(ProducerJPAEntity::toDomain).toList());
     }

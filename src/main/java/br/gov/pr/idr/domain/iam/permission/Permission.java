@@ -1,9 +1,9 @@
 package br.gov.pr.idr.domain.iam.permission;
 
 import br.gov.pr.idr.domain.iam.user.UserRole;
-import br.gov.pr.idr.domain.shared.Entity;
-import br.gov.pr.idr.domain.shared.validation.DomainError;
-import br.gov.pr.idr.domain.shared.validation.ValidationHandler;
+import br.gov.pr.idr.domain.shared.tactical.Entity;
+import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
+import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,12 +23,13 @@ public class Permission extends Entity<PermissionID> {
         this.readOnly = readOnly;
         this.regionIds = regionIds != null ? regionIds : new HashSet<>();
         this.cityIds = cityIds != null ? cityIds : new HashSet<>();
-        super.selfValidate();
     }
 
     public static Permission create(final UserRole role, final boolean readOnly,
                                     final Set<UUID> regionIds, final Set<UUID> cityIds) {
-        return new Permission(PermissionID.unique(), role, readOnly, regionIds, cityIds);
+        final var permission = new Permission(PermissionID.unique(), role, readOnly, regionIds, cityIds);
+        permission.selfValidate();
+        return permission;
     }
 
     public static Permission with(final PermissionID id, final UserRole role, final boolean readOnly,

@@ -1,11 +1,11 @@
 package br.gov.pr.idr.application.property_management.producer.create;
 
-import br.gov.pr.idr.application.shared.CommandUseCase;
-import br.gov.pr.idr.application.shared.UseCase;
+import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
+import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
 import br.gov.pr.idr.domain.property_management.producer.Producer;
 import br.gov.pr.idr.domain.property_management.producer.ProducerGateway;
-import br.gov.pr.idr.domain.shared.exceptions.DomainException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
 
 @CommandUseCase
 public class CreateProducerUseCase extends UseCase<CreateProducerCommand, CreateProducerOutput> {

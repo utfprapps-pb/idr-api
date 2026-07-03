@@ -1,11 +1,11 @@
 package br.gov.pr.idr.application.property_management.city.delete;
 
-import br.gov.pr.idr.application.shared.CommandUseCase;
-import br.gov.pr.idr.application.shared.VoidUseCase;
+import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
+import br.gov.pr.idr.application.shared.stereotype.VoidUseCase;
 import br.gov.pr.idr.domain.property_management.city.City;
 import br.gov.pr.idr.domain.property_management.city.CityGateway;
 import br.gov.pr.idr.domain.property_management.city.CityID;
-import br.gov.pr.idr.domain.shared.exceptions.NotFoundException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
 
 import java.util.UUID;
 

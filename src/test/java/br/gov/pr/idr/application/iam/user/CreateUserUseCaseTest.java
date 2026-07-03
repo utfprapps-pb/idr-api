@@ -1,7 +1,6 @@
 package br.gov.pr.idr.application.iam.user;
 
 import br.gov.pr.idr.application.iam.user.create.CreateUserCommand;
-import br.gov.pr.idr.application.iam.user.create.CreateUserOutput;
 import br.gov.pr.idr.application.iam.user.create.CreateUserUseCase;
 import br.gov.pr.idr.domain.iam.user.User;
 import br.gov.pr.idr.domain.iam.user.UserGateway;
@@ -9,8 +8,8 @@ import br.gov.pr.idr.domain.iam.user.vo.CPF;
 import br.gov.pr.idr.domain.iam.user.vo.Password;
 import br.gov.pr.idr.domain.property_management.city.CityGateway;
 import br.gov.pr.idr.domain.property_management.city.CityID;
-import br.gov.pr.idr.domain.shared.events.DomainEventPublisher;
-import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.tactical.events.DomainEventPublisher;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

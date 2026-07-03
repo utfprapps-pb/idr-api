@@ -4,7 +4,7 @@ import br.gov.pr.idr.application.property_management.region.create.CreateRegionC
 import br.gov.pr.idr.application.property_management.region.create.CreateRegionUseCase;
 import br.gov.pr.idr.domain.property_management.region.Region;
 import br.gov.pr.idr.domain.property_management.region.RegionGateway;
-import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

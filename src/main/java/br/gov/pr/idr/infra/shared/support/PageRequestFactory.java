@@ -1,7 +1,7 @@
 package br.gov.pr.idr.infra.shared.support;
 
 import br.gov.pr.idr.domain.iam.user.query.SearchUserQuery;
-import br.gov.pr.idr.domain.shared.search.SearchQuery;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -23,5 +23,9 @@ public final class PageRequestFactory {
 
     public static PageRequest from(final SearchUserQuery query) {
         return from(query.query());
+    }
+
+    public static String terms(final String terms) {
+        return terms != null && !terms.isBlank() ? terms.trim() : "";
     }
 }

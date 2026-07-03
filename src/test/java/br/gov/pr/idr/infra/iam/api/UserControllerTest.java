@@ -10,7 +10,7 @@ import br.gov.pr.idr.application.iam.user.retries.search.SearchUserOutput;
 import br.gov.pr.idr.application.iam.user.retries.search.SearchUserUseCase;
 import br.gov.pr.idr.application.iam.user.update.ToggleUserActiveUseCase;
 import br.gov.pr.idr.application.iam.user.update.UpdateUserPermissionsUseCase;
-import br.gov.pr.idr.domain.shared.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 

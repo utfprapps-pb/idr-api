@@ -3,14 +3,18 @@ package br.gov.pr.idr.domain.property_management.property;
 import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.domain.property_management.producer.ProducerID;
+import br.gov.pr.idr.domain.property_management.property.attachment.PropertyAttachment;
+import br.gov.pr.idr.domain.property_management.property.attachment.PropertyAttachmentID;
 import br.gov.pr.idr.domain.property_management.property.collaborator.PropertyCollaborator;
 import br.gov.pr.idr.domain.property_management.property.vo.Coord;
-import br.gov.pr.idr.domain.shared.AggregateRoot;
-import br.gov.pr.idr.domain.shared.validation.DomainError;
-import br.gov.pr.idr.domain.shared.validation.ValidationHandler;
+import br.gov.pr.idr.domain.shared.tactical.AggregateRoot;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.UnprocessableEntityException;
+import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
+import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Property extends AggregateRoot<PropertyID> {
@@ -27,8 +31,9 @@ public class Property extends AggregateRoot<PropertyID> {
     private List<PropertyCollaborator> collaborators;
     private List<UserID> technicianIds;
     private ProducerID producerId;
-    private Long version;
+    private final Long version;
     private Instant updatedAt;
+    private final List<PropertyAttachment> attachments;
 
     protected Property(final PropertyID id,
                        final String name,
@@ -44,8 +49,9 @@ public class Property extends AggregateRoot<PropertyID> {
                        final List<PropertyCollaborator> collaborators,
                        final List<UserID> technicianIds,
                        final Long version,
-                       final Instant updatedAt
-    ) {
+                       final Instant updatedAt,
+                       final List<PropertyAttachment> attachments
+                      ) {
         super(id);
         this.name = name;
         this.coord = coord;
@@ -61,7 +67,7 @@ public class Property extends AggregateRoot<PropertyID> {
         this.technicianIds = technicianIds;
         this.version = version;
         this.updatedAt = updatedAt;
-        selfValidate();
+        this.attachments = attachments == null ? new ArrayList<>() : new ArrayList<>(attachments);
     }
 
     public static Property create(final String name,
@@ -77,9 +83,11 @@ public class Property extends AggregateRoot<PropertyID> {
                                   final List<UserID> technicianIds,
                                   final List<PropertyCollaborator> collaborators
     ) {
-        return new Property(PropertyID.unique(), name, coord, nakedAveragePrice, leaseAveragePrice,
-                dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing,
-                producerId, cityId, collaborators, technicianIds, null, null);
+        final var property = new Property(PropertyID.unique(), name, coord, nakedAveragePrice, leaseAveragePrice,
+                            dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing,
+                            producerId, cityId, collaborators, technicianIds, null, null, null);
+        property.selfValidate();
+        return property;
     }
 
     public static Property with(final PropertyID id,
@@ -95,10 +103,10 @@ public class Property extends AggregateRoot<PropertyID> {
                                 final CityID cityId,
                                 final List<UserID> technicianIds,
                                 final List<PropertyCollaborator> collaborators
-    ) {
+                               ) {
         return new Property(id, name, coord, nakedAveragePrice, leaseAveragePrice,
-                dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing,
-                producerId, cityId, collaborators, technicianIds, null, null);
+                            dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing,
+                            producerId, cityId, collaborators, technicianIds, null, null, null);
     }
 
     public static Property with(final PropertyID id,
@@ -116,10 +124,10 @@ public class Property extends AggregateRoot<PropertyID> {
                                 final List<PropertyCollaborator> collaborators,
                                 final Long version,
                                 final Instant updatedAt
-    ) {
+                               ) {
         return new Property(id, name, coord, nakedAveragePrice, leaseAveragePrice,
-                dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing,
-                producerId, cityId, collaborators, technicianIds, version, updatedAt);
+                            dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing,
+                            producerId, cityId, collaborators, technicianIds, version, updatedAt, null);
     }
 
     public Property update(final String name,
@@ -134,7 +142,7 @@ public class Property extends AggregateRoot<PropertyID> {
                            final CityID cityId,
                            final List<UserID> technicianIds,
                            final List<PropertyCollaborator> collaborators
-    ) {
+                          ) {
         this.name = name;
         this.coord = coord;
         this.nakedAveragePrice = nakedAveragePrice;
@@ -147,6 +155,7 @@ public class Property extends AggregateRoot<PropertyID> {
         this.cityId = cityId;
         this.technicianIds = technicianIds;
         this.collaborators = collaborators;
+        this.updatedAt = Instant.now();
         selfValidate();
         return this;
     }
@@ -187,31 +196,75 @@ public class Property extends AggregateRoot<PropertyID> {
         }
     }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public Coord getCoord() { return coord; }
+    public Coord getCoord() {
+        return coord;
+    }
 
-    public BigDecimal getNakedAveragePrice() { return nakedAveragePrice; }
+    public BigDecimal getNakedAveragePrice() {
+        return nakedAveragePrice;
+    }
 
-    public BigDecimal getLeaseAveragePrice() { return leaseAveragePrice; }
+    public BigDecimal getLeaseAveragePrice() {
+        return leaseAveragePrice;
+    }
 
-    public Double getDairyCattleFarmingArea() { return dairyCattleFarmingArea; }
+    public Double getDairyCattleFarmingArea() {
+        return dairyCattleFarmingArea;
+    }
 
-    public Double getPerennialPastureArea() { return perennialPastureArea; }
+    public Double getPerennialPastureArea() {
+        return perennialPastureArea;
+    }
 
-    public Double getSummerPlowingArea() { return summerPlowingArea; }
+    public Double getSummerPlowingArea() {
+        return summerPlowingArea;
+    }
 
-    public Double getWinterPlowingArea() { return winterPlowingArea; }
+    public Double getWinterPlowingArea() {
+        return winterPlowingArea;
+    }
 
-    public ProducerID getProducerId() { return producerId; }
+    public ProducerID getProducerId() {
+        return producerId;
+    }
 
-    public CityID getCityId() { return cityId; }
+    public CityID getCityId() {
+        return cityId;
+    }
 
-    public List<PropertyCollaborator> getCollaborators() { return collaborators; }
+    public List<PropertyCollaborator> getCollaborators() {
+        return collaborators;
+    }
 
-    public List<UserID> getTechnicianIds() { return technicianIds; }
+    public List<UserID> getTechnicianIds() {
+        return technicianIds;
+    }
 
-    public Long getVersion() { return version; }
+    public Long getVersion() {
+        return version;
+    }
 
-    public Instant getUpdatedAt() { return updatedAt; }
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void addAttachment(final PropertyAttachment attachment) {
+        this.attachments.add(attachment);
+    }
+
+    public void removeAttachment(final PropertyAttachmentID attachmentId) {
+        final var removed = this.attachments.removeIf(attachment -> attachment.getId()
+                .equals(attachmentId));
+        if (!removed) {
+            throw new UnprocessableEntityException("Anexo não encontrado para esta propriedade");
+        }
+    }
+
+    public List<PropertyAttachment> getAttachments() {
+        return attachments;
+    }
 }

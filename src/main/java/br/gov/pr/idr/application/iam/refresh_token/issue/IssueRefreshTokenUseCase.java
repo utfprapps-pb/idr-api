@@ -2,8 +2,8 @@ package br.gov.pr.idr.application.iam.refresh_token.issue;
 
 import br.gov.pr.idr.application.iam.refresh_token.revoke.RevokeRefreshTokenCommand;
 import br.gov.pr.idr.application.iam.refresh_token.revoke.RevokeRefreshTokenUseCase;
-import br.gov.pr.idr.application.shared.CommandUseCase;
-import br.gov.pr.idr.application.shared.UseCase;
+import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
+import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.iam.refresh_token.RefreshToken;
 import br.gov.pr.idr.domain.iam.refresh_token.RefreshTokenGateway;
 

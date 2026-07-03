@@ -3,6 +3,7 @@ package br.gov.pr.idr.infra.property_management.producer;
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
 import br.gov.pr.idr.domain.property_management.producer.Producer;
 import br.gov.pr.idr.domain.property_management.producer.ProducerID;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.property_management.producer.persistence.ProducerJPAEntity;
 import br.gov.pr.idr.infra.property_management.producer.persistence.ProducerJPARepository;
 import org.junit.jupiter.api.DisplayName;
@@ -49,6 +50,18 @@ class ProducerPostgresGatewayTest {
     }
 
     @Test
+    @DisplayName("deve atualizar produtor e retornar domínio")
+    void shouldUpdateProducer() {
+        when(repository.save(any())).thenReturn(entityMock);
+        when(entityMock.toDomain()).thenReturn(validProducer());
+
+        final var result = gateway.update(validProducer());
+
+        assertNotNull(result);
+        verify(repository).save(any());
+    }
+
+    @Test
     @DisplayName("deve retornar Optional com produtor quando encontrado por ID")
     void shouldFindByIdWhenFound() {
         final var id = ProducerID.unique();
@@ -89,15 +102,61 @@ class ProducerPostgresGatewayTest {
     }
 
     @Test
+    @DisplayName("deve retornar Optional com produtor quando encontrado por CPF")
+    void shouldFindByCpfWhenFound() {
+        when(repository.findByCpf(VALID_CPF)).thenReturn(Optional.of(entityMock));
+        when(entityMock.toDomain()).thenReturn(validProducer());
+
+        final var result = gateway.findByCpf(CPF.from(VALID_CPF));
+
+        assertTrue(result.isPresent());
+    }
+
+    @Test
+    @DisplayName("deve retornar Optional vazio quando não encontrado por CPF")
+    void shouldReturnEmptyWhenNotFoundByCpf() {
+        when(repository.findByCpf(VALID_CPF)).thenReturn(Optional.empty());
+
+        final var result = gateway.findByCpf(CPF.from(VALID_CPF));
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
     @DisplayName("deve retornar paginação na busca")
     void shouldReturnPaginationOnSearch() {
         final var page = new PageImpl<>(List.of(entityMock));
         when(repository.search(any(), any(Pageable.class))).thenReturn(page);
         when(entityMock.toDomain()).thenReturn(validProducer());
 
-        final var query = br.gov.pr.idr.domain.shared.search.SearchQuery.from(0, 10, "", "name", "asc");
+        final var query = SearchQuery.from(0, 10, "", "name", "asc");
         final var result = gateway.search(query);
 
         assertEquals(1, result.total());
+    }
+
+    @Test
+    @DisplayName("deve tratar terms nulo como string vazia na busca")
+    void shouldTreatNullTermsAsEmptyOnSearch() {
+        final var page = new PageImpl<ProducerJPAEntity>(List.of());
+        when(repository.search(eq(""), any(Pageable.class))).thenReturn(page);
+
+        final var query = SearchQuery.from(0, 10, null, "name", "asc");
+        final var result = gateway.search(query);
+
+        assertEquals(0, result.total());
+        verify(repository).search(eq(""), any(Pageable.class));
+    }
+
+    @Test
+    @DisplayName("deve remover espaços em branco dos terms na busca")
+    void shouldTrimTermsOnSearch() {
+        final var page = new PageImpl<ProducerJPAEntity>(List.of());
+        when(repository.search(eq("Agricultor"), any(Pageable.class))).thenReturn(page);
+
+        final var query = SearchQuery.from(0, 10, "  Agricultor  ", "name", "asc");
+        gateway.search(query);
+
+        verify(repository).search(eq("Agricultor"), any(Pageable.class));
     }
 }

@@ -4,7 +4,7 @@ import br.gov.pr.idr.application.property_management.producer.retrieve.get.GetPr
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
 import br.gov.pr.idr.domain.property_management.producer.Producer;
 import br.gov.pr.idr.domain.property_management.producer.ProducerGateway;
-import br.gov.pr.idr.domain.shared.exceptions.NotFoundException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

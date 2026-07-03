@@ -4,7 +4,7 @@ import br.gov.pr.idr.domain.iam.user.User;
 import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.domain.property_management.sync.SyncDownloadGateway;
 import br.gov.pr.idr.domain.property_management.sync.SyncSnapshot;
-import br.gov.pr.idr.domain.shared.exceptions.NotFoundException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
 import br.gov.pr.idr.infra.iam.user.persistence.UserJPARepository;
 import br.gov.pr.idr.infra.property_management.city.persistence.CityJPAEntity;
 import br.gov.pr.idr.infra.property_management.city.persistence.CityJPARepository;

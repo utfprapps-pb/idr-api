@@ -4,8 +4,8 @@ import br.gov.pr.idr.domain.property_management.property.Property;
 import br.gov.pr.idr.domain.property_management.property.PropertyGateway;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.property_management.property.query.GetPropertyQueryResult;
-import br.gov.pr.idr.domain.shared.search.Pagination;
-import br.gov.pr.idr.domain.shared.search.SearchQuery;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.property_management.property.persistence.PropertyJPAEntity;
 import br.gov.pr.idr.infra.property_management.property.persistence.PropertyJPARepository;
 import br.gov.pr.idr.infra.shared.support.PageRequestFactory;
@@ -53,9 +53,8 @@ public class PropertyPostgresGateway implements PropertyGateway {
 
     @Override
     public Pagination<Property> search(SearchQuery query) {
-        final var terms = query.terms() != null ? query.terms().trim() : "";
         final var pageRequest = PageRequestFactory.from(query);
-        final var page = repository.search(terms, pageRequest);
+        final var page = repository.search(PageRequestFactory.terms(query.terms()), pageRequest);
         return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(),
                 page.getContent().stream().map(PropertyJPAEntity::toDomain).toList());
     }

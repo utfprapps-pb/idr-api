@@ -1,12 +1,12 @@
 package br.gov.pr.idr.application.property_management.property.retrieve.get;
 
-import br.gov.pr.idr.application.shared.QueryUseCase;
-import br.gov.pr.idr.application.shared.UseCase;
+import br.gov.pr.idr.application.shared.stereotype.QueryUseCase;
+import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.property_management.property.Property;
 import br.gov.pr.idr.domain.property_management.property.PropertyGateway;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.property_management.property.query.GetPropertyQueryResult;
-import br.gov.pr.idr.domain.shared.exceptions.NotFoundException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
 
 import java.util.UUID;
 

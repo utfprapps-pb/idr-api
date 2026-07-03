@@ -5,7 +5,7 @@ import br.gov.pr.idr.application.property_management.region.create.CreateRegionU
 import br.gov.pr.idr.application.property_management.region.delete.DeleteRegionUseCase;
 import br.gov.pr.idr.application.property_management.region.update.UpdateRegionOutput;
 import br.gov.pr.idr.application.property_management.region.update.UpdateRegionUseCase;
-import br.gov.pr.idr.domain.shared.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import br.gov.pr.idr.infra.property_management.region.models.list.ListRegionOutput;
 import br.gov.pr.idr.infra.property_management.region.models.list.ListRegionUseCase;
 import org.junit.jupiter.api.BeforeEach;

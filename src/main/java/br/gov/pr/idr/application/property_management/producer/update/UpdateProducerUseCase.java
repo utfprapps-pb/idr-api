@@ -1,13 +1,13 @@
 package br.gov.pr.idr.application.property_management.producer.update;
 
-import br.gov.pr.idr.application.shared.CommandUseCase;
-import br.gov.pr.idr.application.shared.UseCase;
+import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
+import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
 import br.gov.pr.idr.domain.property_management.producer.Producer;
 import br.gov.pr.idr.domain.property_management.producer.ProducerGateway;
 import br.gov.pr.idr.domain.property_management.producer.ProducerID;
-import br.gov.pr.idr.domain.shared.exceptions.DomainException;
-import br.gov.pr.idr.domain.shared.exceptions.NotFoundException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
 
 @CommandUseCase
 public class UpdateProducerUseCase extends UseCase<UpdateProducerCommand, UpdateProducerOutput> {

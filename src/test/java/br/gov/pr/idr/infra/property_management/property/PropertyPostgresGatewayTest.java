@@ -6,6 +6,7 @@ import br.gov.pr.idr.domain.property_management.property.Property;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.property_management.property.query.GetPropertyQueryResult;
 import br.gov.pr.idr.domain.property_management.property.vo.Coord;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.property_management.property.persistence.PropertyJPAEntity;
 import br.gov.pr.idr.infra.property_management.property.persistence.PropertyJPARepository;
 import org.junit.jupiter.api.DisplayName;
@@ -87,7 +88,7 @@ class PropertyPostgresGatewayTest {
         final var queryResult = new GetPropertyQueryResult(
                 id.id(), "Fazenda", null, null, 0.0, 0.0, 0.0, 0.0,
                 null, null, null, null, UUID.randomUUID(), "Produtor",
-                UUID.randomUUID(), "Curitiba", null, null
+                UUID.randomUUID(), "Curitiba", null, null, null
         );
         when(repository.findByIdWithDetails(id.id())).thenReturn(Optional.of(queryResult));
 
@@ -123,7 +124,7 @@ class PropertyPostgresGatewayTest {
         when(repository.search(any(), any(Pageable.class))).thenReturn(page);
         when(entityMock.toDomain()).thenReturn(validProperty());
 
-        final var query = br.gov.pr.idr.domain.shared.search.SearchQuery.from(0, 10, "", "name", "asc");
+        final var query = SearchQuery.from(0, 10, "", "name", "asc");
         final var result = gateway.search(query);
 
         assertEquals(1, result.total());

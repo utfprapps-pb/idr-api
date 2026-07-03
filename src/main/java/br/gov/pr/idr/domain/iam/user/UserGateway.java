@@ -2,7 +2,7 @@ package br.gov.pr.idr.domain.iam.user;
 
 import br.gov.pr.idr.domain.iam.user.query.SearchUserQuery;
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
-import br.gov.pr.idr.domain.shared.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 
 import java.util.Optional;
 

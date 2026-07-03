@@ -5,8 +5,8 @@ import br.gov.pr.idr.domain.property_management.city.CityGateway;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.domain.property_management.city.query.ListCityQueryResult;
 import br.gov.pr.idr.domain.property_management.region.RegionID;
-import br.gov.pr.idr.domain.shared.search.Pagination;
-import br.gov.pr.idr.domain.shared.search.SearchQuery;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.property_management.city.persistence.CityJPAEntity;
 import br.gov.pr.idr.infra.property_management.city.persistence.CityJPARepository;
 import br.gov.pr.idr.infra.shared.support.PageRequestFactory;
@@ -45,9 +45,8 @@ public class CityPostgresGateway implements CityGateway {
 
     @Override
     public Pagination<ListCityQueryResult> search(SearchQuery query) {
-        final var terms = query.terms() != null ? query.terms().trim() : "";
         final var pageRequest = PageRequestFactory.from(query);
-        final var page = repository.search(terms, pageRequest);
+        final var page = repository.search(PageRequestFactory.terms(query.terms()), pageRequest);
         return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(), page.getContent());
     }
 

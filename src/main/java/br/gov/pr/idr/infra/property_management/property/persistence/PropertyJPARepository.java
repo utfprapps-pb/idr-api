@@ -24,17 +24,21 @@ public interface PropertyJPARepository extends JpaRepository<PropertyJPAEntity, 
                 p.version, p.updatedAt,
                 producer.id, producer.name,
                 city.id, city.name,
-                (SELECT LISTAGG(CONCAT(cast(techId as String), '|', u.name), ',')
+                (SELECT LISTAGG(CONCAT(cast(techId as String), '\u001F', u.name), '\u001E')
                  FROM Property ox JOIN ox.technicianIds techId, User u
                  WHERE ox.id = p.id AND u.id = techId),
-                (SELECT LISTAGG(CONCAT(cast(c.id as String), '|', c.name, '|', c.hoursPerDay), ',')
+                (SELECT LISTAGG(CONCAT(cast(c.id as String), '\u001F', c.name, '\u001F', c.hoursPerDay), '\u001E')
                  FROM Property ox JOIN ox.collaborators c
+                 WHERE ox.id = p.id),
+                (SELECT LISTAGG(CONCAT(cast(a.id as String), '\u001F', a.fileName, '\u001F', a.contentType, '\u001F',\s
+                            cast(a.sizeBytes as String)), '\u001E')
+                 FROM Property ox JOIN ox.attachments a
                  WHERE ox.id = p.id)
             )
             FROM Property p
             LEFT JOIN Producer producer ON p.producerId = producer.id
             LEFT JOIN City city ON p.cityId = city.id
             WHERE p.id = :id
-            """)
+           \s""")
     Optional<GetPropertyQueryResult> findByIdWithDetails(@Param("id") UUID id);
 }

@@ -1,7 +1,7 @@
 package br.gov.pr.idr.infra.shared.support;
 
 import br.gov.pr.idr.domain.iam.user.query.SearchUserQuery;
-import br.gov.pr.idr.domain.shared.search.SearchQuery;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Sort;

@@ -8,7 +8,7 @@ import br.gov.pr.idr.application.property_management.city.update.UpdateCityOutpu
 import br.gov.pr.idr.application.property_management.city.update.UpdateCityUseCase;
 import br.gov.pr.idr.domain.property_management.city.query.ListCityQueryResult;
 import br.gov.pr.idr.domain.property_management.city.vo.State;
-import br.gov.pr.idr.domain.shared.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

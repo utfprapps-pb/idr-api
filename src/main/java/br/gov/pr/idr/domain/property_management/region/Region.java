@@ -1,8 +1,8 @@
 package br.gov.pr.idr.domain.property_management.region;
 
-import br.gov.pr.idr.domain.shared.AggregateRoot;
-import br.gov.pr.idr.domain.shared.validation.DomainError;
-import br.gov.pr.idr.domain.shared.validation.ValidationHandler;
+import br.gov.pr.idr.domain.shared.tactical.AggregateRoot;
+import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
+import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
 public class Region extends AggregateRoot<RegionID> {
 
@@ -11,11 +11,12 @@ public class Region extends AggregateRoot<RegionID> {
     protected Region(final RegionID id, final String description) {
         super(id);
         this.description = description;
-        selfValidate();
     }
 
     public static Region create(final String description) {
-        return new Region(RegionID.unique(), description);
+        final var region = new Region(RegionID.unique(), description);
+        region.selfValidate();
+        return region;
     }
 
     public static Region with(final RegionID id, final String description) {

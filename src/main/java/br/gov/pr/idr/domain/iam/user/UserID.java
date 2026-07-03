@@ -1,6 +1,6 @@
 package br.gov.pr.idr.domain.iam.user;
 
-import br.gov.pr.idr.domain.shared.Identifier;
+import br.gov.pr.idr.domain.shared.tactical.Identifier;
 
 import java.util.UUID;
 

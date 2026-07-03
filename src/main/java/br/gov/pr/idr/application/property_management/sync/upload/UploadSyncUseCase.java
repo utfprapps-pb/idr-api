@@ -1,7 +1,7 @@
 package br.gov.pr.idr.application.property_management.sync.upload;
 
-import br.gov.pr.idr.application.shared.CommandUseCase;
-import br.gov.pr.idr.application.shared.UseCase;
+import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
+import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
 import br.gov.pr.idr.domain.property_management.city.CityID;
@@ -14,8 +14,8 @@ import br.gov.pr.idr.domain.property_management.property.vo.Coord;
 import br.gov.pr.idr.domain.property_management.sync.OfflineEntityType;
 import br.gov.pr.idr.domain.property_management.sync.SyncEntityResult;
 import br.gov.pr.idr.domain.property_management.sync.SyncEntityStatus;
-import br.gov.pr.idr.domain.shared.exceptions.DomainException;
-import br.gov.pr.idr.domain.shared.exceptions.UnprocessableEntityException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.UnprocessableEntityException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

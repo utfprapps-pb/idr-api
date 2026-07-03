@@ -4,9 +4,9 @@ import br.gov.pr.idr.application.property_management.producer.retrieve.search.Se
 
 import java.util.UUID;
 
-public record SearchProducerResponse(UUID id, String name) {
+public record SearchProducerResponse(UUID id, String name, String cpf) {
 
     public static SearchProducerResponse from(final SearchProducerOutput output) {
-        return new SearchProducerResponse(output.id(), output.name());
+        return new SearchProducerResponse(output.id(), output.name(), output.cpf());
     }
 }

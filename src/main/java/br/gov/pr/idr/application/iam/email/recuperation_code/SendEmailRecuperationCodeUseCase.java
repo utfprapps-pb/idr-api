@@ -1,7 +1,7 @@
 package br.gov.pr.idr.application.iam.email.recuperation_code;
 
-import br.gov.pr.idr.application.shared.CommandUseCase;
-import br.gov.pr.idr.application.shared.VoidUseCase;
+import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
+import br.gov.pr.idr.application.shared.stereotype.VoidUseCase;
 import br.gov.pr.idr.domain.iam.email.Email;
 import br.gov.pr.idr.domain.iam.email.send.SendEmailGateway;
 import br.gov.pr.idr.domain.iam.email.EmailGateway;

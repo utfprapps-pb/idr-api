@@ -4,9 +4,9 @@ import br.gov.pr.idr.domain.iam.permission.Permission;
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
 import br.gov.pr.idr.domain.iam.user.vo.Password;
 import br.gov.pr.idr.domain.property_management.city.CityID;
-import br.gov.pr.idr.domain.shared.AggregateRoot;
-import br.gov.pr.idr.domain.shared.validation.DomainError;
-import br.gov.pr.idr.domain.shared.validation.ValidationHandler;
+import br.gov.pr.idr.domain.shared.tactical.AggregateRoot;
+import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
+import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
 import java.time.Instant;
 import java.util.Set;
@@ -61,7 +61,6 @@ public class User extends AggregateRoot<UserID> {
         this.updatedAt = updatedAt;
         this.active = active;
         this.permissions = permissions;
-        super.selfValidate();
     }
 
     public static User create(final String name,
@@ -77,9 +76,10 @@ public class User extends AggregateRoot<UserID> {
                               final String graduationYear,
                               final Set<Permission> permissions
     ) {
-        return new User(UserID.unique(), name, username, password, cpf, phone, city, cep, street, houseNumber,
+        final var user = new User(UserID.unique(), name, username, password, cpf, phone, city, cep, street, houseNumber,
                 professionalRegister, graduationYear, Instant.now(), Instant.now(), false, permissions);
-
+        user.selfValidate();
+        return user;
     }
 
     public static User with(final UserID id,

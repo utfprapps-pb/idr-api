@@ -1,7 +1,7 @@
 package br.gov.pr.idr.domain.property_management.property.vo;
 
-import br.gov.pr.idr.domain.shared.ValueObject;
-import br.gov.pr.idr.domain.shared.exceptions.DomainException;
+import br.gov.pr.idr.domain.shared.tactical.ValueObject;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
 
 import java.math.BigDecimal;
 

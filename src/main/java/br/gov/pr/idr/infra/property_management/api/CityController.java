@@ -7,8 +7,8 @@ import br.gov.pr.idr.application.property_management.city.retrieve.list.ListCity
 import br.gov.pr.idr.application.property_management.city.update.UpdateCityCommand;
 import br.gov.pr.idr.application.property_management.city.update.UpdateCityUseCase;
 import br.gov.pr.idr.domain.property_management.city.query.ListCityQueryResult;
-import br.gov.pr.idr.domain.shared.search.Pagination;
-import br.gov.pr.idr.domain.shared.search.SearchQuery;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.property_management.city.models.CreateCityRequest;
 import br.gov.pr.idr.infra.property_management.city.models.CreateCityResponse;
 import br.gov.pr.idr.infra.property_management.city.models.update.UpdateCityRequest;

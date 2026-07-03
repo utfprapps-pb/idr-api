@@ -1,6 +1,6 @@
 package br.gov.pr.idr.domain.property_management.property.collaborator;
 
-import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

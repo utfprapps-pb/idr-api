@@ -4,6 +4,7 @@ import br.gov.pr.idr.domain.property_management.city.City;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.domain.property_management.city.vo.State;
 import br.gov.pr.idr.domain.property_management.region.RegionID;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.property_management.city.persistence.CityJPAEntity;
 import br.gov.pr.idr.infra.property_management.city.persistence.CityJPARepository;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +42,18 @@ class CityPostgresGatewayTest {
         when(entityMock.toAggregate()).thenReturn(validCity());
 
         final var result = gateway.save(validCity());
+
+        assertNotNull(result);
+        verify(repository).save(any());
+    }
+
+    @Test
+    @DisplayName("deve atualizar cidade e retornar agregado")
+    void shouldUpdateCity() {
+        when(repository.save(any())).thenReturn(entityMock);
+        when(entityMock.toAggregate()).thenReturn(validCity());
+
+        final var result = gateway.update(validCity());
 
         assertNotNull(result);
         verify(repository).save(any());
@@ -107,9 +120,34 @@ class CityPostgresGatewayTest {
         final var page = new PageImpl<>(List.of(queryResult));
         when(repository.search(any(), any(Pageable.class))).thenReturn(page);
 
-        final var query = br.gov.pr.idr.domain.shared.search.SearchQuery.from(0, 10, "", "name", "asc");
+        final var query = SearchQuery.from(0, 10, "", "name", "asc");
         final var result = gateway.search(query);
 
         assertEquals(1, result.total());
+    }
+
+    @Test
+    @DisplayName("deve tratar terms nulo como string vazia na busca")
+    void shouldTreatNullTermsAsEmptyOnSearch() {
+        final var page = new PageImpl<br.gov.pr.idr.domain.property_management.city.query.ListCityQueryResult>(List.of());
+        when(repository.search(eq(""), any(Pageable.class))).thenReturn(page);
+
+        final var query = SearchQuery.from(0, 10, null, "name", "asc");
+        final var result = gateway.search(query);
+
+        assertEquals(0, result.total());
+        verify(repository).search(eq(""), any(Pageable.class));
+    }
+
+    @Test
+    @DisplayName("deve remover espaços em branco dos terms na busca")
+    void shouldTrimTermsOnSearch() {
+        final var page = new PageImpl<br.gov.pr.idr.domain.property_management.city.query.ListCityQueryResult>(List.of());
+        when(repository.search(eq("Curitiba"), any(Pageable.class))).thenReturn(page);
+
+        final var query = SearchQuery.from(0, 10, "  Curitiba  ", "name", "asc");
+        gateway.search(query);
+
+        verify(repository).search(eq("Curitiba"), any(Pageable.class));
     }
 }

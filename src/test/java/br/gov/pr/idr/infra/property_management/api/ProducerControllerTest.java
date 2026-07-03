@@ -8,7 +8,7 @@ import br.gov.pr.idr.application.property_management.producer.retrieve.search.Se
 import br.gov.pr.idr.application.property_management.producer.retrieve.search.SearchProducerUseCase;
 import br.gov.pr.idr.application.property_management.producer.update.UpdateProducerOutput;
 import br.gov.pr.idr.application.property_management.producer.update.UpdateProducerUseCase;
-import br.gov.pr.idr.domain.shared.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -87,7 +87,7 @@ class ProducerControllerTest {
     @Test
     @DisplayName("GET /v1/producers/search deve retornar paginação de produtores")
     void shouldSearchProducers() throws Exception {
-        final var output = new SearchProducerOutput(UUID.randomUUID(), "João");
+        final var output = new SearchProducerOutput(UUID.randomUUID(), "João", "529.982.247-25");
         final var pagination = new Pagination<>(0, 10, 1L, List.of(output));
         when(searchProducerUseCase.execute(any())).thenReturn(pagination);
 

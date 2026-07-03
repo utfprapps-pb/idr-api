@@ -1,7 +1,7 @@
 package br.gov.pr.idr.domain.iam.permission;
 
 import br.gov.pr.idr.domain.iam.user.UserRole;
-import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

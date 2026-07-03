@@ -1,6 +1,6 @@
 package br.gov.pr.idr.infra.shared.events;
 
-import br.gov.pr.idr.domain.shared.events.DomainEventPublisher;
+import br.gov.pr.idr.domain.shared.tactical.events.DomainEventPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;

@@ -4,7 +4,7 @@ import br.gov.pr.idr.application.property_management.producer.create.CreateProdu
 import br.gov.pr.idr.application.property_management.producer.create.CreateProducerUseCase;
 import br.gov.pr.idr.domain.property_management.producer.Producer;
 import br.gov.pr.idr.domain.property_management.producer.ProducerGateway;
-import br.gov.pr.idr.domain.shared.exceptions.DomainException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

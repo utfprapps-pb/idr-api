@@ -18,10 +18,14 @@ public record UpdatePropertyCommand(
         UUID producerId,
         UUID cityId,
         List<UUID> technicianIds,
-        List<CollaboratorData> collaborators
+        List<CollaboratorData> collaborators,
+        List<AttachmentData> attachments,
+        List<UUID> removeAttachmentIds
 ) {
 
     public record CollaboratorData(String name, String hoursPerDay) {}
+
+    public record AttachmentData(String fileName, String contentType, byte[] content) {}
 
     public static UpdatePropertyCommand from(
             UUID id,
@@ -37,11 +41,15 @@ public record UpdatePropertyCommand(
             UUID producerId,
             UUID cityId,
             List<UUID> technicianIds,
-            List<CollaboratorData> collaborators
+            List<CollaboratorData> collaborators,
+            List<AttachmentData> attachments,
+            List<UUID> removeAttachmentIds
     ) {
         return new UpdatePropertyCommand(id, name, latitude, longitude, nakedAveragePrice, leaseAveragePrice,
                 dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing, producerId, cityId,
                 technicianIds == null ? List.of() : technicianIds,
-                collaborators == null ? List.of() : collaborators);
+                collaborators == null ? List.of() : collaborators,
+                attachments == null ? List.of() : attachments,
+                removeAttachmentIds == null ? List.of() : removeAttachmentIds);
     }
 }

@@ -16,9 +16,12 @@ public record CreatePropertyCommand(String name,
                                     UUID producerId,
                                     UUID cityId,
                                     List<UUID> technicianIds,
-                                    List<CollaboratorData> collaborators) {
+                                    List<CollaboratorData> collaborators,
+                                    List<AttachmentData> attachments) {
 
     public record CollaboratorData(String name, String hoursPerDay) {}
+
+    public record AttachmentData(String fileName, String contentType, byte[] content) {}
 
     public static CreatePropertyCommand from(String name,
                                              BigDecimal latitude,
@@ -32,12 +35,14 @@ public record CreatePropertyCommand(String name,
                                              UUID producerId,
                                              UUID cityId,
                                              List<UUID> technicianIds,
-                                             List<CollaboratorData> collaborators
+                                             List<CollaboratorData> collaborators,
+                                             List<AttachmentData> attachments
     ) {
         return new CreatePropertyCommand(name, latitude, longitude, nakedAveragePrice,
                 leaseAveragePrice, dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing, producerId,
                 cityId, technicianIds == null ? List.of() : technicianIds,
-                collaborators == null ? List.of() : collaborators);
+                collaborators == null ? List.of() : collaborators,
+                attachments == null ? List.of() : attachments);
     }
 
 }

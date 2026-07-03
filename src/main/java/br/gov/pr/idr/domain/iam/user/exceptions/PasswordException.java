@@ -1,7 +1,7 @@
 package br.gov.pr.idr.domain.iam.user.exceptions;
 
-import br.gov.pr.idr.domain.shared.exceptions.DomainException;
-import br.gov.pr.idr.domain.shared.validation.DomainError;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
+import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
 
 import java.util.List;
 

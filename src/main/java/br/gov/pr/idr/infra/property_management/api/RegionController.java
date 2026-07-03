@@ -5,8 +5,8 @@ import br.gov.pr.idr.application.property_management.region.create.CreateRegionU
 import br.gov.pr.idr.application.property_management.region.delete.DeleteRegionUseCase;
 import br.gov.pr.idr.application.property_management.region.update.UpdateRegionCommand;
 import br.gov.pr.idr.application.property_management.region.update.UpdateRegionUseCase;
-import br.gov.pr.idr.domain.shared.search.Pagination;
-import br.gov.pr.idr.domain.shared.search.SearchQuery;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.property_management.region.models.create.CreateRegionRequest;
 import br.gov.pr.idr.infra.property_management.region.models.create.CreateRegionResponse;
 import br.gov.pr.idr.infra.property_management.region.models.list.ListRegionOutput;

@@ -1,7 +1,7 @@
 package br.gov.pr.idr.application.iam.user.update;
 
-import br.gov.pr.idr.application.shared.CommandUseCase;
-import br.gov.pr.idr.application.shared.VoidUseCase;
+import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
+import br.gov.pr.idr.application.shared.stereotype.VoidUseCase;
 import br.gov.pr.idr.domain.iam.permission.Permission;
 import br.gov.pr.idr.domain.iam.user.UserGateway;
 import br.gov.pr.idr.domain.iam.user.UserID;

@@ -1,5 +1,6 @@
 package br.gov.pr.idr.domain.shared.search;
 
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

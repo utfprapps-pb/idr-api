@@ -11,7 +11,7 @@ import br.gov.pr.idr.domain.iam.user.UserGateway;
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
 import br.gov.pr.idr.domain.iam.user.vo.Password;
 import br.gov.pr.idr.domain.property_management.city.CityID;
-import br.gov.pr.idr.domain.shared.events.DomainEventPublisher;
+import br.gov.pr.idr.domain.shared.tactical.events.DomainEventPublisher;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

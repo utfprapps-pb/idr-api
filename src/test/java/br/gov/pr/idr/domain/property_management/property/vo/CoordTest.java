@@ -1,6 +1,6 @@
 package br.gov.pr.idr.domain.property_management.property.vo;
 
-import br.gov.pr.idr.domain.shared.exceptions.DomainException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

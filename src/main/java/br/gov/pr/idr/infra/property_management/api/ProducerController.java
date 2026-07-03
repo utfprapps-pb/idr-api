@@ -6,8 +6,8 @@ import br.gov.pr.idr.application.property_management.producer.retrieve.get.GetPr
 import br.gov.pr.idr.application.property_management.producer.retrieve.search.SearchProducerUseCase;
 import br.gov.pr.idr.application.property_management.producer.update.UpdateProducerCommand;
 import br.gov.pr.idr.application.property_management.producer.update.UpdateProducerUseCase;
-import br.gov.pr.idr.domain.shared.search.Pagination;
-import br.gov.pr.idr.domain.shared.search.SearchQuery;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.property_management.producer.models.create.CreateProducerRequest;
 import br.gov.pr.idr.infra.property_management.producer.models.create.CreateProducerResponse;
 import br.gov.pr.idr.infra.property_management.producer.models.get.GetProducerByIdResponse;

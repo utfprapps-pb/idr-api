@@ -1,6 +1,6 @@
 package br.gov.pr.idr.domain.iam.email;
 
-import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -51,24 +51,6 @@ class EmailTest {
             assertThrows(NotificationException.class, () -> Email.create("   ", "joao"));
         }
 
-        @Test
-        @DisplayName("deve rejeitar código nulo via with()")
-        void shouldRejectNullCode() {
-            final var id = EmailID.unique();
-            final var now = Instant.now();
-            final var ex = assertThrows(NotificationException.class,
-                    () -> Email.with(id, null, "user@test.com", "joao", now, now.plus(5, ChronoUnit.MINUTES)));
-            assertTrue(ex.getErrors().stream().anyMatch(e -> e.message().contains("Código")));
-        }
-
-        @Test
-        @DisplayName("deve rejeitar código em branco via with()")
-        void shouldRejectBlankCode() {
-            final var id = EmailID.unique();
-            final var now = Instant.now();
-            assertThrows(NotificationException.class,
-                    () -> Email.with(id, "   ", "user@test.com", "joao", now, now.plus(5, ChronoUnit.MINUTES)));
-        }
     }
 
     @Nested
@@ -89,6 +71,17 @@ class EmailTest {
             assertEquals("user@test.com", email.getEmail());
             assertEquals("maria", email.getUserName());
             assertFalse(email.isExpired());
+        }
+
+        @Test
+        @DisplayName("não deve validar dados ao reconstituir, mesmo que o código seja nulo")
+        void shouldNotValidateOnReconstitution() {
+            final var id = EmailID.unique();
+            final var now = Instant.now();
+
+            final var email = Email.with(id, null, "user@test.com", "joao", now, now.plus(5, ChronoUnit.MINUTES));
+
+            assertNull(email.getCode());
         }
     }
 

@@ -1,11 +1,11 @@
 package br.gov.pr.idr.application.property_management.region.update;
 
-import br.gov.pr.idr.application.shared.CommandUseCase;
-import br.gov.pr.idr.application.shared.UseCase;
+import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
+import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.property_management.region.RegionGateway;
 import br.gov.pr.idr.domain.property_management.region.RegionID;
-import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
-import br.gov.pr.idr.domain.shared.validation.NotificationValidation;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.tactical.validation.NotificationValidation;
 
 @CommandUseCase
 public class UpdateRegionUseCase extends UseCase<UpdateRegionCommand, UpdateRegionOutput> {

@@ -3,8 +3,8 @@ package br.gov.pr.idr.infra.property_management.region;
 import br.gov.pr.idr.domain.property_management.region.Region;
 import br.gov.pr.idr.domain.property_management.region.RegionGateway;
 import br.gov.pr.idr.domain.property_management.region.RegionID;
-import br.gov.pr.idr.domain.shared.search.Pagination;
-import br.gov.pr.idr.domain.shared.search.SearchQuery;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.property_management.region.persistence.RegionJPAEntity;
 import br.gov.pr.idr.infra.property_management.region.persistence.RegionJPARepository;
 import br.gov.pr.idr.infra.property_management.region.persistence.RegionSpecification;
@@ -48,7 +48,7 @@ public class RegionPostgresGateway implements RegionGateway {
 
     @Override
     public Pagination<Region> search(SearchQuery query) {
-        final var terms = query.terms() != null ? query.terms().trim() : "";
+        final var terms = PageRequestFactory.terms(query.terms());
         final var pageRequest = PageRequestFactory.from(query, "description");
         final var page = repository.findAll(RegionSpecification.withTerms(terms), pageRequest);
         return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(),

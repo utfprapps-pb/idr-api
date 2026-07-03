@@ -1,8 +1,8 @@
 package br.gov.pr.idr.infra.shared.error;
 
-import br.gov.pr.idr.domain.shared.exceptions.DomainException;
-import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
-import br.gov.pr.idr.domain.shared.exceptions.UnprocessableEntityException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.UnprocessableEntityException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;

@@ -1,6 +1,6 @@
 package br.gov.pr.idr.domain.property_management.city;
 
-import br.gov.pr.idr.domain.shared.Identifier;
+import br.gov.pr.idr.domain.shared.tactical.Identifier;
 
 import java.util.Objects;
 import java.util.UUID;

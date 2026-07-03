@@ -2,7 +2,7 @@ package br.gov.pr.idr.application.property_management.city;
 
 import br.gov.pr.idr.application.property_management.city.delete.DeleteCityUseCase;
 import br.gov.pr.idr.domain.property_management.city.CityGateway;
-import br.gov.pr.idr.domain.shared.exceptions.NotFoundException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

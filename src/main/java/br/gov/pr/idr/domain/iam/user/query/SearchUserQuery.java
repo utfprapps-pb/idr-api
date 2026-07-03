@@ -1,6 +1,6 @@
 package br.gov.pr.idr.domain.iam.user.query;
 
-import br.gov.pr.idr.domain.shared.search.SearchQuery;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 
 public record SearchUserQuery(SearchQuery query, Boolean active) {
 

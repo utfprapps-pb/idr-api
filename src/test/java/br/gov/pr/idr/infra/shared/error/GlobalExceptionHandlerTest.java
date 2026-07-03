@@ -1,9 +1,9 @@
 package br.gov.pr.idr.infra.shared.error;
 
-import br.gov.pr.idr.domain.shared.exceptions.DomainException;
-import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
-import br.gov.pr.idr.domain.shared.validation.NotificationValidation;
-import br.gov.pr.idr.domain.shared.validation.DomainError;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.tactical.validation.NotificationValidation;
+import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

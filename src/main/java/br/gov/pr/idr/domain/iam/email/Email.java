@@ -1,8 +1,8 @@
 package br.gov.pr.idr.domain.iam.email;
 
-import br.gov.pr.idr.domain.shared.AggregateRoot;
-import br.gov.pr.idr.domain.shared.validation.DomainError;
-import br.gov.pr.idr.domain.shared.validation.ValidationHandler;
+import br.gov.pr.idr.domain.shared.tactical.AggregateRoot;
+import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
+import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -30,13 +30,12 @@ public class Email extends AggregateRoot<EmailID> {
         this.userName = userName;
         this.createdAt = createdAt;
         this.expiresAt = expiresAt;
-        super.selfValidate();
     }
 
     public static Email create(final String email, final String userName) {
         final var code = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
         final var now = Instant.now();
-        return new Email(
+        final var entity = new Email(
                 EmailID.unique(),
                 code,
                 email,
@@ -44,6 +43,8 @@ public class Email extends AggregateRoot<EmailID> {
                 now,
                 now.plus(5, ChronoUnit.MINUTES)
         );
+        entity.selfValidate();
+        return entity;
     }
 
     public static Email with(

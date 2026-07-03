@@ -2,7 +2,7 @@ package br.gov.pr.idr.domain.property_management.city;
 
 import br.gov.pr.idr.domain.property_management.city.vo.State;
 import br.gov.pr.idr.domain.property_management.region.RegionID;
-import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

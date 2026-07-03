@@ -2,6 +2,7 @@ package br.gov.pr.idr.infra.property_management.region;
 
 import br.gov.pr.idr.domain.property_management.region.Region;
 import br.gov.pr.idr.domain.property_management.region.RegionID;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.property_management.region.persistence.RegionJPAEntity;
 import br.gov.pr.idr.infra.property_management.region.persistence.RegionJPARepository;
 import org.junit.jupiter.api.DisplayName;
@@ -17,11 +18,9 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,6 +42,18 @@ class RegionPostgresGatewayTest {
         when(entityMock.toAggregate()).thenReturn(validRegion());
 
         final var result = gateway.save(validRegion());
+
+        assertNotNull(result);
+        verify(repository).save(any());
+    }
+
+    @Test
+    @DisplayName("deve atualizar região e retornar agregado")
+    void shouldUpdateRegion() {
+        when(repository.save(any())).thenReturn(entityMock);
+        when(entityMock.toAggregate()).thenReturn(validRegion());
+
+        final var result = gateway.update(validRegion());
 
         assertNotNull(result);
         verify(repository).save(any());
@@ -105,7 +116,7 @@ class RegionPostgresGatewayTest {
         when(repository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
         when(entityMock.toAggregate()).thenReturn(validRegion());
 
-        final var query = br.gov.pr.idr.domain.shared.search.SearchQuery.from(0, 10, "", "description", "asc");
+        final var query = SearchQuery.from(0, 10, "", "description", "asc");
         final var result = gateway.search(query);
 
         assertEquals(1, result.total());

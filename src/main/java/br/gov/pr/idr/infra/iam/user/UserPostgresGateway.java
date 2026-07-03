@@ -5,7 +5,7 @@ import br.gov.pr.idr.domain.iam.user.UserGateway;
 import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.domain.iam.user.query.SearchUserQuery;
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
-import br.gov.pr.idr.domain.shared.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import br.gov.pr.idr.infra.iam.user.persistence.UserJPAEntity;
 import br.gov.pr.idr.infra.iam.user.persistence.UserJPARepository;
 import br.gov.pr.idr.infra.shared.support.PageRequestFactory;

@@ -7,7 +7,7 @@ import br.gov.pr.idr.domain.property_management.city.CityGateway;
 import br.gov.pr.idr.domain.property_management.city.vo.State;
 import br.gov.pr.idr.domain.property_management.region.RegionGateway;
 import br.gov.pr.idr.domain.property_management.region.RegionID;
-import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

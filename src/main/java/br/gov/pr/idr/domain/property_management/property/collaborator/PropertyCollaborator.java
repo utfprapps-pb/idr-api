@@ -1,8 +1,8 @@
 package br.gov.pr.idr.domain.property_management.property.collaborator;
 
-import br.gov.pr.idr.domain.shared.Entity;
-import br.gov.pr.idr.domain.shared.validation.DomainError;
-import br.gov.pr.idr.domain.shared.validation.ValidationHandler;
+import br.gov.pr.idr.domain.shared.tactical.Entity;
+import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
+import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
 public class PropertyCollaborator extends Entity<PropertyCollaboratorID> {
 
@@ -16,13 +16,14 @@ public class PropertyCollaborator extends Entity<PropertyCollaboratorID> {
         super(id);
         this.name = name;
         this.hoursPerDay = hoursPerDay;
-        selfValidate();
     }
 
     public static PropertyCollaborator create(final String name,
                                               final String hoursPerDay
     ) {
-        return new PropertyCollaborator(PropertyCollaboratorID.unique(), name, hoursPerDay);
+        final var collaborator = new PropertyCollaborator(PropertyCollaboratorID.unique(), name, hoursPerDay);
+        collaborator.selfValidate();
+        return collaborator;
     }
 
     public static PropertyCollaborator with(final PropertyCollaboratorID id,

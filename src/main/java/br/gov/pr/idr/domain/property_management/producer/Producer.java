@@ -1,9 +1,9 @@
 package br.gov.pr.idr.domain.property_management.producer;
 
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
-import br.gov.pr.idr.domain.shared.AggregateRoot;
-import br.gov.pr.idr.domain.shared.validation.DomainError;
-import br.gov.pr.idr.domain.shared.validation.ValidationHandler;
+import br.gov.pr.idr.domain.shared.tactical.AggregateRoot;
+import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
+import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
 import java.time.Instant;
 
@@ -21,11 +21,12 @@ public class Producer extends AggregateRoot<ProducerID> {
         this.cpf = cpf;
         this.version = version;
         this.updatedAt = updatedAt;
-        selfValidate();
     }
 
     public static Producer create(final String name, final CPF cpf) {
-        return new Producer(ProducerID.unique(), name, cpf, null, null);
+        final var producer = new Producer(ProducerID.unique(), name, cpf, null, null);
+        producer.selfValidate();
+        return producer;
     }
 
     public static Producer with(final ProducerID id, final String name, final CPF cpf) {

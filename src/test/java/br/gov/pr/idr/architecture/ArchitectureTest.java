@@ -1,10 +1,7 @@
 package br.gov.pr.idr.architecture;
 
-import br.gov.pr.idr.application.shared.CommandUseCase;
-import br.gov.pr.idr.application.shared.QueryUseCase;
-import br.gov.pr.idr.application.shared.UseCase;
-import br.gov.pr.idr.application.shared.VoidUseCase;
-import br.gov.pr.idr.domain.shared.ValueObject;
+import br.gov.pr.idr.application.shared.stereotype.*;
+import br.gov.pr.idr.domain.shared.tactical.ValueObject;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaModifier;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
@@ -311,7 +308,8 @@ class ArchitectureTest {
                     .and().doNotHaveModifier(JavaModifier.ABSTRACT)
                     .should().beAssignableTo(UseCase.class)
                     .orShould().beAssignableTo(VoidUseCase.class)
-                    .because("Use cases devem herdar de UseCase<I,O> ou VoidUseCase<I> para padronizar a assinatura")
+                    .orShould().beAssignableTo(SupplierUseCase.class)
+                    .because("Use cases devem herdar de UseCase<I,O>, VoidUseCase<I> ou SupplierUseCase<O>")
                     .allowEmptyShould(true)
                     .check(classes);
         }

@@ -1,6 +1,6 @@
 package br.gov.pr.idr.domain.iam.refresh_token;
 
-import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -85,48 +85,15 @@ class RefreshTokenTest {
         }
 
         @Test
-        @DisplayName("deve rejeitar token nulo via with()")
-        void shouldRejectNullToken() {
+        @DisplayName("não deve validar dados ao reconstituir, mesmo que o token seja nulo")
+        void shouldNotValidateOnReconstitution() {
             final var id = RefreshTokenID.unique();
             final var now = Instant.now();
             final var expires = now.plus(7, ChronoUnit.DAYS);
-            final var ex = assertThrows(NotificationException.class,
-                    () -> RefreshToken.with(id, null, USER_ID, USERNAME, expires, now, false));
-            assertTrue(ex.getErrors().stream().anyMatch(e -> e.message().contains("Token")));
-        }
 
-        @Test
-        @DisplayName("deve rejeitar token em branco via with()")
-        void shouldRejectBlankToken() {
-            final var id = RefreshTokenID.unique();
-            final var now = Instant.now();
-            final var expires = now.plus(7, ChronoUnit.DAYS);
-            final var ex = assertThrows(NotificationException.class,
-                    () -> RefreshToken.with(id, "   ", USER_ID, USERNAME, expires, now, false));
-            assertTrue(ex.getErrors().stream().anyMatch(e -> e.message().contains("Token")));
-        }
+            final var token = RefreshToken.with(id, null, USER_ID, USERNAME, expires, now, false);
 
-        @Test
-        @DisplayName("deve rejeitar username em branco via with()")
-        void shouldRejectBlankUsername() {
-            final var id = RefreshTokenID.unique();
-            final var now = Instant.now();
-            final var expires = now.plus(7, ChronoUnit.DAYS);
-            final var tokenStr = UUID.randomUUID().toString();
-            final var ex = assertThrows(NotificationException.class,
-                    () -> RefreshToken.with(id, tokenStr, USER_ID, "   ", expires, now, false));
-            assertTrue(ex.getErrors().stream().anyMatch(e -> e.message().contains("Username")));
-        }
-
-        @Test
-        @DisplayName("deve rejeitar expiresAt nulo via with()")
-        void shouldRejectNullExpiresAt() {
-            final var id = RefreshTokenID.unique();
-            final var now = Instant.now();
-            final var tokenStr = UUID.randomUUID().toString();
-            final var ex = assertThrows(NotificationException.class,
-                    () -> RefreshToken.with(id, tokenStr, USER_ID, USERNAME, null, now, false));
-            assertTrue(ex.getErrors().stream().anyMatch(e -> e.message().contains("expiração")));
+            assertNull(token.getToken());
         }
     }
 

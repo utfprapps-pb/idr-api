@@ -1,10 +1,10 @@
 package br.gov.pr.idr.application.property_management.property.retrieve.search;
 
-import br.gov.pr.idr.application.shared.QueryUseCase;
-import br.gov.pr.idr.application.shared.UseCase;
+import br.gov.pr.idr.application.shared.stereotype.QueryUseCase;
+import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.property_management.property.PropertyGateway;
-import br.gov.pr.idr.domain.shared.search.Pagination;
-import br.gov.pr.idr.domain.shared.search.SearchQuery;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 
 @QueryUseCase
 public class SearchPropertyUseCase extends UseCase<SearchQuery, Pagination<SearchPropertyOutput>> {

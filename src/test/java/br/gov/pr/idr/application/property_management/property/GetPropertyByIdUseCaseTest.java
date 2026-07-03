@@ -3,7 +3,7 @@ package br.gov.pr.idr.application.property_management.property;
 import br.gov.pr.idr.application.property_management.property.retrieve.get.GetPropertyByIdUseCase;
 import br.gov.pr.idr.domain.property_management.property.PropertyGateway;
 import br.gov.pr.idr.domain.property_management.property.query.GetPropertyQueryResult;
-import br.gov.pr.idr.domain.shared.exceptions.NotFoundException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,7 +36,7 @@ class GetPropertyByIdUseCaseTest {
                 null, null,
                 UUID.randomUUID(), "Produtor",
                 UUID.randomUUID(), "Cidade",
-                null, null
+                null, null, null
         );
         when(propertyGateway.findByIdWithDetails(any())).thenReturn(Optional.of(result));
 

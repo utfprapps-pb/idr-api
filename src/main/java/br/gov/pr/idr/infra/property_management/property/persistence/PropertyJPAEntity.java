@@ -6,6 +6,7 @@ import br.gov.pr.idr.domain.property_management.producer.ProducerID;
 import br.gov.pr.idr.domain.property_management.property.Property;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.property_management.property.vo.Coord;
+import br.gov.pr.idr.infra.property_management.property.persistence.attachment.PropertyAttachmentJPAEntity;
 import br.gov.pr.idr.infra.property_management.property.persistence.collaborator.PropertyCollaboratorJPAEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -54,6 +55,10 @@ public class PropertyJPAEntity {
     @JoinColumn(name = "property_id", nullable = false)
     private List<PropertyCollaboratorJPAEntity> collaborators;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "property_id", nullable = false)
+    private List<PropertyAttachmentJPAEntity> attachments;
+
     @Version
     private Long version;
 
@@ -77,13 +82,14 @@ public class PropertyJPAEntity {
                 property.getCityId().id(),
                 property.getTechnicianIds().stream().map(UserID::id).toList(),
                 property.getCollaborators().stream().map(PropertyCollaboratorJPAEntity::fromDomain).toList(),
+                property.getAttachments().stream().map(PropertyAttachmentJPAEntity::fromDomain).toList(),
                 property.getVersion(),
                 property.getUpdatedAt()
         );
     }
 
     public Property toDomain() {
-        return Property.with(
+        final var property = Property.with(
                 PropertyID.from(this.id),
                 this.name,
                 Coord.from(this.latitude, this.longitude),
@@ -102,5 +108,9 @@ public class PropertyJPAEntity {
                 this.version,
                 this.updatedAt
         );
+        this.attachments.stream()
+                .map(PropertyAttachmentJPAEntity::toDomain)
+                .forEach(property::addAttachment);
+        return property;
     }
 }

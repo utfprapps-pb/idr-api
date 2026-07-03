@@ -12,8 +12,8 @@ import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.property_management.property.vo.Coord;
 import br.gov.pr.idr.domain.property_management.sync.OfflineEntityType;
 import br.gov.pr.idr.domain.property_management.sync.SyncEntityStatus;
-import br.gov.pr.idr.domain.shared.exceptions.DomainException;
-import br.gov.pr.idr.domain.shared.exceptions.UnprocessableEntityException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.UnprocessableEntityException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -165,6 +165,26 @@ class UploadSyncUseCaseTest {
     }
 
     @Test
+    @DisplayName("deve aceitar UUID, BigDecimal, Double e Number tipados diretamente no payload")
+    void shouldAcceptTypedUuidAndNumericValues() {
+        final var existingProducerId = UUID.randomUUID();
+        final var cityId = UUID.randomUUID();
+        final var savedProperty = stubSavedProperty(existingProducerId, cityId);
+
+        when(producerGateway.existsById(ProducerID.from(existingProducerId))).thenReturn(true);
+        when(propertyGateway.save(any())).thenReturn(savedProperty);
+
+        final var command = new UploadSyncCommand(List.of(
+                propertyEntityWithTypedValues(UUID.randomUUID(), existingProducerId, cityId)
+        ));
+
+        final var results = useCase.execute(command);
+
+        assertEquals(1, results.size());
+        assertEquals(SyncEntityStatus.CREATED, results.getFirst().status());
+    }
+
+    @Test
     @DisplayName("deve processar PRODUCER antes de PROPERTY independente da ordem no payload")
     void shouldProcessProducerBeforeProperty() {
         final var producerLocalId = UUID.randomUUID();
@@ -240,6 +260,24 @@ class UploadSyncUseCaseTest {
                         entry("name", "Fazenda Teste"),
                         entry("producerId", producerId.toString()),
                         entry("cityId", cityId.toString())));
+    }
+
+    private UploadSyncCommand.OfflineEntityCommand propertyEntityWithTypedValues(
+            final UUID localId, final UUID producerId, final UUID cityId) {
+        return new UploadSyncCommand.OfflineEntityCommand(
+                OfflineEntityType.PROPERTY, localId,
+                Map.ofEntries(
+                        entry("name", "Fazenda Teste"),
+                        entry("producerId", producerId),
+                        entry("cityId", cityId),
+                        entry("latitude", new BigDecimal("-25.43")),
+                        entry("longitude", -49),
+                        entry("nakedAveragePrice", new BigDecimal("100.50")),
+                        entry("leaseAveragePrice", 50),
+                        entry("dairyCattleFarming", 1.5d),
+                        entry("perennialPasture", 2),
+                        entry("summerPlowing", 3.0d),
+                        entry("winterPlowing", 4)));
     }
 
     private Property stubSavedProperty(final UUID producerId, final UUID cityId) {

@@ -1,15 +1,13 @@
 package br.gov.pr.idr.application.iam.user;
 
-import br.gov.pr.idr.application.iam.user.retries.search.SearchUserOutput;
 import br.gov.pr.idr.application.iam.user.retries.search.SearchUserUseCase;
 import br.gov.pr.idr.domain.iam.user.User;
 import br.gov.pr.idr.domain.iam.user.UserGateway;
 import br.gov.pr.idr.domain.iam.user.query.SearchUserQuery;
-import br.gov.pr.idr.domain.shared.search.SearchQuery;
 import br.gov.pr.idr.domain.iam.user.vo.CPF;
 import br.gov.pr.idr.domain.iam.user.vo.Password;
 import br.gov.pr.idr.domain.property_management.city.CityID;
-import br.gov.pr.idr.domain.shared.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,7 +1,7 @@
 package br.gov.pr.idr.application.iam.email.validate_code;
 
-import br.gov.pr.idr.application.shared.CommandUseCase;
-import br.gov.pr.idr.application.shared.VoidUseCase;
+import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
+import br.gov.pr.idr.application.shared.stereotype.VoidUseCase;
 import br.gov.pr.idr.domain.iam.email.EmailException;
 import br.gov.pr.idr.domain.iam.email.EmailGateway;
 

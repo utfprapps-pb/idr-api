@@ -6,7 +6,7 @@ import br.gov.pr.idr.application.iam.refresh_token.rotate.RotateRefreshTokenUseC
 import br.gov.pr.idr.domain.iam.refresh_token.RefreshToken;
 import br.gov.pr.idr.domain.iam.refresh_token.RefreshTokenGateway;
 import br.gov.pr.idr.domain.iam.refresh_token.RefreshTokenID;
-import br.gov.pr.idr.domain.shared.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

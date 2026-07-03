@@ -1,7 +1,7 @@
 package br.gov.pr.idr.domain.property_management.region;
 
-import br.gov.pr.idr.domain.shared.search.Pagination;
-import br.gov.pr.idr.domain.shared.search.SearchQuery;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 
 import java.util.Optional;
 

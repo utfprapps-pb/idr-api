@@ -3,13 +3,15 @@ package br.gov.pr.idr.infra.property_management.api;
 import br.gov.pr.idr.application.property_management.property.create.CreatePropertyOutput;
 import br.gov.pr.idr.application.property_management.property.create.CreatePropertyUseCase;
 import br.gov.pr.idr.application.property_management.property.delete.DeletePropertyUseCase;
+import br.gov.pr.idr.application.property_management.property.retrieve.attachment.GetPropertyAttachmentOutput;
+import br.gov.pr.idr.application.property_management.property.retrieve.attachment.GetPropertyAttachmentUseCase;
 import br.gov.pr.idr.application.property_management.property.retrieve.get.GetPropertyByIdUseCase;
 import br.gov.pr.idr.application.property_management.property.retrieve.search.SearchPropertyOutput;
 import br.gov.pr.idr.application.property_management.property.retrieve.search.SearchPropertyUseCase;
 import br.gov.pr.idr.application.property_management.property.update.UpdatePropertyOutput;
 import br.gov.pr.idr.application.property_management.property.update.UpdatePropertyUseCase;
 import br.gov.pr.idr.domain.property_management.property.query.GetPropertyQueryResult;
-import br.gov.pr.idr.domain.shared.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +19,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -39,6 +43,7 @@ class PropertyControllerTest {
     @Mock GetPropertyByIdUseCase getPropertyByIdUseCase;
     @Mock SearchPropertyUseCase searchPropertyUseCase;
     @Mock DeletePropertyUseCase deletePropertyUseCase;
+    @Mock GetPropertyAttachmentUseCase getPropertyAttachmentUseCase;
     @InjectMocks PropertyController controller;
 
     private MockMvc mockMvc;
@@ -48,20 +53,45 @@ class PropertyControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
+    private MockMultipartFile propertyPart(final UUID producerId, final UUID cityId, final String name) {
+        return new MockMultipartFile("property", "", MediaType.APPLICATION_JSON_VALUE,
+                ("{\"name\":\"" + name + "\",\"latitude\":\"-25.4\",\"longitude\":\"-49.2\"," +
+                        "\"producerId\":\"" + producerId + "\",\"cityId\":\"" + cityId + "\"}").getBytes());
+    }
+
     @Test
     @DisplayName("POST /v1/properties deve criar propriedade e retornar 200")
     void shouldCreateProperty() throws Exception {
         final var producerId = UUID.randomUUID();
         final var cityId = UUID.randomUUID();
-        final var output = new CreatePropertyOutput(UUID.randomUUID(), "Fazenda Boa Vista");
+        final var attachment = new CreatePropertyOutput.AttachmentSummary(UUID.randomUUID(), "contrato.pdf",
+                                                                           "application/pdf", 1L);
+        final var output = new CreatePropertyOutput(UUID.randomUUID(), "Fazenda Boa Vista", List.of(attachment));
         when(createPropertyUseCase.execute(any())).thenReturn(output);
 
-        mockMvc.perform(post("/v1/properties")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Fazenda Boa Vista\",\"latitude\":\"-25.4\",\"longitude\":\"-49.2\"," +
-                                "\"producerId\":\"" + producerId + "\",\"cityId\":\"" + cityId + "\"}"))
+        mockMvc.perform(multipart("/v1/properties")
+                        .file(propertyPart(producerId, cityId, "Fazenda Boa Vista")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Fazenda Boa Vista"));
+    }
+
+    @Test
+    @DisplayName("POST /v1/properties com anexos deve repassar os arquivos para o use case")
+    void shouldCreatePropertyWithAttachments() throws Exception {
+        final var producerId = UUID.randomUUID();
+        final var cityId = UUID.randomUUID();
+        final var output = new CreatePropertyOutput(UUID.randomUUID(), "Fazenda Boa Vista", List.of());
+        when(createPropertyUseCase.execute(any())).thenReturn(output);
+
+        final var attachment = new MockMultipartFile("attachments", "contrato.pdf",
+                MediaType.APPLICATION_PDF_VALUE, "conteudo".getBytes());
+
+        mockMvc.perform(multipart("/v1/properties")
+                        .file(propertyPart(producerId, cityId, "Fazenda Boa Vista"))
+                        .file(attachment))
+                .andExpect(status().isOk());
+
+        verify(createPropertyUseCase).execute(any());
     }
 
     @Test
@@ -70,13 +100,11 @@ class PropertyControllerTest {
         final var id = UUID.randomUUID();
         final var producerId = UUID.randomUUID();
         final var cityId = UUID.randomUUID();
-        final var output = new UpdatePropertyOutput(id, "Fazenda Atualizada");
+        final var output = new UpdatePropertyOutput(id, "Fazenda Atualizada", List.of());
         when(updatePropertyUseCase.execute(any())).thenReturn(output);
 
-        mockMvc.perform(put("/v1/properties/" + id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Fazenda Atualizada\",\"latitude\":\"-25.4\",\"longitude\":\"-49.2\"," +
-                                "\"producerId\":\"" + producerId + "\",\"cityId\":\"" + cityId + "\"}"))
+        mockMvc.perform(multipart(HttpMethod.PUT, "/v1/properties/{id}", id)
+                        .file(propertyPart(producerId, cityId, "Fazenda Atualizada")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Fazenda Atualizada"));
     }
@@ -89,12 +117,26 @@ class PropertyControllerTest {
         final var city = new GetPropertyQueryResult.City(UUID.randomUUID(), "Curitiba");
         final var result = new GetPropertyQueryResult(id, "Fazenda", BigDecimal.TEN, BigDecimal.ONE,
                 0.0, 0.0, 0.0, 0.0, BigDecimal.valueOf(-25.4), BigDecimal.valueOf(-49.2),
-                null, null, producer, city, List.of(), List.of());
+                null, null, producer, city, List.of(), List.of(), List.of());
         when(getPropertyByIdUseCase.execute(any())).thenReturn(result);
 
         mockMvc.perform(get("/v1/properties/" + id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Fazenda"));
+    }
+
+    @Test
+    @DisplayName("GET /v1/properties/{id}/attachments/{attachmentId} deve retornar o binário do anexo")
+    void shouldDownloadAttachment() throws Exception {
+        final var id = UUID.randomUUID();
+        final var attachmentId = UUID.randomUUID();
+        final var output = new GetPropertyAttachmentOutput("contrato.pdf", "application/pdf", "conteudo".getBytes());
+        when(getPropertyAttachmentUseCase.execute(any())).thenReturn(output);
+
+        mockMvc.perform(get("/v1/properties/" + id + "/attachments/" + attachmentId))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Type", "application/pdf"))
+                .andExpect(header().string("Content-Disposition", "attachment; filename=\"contrato.pdf\""));
     }
 
     @Test

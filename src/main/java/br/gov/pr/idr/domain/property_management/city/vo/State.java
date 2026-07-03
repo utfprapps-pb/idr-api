@@ -1,6 +1,6 @@
 package br.gov.pr.idr.domain.property_management.city.vo;
 
-import br.gov.pr.idr.domain.shared.ValueObject;
+import br.gov.pr.idr.domain.shared.tactical.ValueObject;
 
 @ValueObject
 public enum State {

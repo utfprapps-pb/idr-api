@@ -9,7 +9,7 @@ import br.gov.pr.idr.application.iam.user.update.ToggleUserActiveUseCase;
 import br.gov.pr.idr.application.iam.user.update.UpdateUserPermissionsCommand;
 import br.gov.pr.idr.application.iam.user.update.UpdateUserPermissionsUseCase;
 import br.gov.pr.idr.domain.iam.user.query.SearchUserQuery;
-import br.gov.pr.idr.domain.shared.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import br.gov.pr.idr.infra.iam.user.models.create.CreateUserRequest;
 import br.gov.pr.idr.infra.iam.user.models.create.CreateUserResponse;
 import br.gov.pr.idr.infra.iam.user.models.retries.GetUserByIdResponse;

@@ -1,8 +1,8 @@
 package br.gov.pr.idr.domain.iam.refresh_token;
 
-import br.gov.pr.idr.domain.shared.Entity;
-import br.gov.pr.idr.domain.shared.validation.DomainError;
-import br.gov.pr.idr.domain.shared.validation.ValidationHandler;
+import br.gov.pr.idr.domain.shared.tactical.Entity;
+import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
+import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -32,11 +32,10 @@ public class RefreshToken extends Entity<RefreshTokenID> {
         this.expiresAt = expiresAt;
         this.createdAt = createdAt;
         this.revoked = revoked;
-        super.selfValidate();
     }
 
     public static RefreshToken create(final UUID userId, final String username, final long expirationDays) {
-        return new RefreshToken(
+        final var entity = new RefreshToken(
                 RefreshTokenID.unique(),
                 UUID.randomUUID().toString(),
                 userId,
@@ -45,6 +44,8 @@ public class RefreshToken extends Entity<RefreshTokenID> {
                 Instant.now(),
                 false
         );
+        entity.selfValidate();
+        return entity;
     }
 
     public static RefreshToken with(
