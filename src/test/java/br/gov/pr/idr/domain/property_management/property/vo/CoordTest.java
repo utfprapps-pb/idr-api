@@ -58,5 +58,33 @@ class CoordTest {
         void shouldRejectBothNull() {
             assertThrows(DomainException.class, () -> Coord.from(null, null));
         }
+
+        @Test
+        @DisplayName("deve rejeitar latitude menor que -90")
+        void shouldRejectLatitudeBelowMinimum() {
+            assertThrows(DomainException.class,
+                    () -> Coord.from(new BigDecimal("-90.1"), BigDecimal.ZERO));
+        }
+
+        @Test
+        @DisplayName("deve rejeitar latitude maior que 90")
+        void shouldRejectLatitudeAboveMaximum() {
+            assertThrows(DomainException.class,
+                    () -> Coord.from(new BigDecimal("90.1"), BigDecimal.ZERO));
+        }
+
+        @Test
+        @DisplayName("deve rejeitar longitude menor que -180")
+        void shouldRejectLongitudeBelowMinimum() {
+            assertThrows(DomainException.class,
+                    () -> Coord.from(BigDecimal.ZERO, new BigDecimal("-180.1")));
+        }
+
+        @Test
+        @DisplayName("deve rejeitar longitude maior que 180")
+        void shouldRejectLongitudeAboveMaximum() {
+            assertThrows(DomainException.class,
+                    () -> Coord.from(BigDecimal.ZERO, new BigDecimal("180.1")));
+        }
     }
 }

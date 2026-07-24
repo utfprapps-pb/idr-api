@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import br.gov.pr.idr.application.property_management.property.update.UpdatePropertyCommand.AttachmentData;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -61,7 +62,8 @@ class UpdatePropertyUseCaseTest {
                 BigDecimal.ZERO, BigDecimal.ZERO, 0.0, 0.0, 0.0, 0.0,
                 br.gov.pr.idr.domain.property_management.producer.ProducerID.from(producerId),
                 br.gov.pr.idr.domain.property_management.city.CityID.from(cityId),
-                List.of(), List.of()
+                List.of(), List.of(),
+                0L, Instant.now()
         );
     }
 
@@ -143,6 +145,32 @@ class UpdatePropertyUseCaseTest {
         assertEquals(techId, cmd.technicianIds().getFirst());
         assertEquals(1, cmd.collaborators().size());
         assertEquals("Ana", cmd.collaborators().getFirst().name());
+    }
+
+    @Test
+    @DisplayName("deve converter collaborators do comando em PropertyCollaborator na propriedade atualizada")
+    void shouldMapCommandCollaboratorsToPropertyCollaborators() {
+        final var property = stubProperty();
+        when(propertyGateway.findById(any())).thenReturn(Optional.of(property));
+        when(cityGateway.existsById(any())).thenReturn(true);
+        when(producerGateway.existsById(any())).thenReturn(true);
+        when(propertyGateway.update(any())).thenReturn(property);
+
+        final var collaboratorData = new UpdatePropertyCommand.CollaboratorData("Ana", "8h");
+        final var cmd = UpdatePropertyCommand.from(
+                propertyId, "Fazenda Atualizada",
+                new BigDecimal("-25.43"), new BigDecimal("-49.27"),
+                BigDecimal.ZERO, BigDecimal.ZERO,
+                0.0, 0.0, 0.0, 0.0,
+                producerId, cityId, null, List.of(collaboratorData), null, null
+        );
+
+        useCase.execute(cmd);
+
+        assertEquals(1, property.getCollaborators().size());
+        final var collaborator = property.getCollaborators().getFirst();
+        assertEquals("Ana", collaborator.getName());
+        assertEquals("8h", collaborator.getHoursPerDay());
     }
 
     @Test

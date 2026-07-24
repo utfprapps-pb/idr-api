@@ -2,6 +2,7 @@ package br.gov.pr.idr.infra.property_management.region.persistence;
 
 import br.gov.pr.idr.domain.property_management.region.Region;
 import br.gov.pr.idr.domain.property_management.region.RegionID;
+import br.gov.pr.idr.infra.shared.persistence.SyncableJPAEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -10,15 +11,17 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "region")
+@SQLRestriction("deleted_at is null")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class RegionJPAEntity {
+public class RegionJPAEntity extends SyncableJPAEntity {
 
     @Id
     @Column(nullable = false, updatable = false)

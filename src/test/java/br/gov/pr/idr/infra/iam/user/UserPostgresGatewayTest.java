@@ -26,6 +26,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -145,6 +146,20 @@ class UserPostgresGatewayTest {
         final var result = gateway.search(query);
 
         assertEquals(1, result.total());
+    }
+
+    @Test
+    @DisplayName("deve retornar paginação de usuários na busca com termos nulos")
+    void shouldReturnPaginationOnSearchWithNullTerms() {
+        final var page = new PageImpl<>(List.of(entityMock));
+        when(repository.search(eq(""), any(), any(Pageable.class))).thenReturn(page);
+        when(entityMock.toDomain()).thenReturn(validUser());
+
+        final var query = SearchUserQuery.from(0, 10, null, "name", "asc", null);
+        final var result = gateway.search(query);
+
+        assertEquals(1, result.total());
+        verify(repository).search(eq(""), any(), any(Pageable.class));
     }
 
     @Test

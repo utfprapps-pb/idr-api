@@ -1,6 +1,7 @@
 package br.gov.pr.idr.domain.iam.email;
 
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.tactical.validation.NotificationValidation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -70,6 +71,8 @@ class EmailTest {
             assertEquals("ABCD1234", email.getCode());
             assertEquals("user@test.com", email.getEmail());
             assertEquals("maria", email.getUserName());
+            assertEquals(now, email.getCreatedAt());
+            assertEquals(expires, email.getExpiresAt());
             assertFalse(email.isExpired());
         }
 
@@ -82,6 +85,39 @@ class EmailTest {
             final var email = Email.with(id, null, "user@test.com", "joao", now, now.plus(5, ChronoUnit.MINUTES));
 
             assertNull(email.getCode());
+        }
+    }
+
+    @Nested
+    @DisplayName("Validação direta via validate()")
+    class Validate {
+
+        @Test
+        @DisplayName("deve acumular erro quando código é nulo")
+        void shouldAppendErrorWhenCodeIsNull() {
+            final var email = Email.with(
+                    EmailID.unique(), null, "user@test.com", "joao",
+                    Instant.now(), Instant.now().plus(5, ChronoUnit.MINUTES));
+            final var handler = NotificationValidation.create();
+
+            email.validate(handler);
+
+            assertTrue(handler.hasError());
+            assertTrue(handler.getErrors().stream().anyMatch(e -> e.message().contains("Código")));
+        }
+
+        @Test
+        @DisplayName("deve acumular erro quando código está em branco")
+        void shouldAppendErrorWhenCodeIsBlank() {
+            final var email = Email.with(
+                    EmailID.unique(), "   ", "user@test.com", "joao",
+                    Instant.now(), Instant.now().plus(5, ChronoUnit.MINUTES));
+            final var handler = NotificationValidation.create();
+
+            email.validate(handler);
+
+            assertTrue(handler.hasError());
+            assertTrue(handler.getErrors().stream().anyMatch(e -> e.message().contains("Código")));
         }
     }
 

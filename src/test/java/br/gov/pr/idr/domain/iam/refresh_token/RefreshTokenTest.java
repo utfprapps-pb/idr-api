@@ -1,6 +1,7 @@
 package br.gov.pr.idr.domain.iam.refresh_token;
 
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.tactical.validation.NotificationValidation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -94,6 +95,75 @@ class RefreshTokenTest {
             final var token = RefreshToken.with(id, null, USER_ID, USERNAME, expires, now, false);
 
             assertNull(token.getToken());
+        }
+    }
+
+    @Nested
+    @DisplayName("Validação")
+    class Validation {
+
+        @Test
+        @DisplayName("deve reportar erro de validação quando o token é nulo")
+        void shouldReportErrorWhenTokenIsNull() {
+            final var token = RefreshToken.with(RefreshTokenID.unique(), null, USER_ID, USERNAME,
+                    Instant.now().plus(7, ChronoUnit.DAYS), Instant.now(), false);
+            final var handler = NotificationValidation.create();
+
+            token.validate(handler);
+
+            assertTrue(handler.hasError());
+            assertTrue(handler.getErrors().stream().anyMatch(e -> e.message().contains("Token")));
+        }
+
+        @Test
+        @DisplayName("deve reportar erro de validação quando o token é vazio")
+        void shouldReportErrorWhenTokenIsBlank() {
+            final var token = RefreshToken.with(RefreshTokenID.unique(), "   ", USER_ID, USERNAME,
+                    Instant.now().plus(7, ChronoUnit.DAYS), Instant.now(), false);
+            final var handler = NotificationValidation.create();
+
+            token.validate(handler);
+
+            assertTrue(handler.hasError());
+            assertTrue(handler.getErrors().stream().anyMatch(e -> e.message().contains("Token")));
+        }
+
+        @Test
+        @DisplayName("deve reportar erro de validação quando a data de expiração é nula")
+        void shouldReportErrorWhenExpiresAtIsNull() {
+            final var token = RefreshToken.with(RefreshTokenID.unique(), UUID.randomUUID().toString(), USER_ID, USERNAME,
+                    null, Instant.now(), false);
+            final var handler = NotificationValidation.create();
+
+            token.validate(handler);
+
+            assertTrue(handler.hasError());
+            assertTrue(handler.getErrors().stream().anyMatch(e -> e.message().contains("expiração")));
+        }
+
+        @Test
+        @DisplayName("deve reportar erro de validação quando o username é vazio")
+        void shouldReportErrorWhenUsernameIsBlank() {
+            final var token = RefreshToken.with(RefreshTokenID.unique(), UUID.randomUUID().toString(), USER_ID, "   ",
+                    Instant.now().plus(7, ChronoUnit.DAYS), Instant.now(), false);
+            final var handler = NotificationValidation.create();
+
+            token.validate(handler);
+
+            assertTrue(handler.hasError());
+            assertTrue(handler.getErrors().stream().anyMatch(e -> e.message().contains("Username")));
+        }
+
+        @Test
+        @DisplayName("não deve reportar erros quando todos os dados são válidos")
+        void shouldNotReportErrorsWhenValid() {
+            final var token = RefreshToken.with(RefreshTokenID.unique(), UUID.randomUUID().toString(), USER_ID, USERNAME,
+                    Instant.now().plus(7, ChronoUnit.DAYS), Instant.now(), false);
+            final var handler = NotificationValidation.create();
+
+            token.validate(handler);
+
+            assertFalse(handler.hasError());
         }
     }
 

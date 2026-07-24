@@ -96,4 +96,51 @@ class JwtAuthorizationFilterTest {
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verifyNoInteractions(userDetailsService);
     }
+
+    @Test
+    @DisplayName("deve deixar passar sem sobrescrever autenticação quando já existe autenticação no contexto")
+    void shouldNotOverrideAuthenticationWhenAlreadyAuthenticated() throws Exception {
+        final var request = new MockHttpServletRequest();
+        request.addHeader("Authorization", "Bearer valid.token.here");
+        final var response = new MockHttpServletResponse();
+        final var chain = new MockFilterChain();
+        final var existingAuth = new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                "maria.souza", null, List.of(new SimpleGrantedAuthority("ADMIN")));
+        SecurityContextHolder.getContext().setAuthentication(existingAuth);
+
+        when(jwtService.extractUsername("valid.token.here")).thenReturn("joao.silva");
+
+        filter.doFilterInternal(request, response, chain);
+
+        final var auth = SecurityContextHolder.getContext().getAuthentication();
+        assertSame(existingAuth, auth);
+        verifyNoInteractions(userDetailsService);
+    }
+
+    @Test
+    @DisplayName("deve lançar NullPointerException quando request é nulo")
+    void shouldThrowWhenRequestIsNull() {
+        final var response = new MockHttpServletResponse();
+        final var chain = new MockFilterChain();
+
+        assertThrows(NullPointerException.class, () -> filter.doFilterInternal(null, response, chain));
+    }
+
+    @Test
+    @DisplayName("deve lançar NullPointerException quando response é nulo")
+    void shouldThrowWhenResponseIsNull() {
+        final var request = new MockHttpServletRequest();
+        final var chain = new MockFilterChain();
+
+        assertThrows(NullPointerException.class, () -> filter.doFilterInternal(request, null, chain));
+    }
+
+    @Test
+    @DisplayName("deve lançar NullPointerException quando filterChain é nulo")
+    void shouldThrowWhenFilterChainIsNull() {
+        final var request = new MockHttpServletRequest();
+        final var response = new MockHttpServletResponse();
+
+        assertThrows(NullPointerException.class, () -> filter.doFilterInternal(request, response, null));
+    }
 }

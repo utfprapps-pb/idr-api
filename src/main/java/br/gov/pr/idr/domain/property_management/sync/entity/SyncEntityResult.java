@@ -1,4 +1,6 @@
-package br.gov.pr.idr.domain.property_management.sync;
+package br.gov.pr.idr.domain.property_management.sync.entity;
+
+import br.gov.pr.idr.domain.property_management.sync.vo.SyncEntityStatus;
 
 import java.util.UUID;
 

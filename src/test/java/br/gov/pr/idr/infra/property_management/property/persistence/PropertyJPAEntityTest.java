@@ -30,7 +30,7 @@ class PropertyJPAEntityTest {
                 Coord.from(new BigDecimal("-25.43"), new BigDecimal("-49.27")),
                 BigDecimal.TEN, BigDecimal.ONE, 1.0, 2.0, 3.0, 4.0,
                 ProducerID.unique(), CityID.unique(),
-                List.of(technicianId), List.of(collaborator)
+                List.of(technicianId), List.of(collaborator), null, null
         );
         property.addAttachment(PropertyAttachment.create(propertyId, "laudo.pdf", "application/pdf", 1024L));
 

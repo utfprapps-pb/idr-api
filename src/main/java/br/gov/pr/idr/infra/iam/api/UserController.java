@@ -4,6 +4,7 @@ import br.gov.pr.idr.application.iam.user.create.CreateUserCommand;
 import br.gov.pr.idr.application.iam.user.create.CreateUserUseCase;
 import br.gov.pr.idr.application.iam.user.retries.find.FindUserByIdUseCase;
 import br.gov.pr.idr.application.iam.user.retries.find.FindUserByUsernameUseCase;
+import br.gov.pr.idr.application.iam.user.retries.permissions.GetUserPermissionsUseCase;
 import br.gov.pr.idr.application.iam.user.retries.search.SearchUserUseCase;
 import br.gov.pr.idr.application.iam.user.update.ToggleUserActiveUseCase;
 import br.gov.pr.idr.application.iam.user.update.UpdateUserPermissionsCommand;
@@ -13,6 +14,7 @@ import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import br.gov.pr.idr.infra.iam.user.models.create.CreateUserRequest;
 import br.gov.pr.idr.infra.iam.user.models.create.CreateUserResponse;
 import br.gov.pr.idr.infra.iam.user.models.retries.GetUserByIdResponse;
+import br.gov.pr.idr.infra.iam.user.models.retries.GetUserPermissionsResponse;
 import br.gov.pr.idr.infra.iam.user.models.retries.GetUserResponse;
 import br.gov.pr.idr.infra.iam.user.models.retries.SearchUserResponse;
 import br.gov.pr.idr.infra.iam.user.models.update.UpdateUserPermissionsRequest;
@@ -33,6 +35,7 @@ public class UserController {
     private final SearchUserUseCase searchUserUseCase;
     private final FindUserByUsernameUseCase findUserByUsernameUseCase;
     private final FindUserByIdUseCase findUserByIdUseCase;
+    private final GetUserPermissionsUseCase getUserPermissionsUseCase;
     private final UpdateUserPermissionsUseCase updateUserPermissionsUseCase;
     private final ToggleUserActiveUseCase toggleUserActiveUseCase;
 
@@ -85,6 +88,12 @@ public class UserController {
     public ResponseEntity<GetUserByIdResponse> findById(@PathVariable final UUID id) {
         final var output = findUserByIdUseCase.execute(id);
         return ResponseEntity.ok(GetUserByIdResponse.from(output));
+    }
+
+    @GetMapping("/{id}/permissions")
+    public ResponseEntity<GetUserPermissionsResponse> getPermissions(@PathVariable final UUID id) {
+        final var output = getUserPermissionsUseCase.execute(id);
+        return ResponseEntity.ok(GetUserPermissionsResponse.from(output));
     }
 
     @PutMapping("/{id}/permissions")

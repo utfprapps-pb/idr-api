@@ -94,10 +94,13 @@ class RegionPostgresGatewayTest {
     @DisplayName("deve deletar região por ID")
     void shouldDeleteById() {
         final var id = RegionID.unique();
+        when(repository.findById(id.id())).thenReturn(Optional.of(entityMock));
 
         gateway.deleteById(id);
 
-        verify(repository).deleteById(id.id());
+        verify(entityMock).markDeleted();
+        verify(repository).save(entityMock);
+        verify(repository, never()).deleteById(any());
     }
 
     @Test

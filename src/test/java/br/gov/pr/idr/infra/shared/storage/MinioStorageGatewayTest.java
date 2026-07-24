@@ -59,6 +59,14 @@ class MinioStorageGatewayTest {
     }
 
     @Test
+    @DisplayName("deve lançar IllegalStateException quando a verificação do bucket falha")
+    void shouldThrowWhenEnsureBucketExistsFails() throws Exception {
+        when(client.bucketExists(any(BucketExistsArgs.class))).thenThrow(new IOException("boom"));
+
+        assertThrows(IllegalStateException.class, () -> gateway.ensureBucketExists());
+    }
+
+    @Test
     @DisplayName("deve armazenar o arquivo via putObject")
     void shouldStoreFile() throws Exception {
         gateway.store("key.pdf", "application/pdf", new byte[]{1, 2, 3});
@@ -101,6 +109,17 @@ class MinioStorageGatewayTest {
     @DisplayName("deve lançar IllegalStateException para outras falhas de recuperação")
     void shouldThrowIllegalStateForOtherRetrieveFailures() throws Exception {
         when(client.getObject(any(GetObjectArgs.class))).thenThrow(new IOException("boom"));
+
+        assertThrows(IllegalStateException.class, () -> gateway.retrieve("key.pdf"));
+    }
+
+    @Test
+    @DisplayName("deve lançar IllegalStateException quando o ErrorResponseException não for NoSuchKey")
+    void shouldThrowIllegalStateForOtherErrorResponseCodes() throws Exception {
+        final var errorResponse = new ErrorResponse(
+                "InternalError", "internal error", "test-bucket", "key.pdf", null, null, null);
+        when(client.getObject(any(GetObjectArgs.class)))
+                .thenThrow(new ErrorResponseException(errorResponse, null, "test-bucket"));
 
         assertThrows(IllegalStateException.class, () -> gateway.retrieve("key.pdf"));
     }

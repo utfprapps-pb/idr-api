@@ -16,7 +16,7 @@ public interface PropertyGateway {
 
     Optional<GetPropertyQueryResult> findByIdWithDetails(final PropertyID id);
 
-    Pagination<Property> search(final SearchQuery query);
+    Pagination<Property> search(final SearchQuery query, final PropertySearchScope scope);
 
     boolean existsById(final PropertyID id);
 

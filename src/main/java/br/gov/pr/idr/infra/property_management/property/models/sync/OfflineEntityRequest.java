@@ -1,6 +1,6 @@
 package br.gov.pr.idr.infra.property_management.property.models.sync;
 
-import br.gov.pr.idr.domain.property_management.sync.OfflineEntityType;
+import br.gov.pr.idr.domain.property_management.sync.vo.OfflineEntityType;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.Map;

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public interface PropertyJPARepository extends JpaRepository<PropertyJPAEntity, UUID> {
@@ -15,6 +16,21 @@ public interface PropertyJPARepository extends JpaRepository<PropertyJPAEntity, 
     @Query("SELECT p FROM Property p WHERE " +
             "(:terms = '' OR LOWER(p.name) LIKE LOWER(CONCAT('%', :terms, '%')))")
     Page<PropertyJPAEntity> search(@Param("terms") String terms, Pageable pageable);
+
+    @Query("SELECT p FROM Property p LEFT JOIN City c ON p.cityId = c.id WHERE " +
+            "(:terms = '' OR LOWER(p.name) LIKE LOWER(CONCAT('%', :terms, '%'))) AND " +
+            "(c.regionId IN :regionIds OR p.cityId IN :cityIds)")
+    Page<PropertyJPAEntity> searchByLocation(@Param("terms") String terms,
+                                             @Param("regionIds") Set<UUID> regionIds,
+                                             @Param("cityIds") Set<UUID> cityIds,
+                                             Pageable pageable);
+
+    @Query("SELECT p FROM Property p WHERE " +
+            "(:terms = '' OR LOWER(p.name) LIKE LOWER(CONCAT('%', :terms, '%'))) AND " +
+            ":technicianId MEMBER OF p.technicianIds")
+    Page<PropertyJPAEntity> searchByTechnician(@Param("terms") String terms,
+                                               @Param("technicianId") UUID technicianId,
+                                               Pageable pageable);
 
     @Query("""
             SELECT new br.gov.pr.idr.domain.property_management.property.query.GetPropertyQueryResult(

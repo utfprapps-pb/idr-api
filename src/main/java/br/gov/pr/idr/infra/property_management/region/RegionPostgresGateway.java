@@ -57,6 +57,9 @@ public class RegionPostgresGateway implements RegionGateway {
 
     @Override
     public void deleteById(final RegionID id) {
-        repository.deleteById(id.id());
+        repository.findById(id.id()).ifPresent(entity -> {
+            entity.markDeleted();
+            repository.save(entity);
+        });
     }
 }

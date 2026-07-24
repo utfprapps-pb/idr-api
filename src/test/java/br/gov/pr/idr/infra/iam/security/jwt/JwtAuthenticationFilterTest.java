@@ -26,6 +26,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 @ExtendWith(MockitoExtension.class)
 @DisplayName("JwtAuthenticationFilter")
 class JwtAuthenticationFilterTest {
@@ -60,6 +63,17 @@ class JwtAuthenticationFilterTest {
     }
 
     @Test
+    @DisplayName("attemptAuthentication com corpo JSON inválido deve propagar exceção")
+    void shouldPropagateExceptionWhenBodyIsMalformed() {
+        final var request = new MockHttpServletRequest();
+        request.setContent("{invalid-json".getBytes());
+        final var response = new MockHttpServletResponse();
+
+        assertThrows(Exception.class, () -> filter.attemptAuthentication(request, response));
+        verifyNoInteractions(authenticationManager);
+    }
+
+    @Test
     @DisplayName("unsuccessfulAuthentication com DisabledException deve retornar 403")
     void shouldReturn403WhenDisabled() throws Exception {
         final var request = new MockHttpServletRequest();
@@ -82,6 +96,18 @@ class JwtAuthenticationFilterTest {
         filter.unsuccessfulAuthentication(request, response, ex);
 
         assertEquals(401, response.getStatus());
+    }
+
+    @Test
+    @DisplayName("unsuccessfulAuthentication com DisabledException deve propagar exceção quando resposta falha ao escrever")
+    void shouldPropagateExceptionWhenResponseWriterFailsOnDisabled() throws Exception {
+        final var request = new MockHttpServletRequest();
+        final var response = mock(HttpServletResponse.class);
+        when(response.getWriter()).thenThrow(new IOException("falha ao obter writer"));
+        final var ex = new DisabledException("conta inativa");
+
+        assertThrows(Exception.class, () -> filter.unsuccessfulAuthentication(request, response, ex));
+        verify(response).setStatus(403);
     }
 
     @Test
@@ -108,5 +134,37 @@ class JwtAuthenticationFilterTest {
         final var body = response.getContentAsString();
         assertTrue(body.contains("access-token-value"));
         assertTrue(body.contains("refresh-token-value"));
+    }
+
+    @Test
+    @DisplayName("successfulAuthentication deve lançar AssertionError quando principal autenticado é nulo")
+    void shouldThrowAssertionErrorWhenPrincipalIsNull() {
+        final var authResult = new UsernamePasswordAuthenticationToken(null, null);
+        final var request = new MockHttpServletRequest();
+        final var response = new MockHttpServletResponse();
+        final var chain = new MockFilterChain();
+
+        assertThrows(AssertionError.class,
+                () -> filter.successfulAuthentication(request, response, chain, authResult));
+        verifyNoInteractions(jwtService, issueRefreshTokenUseCase);
+    }
+
+    @Test
+    @DisplayName("successfulAuthentication deve propagar exceção quando resposta falha ao escrever tokens")
+    void shouldPropagateExceptionWhenResponseWriterFailsOnSuccess() throws Exception {
+        final var userDetails = mock(br.gov.pr.idr.infra.iam.user.persistence.UserJPAEntity.class);
+        when(userDetails.getUsername()).thenReturn("joao.silva");
+        final var authResult = new UsernamePasswordAuthenticationToken(
+                userDetails, null, List.of(new SimpleGrantedAuthority("TECNICO")));
+        when(jwtService.generateToken(userDetails)).thenReturn("access-token-value");
+        when(issueRefreshTokenUseCase.execute(any())).thenReturn(new IssueRefreshTokenOutput("refresh-token-value"));
+
+        final var request = new MockHttpServletRequest();
+        final var response = mock(HttpServletResponse.class);
+        when(response.getWriter()).thenThrow(new IOException("falha ao obter writer"));
+        final var chain = new MockFilterChain();
+
+        assertThrows(Exception.class,
+                () -> filter.successfulAuthentication(request, response, chain, authResult));
     }
 }

@@ -37,6 +37,12 @@ class CPFTest {
         void shouldAcceptOtherValidCpfs(final String value) {
             assertDoesNotThrow(() -> CPF.from(value));
         }
+
+        @Test
+        @DisplayName("deve aceitar CPF cujo segundo dígito verificador calculado é 10 (mapeado para 0)")
+        void shouldAcceptCpfWhenSecondCheckDigitMapsFrom10To0() {
+            assertDoesNotThrow(() -> CPF.from("000.000.018-30"));
+        }
     }
 
     @Nested
@@ -73,6 +79,12 @@ class CPFTest {
         @ValueSource(strings = {"123.456.789-00", "000.000.000-00", "999.999.999-99"})
         void shouldRejectInvalidCheckDigits(final String value) {
             assertThrows(CPFException.class, () -> CPF.from(value));
+        }
+
+        @Test
+        @DisplayName("deve rejeitar CPF com primeiro dígito verificador errado")
+        void shouldRejectWrongFirstCheckDigit() {
+            assertThrows(CPFException.class, () -> CPF.from("529.982.247-95"));
         }
     }
 }

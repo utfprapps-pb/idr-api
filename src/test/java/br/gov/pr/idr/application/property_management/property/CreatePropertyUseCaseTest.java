@@ -59,7 +59,7 @@ class CreatePropertyUseCaseTest {
                 BigDecimal.ZERO, BigDecimal.ZERO, 0.0, 0.0, 0.0, 0.0,
                 br.gov.pr.idr.domain.property_management.producer.ProducerID.from(producerId),
                 br.gov.pr.idr.domain.property_management.city.CityID.from(cityId),
-                List.of(), List.of());
+                List.of(), List.of(), null, null);
     }
 
     @Test

@@ -2,6 +2,7 @@ package br.gov.pr.idr.infra.shared.error;
 
 import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.UnprocessableEntityException;
 import br.gov.pr.idr.domain.shared.tactical.validation.NotificationValidation;
 import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,5 +107,31 @@ class GlobalExceptionHandlerTest {
         assertEquals("Erro de validação", response.message());
         assertEquals(1, response.errors().size());
         assertEquals("Nome é obrigatório", response.errors().getFirst().message());
+    }
+
+    @Test
+    @DisplayName("deve retornar 422 para UnprocessableEntityException")
+    void shouldHandle422ForUnprocessableEntityException() {
+        final var ex = new UnprocessableEntityException("Entidade não pôde ser processada");
+
+        final var response = handler.handleUnprocessableEntityException(ex);
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.status());
+        assertEquals("Entidade não pôde ser processada", response.message());
+        assertTrue(response.errors().isEmpty());
+    }
+
+    @Test
+    @DisplayName("deve retornar lista de erros vazia quando DomainException possui erros nulos")
+    void shouldReturnEmptyErrorsWhenDomainExceptionHasNullErrors() {
+        final var ex = mock(DomainException.class);
+        when(ex.getErrors()).thenReturn(null);
+        when(ex.getContext()).thenReturn("Contexto do erro");
+
+        final var response = handler.handleDomainExceptions(ex);
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.status());
+        assertEquals("Contexto do erro", response.message());
+        assertTrue(response.errors().isEmpty());
     }
 }

@@ -52,7 +52,10 @@ public class CityPostgresGateway implements CityGateway {
 
     @Override
     public void deleteById(final CityID id) {
-        repository.deleteById(id.id());
+        repository.findById(id.id()).ifPresent(entity -> {
+            entity.markDeleted();
+            repository.save(entity);
+        });
     }
 
     @Override

@@ -95,10 +95,13 @@ class CityPostgresGatewayTest {
     @DisplayName("deve deletar cidade por ID")
     void shouldDeleteById() {
         final var id = CityID.unique();
+        when(repository.findById(id.id())).thenReturn(Optional.of(entityMock));
 
         gateway.deleteById(id);
 
-        verify(repository).deleteById(id.id());
+        verify(entityMock).markDeleted();
+        verify(repository).save(entityMock);
+        verify(repository, never()).deleteById(any());
     }
 
     @Test

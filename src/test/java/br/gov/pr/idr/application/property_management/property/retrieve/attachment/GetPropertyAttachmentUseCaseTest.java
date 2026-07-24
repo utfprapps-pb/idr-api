@@ -37,7 +37,7 @@ class GetPropertyAttachmentUseCaseTest {
                 BigDecimal.ZERO, BigDecimal.ZERO, 0.0, 0.0, 0.0, 0.0,
                 br.gov.pr.idr.domain.property_management.producer.ProducerID.unique(),
                 br.gov.pr.idr.domain.property_management.city.CityID.unique(),
-                List.of(), List.of());
+                List.of(), List.of(), null, null);
     }
 
     @Test

@@ -49,6 +49,21 @@ class ToggleUserActiveUseCaseTest {
     }
 
     @Test
+    @DisplayName("deve alternar active de true para false e salvar")
+    void shouldToggleFromTrueToFalse() {
+        final var user = testUser().update(
+                "41966666666", CityID.unique(), "80003-000", "Rua A", "1",
+                "CREA-3", "2018", Password.from("Senha@123", "Senha@123"), true, Set.of());
+        assertTrue(user.isActive());
+        when(userGateway.findById(any())).thenReturn(Optional.of(user));
+        when(userGateway.update(any())).thenReturn(user);
+
+        useCase.execute(UUID.randomUUID());
+
+        verify(userGateway).update(argThat(u -> !u.isActive()));
+    }
+
+    @Test
     @DisplayName("deve lançar UserException quando usuário não é encontrado")
     void shouldThrowWhenUserNotFound() {
         when(userGateway.findById(any())).thenReturn(Optional.empty());

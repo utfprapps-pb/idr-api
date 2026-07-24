@@ -2,40 +2,36 @@ package br.gov.pr.idr.application.property_management.sync.upload;
 
 import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
-import br.gov.pr.idr.domain.iam.user.UserID;
-import br.gov.pr.idr.domain.iam.user.vo.CPF;
-import br.gov.pr.idr.domain.property_management.city.CityID;
-import br.gov.pr.idr.domain.property_management.producer.Producer;
-import br.gov.pr.idr.domain.property_management.producer.ProducerGateway;
-import br.gov.pr.idr.domain.property_management.producer.ProducerID;
-import br.gov.pr.idr.domain.property_management.property.Property;
-import br.gov.pr.idr.domain.property_management.property.PropertyGateway;
-import br.gov.pr.idr.domain.property_management.property.vo.Coord;
-import br.gov.pr.idr.domain.property_management.sync.OfflineEntityType;
-import br.gov.pr.idr.domain.property_management.sync.SyncEntityResult;
-import br.gov.pr.idr.domain.property_management.sync.SyncEntityStatus;
+import br.gov.pr.idr.domain.property_management.sync.context.SyncContext;
+import br.gov.pr.idr.domain.property_management.sync.entity.SyncEntityHandler;
+import br.gov.pr.idr.domain.property_management.sync.entity.SyncEntityResult;
+import br.gov.pr.idr.domain.property_management.sync.mapping.SyncIdMappingGateway;
+import br.gov.pr.idr.domain.property_management.sync.vo.OfflineEntityType;
+import br.gov.pr.idr.domain.property_management.sync.vo.SyncEntityStatus;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
-import br.gov.pr.idr.domain.shared.tactical.exceptions.UnprocessableEntityException;
 
-import java.math.BigDecimal;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Deque;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 @CommandUseCase
 public class UploadSyncUseCase extends UseCase<UploadSyncCommand, List<SyncEntityResult>> {
 
     private static final int MAX_BATCH_SIZE = 100;
 
-    private final ProducerGateway producerGateway;
-    private final PropertyGateway propertyGateway;
+    private final SyncIdMappingGateway idMappingGateway;
+    private final Map<OfflineEntityType, SyncEntityHandler> handlersByType;
+    private final List<OfflineEntityType> processingOrder;
 
-    public UploadSyncUseCase(final ProducerGateway producerGateway,
-                             final PropertyGateway propertyGateway) {
-        this.producerGateway = producerGateway;
-        this.propertyGateway = propertyGateway;
+    public UploadSyncUseCase(final List<SyncEntityHandler> handlers,
+                             final SyncIdMappingGateway idMappingGateway) {
+        this.idMappingGateway = idMappingGateway;
+        this.handlersByType = this.indexByType(handlers);
+        this.processingOrder = this.topologicalOrder(this.handlersByType);
     }
 
     @Override
@@ -44,121 +40,99 @@ public class UploadSyncUseCase extends UseCase<UploadSyncCommand, List<SyncEntit
             throw DomainException.from("Batch não pode exceder " + MAX_BATCH_SIZE + " entidades");
         }
 
-        final var producers = command.entities().stream()
-                .filter(e -> e.type() == OfflineEntityType.PRODUCER)
-                .toList();
-        final var properties = command.entities().stream()
-                .filter(e -> e.type() == OfflineEntityType.PROPERTY)
-                .toList();
+        final var context = new SyncContext(command.technicianId(), idMappingGateway);
+        final var byType = command.entities().stream()
+                .collect(Collectors.groupingBy(OfflineEntityCommand::type));
 
-        final Map<UUID, UUID> localToServerIdMap = new HashMap<>();
         final List<SyncEntityResult> results = new ArrayList<>();
 
-        for (final var entity : producers) {
-            final var result = processProducer(entity, localToServerIdMap);
-            results.add(result);
+        for (final var type : processingOrder) {
+            for (final var entity : byType.getOrDefault(type, List.of())) {
+                results.add(safeHandle(entity, context));
+            }
         }
 
-        for (final var entity : properties) {
-            final var result = processProperty(entity, localToServerIdMap);
-            results.add(result);
+        for (final var entity : command.entities()) {
+            if (!handlersByType.containsKey(entity.type())) {
+                results.add(new SyncEntityResult(entity.localId(), null, SyncEntityStatus.FAILED,
+                                                 "Tipo não suportado no sync: " + entity.type()));
+            }
         }
 
         return results;
     }
 
-    private SyncEntityResult processProducer(final UploadSyncCommand.OfflineEntityCommand entity,
-                                              final Map<UUID, UUID> localToServerIdMap) {
-        final var cpfStr = (String) entity.data().get("cpf");
-        final var cpf = CPF.from(cpfStr);
-
-        if (producerGateway.existsByCpf(cpf)) {
-            final var existing = producerGateway.findByCpf(cpf)
-                    .orElseThrow(() -> new UnprocessableEntityException("Produtor com CPF " + cpfStr + " não encontrado"));
-            localToServerIdMap.put(entity.localId(), existing.getId().id());
-            return new SyncEntityResult(entity.localId(), existing.getId().id(), SyncEntityStatus.EXISTING, null);
+    private SyncEntityResult safeHandle(final OfflineEntityCommand entity, final SyncContext context) {
+        final var handler = handlersByType.get(entity.type());
+        try {
+            return handler.handle(entity, context);
+        } catch (final RuntimeException e) {
+            return new SyncEntityResult(entity.localId(), null, SyncEntityStatus.FAILED, e.getMessage());
         }
-
-        final var name = (String) entity.data().get("name");
-        final var saved = producerGateway.save(Producer.create(name, cpf));
-        localToServerIdMap.put(entity.localId(), saved.getId().id());
-        return new SyncEntityResult(entity.localId(), saved.getId().id(), SyncEntityStatus.CREATED, null);
     }
 
-    private SyncEntityResult processProperty(final UploadSyncCommand.OfflineEntityCommand entity,
-                                              final Map<UUID, UUID> localToServerIdMap) {
-        final var producerLocalId = toUUID(entity.data().get("producerLocalId"));
-        final UUID producerServerId;
+    private Map<OfflineEntityType, SyncEntityHandler> indexByType(final List<SyncEntityHandler> handlers) {
+        final Map<OfflineEntityType, SyncEntityHandler> index = new EnumMap<>(OfflineEntityType.class);
+        for (final var handler : handlers) {
+            final var previous = index.putIfAbsent(handler.type(), handler);
+            if (previous != null) {
+                throw DomainException.from("Handler duplicado para o tipo " + handler.type() + ": "
+                        + previous.getClass().getSimpleName() + " e " + handler.getClass().getSimpleName());
+            }
+        }
+        return index;
+    }
 
-        if (producerLocalId != null && localToServerIdMap.containsKey(producerLocalId)) {
-            producerServerId = localToServerIdMap.get(producerLocalId);
-        } else {
-            final var directProducerId = toUUID(entity.data().get("producerId"));
-            if (directProducerId != null && producerGateway.existsById(ProducerID.from(directProducerId))) {
-                producerServerId = directProducerId;
-            } else {
-                throw new UnprocessableEntityException(
-                        "PROPERTY com localId=" + entity.localId() + " referencia producerLocalId inválido ou não encontrado");
+    private List<OfflineEntityType> topologicalOrder(final Map<OfflineEntityType, SyncEntityHandler> handlersByType) {
+        final Map<OfflineEntityType, Integer> inDegree = new EnumMap<>(OfflineEntityType.class);
+        final Map<OfflineEntityType, List<OfflineEntityType>> dependents = new EnumMap<>(OfflineEntityType.class);
+        for (final var type : handlersByType.keySet()) {
+            inDegree.put(type, 0);
+            dependents.put(type, new ArrayList<>());
+        }
+        this.buildDependencyGraph(handlersByType, inDegree, dependents);
+
+        final List<OfflineEntityType> order = this.kahnSort(inDegree, dependents);
+
+        if (order.size() != handlersByType.size()) {
+            throw DomainException.from("Dependência cíclica entre SyncEntityHandlers");
+        }
+        return order;
+    }
+
+    private void buildDependencyGraph(final Map<OfflineEntityType, SyncEntityHandler> handlersByType,
+                                              final Map<OfflineEntityType, Integer> inDegree,
+                                              final Map<OfflineEntityType, List<OfflineEntityType>> dependents) {
+        for (final var handler : handlersByType.values()) {
+            for (final var dependency : handler.dependencies()) {
+                if (!handlersByType.containsKey(dependency)) {
+                    continue;
+                }
+                dependents.get(dependency).add(handler.type());
+                inDegree.merge(handler.type(), 1, Integer::sum);
+            }
+        }
+    }
+
+    private List<OfflineEntityType> kahnSort(final Map<OfflineEntityType, Integer> inDegree,
+                                                     final Map<OfflineEntityType, List<OfflineEntityType>> dependents) {
+        final Deque<OfflineEntityType> ready = new ArrayDeque<>();
+        for (final var entry : inDegree.entrySet()) {
+            if (entry.getValue() == 0) {
+                ready.add(entry.getKey());
             }
         }
 
-        final var name = (String) entity.data().get("name");
-        final var cityId = CityID.from(toUUID(entity.data().get("cityId")));
-        final var latitude = toBigDecimal(entity.data().get("latitude"));
-        final var longitude = toBigDecimal(entity.data().get("longitude"));
-        final var nakedAvgPrice = toBigDecimal(entity.data().get("nakedAveragePrice"));
-        final var leaseAvgPrice = toBigDecimal(entity.data().get("leaseAveragePrice"));
-        final var dairyCattle = toDouble(entity.data().get("dairyCattleFarming"));
-        final var perennialPasture = toDouble(entity.data().get("perennialPasture"));
-        final var summerPlowing = toDouble(entity.data().get("summerPlowing"));
-        final var winterPlowing = toDouble(entity.data().get("winterPlowing"));
-
-        @SuppressWarnings("unchecked")
-        final var technicianIdsList = (List<String>) entity.data().getOrDefault("technicianIds", List.of());
-        final var technicianIds = technicianIdsList.stream()
-                .map(id -> UserID.from(UUID.fromString(id)))
-                .toList();
-
-        final var property = Property.create(
-                name,
-                Coord.from(latitude, longitude),
-                nakedAvgPrice,
-                leaseAvgPrice,
-                dairyCattle,
-                perennialPasture,
-                summerPlowing,
-                winterPlowing,
-                ProducerID.from(producerServerId),
-                cityId,
-                technicianIds,
-                List.of()
-        );
-
-        final var saved = propertyGateway.save(property);
-        return new SyncEntityResult(entity.localId(), saved.getId().id(), SyncEntityStatus.CREATED, null);
-    }
-
-    private UUID toUUID(final Object value) {
-        if (value == null) return null;
-        if (value instanceof UUID u) return u;
-        return UUID.fromString(value.toString());
-    }
-
-    private BigDecimal toBigDecimal(final Object value) {
-        return switch (value) {
-            case null -> BigDecimal.ZERO;
-            case BigDecimal bd -> bd;
-            case Number n -> BigDecimal.valueOf(n.doubleValue());
-            default -> new BigDecimal(value.toString());
-        };
-    }
-
-    private Double toDouble(final Object value) {
-        return switch (value) {
-            case null -> 0.0;
-            case Double d -> d;
-            case Number n -> n.doubleValue();
-            default -> Double.parseDouble(value.toString());
-        };
+        final List<OfflineEntityType> order = new ArrayList<>();
+        while (!ready.isEmpty()) {
+            final var type = ready.poll();
+            order.add(type);
+            for (final var dependent : dependents.get(type)) {
+                if (inDegree.merge(dependent, -1, Integer::sum) == 0) {
+                    ready.add(dependent);
+                }
+            }
+        }
+        return order;
     }
 }

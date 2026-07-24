@@ -5,8 +5,8 @@ import br.gov.pr.idr.application.iam.user.retries.find.FindUserByUsernameUseCase
 import br.gov.pr.idr.application.property_management.sync.download.DownloadSyncOutput;
 import br.gov.pr.idr.application.property_management.sync.download.DownloadSyncUseCase;
 import br.gov.pr.idr.application.property_management.sync.upload.UploadSyncUseCase;
-import br.gov.pr.idr.domain.property_management.sync.SyncEntityResult;
-import br.gov.pr.idr.domain.property_management.sync.SyncEntityStatus;
+import br.gov.pr.idr.domain.property_management.sync.entity.SyncEntityResult;
+import br.gov.pr.idr.domain.property_management.sync.vo.SyncEntityStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -19,13 +19,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import jakarta.servlet.ServletException;
+import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -54,7 +60,7 @@ class SyncControllerTest {
     @DisplayName("GET /v1/sync/download com TECNICO autenticado deve retornar 200")
     void shouldReturnDownloadPayload() throws Exception {
         final var userId = UUID.randomUUID();
-        final var output = new DownloadSyncOutput("1.0", List.of(), List.of(), List.of());
+        final var output = new DownloadSyncOutput("1.0", Instant.now(), Map.of());
 
         when(findUserByUsernameUseCase.execute(any())).thenReturn(new FindUserByUsernameOutput(userId, "Técnico"));
         when(downloadSyncUseCase.execute(any())).thenReturn(output);
@@ -75,6 +81,8 @@ class SyncControllerTest {
         final var localId = UUID.randomUUID();
         final var serverId = UUID.randomUUID();
 
+        when(findUserByUsernameUseCase.execute(any()))
+                .thenReturn(new FindUserByUsernameOutput(UUID.randomUUID(), "Técnico"));
         when(uploadSyncUseCase.execute(any())).thenReturn(
                 List.of(new SyncEntityResult(localId, serverId, SyncEntityStatus.CREATED, null)));
 
@@ -89,5 +97,21 @@ class SyncControllerTest {
                         .content(body))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.results[0].status").value("CREATED"));
+    }
+
+    @Test
+    @DisplayName("GET /v1/sync/download sem Authentication deve lançar IllegalStateException")
+    void shouldThrowWhenAuthenticationIsNull() {
+        assertThrows(ServletException.class, () -> mockMvc.perform(get("/v1/sync/download")));
+    }
+
+    @Test
+    @DisplayName("GET /v1/sync/download com Authentication sem principal deve lançar IllegalStateException")
+    void shouldThrowWhenAuthenticationPrincipalIsNull() {
+        final var authentication = mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn(null);
+
+        assertThrows(ServletException.class,
+                () -> mockMvc.perform(get("/v1/sync/download").principal(authentication)));
     }
 }

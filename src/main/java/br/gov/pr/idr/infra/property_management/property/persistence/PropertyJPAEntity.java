@@ -8,24 +8,25 @@ import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.property_management.property.vo.Coord;
 import br.gov.pr.idr.infra.property_management.property.persistence.attachment.PropertyAttachmentJPAEntity;
 import br.gov.pr.idr.infra.property_management.property.persistence.collaborator.PropertyCollaboratorJPAEntity;
+import br.gov.pr.idr.infra.shared.persistence.SyncableJPAEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "Property")
 @Table(name = "property")
+@SQLRestriction("deleted_at is null")
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PropertyJPAEntity {
+public class PropertyJPAEntity extends SyncableJPAEntity {
 
     @Id
     @Column(nullable = false)
@@ -59,15 +60,8 @@ public class PropertyJPAEntity {
     @JoinColumn(name = "property_id", nullable = false)
     private List<PropertyAttachmentJPAEntity> attachments;
 
-    @Version
-    private Long version;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private Instant updatedAt;
-
     public static PropertyJPAEntity fromDomain(final Property property) {
-        return new PropertyJPAEntity(
+        final var entity = new PropertyJPAEntity(
                 property.getId().id(),
                 property.getName(),
                 property.getCoord().latitude(),
@@ -82,10 +76,10 @@ public class PropertyJPAEntity {
                 property.getCityId().id(),
                 property.getTechnicianIds().stream().map(UserID::id).toList(),
                 property.getCollaborators().stream().map(PropertyCollaboratorJPAEntity::fromDomain).toList(),
-                property.getAttachments().stream().map(PropertyAttachmentJPAEntity::fromDomain).toList(),
-                property.getVersion(),
-                property.getUpdatedAt()
+                property.getAttachments().stream().map(PropertyAttachmentJPAEntity::fromDomain).toList()
         );
+        entity.applyVersion(property.getVersion());
+        return entity;
     }
 
     public Property toDomain() {
@@ -105,8 +99,8 @@ public class PropertyJPAEntity {
                 this.collaborators.stream()
                                   .map(PropertyCollaboratorJPAEntity::toDomain)
                                   .toList(),
-                this.version,
-                this.updatedAt
+                this.getVersion(),
+                this.getUpdatedAt()
         );
         this.attachments.stream()
                 .map(PropertyAttachmentJPAEntity::toDomain)

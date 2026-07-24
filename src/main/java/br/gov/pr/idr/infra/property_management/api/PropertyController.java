@@ -6,6 +6,7 @@ import br.gov.pr.idr.application.property_management.property.delete.DeletePrope
 import br.gov.pr.idr.application.property_management.property.retrieve.attachment.GetPropertyAttachmentCommand;
 import br.gov.pr.idr.application.property_management.property.retrieve.attachment.GetPropertyAttachmentUseCase;
 import br.gov.pr.idr.application.property_management.property.retrieve.get.GetPropertyByIdUseCase;
+import br.gov.pr.idr.application.property_management.property.retrieve.search.SearchPropertyCommand;
 import br.gov.pr.idr.application.property_management.property.retrieve.search.SearchPropertyUseCase;
 import br.gov.pr.idr.application.property_management.property.update.UpdatePropertyCommand;
 import br.gov.pr.idr.application.property_management.property.update.UpdatePropertyUseCase;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -111,13 +113,16 @@ public class PropertyController {
 
     @GetMapping("/search")
     public Pagination<SearchPropertyResponse> search(
+            final Authentication authentication,
             @RequestParam(defaultValue = "0") final int page,
             @RequestParam(defaultValue = "10") final int perPage,
             @RequestParam(required = false) final String terms,
             @RequestParam(defaultValue = "name") final String sort,
             @RequestParam(defaultValue = "asc") final String direction) {
         final var query = SearchQuery.from(page, perPage, terms, sort, direction);
-        return searchPropertyUseCase.execute(query).map(SearchPropertyResponse::from);
+        final var username = this.getUsername(authentication);
+        return searchPropertyUseCase.execute(SearchPropertyCommand.from(username, query))
+                .map(SearchPropertyResponse::from);
     }
 
     @DeleteMapping("/{id}")
@@ -155,5 +160,13 @@ public class PropertyController {
         } catch (IOException e) {
             throw new UncheckedIOException("Falha ao ler arquivo anexado: " + file.getOriginalFilename(), e);
         }
+    }
+
+    private String getUsername(final Authentication authentication) {
+        final var principal = authentication == null ? null : authentication.getPrincipal();
+        if (principal == null) {
+            throw new IllegalStateException("Authentication principal is null");
+        }
+        return principal.toString();
     }
 }

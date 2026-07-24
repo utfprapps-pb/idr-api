@@ -6,10 +6,13 @@ import br.gov.pr.idr.application.iam.user.retries.find.FindUserByIdOutput;
 import br.gov.pr.idr.application.iam.user.retries.find.FindUserByIdUseCase;
 import br.gov.pr.idr.application.iam.user.retries.find.FindUserByUsernameOutput;
 import br.gov.pr.idr.application.iam.user.retries.find.FindUserByUsernameUseCase;
+import br.gov.pr.idr.application.iam.user.retries.permissions.GetUserPermissionsOutput;
+import br.gov.pr.idr.application.iam.user.retries.permissions.GetUserPermissionsUseCase;
 import br.gov.pr.idr.application.iam.user.retries.search.SearchUserOutput;
 import br.gov.pr.idr.application.iam.user.retries.search.SearchUserUseCase;
 import br.gov.pr.idr.application.iam.user.update.ToggleUserActiveUseCase;
 import br.gov.pr.idr.application.iam.user.update.UpdateUserPermissionsUseCase;
+import br.gov.pr.idr.domain.iam.user.UserRole;
 import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -45,6 +48,7 @@ class UserControllerTest {
     @Mock SearchUserUseCase searchUserUseCase;
     @Mock FindUserByUsernameUseCase findUserByUsernameUseCase;
     @Mock FindUserByIdUseCase findUserByIdUseCase;
+    @Mock GetUserPermissionsUseCase getUserPermissionsUseCase;
     @Mock UpdateUserPermissionsUseCase updateUserPermissionsUseCase;
     @Mock ToggleUserActiveUseCase toggleUserActiveUseCase;
     @InjectMocks UserController controller;
@@ -133,6 +137,25 @@ class UserControllerTest {
         mockMvc.perform(get("/v1/users/" + id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("João"));
+    }
+
+    @Test
+    @DisplayName("GET /v1/users/{id}/permissions deve retornar permissões do usuário")
+    void shouldGetUserPermissions() throws Exception {
+        final var id = UUID.randomUUID();
+        final var permissionId = UUID.randomUUID();
+        final var regionId = UUID.randomUUID();
+        final var cityId = UUID.randomUUID();
+        final var output = new GetUserPermissionsOutput(id, List.of(
+                new GetUserPermissionsOutput.PermissionItem(
+                        permissionId, UserRole.TECNICO, true, Set.of(regionId), Set.of(cityId))));
+        when(getUserPermissionsUseCase.execute(id)).thenReturn(output);
+
+        mockMvc.perform(get("/v1/users/" + id + "/permissions"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId").value(id.toString()))
+                .andExpect(jsonPath("$.permissions[0].role").value("TECNICO"))
+                .andExpect(jsonPath("$.permissions[0].readOnly").value(true));
     }
 
     @Test

@@ -102,25 +102,6 @@ public class Property extends AggregateRoot<PropertyID> {
                                 final ProducerID producerId,
                                 final CityID cityId,
                                 final List<UserID> technicianIds,
-                                final List<PropertyCollaborator> collaborators
-                               ) {
-        return new Property(id, name, coord, nakedAveragePrice, leaseAveragePrice,
-                            dairyCattleFarming, perennialPasture, summerPlowing, winterPlowing,
-                            producerId, cityId, collaborators, technicianIds, null, null, null);
-    }
-
-    public static Property with(final PropertyID id,
-                                final String name,
-                                final Coord coord,
-                                final BigDecimal nakedAveragePrice,
-                                final BigDecimal leaseAveragePrice,
-                                final Double dairyCattleFarming,
-                                final Double perennialPasture,
-                                final Double summerPlowing,
-                                final Double winterPlowing,
-                                final ProducerID producerId,
-                                final CityID cityId,
-                                final List<UserID> technicianIds,
                                 final List<PropertyCollaborator> collaborators,
                                 final Long version,
                                 final Instant updatedAt

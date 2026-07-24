@@ -4,24 +4,27 @@ import br.gov.pr.idr.domain.property_management.city.City;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.domain.property_management.city.vo.State;
 import br.gov.pr.idr.domain.property_management.region.RegionID;
+import br.gov.pr.idr.infra.shared.persistence.SyncableJPAEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.envers.Audited;
 
 import java.util.UUID;
 
 @Entity(name = "City")
 @Table(name = "city")
+@SQLRestriction("deleted_at is null")
 @AllArgsConstructor
 @NoArgsConstructor
 @Audited
 @Getter
 @Setter
-public class CityJPAEntity {
+public class CityJPAEntity extends SyncableJPAEntity {
 
     @Id
     @Column(nullable = false, updatable = false)

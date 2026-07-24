@@ -48,7 +48,7 @@ public class MinioStorageGateway implements StorageGateway {
             client.putObject(PutObjectArgs.builder()
                     .bucket(properties.bucketName())
                     .object(key)
-                    .stream(stream, (long) content.length, -1L)
+                    .stream(stream, content.length, -1L)
                     .contentType(contentType)
                     .build());
         } catch (Exception e) {

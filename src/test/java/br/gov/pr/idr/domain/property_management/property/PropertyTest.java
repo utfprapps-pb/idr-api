@@ -3,6 +3,7 @@ package br.gov.pr.idr.domain.property_management.property;
 import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.domain.property_management.producer.ProducerID;
+import br.gov.pr.idr.domain.property_management.property.attachment.PropertyAttachment;
 import br.gov.pr.idr.domain.property_management.property.collaborator.PropertyCollaborator;
 import br.gov.pr.idr.domain.property_management.property.vo.Coord;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
@@ -70,6 +71,14 @@ class PropertyTest {
         void shouldRejectNullName() {
             final var ex = assertThrows(NotificationException.class,
                     () -> Property.create(null, COORD, ZERO, ZERO, 0.0, 0.0, 0.0, 0.0, producerId, cityId, NO_TECHNICIANS, NO_COLLABORATORS));
+            assertTrue(ex.getErrors().stream().anyMatch(e -> e.message().contains("Nome")));
+        }
+
+        @Test
+        @DisplayName("deve rejeitar propriedade com nome vazio")
+        void shouldRejectBlankName() {
+            final var ex = assertThrows(NotificationException.class,
+                    () -> Property.create("   ", COORD, ZERO, ZERO, 0.0, 0.0, 0.0, 0.0, producerId, cityId, NO_TECHNICIANS, NO_COLLABORATORS));
             assertTrue(ex.getErrors().stream().anyMatch(e -> e.message().contains("Nome")));
         }
 
@@ -148,6 +157,14 @@ class PropertyTest {
         }
 
         @Test
+        @DisplayName("deve rejeitar área de pastagem perene negativa")
+        void shouldRejectNegativePerennialPasture() {
+            final var ex = assertThrows(NotificationException.class,
+                    () -> Property.create("Fazenda", COORD, ZERO, ZERO, 0.0, -1.0, 0.0, 0.0, producerId, cityId, NO_TECHNICIANS, NO_COLLABORATORS));
+            assertTrue(ex.getErrors().stream().anyMatch(e -> e.message().contains("pastagem perene")));
+        }
+
+        @Test
         @DisplayName("deve rejeitar área de plantio de verão nula")
         void shouldRejectNullSummerPlowing() {
             final var ex = assertThrows(NotificationException.class,
@@ -156,10 +173,26 @@ class PropertyTest {
         }
 
         @Test
+        @DisplayName("deve rejeitar área de plantio de verão negativa")
+        void shouldRejectNegativeSummerPlowing() {
+            final var ex = assertThrows(NotificationException.class,
+                    () -> Property.create("Fazenda", COORD, ZERO, ZERO, 0.0, 0.0, -1.0, 0.0, producerId, cityId, NO_TECHNICIANS, NO_COLLABORATORS));
+            assertTrue(ex.getErrors().stream().anyMatch(e -> e.message().contains("plantio de verão")));
+        }
+
+        @Test
         @DisplayName("deve rejeitar área de plantio de inverno nula")
         void shouldRejectNullWinterPlowing() {
             final var ex = assertThrows(NotificationException.class,
                     () -> Property.create("Fazenda", COORD, ZERO, ZERO, 0.0, 0.0, 0.0, null, producerId, cityId, NO_TECHNICIANS, NO_COLLABORATORS));
+            assertTrue(ex.getErrors().stream().anyMatch(e -> e.message().contains("plantio de inverno")));
+        }
+
+        @Test
+        @DisplayName("deve rejeitar área de plantio de inverno negativa")
+        void shouldRejectNegativeWinterPlowing() {
+            final var ex = assertThrows(NotificationException.class,
+                    () -> Property.create("Fazenda", COORD, ZERO, ZERO, 0.0, 0.0, 0.0, -1.0, producerId, cityId, NO_TECHNICIANS, NO_COLLABORATORS));
             assertTrue(ex.getErrors().stream().anyMatch(e -> e.message().contains("plantio de inverno")));
         }
 
@@ -191,9 +224,33 @@ class PropertyTest {
         void shouldReconstitute() {
             final var id = PropertyID.unique();
             final var property = Property.with(id, "Fazenda", COORD, ZERO, ZERO, 0.0, 0.0, 0.0, 0.0,
-                    producerId, cityId, List.of(), List.of());
+                    producerId, cityId, List.of(), List.of(), null, null);
 
             assertEquals(id, property.getId());
+        }
+
+        @Test
+        @DisplayName("deve iniciar com lista de anexos vazia quando construída com anexos nulos")
+        void shouldStartWithEmptyAttachmentsWhenAttachmentsIsNull() {
+            final var id = PropertyID.unique();
+            final var property = new Property(id, "Fazenda", COORD, ZERO, ZERO, 0.0, 0.0, 0.0, 0.0,
+                    producerId, cityId, List.of(), List.of(), null, null, null);
+
+            assertNotNull(property.getAttachments());
+            assertTrue(property.getAttachments().isEmpty());
+        }
+
+        @Test
+        @DisplayName("deve copiar os anexos informados quando construída com lista de anexos não nula")
+        void shouldCopyAttachmentsWhenAttachmentsIsNotNull() {
+            final var id = PropertyID.unique();
+            final var attachment = PropertyAttachment.create(id, "laudo.pdf", "application/pdf", 1024L);
+
+            final var property = new Property(id, "Fazenda", COORD, ZERO, ZERO, 0.0, 0.0, 0.0, 0.0,
+                    producerId, cityId, List.of(), List.of(), null, null, List.of(attachment));
+
+            assertEquals(1, property.getAttachments().size());
+            assertEquals(attachment, property.getAttachments().get(0));
         }
     }
 

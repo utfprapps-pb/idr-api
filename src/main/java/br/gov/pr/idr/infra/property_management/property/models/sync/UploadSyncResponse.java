@@ -1,6 +1,6 @@
 package br.gov.pr.idr.infra.property_management.property.models.sync;
 
-import br.gov.pr.idr.domain.property_management.sync.SyncEntityResult;
+import br.gov.pr.idr.domain.property_management.sync.entity.SyncEntityResult;
 
 import java.util.List;
 

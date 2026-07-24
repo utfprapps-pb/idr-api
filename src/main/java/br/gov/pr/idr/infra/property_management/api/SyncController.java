@@ -1,7 +1,9 @@
 package br.gov.pr.idr.infra.property_management.api;
 
 import br.gov.pr.idr.application.iam.user.retries.find.FindUserByUsernameUseCase;
+import br.gov.pr.idr.domain.property_management.sync.query.DownloadSyncQuery;
 import br.gov.pr.idr.application.property_management.sync.download.DownloadSyncUseCase;
+import br.gov.pr.idr.application.property_management.sync.upload.OfflineEntityCommand;
 import br.gov.pr.idr.application.property_management.sync.upload.UploadSyncCommand;
 import br.gov.pr.idr.application.property_management.sync.upload.UploadSyncUseCase;
 import br.gov.pr.idr.domain.iam.user.UserID;
@@ -10,10 +12,12 @@ import br.gov.pr.idr.infra.property_management.property.models.sync.UploadSyncRe
 import br.gov.pr.idr.infra.property_management.property.models.sync.UploadSyncResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Instant;
 
 @RestController
 @RequestMapping("/v1/sync")
@@ -25,21 +29,24 @@ public class SyncController {
     private final FindUserByUsernameUseCase findUserByUsernameUseCase;
 
     @GetMapping("/download")
-    @PreAuthorize("hasAuthority('TECNICO')")
-    public ResponseEntity<DownloadSyncResponse> download(final Authentication authentication) {
+    public ResponseEntity<DownloadSyncResponse> download(
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) final Instant since,
+            final Authentication authentication) {
         final var technicianId = resolveUserId(authentication);
-        final var output = downloadSyncUseCase.execute(technicianId);
+        final var output = downloadSyncUseCase.execute(new DownloadSyncQuery(technicianId, since));
         return ResponseEntity.ok(DownloadSyncResponse.from(output));
     }
 
     @PostMapping("/upload")
-    @PreAuthorize("hasAuthority('TECNICO')")
     public ResponseEntity<UploadSyncResponse> upload(
             @RequestBody @Valid final UploadSyncRequest request,
             final Authentication authentication) {
+        final var technicianId = resolveUserId(authentication);
         final var command = new UploadSyncCommand(
+                technicianId,
                 request.entities().stream()
-                        .map(e -> new UploadSyncCommand.OfflineEntityCommand(e.type(), e.localId(), e.data()))
+                        .map(e -> new OfflineEntityCommand(e.type(), e.localId(), e.data()))
                         .toList()
         );
         final var results = uploadSyncUseCase.execute(command);
@@ -47,10 +54,11 @@ public class SyncController {
     }
 
     private UserID resolveUserId(final Authentication authentication) {
-        if (authentication == null || authentication.getPrincipal() == null) {
+        final var principal = authentication == null ? null : authentication.getPrincipal();
+        if (principal == null) {
             throw new IllegalStateException("Authentication principal is null");
         }
-        final var username = authentication.getPrincipal().toString();
+        final var username = principal.toString();
         final var user = findUserByUsernameUseCase.execute(username);
         return UserID.from(user.id());
     }
