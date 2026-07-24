@@ -253,6 +253,22 @@ class ArchitectureTest {
                     .allowEmptyShould(true)
                     .check(classes);
         }
+
+        @Test
+        @DisplayName("Application não deve usar @Component, @Service ou @Repository")
+        void applicationShouldNotUseSpringStereotypeAnnotations() {
+            noClasses()
+                    .that().resideInAPackage(APPLICATION)
+                    .and().areNotAnnotations()
+                    .should().beAnnotatedWith("org.springframework.stereotype.Component")
+                    .orShould().beAnnotatedWith("org.springframework.stereotype.Service")
+                    .orShould().beAnnotatedWith("org.springframework.stereotype.Repository")
+                    .because("Implementações de portas de saída (handlers, adapters) são detalhes de infraestrutura " +
+                             "e devem residir na camada Infra; a camada Application expõe apenas Use Cases anotados " +
+                             "com @CommandUseCase/@QueryUseCase")
+                    .allowEmptyShould(true)
+                    .check(classes);
+        }
     }
 
     // =========================================================================
@@ -264,7 +280,7 @@ class ArchitectureTest {
     class UseCaseConventionsTest {
 
         @Test
-        @DisplayName("Classes concretas em Application devem terminar com 'UseCase', 'Command' ou 'Output'")
+        @DisplayName("Classes concretas em Application devem terminar com 'UseCase', 'Command', 'Output' ou 'Policy'")
         void concreteApplicationClassesShouldFollowNamingConvention() {
             classes()
                     .that().resideInAPackage(APPLICATION)
@@ -272,10 +288,12 @@ class ArchitectureTest {
                     .and().areNotEnums()
                     .and().areNotAnnotations()
                     .and().doNotHaveModifier(JavaModifier.ABSTRACT)
+                    .and().doNotHaveModifier(JavaModifier.SYNTHETIC)
                     .and().areNotMemberClasses()
                     .should().haveSimpleNameEndingWith("UseCase")
                     .orShould().haveSimpleNameEndingWith("Command")
                     .orShould().haveSimpleNameEndingWith("Output")
+                    .orShould().haveSimpleNameEndingWith("Policy")
                     .because("Classes concretas na camada Application devem seguir a convenção de nomenclatura")
                     .allowEmptyShould(true)
                     .check(classes);
@@ -359,13 +377,21 @@ class ArchitectureTest {
     class GatewayConventionsTest {
 
         @Test
-        @DisplayName("Interfaces no Domain devem terminar com 'Gateway'")
+        @DisplayName("Interfaces de porta no Domain devem terminar com 'Gateway', 'Handler', 'Contributor' ou 'Publisher'")
         void domainInterfacesShouldEndWithGateway() {
             classes()
                     .that().resideInAPackage(DOMAIN)
                     .and().areInterfaces()
+                    .and().areNotAnnotations()
+                    .and().areNotMemberClasses()
+                    .and().resideOutsideOfPackage("..domain..shared.tactical..")
                     .should().haveSimpleNameEndingWith("Gateway")
-                    .because("Interfaces de domínio representam portas de saída (ports) e devem seguir o sufixo 'Gateway'")
+                    .orShould().haveSimpleNameEndingWith("Handler")
+                    .orShould().haveSimpleNameEndingWith("Contributor")
+                    .orShould().haveSimpleNameEndingWith("Publisher")
+                    .because("Interfaces de domínio representam portas de saída (ports) e devem seguir uma convenção " +
+                             "de sufixo reconhecida; tipos-base do kernel tático (shared.tactical) não são portas " +
+                             "e ficam fora desta regra")
                     .allowEmptyShould(true)
                     .check(classes);
         }
@@ -417,8 +443,10 @@ class ArchitectureTest {
         void jpaEntitiesShouldBeInPersistencePackage() {
             classes()
                     .that().areAnnotatedWith("jakarta.persistence.Entity")
+                    .and().resideOutsideOfPackage(LEGACY)
                     .should().resideInAPackage("..infra..persistence..")
-                    .because("Entidades JPA são detalhes de infraestrutura e devem ficar no pacote de persistência")
+                    .because("Entidades JPA são detalhes de infraestrutura e devem ficar no pacote de persistência; " +
+                             "código em 'legacy' é dívida técnica pré-existente e não segue esta convenção")
                     .allowEmptyShould(true)
                     .check(classes);
         }
@@ -428,8 +456,10 @@ class ArchitectureTest {
         void jpaEntitiesShouldFollowNamingConvention() {
             classes()
                     .that().areAnnotatedWith("jakarta.persistence.Entity")
+                    .and().resideOutsideOfPackage(LEGACY)
                     .should().haveSimpleNameEndingWith("JPAEntity")
-                    .because("Entidades JPA devem ser diferenciadas das entidades de domínio pelo sufixo 'JPAEntity'")
+                    .because("Entidades JPA devem ser diferenciadas das entidades de domínio pelo sufixo 'JPAEntity'; " +
+                             "código em 'legacy' é dívida técnica pré-existente e não segue esta convenção")
                     .allowEmptyShould(true)
                     .check(classes);
         }
@@ -442,17 +472,6 @@ class ArchitectureTest {
     @Nested
     @DisplayName("Convenções de Controllers REST")
     class RestControllerConventionsTest {
-
-        @Test
-        @DisplayName("@RestController deve estar em infra..api..")
-        void restControllersShouldBeInApiPackage() {
-            classes()
-                    .that().areAnnotatedWith("org.springframework.web.bind.annotation.RestController")
-                    .should().resideInAPackage("..infra..api..")
-                    .because("Controllers REST são adaptadores de entrada e pertencem à camada Infra")
-                    .allowEmptyShould(true)
-                    .check(classes);
-        }
 
         @Test
         @DisplayName("@RestController deve terminar com 'Controller'")

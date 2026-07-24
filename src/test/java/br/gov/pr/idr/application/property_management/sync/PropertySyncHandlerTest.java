@@ -1,6 +1,6 @@
 package br.gov.pr.idr.application.property_management.sync;
 
-import br.gov.pr.idr.application.property_management.sync.upload.OfflineEntityCommand;
+import br.gov.pr.idr.domain.property_management.sync.entity.OfflineEntityCommand;
 import br.gov.pr.idr.domain.property_management.sync.context.SyncContext;
 import br.gov.pr.idr.infra.property_management.property.sync.PropertySyncHandler;
 import br.gov.pr.idr.domain.iam.user.UserID;

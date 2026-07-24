@@ -3,6 +3,7 @@ package br.gov.pr.idr.application.property_management.sync;
 import br.gov.pr.idr.application.property_management.sync.upload.*;
 import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.domain.property_management.sync.context.SyncContext;
+import br.gov.pr.idr.domain.property_management.sync.entity.OfflineEntityCommand;
 import br.gov.pr.idr.domain.property_management.sync.entity.SyncEntityHandler;
 import br.gov.pr.idr.domain.property_management.sync.entity.SyncEntityResult;
 import br.gov.pr.idr.domain.property_management.sync.mapping.SyncIdMappingGateway;

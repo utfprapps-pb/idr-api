@@ -3,7 +3,7 @@ package br.gov.pr.idr.infra.property_management.api;
 import br.gov.pr.idr.application.iam.user.retries.find.FindUserByUsernameUseCase;
 import br.gov.pr.idr.domain.property_management.sync.query.DownloadSyncQuery;
 import br.gov.pr.idr.application.property_management.sync.download.DownloadSyncUseCase;
-import br.gov.pr.idr.application.property_management.sync.upload.OfflineEntityCommand;
+import br.gov.pr.idr.domain.property_management.sync.entity.OfflineEntityCommand;
 import br.gov.pr.idr.application.property_management.sync.upload.UploadSyncCommand;
 import br.gov.pr.idr.application.property_management.sync.upload.UploadSyncUseCase;
 import br.gov.pr.idr.domain.iam.user.UserID;

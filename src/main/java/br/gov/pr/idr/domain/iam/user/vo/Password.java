@@ -1,9 +1,11 @@
 package br.gov.pr.idr.domain.iam.user.vo;
 
 import br.gov.pr.idr.domain.iam.user.exceptions.PasswordException;
+import br.gov.pr.idr.domain.shared.tactical.ValueObject;
 
 import java.util.regex.Pattern;
 
+@ValueObject
 public record Password(String pasword, String confirmPassword) {
 
     static final int MIN_LENGTH = 8;

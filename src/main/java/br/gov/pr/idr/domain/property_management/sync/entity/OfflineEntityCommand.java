@@ -1,4 +1,4 @@
-package br.gov.pr.idr.application.property_management.sync.upload;
+package br.gov.pr.idr.domain.property_management.sync.entity;
 
 import br.gov.pr.idr.domain.property_management.sync.vo.OfflineEntityType;
 

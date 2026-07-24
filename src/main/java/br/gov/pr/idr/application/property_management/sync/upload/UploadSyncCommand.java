@@ -1,6 +1,7 @@
 package br.gov.pr.idr.application.property_management.sync.upload;
 
 import br.gov.pr.idr.domain.iam.user.UserID;
+import br.gov.pr.idr.domain.property_management.sync.entity.OfflineEntityCommand;
 
 import java.util.List;
 
