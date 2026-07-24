@@ -1,6 +1,5 @@
 package br.gov.pr.idr.legacy.entity.propertyequipimprove;
 
-import br.gov.pr.idr.legacy.entity.property.Property;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -23,9 +22,9 @@ public class PropertyEquipImprove {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @ManyToOne
-    private Property property;
+//    @NotNull
+//    @ManyToOne
+//    private Property property;
 
     @NotNull
     private String type;

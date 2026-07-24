@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import br.gov.pr.idr.legacy.entity.culture.Culture;
 import br.gov.pr.idr.legacy.entity.plague.Plague;
-import br.gov.pr.idr.legacy.entity.property.Property;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -29,9 +28,9 @@ public class VegetablePlague {
 	
 	private LocalDate date;
 
-	@NotNull
-    @ManyToOne
-	private Property property;
+//	@NotNull
+//    @ManyToOne
+//	private Property property;
 
 	@NotNull
     @ManyToOne

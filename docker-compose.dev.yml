@@ -22,13 +22,30 @@ services:
     command: mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
     volumes:
       - ./:/home/java/app
-    ports: 
+    ports:
       - "8080:8080"
       - "5005:5005"
     networks:
       - idr-db
     depends_on:
       - idr-db
+      - minio
+
+  minio:
+    container_name: minio
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - idr-minio:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - idr-db
+    restart: unless-stopped
 
 networks:
   idr-db:
@@ -36,3 +53,4 @@ networks:
 
 volumes:
   idr-db:
+  idr-minio:

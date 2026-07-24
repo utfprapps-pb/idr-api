@@ -5,7 +5,6 @@ import java.time.LocalDate;
 
 import br.gov.pr.idr.legacy.entity.culture.Culture;
 import br.gov.pr.idr.legacy.entity.disease.Disease;
-import br.gov.pr.idr.legacy.entity.property.Property;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -30,10 +29,10 @@ public class VegetableDisease {
 	
 	private LocalDate date;
 	
-	@NotNull
-	@JoinColumn(name = "Property_id")
-    @ManyToOne
-	private Property property;
+//	@NotNull
+//	@JoinColumn(name = "Property_id")
+//    @ManyToOne
+//	private Property property;
 	
 	@NotNull
 	@JoinColumn(name = "Culture_id")

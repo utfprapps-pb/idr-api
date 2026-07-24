@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface PropertyEquipImproveRepository extends JpaRepository<PropertyEquipImprove, Long> {
 	//método que irá buscar os equipamentos pelo id da propriedade
-    List<PropertyEquipImprove> findAllByPropertyId(Long id);
+//    List<PropertyEquipImprove> findAllByPropertyId(Long id);
 }

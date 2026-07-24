@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PerennialAnualForageRepository extends JpaRepository<PerennialAnualForage, Long> {
-    List<PerennialAnualForage> findAllByPropertyId(Long id);
+//    List<PerennialAnualForage> findAllByPropertyId(Long id);
 }
