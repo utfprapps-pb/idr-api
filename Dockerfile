@@ -13,6 +13,6 @@ RUN sed -i 's/\r$//' mvnw
 RUN /bin/sh mvnw package -DskipTests
 
 # DELIVERY
-FROM openjdk:23-ea-jdk
+FROM openjdk:25-ea-jdk
 COPY --from=build /workspace/idr/target/api-0.1.jar api.jar
 ENTRYPOINT ["java", "-jar", "api.jar"]
