@@ -1,5 +1,5 @@
 # BUILD
-FROM eclipse-temurin:23-jdk-alpine as build
+FROM eclipse-temurin:25-jdk-alpine as build
 WORKDIR /workspace/idr
 
 COPY mvnw .
