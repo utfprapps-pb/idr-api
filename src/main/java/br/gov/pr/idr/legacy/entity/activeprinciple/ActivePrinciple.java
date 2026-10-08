@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// Mantida apenas para Product (legacy) compilar — ver Plano D de migração; sem controller/service próprio.
 @Entity @Audited
 @Data
 @Builder
