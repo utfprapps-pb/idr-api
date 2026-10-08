@@ -1,10 +1,16 @@
 package br.gov.pr.idr.legacy.entity.animal.impl;
 
+import java.beans.FeatureDescriptor;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import br.gov.pr.idr.legacy.entity.animal.Animal;
 import br.gov.pr.idr.legacy.entity.animal.AnimalRepository;
 import br.gov.pr.idr.legacy.entity.animal.AnimalService;
@@ -31,12 +37,25 @@ public class AnimalServiceImpl extends CrudServiceImpl<Animal, UUID> implements 
         return animalRepository.findByIdentifier(identifier);
     }
 
+    @Transactional
     @Override
     public Animal update(final UUID id, final Animal entity) {
         final Animal existing = animalRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Entity with id " + id + " not found"));
         entity.setPropertyId(existing.getPropertyId());
-        return super.update(id, entity);
+        final String[] ignoredProperties = Stream.concat(
+                Stream.of("id"), Stream.of(getNullPropertyNames(entity))
+        ).toArray(String[]::new);
+        BeanUtils.copyProperties(entity, existing, ignoredProperties);
+        return existing;
+    }
+
+    private static String[] getNullPropertyNames(Object source) {
+        final BeanWrapper wrapped = new BeanWrapperImpl(source);
+        return Stream.of(wrapped.getPropertyDescriptors())
+                .map(FeatureDescriptor::getName)
+                .filter(name -> wrapped.getPropertyValue(name) == null)
+                .toArray(String[]::new);
     }
 
     @Override

@@ -6,8 +6,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -34,10 +34,10 @@ class AnimalControllerMvcTest {
         UUID propertyId = UUID.randomUUID();
 
         mvc.perform(post("/properties/" + propertyId + "/animals")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {"propertyId":"%s","identifier":"Mimosa","breed":{"id":1},"bornDate":"2019-06-23"}
-                                """.formatted(propertyId)));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {"propertyId":"%s","identifier":"Mimosa","breed":{"id":1},"bornDate":"2019-06-23"}
+                        """.formatted(propertyId)));
 
         ArgumentCaptor<Animal> captor = ArgumentCaptor.forClass(Animal.class);
         verify(animalService).save(captor.capture());
@@ -46,17 +46,17 @@ class AnimalControllerMvcTest {
     }
 
     @Test
-    @DisplayName("PUT update monta a entidade com propertyId e bornDate corretos")
+    @DisplayName("PATCH update monta a entidade com propertyId e bornDate corretos")
     void updateBuildsEntityWithPropertyIdAndBornDate() throws Exception {
         UUID propertyId = UUID.randomUUID();
         UUID id = UUID.randomUUID();
         when(animalService.update(eq(id), any(Animal.class))).thenAnswer(invocation -> invocation.getArgument(1));
 
-        mvc.perform(put("/properties/" + propertyId + "/animals/" + id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {"propertyId":"%s","identifier":"Charmosa","breed":{"id":2},"bornDate":"2023-06-23"}
-                                """.formatted(propertyId)));
+        mvc.perform(patch("/properties/" + propertyId + "/animals/" + id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {"propertyId":"%s","identifier":"Charmosa","breed":{"id":2},"bornDate":"2023-06-23"}
+                        """.formatted(propertyId)));
 
         ArgumentCaptor<Animal> captor = ArgumentCaptor.forClass(Animal.class);
         verify(animalService).update(eq(id), captor.capture());

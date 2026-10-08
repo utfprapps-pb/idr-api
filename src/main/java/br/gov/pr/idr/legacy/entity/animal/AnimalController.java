@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,6 +43,14 @@ public class AnimalController extends CrudController<Animal, AnimalDto, UUID> {
     @Override
     protected ModelMapper getModelMapper() {
         return this.modelMapper;
+    }
+
+    @PatchMapping("{id}")
+    @Override
+    public ResponseEntity<AnimalDto> update(@RequestBody @Valid AnimalDto dto, @PathVariable UUID id) {
+        Animal entity = getModelMapper().map(dto, Animal.class);
+        Animal updatedEntity = animalService.update(id, entity);
+        return ResponseEntity.ok(convertEntityToDto(updatedEntity));
     }
 
     @GetMapping("/findAnimal/{identifier}")
