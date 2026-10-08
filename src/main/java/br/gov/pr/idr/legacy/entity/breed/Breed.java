@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// Mantida apenas para Animal (legacy) compilar — ver plano futuro de remoção; sem controller/service próprio.
 @Entity @Audited
 @Data
 @Builder

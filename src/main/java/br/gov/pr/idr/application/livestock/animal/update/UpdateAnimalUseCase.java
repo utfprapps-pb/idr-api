@@ -7,6 +7,7 @@ import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
 import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
+import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import br.gov.pr.idr.domain.shared.tactical.validation.NotificationValidation;
 
@@ -39,9 +40,17 @@ public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnim
         AnimalID animalMotherId = null;
         if (command.animalMotherId() != null) {
             animalMotherId = AnimalID.from(command.animalMotherId());
-            if (!animalGateway.existsById(animalMotherId)) {
+            final var motherId = animalMotherId;
+            if (motherId.equals(existingAnimal.getId())) {
                 throw new NotificationException(
-                        "Animal (mãe) com o ID %s não encontrado".formatted(animalMotherId.id()), notification);
+                        "Animal (mãe) com o ID %s não encontrado".formatted(motherId.id()), notification);
+            }
+            final var motherBelongsToProperty = animalGateway.findById(motherId)
+                    .filter(mother -> mother.getPropertyId().equals(PropertyID.from(command.propertyId())))
+                    .isPresent();
+            if (!motherBelongsToProperty) {
+                throw new NotificationException(
+                        "Animal (mãe) com o ID %s não encontrado".formatted(motherId.id()), notification);
             }
         }
 

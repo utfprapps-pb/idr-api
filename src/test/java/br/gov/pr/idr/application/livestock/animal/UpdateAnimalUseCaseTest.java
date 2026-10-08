@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,6 +59,7 @@ class UpdateAnimalUseCaseTest {
                 null, breedId, "T2", "I2", "M", "Morto", LocalDate.now(), 2f, 2f, 2f, 2f));
 
         assertEquals(propertyId, output.propertyId());
+        assertEquals("I2", output.identifier());
     }
 
     @Test
@@ -78,9 +80,36 @@ class UpdateAnimalUseCaseTest {
     void shouldThrowWhenAnimalMotherIdDoesNotExist() {
         when(accessPolicy.ensureAccessToAnimal(any(), any(), any())).thenReturn(existingAnimal);
         when(breedGateway.existsById(any())).thenReturn(true);
-        when(animalGateway.existsById(any())).thenReturn(false);
+        when(animalGateway.findById(any())).thenReturn(Optional.empty());
         final var command = new UpdateAnimalCommand(propertyId, animalId, "tecnico@idr.com", UUID.randomUUID(),
                 breedId, "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
         assertThrows(NotificationException.class, () -> useCase.execute(command));
+    }
+
+    @Test
+    void shouldThrowWhenAnimalMotherBelongsToDifferentProperty() {
+        when(accessPolicy.ensureAccessToAnimal(any(), any(), any())).thenReturn(existingAnimal);
+        when(breedGateway.existsById(any())).thenReturn(true);
+
+        final var motherId = UUID.randomUUID();
+        final var motherFromAnotherProperty = Animal.with(AnimalID.from(motherId),
+                PropertyID.from(UUID.randomUUID()), null, BreedID.unique(), "T", "Mae", "F", "Vivo",
+                LocalDate.now(), 1f, 1f, 1f, 1f);
+        when(animalGateway.findById(AnimalID.from(motherId))).thenReturn(Optional.of(motherFromAnotherProperty));
+
+        final var command = new UpdateAnimalCommand(propertyId, animalId, "tecnico@idr.com", motherId,
+                breedId, "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+        assertThrows(NotificationException.class, () -> useCase.execute(command));
+    }
+
+    @Test
+    void shouldThrowWhenAnimalMotherIsSelfReference() {
+        when(accessPolicy.ensureAccessToAnimal(any(), any(), any())).thenReturn(existingAnimal);
+        when(breedGateway.existsById(any())).thenReturn(true);
+
+        final var command = new UpdateAnimalCommand(propertyId, animalId, "tecnico@idr.com", animalId,
+                breedId, "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+        assertThrows(NotificationException.class, () -> useCase.execute(command));
+        verify(animalGateway, never()).findById(any());
     }
 }

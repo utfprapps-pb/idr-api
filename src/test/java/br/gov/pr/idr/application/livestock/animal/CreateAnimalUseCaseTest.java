@@ -3,8 +3,11 @@ package br.gov.pr.idr.application.livestock.animal;
 import br.gov.pr.idr.application.livestock.animal.create.CreateAnimalCommand;
 import br.gov.pr.idr.application.livestock.animal.create.CreateAnimalUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
+import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
+import br.gov.pr.idr.domain.livestock.animal.AnimalID;
 import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
+import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.domain.property_management.producer.ProducerID;
 import br.gov.pr.idr.domain.property_management.property.Property;
@@ -20,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -81,8 +85,24 @@ class CreateAnimalUseCaseTest {
     void shouldThrowWhenAnimalMotherIdDoesNotExist() {
         when(accessPolicy.ensureAccessToProperty(any(), any())).thenReturn(property);
         when(breedGateway.existsById(any())).thenReturn(true);
-        when(animalGateway.existsById(any())).thenReturn(false);
+        when(animalGateway.findById(any())).thenReturn(Optional.empty());
         final var command = new CreateAnimalCommand(propertyId, "tecnico@idr.com", UUID.randomUUID(), breedId,
+                "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+        assertThrows(NotificationException.class, () -> useCase.execute(command));
+    }
+
+    @Test
+    void shouldThrowWhenAnimalMotherBelongsToDifferentProperty() {
+        when(accessPolicy.ensureAccessToProperty(any(), any())).thenReturn(property);
+        when(breedGateway.existsById(any())).thenReturn(true);
+
+        final var motherId = UUID.randomUUID();
+        final var motherFromAnotherProperty = Animal.with(AnimalID.from(motherId),
+                PropertyID.from(UUID.randomUUID()), null, BreedID.unique(), "T", "Mae", "F", "Vivo",
+                LocalDate.now(), 1f, 1f, 1f, 1f);
+        when(animalGateway.findById(AnimalID.from(motherId))).thenReturn(Optional.of(motherFromAnotherProperty));
+
+        final var command = new CreateAnimalCommand(propertyId, "tecnico@idr.com", motherId, breedId,
                 "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
         assertThrows(NotificationException.class, () -> useCase.execute(command));
     }
