@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,6 +23,16 @@ class DeleteActivePrincipleUseCaseTest {
 
     @Mock ActivePrincipleGateway gateway;
     @InjectMocks DeleteActivePrincipleUseCase useCase;
+
+    @Test
+    @DisplayName("deve deletar princípio ativo existente")
+    void shouldDeleteExistingPrinciple() {
+        when(gateway.existsById(any())).thenReturn(true);
+
+        useCase.execute(UUID.randomUUID());
+
+        verify(gateway).deleteById(any());
+    }
 
     @Test
     void shouldThrowWhenDeletingNonExistentPrinciple() {
