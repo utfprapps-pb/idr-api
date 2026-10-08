@@ -1,6 +1,7 @@
 package br.gov.pr.idr.infra.shared.error;
 
 import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.ForbiddenException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.UnprocessableEntityException;
 import br.gov.pr.idr.domain.shared.tactical.validation.NotificationValidation;
@@ -118,6 +119,18 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.status());
         assertEquals("Entidade não pôde ser processada", response.message());
+        assertTrue(response.errors().isEmpty());
+    }
+
+    @Test
+    @DisplayName("deve retornar 403 para ForbiddenException")
+    void shouldHandle403ForForbiddenException() {
+        final var ex = ForbiddenException.with("Usuário não tem acesso à propriedade");
+
+        final var response = handler.handleForbiddenException(ex);
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.status());
+        assertEquals("Usuário não tem acesso à propriedade", response.message());
         assertTrue(response.errors().isEmpty());
     }
 

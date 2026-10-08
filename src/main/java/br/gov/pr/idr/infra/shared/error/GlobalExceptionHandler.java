@@ -1,6 +1,7 @@
 package br.gov.pr.idr.infra.shared.error;
 
 import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.ForbiddenException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.UnprocessableEntityException;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotificationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleNotificationException(NotificationException ex) {
+        return buildDomainErrorResponse(ex);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleForbiddenException(ForbiddenException ex) {
         return buildDomainErrorResponse(ex);
     }
 
