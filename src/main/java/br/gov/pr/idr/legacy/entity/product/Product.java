@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
 
+// Mantida apenas para Medication (legacy) compilar — ver Plano D de migração; sem controller/service próprio.
 @Entity @Audited
 @Data
 @Builder
