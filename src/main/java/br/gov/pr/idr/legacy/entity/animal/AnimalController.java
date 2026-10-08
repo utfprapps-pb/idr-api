@@ -1,27 +1,32 @@
 package br.gov.pr.idr.legacy.entity.animal;
 
+import java.util.List;
+import java.util.UUID;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import br.gov.pr.idr.legacy.entity.animal.dto.AnimalDto;
 import br.gov.pr.idr.legacy.entity.crud.CrudController;
 import br.gov.pr.idr.legacy.entity.crud.CrudService;
 import br.gov.pr.idr.legacy.utils.GenericResponse;
 import jakarta.validation.Valid;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
 @RestController
 // Gambiarra, deve ser refatorado pra haver restrição de busca do animal para
 // cada propriedade, seguindo a documentação do SpringBoot:
 // https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-requestmapping.html
 @RequestMapping("properties/*/animals")
-public class AnimalController extends CrudController<Animal, AnimalDto, Long> {
+public class AnimalController extends CrudController<Animal, AnimalDto, UUID> {
 
     private final AnimalService animalService;
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     public AnimalController(AnimalService animalService, ModelMapper modelMapper) {
         super(Animal.class, AnimalDto.class);
@@ -30,7 +35,7 @@ public class AnimalController extends CrudController<Animal, AnimalDto, Long> {
     }
 
     @Override
-    protected CrudService<Animal, Long> getService() {
+    protected CrudService<Animal, UUID> getService() {
         return this.animalService;
     }
 

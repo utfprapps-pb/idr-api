@@ -1,19 +1,19 @@
 package br.gov.pr.idr.legacy.entity.animal.impl;
 
+import java.util.List;
+import java.util.UUID;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Service;
 import br.gov.pr.idr.legacy.entity.animal.Animal;
 import br.gov.pr.idr.legacy.entity.animal.AnimalRepository;
 import br.gov.pr.idr.legacy.entity.animal.AnimalService;
 import br.gov.pr.idr.legacy.entity.crud.impl.CrudServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @Slf4j
-public class AnimalServiceImpl extends CrudServiceImpl<Animal, Long> implements AnimalService {
+public class AnimalServiceImpl extends CrudServiceImpl<Animal, UUID> implements AnimalService {
 
     private final AnimalRepository animalRepository;
 
@@ -22,13 +22,21 @@ public class AnimalServiceImpl extends CrudServiceImpl<Animal, Long> implements 
     }
 
     @Override
-    protected JpaRepository<Animal, Long> getRepository() {
+    protected JpaRepository<Animal, UUID> getRepository() {
         return this.animalRepository;
     }
 
     @Override
     public Animal findByIdentifier(String identifier) {
         return animalRepository.findByIdentifier(identifier);
+    }
+
+    @Override
+    public Animal update(final UUID id, final Animal entity) {
+        final Animal existing = animalRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Entity with id " + id + " not found"));
+        entity.setPropertyId(existing.getPropertyId());
+        return super.update(id, entity);
     }
 
     @Override

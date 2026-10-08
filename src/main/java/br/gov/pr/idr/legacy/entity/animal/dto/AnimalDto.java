@@ -1,15 +1,16 @@
 package br.gov.pr.idr.legacy.entity.animal.dto;
 
+import java.time.LocalDate;
+import java.util.UUID;
 import br.gov.pr.idr.legacy.entity.breed.dto.BreedDto;
-import br.gov.pr.idr.legacy.entity.property.dto.PropertyDto;
 import lombok.Data;
 
 @Data
 public class AnimalDto {
 
-    private long id;
+    private UUID id;
 
-    private PropertyDto property;
+    private UUID propertyId;
 
     private String type;
 
@@ -18,7 +19,7 @@ public class AnimalDto {
 
     private BreedDto breed;
 
-    private String bornDate;
+    private LocalDate bornDate;
 
     private Float bornWeight;
 
