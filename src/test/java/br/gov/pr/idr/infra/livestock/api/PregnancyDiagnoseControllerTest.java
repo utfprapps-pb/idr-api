@@ -65,7 +65,7 @@ class PregnancyDiagnoseControllerTest {
     }
 
     private String basePath(final UUID propertyId, final UUID animalId) {
-        return "/properties/" + propertyId + "/animals/" + animalId + "/pregnancyDiagnose";
+        return "/properties/" + propertyId + "/animals/" + animalId + "/pregnancy-diagnoses";
     }
 
     private String createBody(final String diagnoseDate, final String lastIa) {

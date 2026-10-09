@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@RequestMapping("properties/{propertyId}/animals/{animalId}/animalDiseases")
+@RequestMapping("properties/{propertyId}/animals/{animalId}/diseases")
 @RequiredArgsConstructor
 @RestController
 public class AnimalDiseasesController {

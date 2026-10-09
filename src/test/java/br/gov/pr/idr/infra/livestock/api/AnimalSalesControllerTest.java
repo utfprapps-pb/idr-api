@@ -68,7 +68,7 @@ class AnimalSalesControllerTest {
     }
 
     private String basePath(final UUID propertyId, final UUID animalId) {
-        return "/properties/" + propertyId + "/animals/" + animalId + "/animalSales";
+        return "/properties/" + propertyId + "/animals/" + animalId + "/sales";
     }
 
     private String createBody(final String dateSale, final String reason, final String value,

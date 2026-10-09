@@ -65,7 +65,7 @@ class MastitisControllerTest {
     }
 
     private String basePath(final UUID propertyId, final UUID animalId) {
-        return "/properties/" + propertyId + "/animals/" + animalId + "/mastitis";
+        return "/properties/" + propertyId + "/animals/" + animalId + "/mastitides";
     }
 
     private String createBody(final String diagnoseDate, final String mastitisType) {
