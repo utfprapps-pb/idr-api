@@ -117,7 +117,7 @@ class GlobalExceptionHandlerTest {
 
         final var response = handler.handleUnprocessableEntityException(ex);
 
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.status());
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.status());
         assertEquals("Entidade não pôde ser processada", response.message());
         assertTrue(response.errors().isEmpty());
     }
@@ -129,7 +129,7 @@ class GlobalExceptionHandlerTest {
 
         final var response = handler.handleForbiddenException(ex);
 
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.status());
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.status());
         assertEquals("Usuário não tem acesso à propriedade", response.message());
         assertTrue(response.errors().isEmpty());
     }

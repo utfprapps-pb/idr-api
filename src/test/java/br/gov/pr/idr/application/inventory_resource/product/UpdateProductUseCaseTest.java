@@ -8,6 +8,7 @@ import br.gov.pr.idr.domain.inventory_resource.product.Product;
 import br.gov.pr.idr.domain.inventory_resource.product.ProductGateway;
 import br.gov.pr.idr.domain.inventory_resource.product_category.ProductCategoryGateway;
 import br.gov.pr.idr.domain.inventory_resource.product_category.ProductCategoryID;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,7 +58,7 @@ class UpdateProductUseCaseTest {
     void shouldThrowWhenProductNotFound() {
         when(productGateway.findById(any())).thenReturn(Optional.empty());
 
-        assertThrows(NotificationException.class, () -> useCase.execute(
+        assertThrows(NotFoundException.class, () -> useCase.execute(
                 new UpdateProductCommand(productId, "P2", "D2", "W2", activePrincipleId, categoryId)));
         verify(productGateway, never()).update(any());
     }

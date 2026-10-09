@@ -39,25 +39,25 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnprocessableEntityException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ErrorResponse handleUnprocessableEntityException(UnprocessableEntityException ex) {
-        return buildDomainErrorResponse(ex);
+        return buildDomainErrorResponse(ex, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(NotificationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleNotificationException(NotificationException ex) {
-        return buildDomainErrorResponse(ex);
+        return buildDomainErrorResponse(ex, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ForbiddenException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handleForbiddenException(ForbiddenException ex) {
-        return buildDomainErrorResponse(ex);
+        return buildDomainErrorResponse(ex, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(DomainException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleDomainExceptions(DomainException ex) {
-        return buildDomainErrorResponse(ex);
+        return buildDomainErrorResponse(ex, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
@@ -68,11 +68,11 @@ public class GlobalExceptionHandler {
                 List.of(FieldError.from(ERROR, message)));
     }
 
-    private ErrorResponse buildDomainErrorResponse(DomainException ex) {
+    private ErrorResponse buildDomainErrorResponse(DomainException ex, HttpStatus status) {
         final List<FieldError> errors = ex.getErrors() == null ? List.of() :
                 ex.getErrors().stream()
                         .map(error -> FieldError.from(error.field(), error.message()))
                         .toList();
-        return new ErrorResponse(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), ex.getContext(), errors);
+        return new ErrorResponse(LocalDateTime.now(), status.value(), ex.getContext(), errors);
     }
 }

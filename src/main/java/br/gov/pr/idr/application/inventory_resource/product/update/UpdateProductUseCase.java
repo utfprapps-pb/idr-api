@@ -8,6 +8,7 @@ import br.gov.pr.idr.domain.inventory_resource.product.ProductGateway;
 import br.gov.pr.idr.domain.inventory_resource.product.ProductID;
 import br.gov.pr.idr.domain.inventory_resource.product_category.ProductCategoryGateway;
 import br.gov.pr.idr.domain.inventory_resource.product_category.ProductCategoryID;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import br.gov.pr.idr.domain.shared.tactical.validation.NotificationValidation;
 
@@ -36,8 +37,8 @@ public class UpdateProductUseCase extends UseCase<UpdateProductCommand, UpdatePr
         final var notification = NotificationValidation.create();
 
         final var product = productGateway.findById(productId).orElseThrow(
-                () -> new NotificationException("Produto com o id %s não encontrado".formatted(productId.id()),
-                        notification)).update(name, description, applicationWay, activePrincipleId, categoryId);
+                () -> NotFoundException.with("Produto com o id %s não encontrado".formatted(productId.id())))
+                .update(name, description, applicationWay, activePrincipleId, categoryId);
 
         if (!activePrincipleGateway.existsById(activePrincipleId)) {
             throw new NotificationException(
