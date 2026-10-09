@@ -48,7 +48,7 @@ public class MastitisJPAEntity extends SyncableJPAEntity {
     private String pe;
 
     public static MastitisJPAEntity from(final Mastitis mastitis) {
-        return new MastitisJPAEntity(
+        final var entity = new MastitisJPAEntity(
                 mastitis.getId().id(),
                 mastitis.getAnimalId().id(),
                 mastitis.getDiagnoseDate(),
@@ -59,10 +59,12 @@ public class MastitisJPAEntity extends SyncableJPAEntity {
                 mastitis.getPd(),
                 mastitis.getPe()
         );
+        entity.applyVersion(mastitis.getVersion());
+        return entity;
     }
 
     public Mastitis toAggregate() {
-        return Mastitis.with(
+        final var aggregate = Mastitis.with(
                 MastitisID.from(this.id),
                 AnimalID.from(this.animalId),
                 this.diagnoseDate,
@@ -73,5 +75,6 @@ public class MastitisJPAEntity extends SyncableJPAEntity {
                 this.pd,
                 this.pe
         );
+        return aggregate.withVersion(this.getVersion());
     }
 }

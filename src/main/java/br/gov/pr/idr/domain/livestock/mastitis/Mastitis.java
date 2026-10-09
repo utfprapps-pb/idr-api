@@ -17,6 +17,7 @@ public class Mastitis extends AggregateRoot<MastitisID> {
     private String ae;
     private String pd;
     private String pe;
+    private Long version;
 
     protected Mastitis(final MastitisID id, final AnimalID animalId, final LocalDate diagnoseDate,
                         final String mastitisType, final String cmtResult, final String ad, final String ae,
@@ -97,5 +98,14 @@ public class Mastitis extends AggregateRoot<MastitisID> {
 
     public String getPe() {
         return pe;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public Mastitis withVersion(final Long version) {
+        this.version = version;
+        return this;
     }
 }

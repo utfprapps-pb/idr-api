@@ -39,20 +39,23 @@ public class PregnancyDiagnoseJPAEntity extends SyncableJPAEntity {
     private LocalDate lastIa;
 
     public static PregnancyDiagnoseJPAEntity from(final PregnancyDiagnose pregnancyDiagnose) {
-        return new PregnancyDiagnoseJPAEntity(
+        final var entity = new PregnancyDiagnoseJPAEntity(
                 pregnancyDiagnose.getId().id(),
                 pregnancyDiagnose.getAnimalId().id(),
                 pregnancyDiagnose.getDiagnoseDate(),
                 pregnancyDiagnose.getLastIa()
         );
+        entity.applyVersion(pregnancyDiagnose.getVersion());
+        return entity;
     }
 
     public PregnancyDiagnose toAggregate() {
-        return PregnancyDiagnose.with(
+        final var aggregate = PregnancyDiagnose.with(
                 PregnancyDiagnoseID.from(this.id),
                 AnimalID.from(this.animalId),
                 this.diagnoseDate,
                 this.lastIa
         );
+        return aggregate.withVersion(this.getVersion());
     }
 }

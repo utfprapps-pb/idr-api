@@ -39,20 +39,23 @@ public class AnimalDiseasesJPAEntity extends SyncableJPAEntity {
     private LocalDate diagnosisDate;
 
     public static AnimalDiseasesJPAEntity from(final AnimalDiseases animalDiseases) {
-        return new AnimalDiseasesJPAEntity(
+        final var entity = new AnimalDiseasesJPAEntity(
                 animalDiseases.getId().id(),
                 animalDiseases.getAnimalId().id(),
                 animalDiseases.getDiagnosis(),
                 animalDiseases.getDiagnosisDate()
         );
+        entity.applyVersion(animalDiseases.getVersion());
+        return entity;
     }
 
     public AnimalDiseases toAggregate() {
-        return AnimalDiseases.with(
+        final var aggregate = AnimalDiseases.with(
                 AnimalDiseasesID.from(this.id),
                 AnimalID.from(this.animalId),
                 this.diagnosis,
                 this.diagnosisDate
         );
+        return aggregate.withVersion(this.getVersion());
     }
 }

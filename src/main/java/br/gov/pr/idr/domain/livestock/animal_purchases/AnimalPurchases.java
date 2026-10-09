@@ -14,6 +14,7 @@ public class AnimalPurchases extends AggregateRoot<AnimalPurchasesID> {
     private LocalDate datePurchase;
     private LocalDate birthDate;
     private BigDecimal value;
+    private Long version;
 
     protected AnimalPurchases(final AnimalPurchasesID id, final AnimalID animalId,
                                final LocalDate datePurchase, final LocalDate birthDate,
@@ -69,5 +70,14 @@ public class AnimalPurchases extends AggregateRoot<AnimalPurchasesID> {
 
     public BigDecimal getValue() {
         return value;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public AnimalPurchases withVersion(final Long version) {
+        this.version = version;
+        return this;
     }
 }

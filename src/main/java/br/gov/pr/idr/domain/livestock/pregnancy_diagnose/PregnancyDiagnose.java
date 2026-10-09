@@ -12,6 +12,7 @@ public class PregnancyDiagnose extends AggregateRoot<PregnancyDiagnoseID> {
     private final AnimalID animalId;
     private LocalDate diagnoseDate;
     private LocalDate lastIa;
+    private Long version;
 
     protected PregnancyDiagnose(final PregnancyDiagnoseID id, final AnimalID animalId,
                                  final LocalDate diagnoseDate, final LocalDate lastIa) {
@@ -58,5 +59,14 @@ public class PregnancyDiagnose extends AggregateRoot<PregnancyDiagnoseID> {
 
     public LocalDate getLastIa() {
         return lastIa;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public PregnancyDiagnose withVersion(final Long version) {
+        this.version = version;
+        return this;
     }
 }

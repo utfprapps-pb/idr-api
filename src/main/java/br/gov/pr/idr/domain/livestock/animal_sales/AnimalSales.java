@@ -17,6 +17,7 @@ public class AnimalSales extends AggregateRoot<AnimalSalesID> {
     private Reason reason;
     private BigDecimal value;
     private Destination destination;
+    private Long version;
 
     protected AnimalSales(final AnimalSalesID id, final AnimalID animalId, final LocalDate dateSale,
                            final Reason reason, final BigDecimal value, final Destination destination) {
@@ -76,5 +77,14 @@ public class AnimalSales extends AggregateRoot<AnimalSalesID> {
 
     public Destination getDestination() {
         return destination;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public AnimalSales withVersion(final Long version) {
+        this.version = version;
+        return this;
     }
 }

@@ -52,7 +52,7 @@ public class AnimalSalesJPAEntity extends SyncableJPAEntity {
     private Destination destination;
 
     public static AnimalSalesJPAEntity from(final AnimalSales animalSales) {
-        return new AnimalSalesJPAEntity(
+        final var entity = new AnimalSalesJPAEntity(
                 animalSales.getId().id(),
                 animalSales.getAnimalId().id(),
                 animalSales.getDateSale(),
@@ -60,10 +60,12 @@ public class AnimalSalesJPAEntity extends SyncableJPAEntity {
                 animalSales.getValue(),
                 animalSales.getDestination()
         );
+        entity.applyVersion(animalSales.getVersion());
+        return entity;
     }
 
     public AnimalSales toAggregate() {
-        return AnimalSales.with(
+        final var aggregate = AnimalSales.with(
                 AnimalSalesID.from(this.id),
                 AnimalID.from(this.animalId),
                 this.dateSale,
@@ -71,5 +73,6 @@ public class AnimalSalesJPAEntity extends SyncableJPAEntity {
                 this.value,
                 this.destination
         );
+        return aggregate.withVersion(this.getVersion());
     }
 }

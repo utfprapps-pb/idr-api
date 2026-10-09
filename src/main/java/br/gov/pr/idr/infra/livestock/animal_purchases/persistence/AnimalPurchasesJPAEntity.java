@@ -43,22 +43,25 @@ public class AnimalPurchasesJPAEntity extends SyncableJPAEntity {
     private BigDecimal value;
 
     public static AnimalPurchasesJPAEntity from(final AnimalPurchases animalPurchases) {
-        return new AnimalPurchasesJPAEntity(
+        final var entity = new AnimalPurchasesJPAEntity(
                 animalPurchases.getId().id(),
                 animalPurchases.getAnimalId().id(),
                 animalPurchases.getDatePurchase(),
                 animalPurchases.getBirthDate(),
                 animalPurchases.getValue()
         );
+        entity.applyVersion(animalPurchases.getVersion());
+        return entity;
     }
 
     public AnimalPurchases toAggregate() {
-        return AnimalPurchases.with(
+        final var aggregate = AnimalPurchases.with(
                 AnimalPurchasesID.from(this.id),
                 AnimalID.from(this.animalId),
                 this.datePurchase,
                 this.birthDate,
                 this.value
         );
+        return aggregate.withVersion(this.getVersion());
     }
 }

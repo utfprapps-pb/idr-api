@@ -38,20 +38,23 @@ public class InseminationJPAEntity extends SyncableJPAEntity {
     private String bull;
 
     public static InseminationJPAEntity from(final Insemination insemination) {
-        return new InseminationJPAEntity(
+        final var entity = new InseminationJPAEntity(
                 insemination.getId().id(),
                 insemination.getAnimalId().id(),
                 insemination.getIaDate(),
                 insemination.getBull()
         );
+        entity.applyVersion(insemination.getVersion());
+        return entity;
     }
 
     public Insemination toAggregate() {
-        return Insemination.with(
+        final var aggregate = Insemination.with(
                 InseminationID.from(this.id),
                 AnimalID.from(this.animalId),
                 this.iaDate,
                 this.bull
         );
+        return aggregate.withVersion(this.getVersion());
     }
 }

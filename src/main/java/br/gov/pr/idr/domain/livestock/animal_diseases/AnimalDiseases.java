@@ -12,6 +12,7 @@ public class AnimalDiseases extends AggregateRoot<AnimalDiseasesID> {
     private final AnimalID animalId;
     private String diagnosis;
     private LocalDate diagnosisDate;
+    private Long version;
 
     protected AnimalDiseases(final AnimalDiseasesID id, final AnimalID animalId,
                               final String diagnosis, final LocalDate diagnosisDate) {
@@ -58,5 +59,14 @@ public class AnimalDiseases extends AggregateRoot<AnimalDiseasesID> {
 
     public LocalDate getDiagnosisDate() {
         return diagnosisDate;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public AnimalDiseases withVersion(final Long version) {
+        this.version = version;
+        return this;
     }
 }

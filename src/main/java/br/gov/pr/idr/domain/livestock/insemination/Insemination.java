@@ -12,6 +12,7 @@ public class Insemination extends AggregateRoot<InseminationID> {
     private final AnimalID animalId;
     private LocalDate iaDate;
     private String bull;
+    private Long version;
 
     protected Insemination(final InseminationID id, final AnimalID animalId, final LocalDate iaDate,
                             final String bull) {
@@ -56,5 +57,14 @@ public class Insemination extends AggregateRoot<InseminationID> {
 
     public String getBull() {
         return bull;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public Insemination withVersion(final Long version) {
+        this.version = version;
+        return this;
     }
 }
