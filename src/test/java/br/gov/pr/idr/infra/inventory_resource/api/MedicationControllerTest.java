@@ -1,4 +1,4 @@
-package br.gov.pr.idr.infra.livestock.api;
+package br.gov.pr.idr.infra.inventory_resource.api;
 
 import br.gov.pr.idr.application.inventory_resource.medication.create.CreateMedicationCommand;
 import br.gov.pr.idr.application.inventory_resource.medication.create.CreateMedicationOutput;
