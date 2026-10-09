@@ -7,6 +7,7 @@ import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 public class ActivePrinciple extends AggregateRoot<ActivePrincipleID> {
 
     private String name;
+    private Long version;
 
     protected ActivePrinciple(final ActivePrincipleID id, final String name) {
         super(id);
@@ -38,5 +39,14 @@ public class ActivePrinciple extends AggregateRoot<ActivePrincipleID> {
 
     public String getName() {
         return name;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public ActivePrinciple withVersion(final Long version) {
+        this.version = version;
+        return this;
     }
 }

@@ -31,16 +31,19 @@ public class ActivePrincipleJPAEntity extends SyncableJPAEntity {
     private String name;
 
     public static ActivePrincipleJPAEntity from(final ActivePrinciple principle) {
-        return new ActivePrincipleJPAEntity(
+        final var entity = new ActivePrincipleJPAEntity(
                 principle.getId().id(),
                 principle.getName()
         );
+        entity.applyVersion(principle.getVersion());
+        return entity;
     }
 
     public ActivePrinciple toAggregate() {
-        return ActivePrinciple.with(
+        final var aggregate = ActivePrinciple.with(
                 ActivePrincipleID.from(this.id),
                 this.name
         );
+        return aggregate.withVersion(this.getVersion());
     }
 }

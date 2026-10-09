@@ -45,7 +45,7 @@ public class ProductJPAEntity extends SyncableJPAEntity {
     private UUID categoryId;
 
     public static ProductJPAEntity from(final Product product) {
-        return new ProductJPAEntity(
+        final var entity = new ProductJPAEntity(
                 product.getId().id(),
                 product.getName(),
                 product.getDescription(),
@@ -53,10 +53,12 @@ public class ProductJPAEntity extends SyncableJPAEntity {
                 product.getActivePrincipleId().id(),
                 product.getCategoryId().id()
         );
+        entity.applyVersion(product.getVersion());
+        return entity;
     }
 
     public Product toAggregate() {
-        return Product.with(
+        final var aggregate = Product.with(
                 ProductID.from(this.id),
                 this.name,
                 this.description,
@@ -64,5 +66,6 @@ public class ProductJPAEntity extends SyncableJPAEntity {
                 ActivePrincipleID.from(this.activePrincipleId),
                 ProductCategoryID.from(this.categoryId)
         );
+        return aggregate.withVersion(this.getVersion());
     }
 }

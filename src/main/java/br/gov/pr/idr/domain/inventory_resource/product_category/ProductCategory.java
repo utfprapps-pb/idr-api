@@ -7,6 +7,7 @@ import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 public class ProductCategory extends AggregateRoot<ProductCategoryID> {
 
     private String description;
+    private Long version;
 
     protected ProductCategory(final ProductCategoryID id, final String description) {
         super(id);
@@ -38,5 +39,14 @@ public class ProductCategory extends AggregateRoot<ProductCategoryID> {
 
     public String getDescription() {
         return description;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public ProductCategory withVersion(final Long version) {
+        this.version = version;
+        return this;
     }
 }

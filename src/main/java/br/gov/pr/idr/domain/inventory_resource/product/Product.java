@@ -13,6 +13,7 @@ public class Product extends AggregateRoot<ProductID> {
     private String applicationWay;
     private ActivePrincipleID activePrincipleId;
     private ProductCategoryID categoryId;
+    private Long version;
 
     protected Product(final ProductID id, final String name, final String description, final String applicationWay,
                        final ActivePrincipleID activePrincipleId, final ProductCategoryID categoryId) {
@@ -85,5 +86,14 @@ public class Product extends AggregateRoot<ProductID> {
 
     public ProductCategoryID getCategoryId() {
         return categoryId;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public Product withVersion(final Long version) {
+        this.version = version;
+        return this;
     }
 }

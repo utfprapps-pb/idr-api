@@ -31,16 +31,19 @@ public class ProductCategoryJPAEntity extends SyncableJPAEntity {
     private String description;
 
     public static ProductCategoryJPAEntity from(final ProductCategory category) {
-        return new ProductCategoryJPAEntity(
+        final var entity = new ProductCategoryJPAEntity(
                 category.getId().id(),
                 category.getDescription()
         );
+        entity.applyVersion(category.getVersion());
+        return entity;
     }
 
     public ProductCategory toAggregate() {
-        return ProductCategory.with(
+        final var aggregate = ProductCategory.with(
                 ProductCategoryID.from(this.id),
                 this.description
         );
+        return aggregate.withVersion(this.getVersion());
     }
 }
