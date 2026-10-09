@@ -31,16 +31,19 @@ public class BreedJPAEntity extends SyncableJPAEntity {
     private String breedName;
 
     public static BreedJPAEntity from(final Breed breed) {
-        return new BreedJPAEntity(
+        final var entity = new BreedJPAEntity(
                 breed.getId().id(),
                 breed.getBreedName()
         );
+        entity.applyVersion(breed.getVersion());
+        return entity;
     }
 
     public Breed toAggregate() {
-        return Breed.with(
+        final var aggregate = Breed.with(
                 BreedID.from(this.id),
                 this.breedName
         );
+        return aggregate.withVersion(this.getVersion());
     }
 }

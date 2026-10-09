@@ -7,6 +7,7 @@ import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 public class Breed extends AggregateRoot<BreedID> {
 
     private String breedName;
+    private Long version;
 
     protected Breed(final BreedID id, final String breedName) {
         super(id);
@@ -38,5 +39,14 @@ public class Breed extends AggregateRoot<BreedID> {
 
     public String getBreedName() {
         return breedName;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public Breed withVersion(final Long version) {
+        this.version = version;
+        return this;
     }
 }

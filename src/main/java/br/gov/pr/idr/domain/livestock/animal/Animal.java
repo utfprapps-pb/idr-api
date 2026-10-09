@@ -23,6 +23,7 @@ public class Animal extends AggregateRoot<AnimalID> {
     private Float previousWeight;
     private Float currentWeight;
     private Float ecc;
+    private Long version;
 
     protected Animal(final AnimalID id, final PropertyID propertyId, final AnimalID animalMotherId,
                       final BreedID breedId, final String type, final String identifier, final String gender,
@@ -140,5 +141,14 @@ public class Animal extends AggregateRoot<AnimalID> {
 
     public Float getEcc() {
         return ecc;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public Animal withVersion(final Long version) {
+        this.version = version;
+        return this;
     }
 }

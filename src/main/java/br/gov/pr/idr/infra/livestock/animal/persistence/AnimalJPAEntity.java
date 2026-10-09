@@ -59,7 +59,7 @@ public class AnimalJPAEntity extends SyncableJPAEntity {
     private Float ecc;
 
     public static AnimalJPAEntity from(final Animal animal) {
-        return new AnimalJPAEntity(
+        final var entity = new AnimalJPAEntity(
                 animal.getId().id(),
                 animal.getPropertyId().id(),
                 animal.getAnimalMotherId().map(AnimalID::id).orElse(null),
@@ -74,10 +74,12 @@ public class AnimalJPAEntity extends SyncableJPAEntity {
                 animal.getCurrentWeight(),
                 animal.getEcc()
         );
+        entity.applyVersion(animal.getVersion());
+        return entity;
     }
 
     public Animal toAggregate() {
-        return Animal.with(
+        final var aggregate = Animal.with(
                 AnimalID.from(this.id),
                 PropertyID.from(this.propertyId),
                 this.animalMotherId == null ? null : AnimalID.from(this.animalMotherId),
@@ -92,5 +94,6 @@ public class AnimalJPAEntity extends SyncableJPAEntity {
                 this.currentWeight,
                 this.ecc
         );
+        return aggregate.withVersion(this.getVersion());
     }
 }
