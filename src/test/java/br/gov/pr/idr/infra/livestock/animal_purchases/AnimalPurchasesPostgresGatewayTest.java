@@ -42,7 +42,7 @@ class AnimalPurchasesPostgresGatewayTest {
 
     private AnimalPurchases validAnimalPurchases(final AnimalID animalId) {
         return AnimalPurchases.create(animalId, LocalDate.of(2024, 3, 10), LocalDate.of(2023, 3, 10),
-                BigDecimal.valueOf(1500));
+                BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
     }
 
     @Test
@@ -168,5 +168,16 @@ class AnimalPurchasesPostgresGatewayTest {
         final var resultForB = gateway.search(animalB, query);
 
         assertEquals(0, resultForB.total());
+    }
+
+    @Test
+    @DisplayName("entidade JPA preserva o peso no roundtrip from/toAggregate")
+    void shouldKeepWeightThroughJpaEntityRoundtrip() {
+        final var original = validAnimalPurchases(AnimalID.unique());
+
+        final var roundtrip = AnimalPurchasesJPAEntity.from(original).toAggregate();
+
+        assertEquals(BigDecimal.valueOf(450), roundtrip.getWeight());
+        assertEquals(original.getValue(), roundtrip.getValue());
     }
 }

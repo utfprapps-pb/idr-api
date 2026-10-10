@@ -10,6 +10,7 @@ public record CreateAnimalPurchasesCommand(
         String username,
         LocalDate datePurchase,
         LocalDate birthDate,
-        BigDecimal value
+        BigDecimal value,
+        BigDecimal weight
 ) {
 }

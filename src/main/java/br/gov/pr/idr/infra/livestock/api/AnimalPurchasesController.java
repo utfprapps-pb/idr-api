@@ -46,7 +46,7 @@ public class AnimalPurchasesController {
                                                                   CreateAnimalPurchasesRequest request) {
         final var username = AuthenticationSupport.username(authentication);
         final var command = new CreateAnimalPurchasesCommand(propertyId, animalId, username,
-                request.datePurchase(), request.birthDate(), request.value());
+                request.datePurchase(), request.birthDate(), request.value(), request.weight());
         final var output = createAnimalPurchasesUseCase.execute(command);
         return ResponseEntity.ok(CreateAnimalPurchasesResponse.from(output));
     }
@@ -60,7 +60,7 @@ public class AnimalPurchasesController {
                                                                   UpdateAnimalPurchasesRequest request) {
         final var username = AuthenticationSupport.username(authentication);
         final var command = new UpdateAnimalPurchasesCommand(propertyId, animalId, id, username,
-                request.datePurchase(), request.birthDate(), request.value());
+                request.datePurchase(), request.birthDate(), request.value(), request.weight());
         final var output = updateAnimalPurchasesUseCase.execute(command);
         return ResponseEntity.ok(UpdateAnimalPurchasesResponse.from(output));
     }

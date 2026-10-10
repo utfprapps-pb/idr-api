@@ -6,6 +6,7 @@ import java.time.LocalDate;
 public record UpdateAnimalPurchasesRequest(
         LocalDate datePurchase,
         LocalDate birthDate,
-        BigDecimal value
+        BigDecimal value,
+        BigDecimal weight
 ) {
 }

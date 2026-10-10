@@ -14,37 +14,41 @@ public class AnimalPurchases extends AggregateRoot<AnimalPurchasesID> {
     private LocalDate datePurchase;
     private LocalDate birthDate;
     private BigDecimal value;
+    private BigDecimal weight;
     private Long version;
 
     protected AnimalPurchases(final AnimalPurchasesID id, final AnimalID animalId,
                                final LocalDate datePurchase, final LocalDate birthDate,
-                               final BigDecimal value) {
+                               final BigDecimal value, final BigDecimal weight) {
         super(id);
         this.animalId = animalId;
         this.datePurchase = datePurchase;
         this.birthDate = birthDate;
         this.value = value;
+        this.weight = weight;
     }
 
     public static AnimalPurchases with(final AnimalPurchasesID id, final AnimalID animalId,
                                         final LocalDate datePurchase, final LocalDate birthDate,
-                                        final BigDecimal value) {
-        return new AnimalPurchases(id, animalId, datePurchase, birthDate, value);
+                                        final BigDecimal value, final BigDecimal weight) {
+        return new AnimalPurchases(id, animalId, datePurchase, birthDate, value, weight);
     }
 
     public static AnimalPurchases create(final AnimalID animalId, final LocalDate datePurchase,
-                                          final LocalDate birthDate, final BigDecimal value) {
+                                          final LocalDate birthDate, final BigDecimal value,
+                                          final BigDecimal weight) {
         final var animalPurchases = new AnimalPurchases(AnimalPurchasesID.unique(), animalId, datePurchase,
-                birthDate, value);
+                birthDate, value, weight);
         animalPurchases.selfValidate();
         return animalPurchases;
     }
 
     public AnimalPurchases update(final LocalDate datePurchase, final LocalDate birthDate,
-                                   final BigDecimal value) {
+                                   final BigDecimal value, final BigDecimal weight) {
         this.datePurchase = datePurchase;
         this.birthDate = birthDate;
         this.value = value;
+        this.weight = weight;
         selfValidate();
         return this;
     }
@@ -70,6 +74,10 @@ public class AnimalPurchases extends AggregateRoot<AnimalPurchasesID> {
 
     public BigDecimal getValue() {
         return value;
+    }
+
+    public BigDecimal getWeight() {
+        return weight;
     }
 
     public Long getVersion() {

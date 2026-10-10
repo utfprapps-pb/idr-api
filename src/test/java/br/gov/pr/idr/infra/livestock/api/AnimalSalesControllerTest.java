@@ -74,7 +74,7 @@ class AnimalSalesControllerTest {
     private String createBody(final String dateSale, final String reason, final String value,
                                final String destination) {
         return """
-                {"dateSale":"%s","reason":"%s","value":%s,"destination":"%s"}
+                {"dateSale":"%s","reason":"%s","value":%s,"destination":"%s","weight":450}
                 """.formatted(dateSale, reason, value, destination);
     }
 
@@ -84,7 +84,7 @@ class AnimalSalesControllerTest {
         final var propertyId = UUID.randomUUID();
         final var animalId = UUID.randomUUID();
         final var output = new CreateAnimalSalesOutput(UUID.randomUUID(), animalId,
-                LocalDate.of(2024, 3, 10), Reason.VOLUNTARIA, BigDecimal.valueOf(1500), Destination.ABATE);
+                LocalDate.of(2024, 3, 10), Reason.VOLUNTARIA, BigDecimal.valueOf(1500), Destination.ABATE, BigDecimal.valueOf(450));
         when(createAnimalSalesUseCase.execute(any())).thenReturn(output);
 
         mockMvc.perform(post(basePath(propertyId, animalId))
@@ -93,6 +93,7 @@ class AnimalSalesControllerTest {
                         .content(createBody("2024-03-10", "VOLUNTARIA", "1500", "ABATE")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.value").value(1500))
+                .andExpect(jsonPath("$.weight").value(450))
                 .andExpect(jsonPath("$.animalId").value(animalId.toString()));
 
         final var captor = ArgumentCaptor.forClass(CreateAnimalSalesCommand.class);
@@ -104,6 +105,7 @@ class AnimalSalesControllerTest {
         assertEquals(Reason.VOLUNTARIA, captor.getValue().reason());
         assertEquals(BigDecimal.valueOf(1500), captor.getValue().value());
         assertEquals(Destination.ABATE, captor.getValue().destination());
+        assertEquals(new BigDecimal("450"), captor.getValue().weight());
     }
 
     @Test
@@ -113,7 +115,7 @@ class AnimalSalesControllerTest {
         final var animalId = UUID.randomUUID();
         final var id = UUID.randomUUID();
         final var output = new UpdateAnimalSalesOutput(id, animalId, LocalDate.of(2024, 4, 1),
-                Reason.EMERGENCIA, BigDecimal.valueOf(2000), Destination.PRODUCAO);
+                Reason.EMERGENCIA, BigDecimal.valueOf(2000), Destination.PRODUCAO, BigDecimal.valueOf(450));
         when(updateAnimalSalesUseCase.execute(any())).thenReturn(output);
 
         mockMvc.perform(put(basePath(propertyId, animalId) + "/" + id)
@@ -122,6 +124,7 @@ class AnimalSalesControllerTest {
                         .content(createBody("2024-04-01", "EMERGENCIA", "2000", "PRODUCAO")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.value").value(2000))
+                .andExpect(jsonPath("$.weight").value(450))
                 .andExpect(jsonPath("$.id").value(id.toString()));
 
         final var captor = ArgumentCaptor.forClass(UpdateAnimalSalesCommand.class);
@@ -158,7 +161,7 @@ class AnimalSalesControllerTest {
         final var animalId = UUID.randomUUID();
         final var id = UUID.randomUUID();
         final var output = new GetAnimalSalesByIdOutput(id, animalId, LocalDate.of(2024, 3, 10),
-                Reason.VOLUNTARIA, BigDecimal.valueOf(1500), Destination.ABATE);
+                Reason.VOLUNTARIA, BigDecimal.valueOf(1500), Destination.ABATE, BigDecimal.valueOf(450));
         when(getAnimalSalesByIdUseCase.execute(any())).thenReturn(output);
 
         mockMvc.perform(get(basePath(propertyId, animalId) + "/" + id).principal(AUTH))
@@ -178,7 +181,7 @@ class AnimalSalesControllerTest {
         final var propertyId = UUID.randomUUID();
         final var animalId = UUID.randomUUID();
         final var animalSalesFromAnimal = new ListAnimalSalesOutput(UUID.randomUUID(), animalId,
-                LocalDate.of(2024, 3, 10), Reason.VOLUNTARIA, BigDecimal.valueOf(1500), Destination.ABATE);
+                LocalDate.of(2024, 3, 10), Reason.VOLUNTARIA, BigDecimal.valueOf(1500), Destination.ABATE, BigDecimal.valueOf(450));
         final var pagination = new Pagination<>(0, 10, 1L, List.of(animalSalesFromAnimal));
         when(listAnimalSalesUseCase.execute(any())).thenReturn(pagination);
 

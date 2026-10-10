@@ -11,7 +11,8 @@ public record UpdateAnimalPurchasesResponse(
         UUID animalId,
         LocalDate datePurchase,
         LocalDate birthDate,
-        BigDecimal value
+        BigDecimal value,
+        BigDecimal weight
 ) {
 
     public static UpdateAnimalPurchasesResponse from(final UpdateAnimalPurchasesOutput output) {
@@ -20,7 +21,8 @@ public record UpdateAnimalPurchasesResponse(
                 output.animalId(),
                 output.datePurchase(),
                 output.birthDate(),
-                output.value()
+                output.value(),
+                output.weight()
         );
     }
 }

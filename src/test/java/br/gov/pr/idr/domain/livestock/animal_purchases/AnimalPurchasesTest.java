@@ -19,7 +19,7 @@ class AnimalPurchasesTest {
     @Test
     void shouldCreateWithValidFields() {
         final var animalPurchases = AnimalPurchases.create(AnimalID.unique(), LocalDate.of(2024, 1, 1),
-                LocalDate.of(2023, 1, 1), BigDecimal.valueOf(1500));
+                LocalDate.of(2023, 1, 1), BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
         assertNotNull(animalPurchases.getId());
         assertEquals(BigDecimal.valueOf(1500), animalPurchases.getValue());
     }
@@ -27,7 +27,7 @@ class AnimalPurchasesTest {
     @Test
     void shouldFailWhenAnimalIdIsNull() {
         assertThrows(NotificationException.class, () -> AnimalPurchases.create(null, LocalDate.now(),
-                LocalDate.now(), BigDecimal.TEN));
+                LocalDate.now(), BigDecimal.TEN, BigDecimal.valueOf(450)));
     }
 
     @Test
@@ -36,6 +36,6 @@ class AnimalPurchasesTest {
         // Isto é uma decisão deliberada (ver Review Focus da Task 6), não um descuido — não adicionar
         // validação aqui sem uma decisão explícita de produto.
         assertDoesNotThrow(() -> AnimalPurchases.create(AnimalID.unique(), LocalDate.now(), LocalDate.now(),
-                BigDecimal.valueOf(-100)));
+                BigDecimal.valueOf(-100), BigDecimal.valueOf(450)));
     }
 }

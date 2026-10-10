@@ -11,7 +11,8 @@ public record CreateAnimalPurchasesOutput(
         UUID animalId,
         LocalDate datePurchase,
         LocalDate birthDate,
-        BigDecimal value
+        BigDecimal value,
+        BigDecimal weight
 ) {
 
     public static CreateAnimalPurchasesOutput from(final AnimalPurchases entity) {
@@ -20,7 +21,8 @@ public record CreateAnimalPurchasesOutput(
                 entity.getAnimalId().id(),
                 entity.getDatePurchase(),
                 entity.getBirthDate(),
-                entity.getValue()
+                entity.getValue(),
+                entity.getWeight()
         );
     }
 }

@@ -32,7 +32,7 @@ public class UpdateAnimalPurchasesUseCase extends UseCase<UpdateAnimalPurchasesC
                 .orElseThrow(() -> NotFoundException.with(AnimalPurchases.class, id));
 
         final var updatedAnimalPurchases = animalPurchases.update(command.datePurchase(), command.birthDate(),
-                command.value());
+                command.value(), command.weight());
 
         return UpdateAnimalPurchasesOutput.from(animalPurchasesGateway.update(updatedAnimalPurchases));
     }

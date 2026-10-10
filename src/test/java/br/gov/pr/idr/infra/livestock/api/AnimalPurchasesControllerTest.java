@@ -71,7 +71,7 @@ class AnimalPurchasesControllerTest {
 
     private String createBody(final String datePurchase, final String birthDate, final String value) {
         return """
-                {"datePurchase":"%s","birthDate":"%s","value":%s}
+                {"datePurchase":"%s","birthDate":"%s","value":%s,"weight":450}
                 """.formatted(datePurchase, birthDate, value);
     }
 
@@ -81,7 +81,7 @@ class AnimalPurchasesControllerTest {
         final var propertyId = UUID.randomUUID();
         final var animalId = UUID.randomUUID();
         final var output = new CreateAnimalPurchasesOutput(UUID.randomUUID(), animalId,
-                LocalDate.of(2024, 3, 10), LocalDate.of(2023, 3, 10), BigDecimal.valueOf(1500));
+                LocalDate.of(2024, 3, 10), LocalDate.of(2023, 3, 10), BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
         when(createAnimalPurchasesUseCase.execute(any())).thenReturn(output);
 
         mockMvc.perform(post(basePath(propertyId, animalId))
@@ -90,6 +90,7 @@ class AnimalPurchasesControllerTest {
                         .content(createBody("2024-03-10", "2023-03-10", "1500")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.value").value(1500))
+                .andExpect(jsonPath("$.weight").value(450))
                 .andExpect(jsonPath("$.animalId").value(animalId.toString()));
 
         final var captor = ArgumentCaptor.forClass(CreateAnimalPurchasesCommand.class);
@@ -99,6 +100,7 @@ class AnimalPurchasesControllerTest {
         assertEquals("tecnico@idr.com", captor.getValue().username());
         assertEquals(LocalDate.of(2024, 3, 10), captor.getValue().datePurchase());
         assertEquals(BigDecimal.valueOf(1500), captor.getValue().value());
+        assertEquals(new BigDecimal("450"), captor.getValue().weight());
     }
 
     @Test
@@ -108,7 +110,7 @@ class AnimalPurchasesControllerTest {
         final var animalId = UUID.randomUUID();
         final var id = UUID.randomUUID();
         final var output = new UpdateAnimalPurchasesOutput(id, animalId, LocalDate.of(2024, 4, 1),
-                LocalDate.of(2023, 4, 1), BigDecimal.valueOf(2000));
+                LocalDate.of(2023, 4, 1), BigDecimal.valueOf(2000), BigDecimal.valueOf(450));
         when(updateAnimalPurchasesUseCase.execute(any())).thenReturn(output);
 
         mockMvc.perform(put(basePath(propertyId, animalId) + "/" + id)
@@ -117,6 +119,7 @@ class AnimalPurchasesControllerTest {
                         .content(createBody("2024-04-01", "2023-04-01", "2000")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.value").value(2000))
+                .andExpect(jsonPath("$.weight").value(450))
                 .andExpect(jsonPath("$.id").value(id.toString()));
 
         final var captor = ArgumentCaptor.forClass(UpdateAnimalPurchasesCommand.class);
@@ -153,7 +156,7 @@ class AnimalPurchasesControllerTest {
         final var animalId = UUID.randomUUID();
         final var id = UUID.randomUUID();
         final var output = new GetAnimalPurchasesByIdOutput(id, animalId, LocalDate.of(2024, 3, 10),
-                LocalDate.of(2023, 3, 10), BigDecimal.valueOf(1500));
+                LocalDate.of(2023, 3, 10), BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
         when(getAnimalPurchasesByIdUseCase.execute(any())).thenReturn(output);
 
         mockMvc.perform(get(basePath(propertyId, animalId) + "/" + id).principal(AUTH))
@@ -173,7 +176,7 @@ class AnimalPurchasesControllerTest {
         final var propertyId = UUID.randomUUID();
         final var animalId = UUID.randomUUID();
         final var animalPurchasesFromAnimal = new ListAnimalPurchasesOutput(UUID.randomUUID(), animalId,
-                LocalDate.of(2024, 3, 10), LocalDate.of(2023, 3, 10), BigDecimal.valueOf(1500));
+                LocalDate.of(2024, 3, 10), LocalDate.of(2023, 3, 10), BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
         final var pagination = new Pagination<>(0, 10, 1L, List.of(animalPurchasesFromAnimal));
         when(listAnimalPurchasesUseCase.execute(any())).thenReturn(pagination);
 

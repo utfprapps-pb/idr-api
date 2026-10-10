@@ -42,13 +42,17 @@ public class AnimalPurchasesJPAEntity extends SyncableJPAEntity {
     @Column(name = "value")
     private BigDecimal value;
 
+    @Column(name = "weight")
+    private BigDecimal weight;
+
     public static AnimalPurchasesJPAEntity from(final AnimalPurchases animalPurchases) {
         final var entity = new AnimalPurchasesJPAEntity(
                 animalPurchases.getId().id(),
                 animalPurchases.getAnimalId().id(),
                 animalPurchases.getDatePurchase(),
                 animalPurchases.getBirthDate(),
-                animalPurchases.getValue()
+                animalPurchases.getValue(),
+                animalPurchases.getWeight()
         );
         entity.applyVersion(animalPurchases.getVersion());
         return entity;
@@ -60,7 +64,8 @@ public class AnimalPurchasesJPAEntity extends SyncableJPAEntity {
                 AnimalID.from(this.animalId),
                 this.datePurchase,
                 this.birthDate,
-                this.value
+                this.value,
+                this.weight
         );
         return aggregate.withVersion(this.getVersion());
     }

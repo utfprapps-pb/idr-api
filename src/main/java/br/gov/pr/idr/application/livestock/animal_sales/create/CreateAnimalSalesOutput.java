@@ -14,7 +14,8 @@ public record CreateAnimalSalesOutput(
         LocalDate dateSale,
         Reason reason,
         BigDecimal value,
-        Destination destination
+        Destination destination,
+        BigDecimal weight
 ) {
 
     public static CreateAnimalSalesOutput from(final AnimalSales entity) {
@@ -24,7 +25,8 @@ public record CreateAnimalSalesOutput(
                 entity.getDateSale(),
                 entity.getReason(),
                 entity.getValue(),
-                entity.getDestination()
+                entity.getDestination(),
+                entity.getWeight()
         );
     }
 }

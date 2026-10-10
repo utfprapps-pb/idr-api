@@ -25,7 +25,7 @@ public class CreateAnimalPurchasesUseCase extends UseCase<CreateAnimalPurchasesC
                 command.username());
 
         final var animalPurchases = AnimalPurchases.create(animal.getId(), command.datePurchase(),
-                command.birthDate(), command.value());
+                command.birthDate(), command.value(), command.weight());
 
         return CreateAnimalPurchasesOutput.from(animalPurchasesGateway.save(animalPurchases));
     }

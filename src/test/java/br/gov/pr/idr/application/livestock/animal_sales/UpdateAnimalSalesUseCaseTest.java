@@ -47,14 +47,14 @@ class UpdateAnimalSalesUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final AnimalSales existingAnimalSales = AnimalSales.with(
             AnimalSalesID.from(animalSalesId), AnimalID.from(animalId), LocalDate.now(),
-            Reason.VOLUNTARIA, BigDecimal.valueOf(1500), Destination.ABATE);
+            Reason.VOLUNTARIA, BigDecimal.valueOf(1500), Destination.ABATE, BigDecimal.valueOf(450));
     private final AnimalSales animalSalesOfAnotherAnimal = AnimalSales.with(
             AnimalSalesID.from(animalSalesId), AnimalID.unique(), LocalDate.now(), Reason.VOLUNTARIA,
-            BigDecimal.valueOf(1500), Destination.ABATE);
+            BigDecimal.valueOf(1500), Destination.ABATE, BigDecimal.valueOf(450));
 
     private UpdateAnimalSalesCommand validCommand() {
         return new UpdateAnimalSalesCommand(propertyId, animalId, animalSalesId, "tecnico@idr.com",
-                LocalDate.of(2024, 4, 1), Reason.EMERGENCIA, BigDecimal.valueOf(2000), Destination.PRODUCAO);
+                LocalDate.of(2024, 4, 1), Reason.EMERGENCIA, BigDecimal.valueOf(2000), Destination.PRODUCAO, BigDecimal.valueOf(480));
     }
 
     @Test
@@ -67,6 +67,7 @@ class UpdateAnimalSalesUseCaseTest {
         final var output = useCase.execute(validCommand());
 
         assertEquals(BigDecimal.valueOf(2000), output.value());
+        assertEquals(BigDecimal.valueOf(480), output.weight());
     }
 
     @Test

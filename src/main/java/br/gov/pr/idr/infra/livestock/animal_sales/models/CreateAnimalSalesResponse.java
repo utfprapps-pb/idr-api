@@ -14,7 +14,8 @@ public record CreateAnimalSalesResponse(
         LocalDate dateSale,
         Reason reason,
         BigDecimal value,
-        Destination destination
+        Destination destination,
+        BigDecimal weight
 ) {
 
     public static CreateAnimalSalesResponse from(final CreateAnimalSalesOutput output) {
@@ -24,7 +25,8 @@ public record CreateAnimalSalesResponse(
                 output.dateSale(),
                 output.reason(),
                 output.value(),
-                output.destination()
+                output.destination(),
+                output.weight()
         );
     }
 }

@@ -42,7 +42,7 @@ class CreateAnimalPurchasesUseCaseTest {
 
     private CreateAnimalPurchasesCommand validCreateCommand() {
         return new CreateAnimalPurchasesCommand(propertyId, animalId, "tecnico@idr.com",
-                LocalDate.of(2024, 1, 1), LocalDate.of(2023, 1, 1), BigDecimal.valueOf(1500));
+                LocalDate.of(2024, 1, 1), LocalDate.of(2023, 1, 1), BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
     }
 
     @Test

@@ -17,37 +17,43 @@ public class AnimalSales extends AggregateRoot<AnimalSalesID> {
     private Reason reason;
     private BigDecimal value;
     private Destination destination;
+    private BigDecimal weight;
     private Long version;
 
     protected AnimalSales(final AnimalSalesID id, final AnimalID animalId, final LocalDate dateSale,
-                           final Reason reason, final BigDecimal value, final Destination destination) {
+                           final Reason reason, final BigDecimal value, final Destination destination,
+                           final BigDecimal weight) {
         super(id);
         this.animalId = animalId;
         this.dateSale = dateSale;
         this.reason = reason;
         this.value = value;
         this.destination = destination;
+        this.weight = weight;
     }
 
     public static AnimalSales with(final AnimalSalesID id, final AnimalID animalId, final LocalDate dateSale,
-                                    final Reason reason, final BigDecimal value, final Destination destination) {
-        return new AnimalSales(id, animalId, dateSale, reason, value, destination);
+                                    final Reason reason, final BigDecimal value, final Destination destination,
+                                    final BigDecimal weight) {
+        return new AnimalSales(id, animalId, dateSale, reason, value, destination, weight);
     }
 
     public static AnimalSales create(final AnimalID animalId, final LocalDate dateSale, final Reason reason,
-                                      final BigDecimal value, final Destination destination) {
+                                      final BigDecimal value, final Destination destination,
+                                      final BigDecimal weight) {
         final var animalSales = new AnimalSales(AnimalSalesID.unique(), animalId, dateSale, reason, value,
-                destination);
+                destination, weight);
         animalSales.selfValidate();
         return animalSales;
     }
 
     public AnimalSales update(final LocalDate dateSale, final Reason reason, final BigDecimal value,
-                               final Destination destination) {
+                               final Destination destination, final BigDecimal weight) {
         this.dateSale = dateSale;
         this.reason = reason;
         this.value = value;
         this.destination = destination;
+        this.weight = weight;
         selfValidate();
         return this;
     }
@@ -77,6 +83,10 @@ public class AnimalSales extends AggregateRoot<AnimalSalesID> {
 
     public Destination getDestination() {
         return destination;
+    }
+
+    public BigDecimal getWeight() {
+        return weight;
     }
 
     public Long getVersion() {

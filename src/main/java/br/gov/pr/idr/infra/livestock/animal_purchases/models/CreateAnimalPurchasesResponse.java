@@ -11,7 +11,8 @@ public record CreateAnimalPurchasesResponse(
         UUID animalId,
         LocalDate datePurchase,
         LocalDate birthDate,
-        BigDecimal value
+        BigDecimal value,
+        BigDecimal weight
 ) {
 
     public static CreateAnimalPurchasesResponse from(final CreateAnimalPurchasesOutput output) {
@@ -20,7 +21,8 @@ public record CreateAnimalPurchasesResponse(
                 output.animalId(),
                 output.datePurchase(),
                 output.birthDate(),
-                output.value()
+                output.value(),
+                output.weight()
         );
     }
 }

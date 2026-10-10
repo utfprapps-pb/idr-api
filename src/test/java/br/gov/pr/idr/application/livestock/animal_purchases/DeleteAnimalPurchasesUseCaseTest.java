@@ -44,10 +44,10 @@ class DeleteAnimalPurchasesUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final AnimalPurchases existingAnimalPurchases = AnimalPurchases.with(
             AnimalPurchasesID.from(animalPurchasesId), AnimalID.from(animalId), LocalDate.now(),
-            LocalDate.now(), BigDecimal.valueOf(1500));
+            LocalDate.now(), BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
     private final AnimalPurchases animalPurchasesOfAnotherAnimal = AnimalPurchases.with(
             AnimalPurchasesID.from(animalPurchasesId), AnimalID.unique(), LocalDate.now(), LocalDate.now(),
-            BigDecimal.valueOf(1500));
+            BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
 
     private DeleteAnimalPurchasesCommand validCommand() {
         return new DeleteAnimalPurchasesCommand(propertyId, animalId, animalPurchasesId, "tecnico@idr.com");

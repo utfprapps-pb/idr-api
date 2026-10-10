@@ -42,10 +42,10 @@ class GetAnimalPurchasesByIdUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final AnimalPurchases existingAnimalPurchases = AnimalPurchases.with(
             AnimalPurchasesID.from(animalPurchasesId), AnimalID.from(animalId), LocalDate.of(2024, 1, 1),
-            LocalDate.of(2023, 1, 1), BigDecimal.valueOf(1500));
+            LocalDate.of(2023, 1, 1), BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
     private final AnimalPurchases animalPurchasesOfAnotherAnimal = AnimalPurchases.with(
             AnimalPurchasesID.from(animalPurchasesId), AnimalID.unique(), LocalDate.now(), LocalDate.now(),
-            BigDecimal.valueOf(1500));
+            BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
 
     @Test
     void shouldReturnAnimalPurchasesWhenItBelongsToAnimal() {

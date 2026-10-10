@@ -10,6 +10,7 @@ public record CreateAnimalSalesRequest(
         LocalDate dateSale,
         Reason reason,
         BigDecimal value,
-        Destination destination
+        Destination destination,
+        BigDecimal weight
 ) {
 }

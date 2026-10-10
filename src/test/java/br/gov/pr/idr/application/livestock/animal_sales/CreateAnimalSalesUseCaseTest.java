@@ -44,7 +44,7 @@ class CreateAnimalSalesUseCaseTest {
 
     private CreateAnimalSalesCommand validCreateCommand() {
         return new CreateAnimalSalesCommand(propertyId, animalId, "tecnico@idr.com",
-                LocalDate.of(2024, 1, 1), Reason.VOLUNTARIA, BigDecimal.valueOf(1500), Destination.ABATE);
+                LocalDate.of(2024, 1, 1), Reason.VOLUNTARIA, BigDecimal.valueOf(1500), Destination.ABATE, BigDecimal.valueOf(450));
     }
 
     @Test

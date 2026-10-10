@@ -44,10 +44,10 @@ class GetAnimalSalesByIdUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final AnimalSales existingAnimalSales = AnimalSales.with(
             AnimalSalesID.from(animalSalesId), AnimalID.from(animalId), LocalDate.of(2024, 1, 1),
-            Reason.VOLUNTARIA, BigDecimal.valueOf(1500), Destination.ABATE);
+            Reason.VOLUNTARIA, BigDecimal.valueOf(1500), Destination.ABATE, BigDecimal.valueOf(450));
     private final AnimalSales animalSalesOfAnotherAnimal = AnimalSales.with(
             AnimalSalesID.from(animalSalesId), AnimalID.unique(), LocalDate.now(), Reason.VOLUNTARIA,
-            BigDecimal.valueOf(1500), Destination.ABATE);
+            BigDecimal.valueOf(1500), Destination.ABATE, BigDecimal.valueOf(450));
 
     @Test
     void shouldReturnAnimalSalesWhenItBelongsToAnimal() {

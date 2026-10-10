@@ -51,6 +51,9 @@ public class AnimalSalesJPAEntity extends SyncableJPAEntity {
     @Enumerated(EnumType.STRING)
     private Destination destination;
 
+    @Column(name = "weight")
+    private BigDecimal weight;
+
     public static AnimalSalesJPAEntity from(final AnimalSales animalSales) {
         final var entity = new AnimalSalesJPAEntity(
                 animalSales.getId().id(),
@@ -58,7 +61,8 @@ public class AnimalSalesJPAEntity extends SyncableJPAEntity {
                 animalSales.getDateSale(),
                 animalSales.getReason(),
                 animalSales.getValue(),
-                animalSales.getDestination()
+                animalSales.getDestination(),
+                animalSales.getWeight()
         );
         entity.applyVersion(animalSales.getVersion());
         return entity;
@@ -71,7 +75,8 @@ public class AnimalSalesJPAEntity extends SyncableJPAEntity {
                 this.dateSale,
                 this.reason,
                 this.value,
-                this.destination
+                this.destination,
+                this.weight
         );
         return aggregate.withVersion(this.getVersion());
     }

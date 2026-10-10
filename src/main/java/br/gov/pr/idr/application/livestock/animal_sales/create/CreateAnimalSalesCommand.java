@@ -14,6 +14,7 @@ public record CreateAnimalSalesCommand(
         LocalDate dateSale,
         Reason reason,
         BigDecimal value,
-        Destination destination
+        Destination destination,
+        BigDecimal weight
 ) {
 }

@@ -14,7 +14,8 @@ public record UpdateAnimalSalesResponse(
         LocalDate dateSale,
         Reason reason,
         BigDecimal value,
-        Destination destination
+        Destination destination,
+        BigDecimal weight
 ) {
 
     public static UpdateAnimalSalesResponse from(final UpdateAnimalSalesOutput output) {
@@ -24,7 +25,8 @@ public record UpdateAnimalSalesResponse(
                 output.dateSale(),
                 output.reason(),
                 output.value(),
-                output.destination()
+                output.destination(),
+                output.weight()
         );
     }
 }

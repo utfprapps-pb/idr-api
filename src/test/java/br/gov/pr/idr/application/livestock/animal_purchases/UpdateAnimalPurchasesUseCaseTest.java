@@ -45,14 +45,14 @@ class UpdateAnimalPurchasesUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final AnimalPurchases existingAnimalPurchases = AnimalPurchases.with(
             AnimalPurchasesID.from(animalPurchasesId), AnimalID.from(animalId), LocalDate.now(),
-            LocalDate.now(), BigDecimal.valueOf(1500));
+            LocalDate.now(), BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
     private final AnimalPurchases animalPurchasesOfAnotherAnimal = AnimalPurchases.with(
             AnimalPurchasesID.from(animalPurchasesId), AnimalID.unique(), LocalDate.now(), LocalDate.now(),
-            BigDecimal.valueOf(1500));
+            BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
 
     private UpdateAnimalPurchasesCommand validCommand() {
         return new UpdateAnimalPurchasesCommand(propertyId, animalId, animalPurchasesId, "tecnico@idr.com",
-                LocalDate.of(2024, 4, 1), LocalDate.of(2023, 4, 1), BigDecimal.valueOf(2000));
+                LocalDate.of(2024, 4, 1), LocalDate.of(2023, 4, 1), BigDecimal.valueOf(2000), BigDecimal.valueOf(480));
     }
 
     @Test
@@ -65,6 +65,7 @@ class UpdateAnimalPurchasesUseCaseTest {
         final var output = useCase.execute(validCommand());
 
         assertEquals(BigDecimal.valueOf(2000), output.value());
+        assertEquals(BigDecimal.valueOf(480), output.weight());
     }
 
     @Test

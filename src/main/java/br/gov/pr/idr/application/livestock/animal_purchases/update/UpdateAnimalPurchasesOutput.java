@@ -11,7 +11,8 @@ public record UpdateAnimalPurchasesOutput(
         UUID animalId,
         LocalDate datePurchase,
         LocalDate birthDate,
-        BigDecimal value
+        BigDecimal value,
+        BigDecimal weight
 ) {
 
     public static UpdateAnimalPurchasesOutput from(final AnimalPurchases entity) {
@@ -20,7 +21,8 @@ public record UpdateAnimalPurchasesOutput(
                 entity.getAnimalId().id(),
                 entity.getDatePurchase(),
                 entity.getBirthDate(),
-                entity.getValue()
+                entity.getValue(),
+                entity.getWeight()
         );
     }
 }
