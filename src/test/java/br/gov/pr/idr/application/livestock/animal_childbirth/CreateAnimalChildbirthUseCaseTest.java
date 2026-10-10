@@ -92,7 +92,7 @@ class CreateAnimalChildbirthUseCaseTest {
         assertEquals(animalId, output.animalId());
         assertEquals(breedId, output.breedId());
         assertNull(output.calfId());
-        verify(animalGateway, never()).findById(any());
+        verify(animalGateway, never()).existsByIdAndPropertyId(any(), any());
     }
 
     @Test
@@ -101,8 +101,8 @@ class CreateAnimalChildbirthUseCaseTest {
         final var calfId = UUID.randomUUID();
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
         when(breedGateway.existsById(BreedID.from(breedId))).thenReturn(true);
-        when(animalGateway.findById(AnimalID.from(calfId)))
-                .thenReturn(Optional.of(animal(calfId, propertyId, "Bezerra")));
+        when(animalGateway.existsByIdAndPropertyId(AnimalID.from(calfId), PropertyID.from(propertyId)))
+                .thenReturn(true);
         when(gateway.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         assertEquals(calfId, useCase.execute(command(calfId)).calfId());
@@ -114,8 +114,8 @@ class CreateAnimalChildbirthUseCaseTest {
         final var calfId = UUID.randomUUID();
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
         when(breedGateway.existsById(BreedID.from(breedId))).thenReturn(true);
-        when(animalGateway.findById(AnimalID.from(calfId)))
-                .thenReturn(Optional.of(animal(calfId, UUID.randomUUID(), "Bezerra")));
+        when(animalGateway.existsByIdAndPropertyId(AnimalID.from(calfId), PropertyID.from(propertyId)))
+                .thenReturn(false);
 
         assertThrows(NotificationException.class, () -> useCase.execute(command(calfId)));
         verify(gateway, never()).save(any());
@@ -127,7 +127,8 @@ class CreateAnimalChildbirthUseCaseTest {
         final var calfId = UUID.randomUUID();
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
         when(breedGateway.existsById(BreedID.from(breedId))).thenReturn(true);
-        when(animalGateway.findById(AnimalID.from(calfId))).thenReturn(Optional.empty());
+        when(animalGateway.existsByIdAndPropertyId(AnimalID.from(calfId), PropertyID.from(propertyId)))
+                .thenReturn(false);
 
         assertThrows(NotificationException.class, () -> useCase.execute(command(calfId)));
         verify(gateway, never()).save(any());

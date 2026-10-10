@@ -4,8 +4,6 @@ import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 
-import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
 
 public interface AnimalGateway {
@@ -14,8 +12,8 @@ public interface AnimalGateway {
 
     Optional<Animal> findById(final AnimalID id);
 
-    /** Animal identifiers for display, in one lookup; unknown ids are absent from the map. */
-    Map<AnimalID, String> findIdentifiersByIds(final Collection<AnimalID> ids);
+    /** Whether the animal exists and belongs to the given property, without loading it. */
+    boolean existsByIdAndPropertyId(final AnimalID id, final PropertyID propertyId);
 
     Animal update(final Animal animal);
 

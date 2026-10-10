@@ -1,15 +1,15 @@
 package br.gov.pr.idr.application.livestock.animal_childbirth.retrieve.list;
 
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
+import br.gov.pr.idr.application.livestock.shared.LivestockNameLookup;
 import br.gov.pr.idr.application.shared.stereotype.QueryUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
-import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirth;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirthGateway;
-import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @QueryUseCase
@@ -17,16 +17,14 @@ public class ListAnimalChildbirthUseCase extends UseCase<ListAnimalChildbirthCom
         Pagination<ListAnimalChildbirthOutput>> {
 
     private final AnimalChildbirthGateway animalChildbirthGateway;
-    private final BreedGateway breedGateway;
-    private final AnimalGateway animalGateway;
+    private final LivestockNameLookup nameLookup;
     private final AnimalAccessPolicy accessPolicy;
 
     public ListAnimalChildbirthUseCase(final AnimalChildbirthGateway animalChildbirthGateway,
-                                       final BreedGateway breedGateway, final AnimalGateway animalGateway,
+                                       final LivestockNameLookup nameLookup,
                                        final AnimalAccessPolicy accessPolicy) {
         this.animalChildbirthGateway = animalChildbirthGateway;
-        this.breedGateway = breedGateway;
-        this.animalGateway = animalGateway;
+        this.nameLookup = nameLookup;
         this.accessPolicy = accessPolicy;
     }
 
@@ -35,11 +33,13 @@ public class ListAnimalChildbirthUseCase extends UseCase<ListAnimalChildbirthCom
         accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
         final var page = animalChildbirthGateway.search(AnimalID.from(command.animalId()), command.query());
 
-        // One lookup per referenced catalog for the whole page, never one per row.
-        final var breedNames = breedGateway.findNamesByIds(
+        // One lookup per referenced catalog for the whole page, never one per row; no calves, no animal lookup.
+        final var breedNames = nameLookup.breedNames(
                 page.items().stream().map(AnimalChildbirth::getBreedId).collect(Collectors.toSet()));
-        final var calfIdentifiers = animalGateway.findIdentifiersByIds(page.items().stream()
-                .flatMap(childbirth -> childbirth.getCalfId().stream()).collect(Collectors.toSet()));
+        final var calfIds = page.items().stream()
+                .flatMap(childbirth -> childbirth.getCalfId().stream()).collect(Collectors.toSet());
+        final Map<AnimalID, String> calfIdentifiers = calfIds.isEmpty()
+                ? Map.of() : nameLookup.animalIdentifiers(calfIds);
         return page.map(childbirth -> ListAnimalChildbirthOutput.from(childbirth,
                 breedNames.get(childbirth.getBreedId()),
                 childbirth.getCalfId().map(calfIdentifiers::get).orElse(null)));

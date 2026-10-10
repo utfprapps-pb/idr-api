@@ -1,11 +1,11 @@
 package br.gov.pr.idr.application.livestock.animal.retrieve.list;
 
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
+import br.gov.pr.idr.application.livestock.shared.LivestockNameLookup;
 import br.gov.pr.idr.application.shared.stereotype.QueryUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
-import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 
@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 public class ListAnimalUseCase extends UseCase<ListAnimalCommand, Pagination<ListAnimalOutput>> {
 
     private final AnimalGateway animalGateway;
-    private final BreedGateway breedGateway;
+    private final LivestockNameLookup nameLookup;
     private final AnimalAccessPolicy accessPolicy;
 
-    public ListAnimalUseCase(final AnimalGateway animalGateway, final BreedGateway breedGateway,
+    public ListAnimalUseCase(final AnimalGateway animalGateway, final LivestockNameLookup nameLookup,
                              final AnimalAccessPolicy accessPolicy) {
         this.animalGateway = animalGateway;
-        this.breedGateway = breedGateway;
+        this.nameLookup = nameLookup;
         this.accessPolicy = accessPolicy;
     }
 
@@ -31,7 +31,7 @@ public class ListAnimalUseCase extends UseCase<ListAnimalCommand, Pagination<Lis
         final var page = animalGateway.search(PropertyID.from(command.propertyId()), command.query());
 
         // One lookup for every breed on the page, so the list does not issue a query per animal.
-        final var breedNames = breedGateway.findNamesByIds(
+        final var breedNames = nameLookup.breedNames(
                 page.items().stream().map(Animal::getBreedId).collect(Collectors.toSet()));
 
         return page.map(animal -> ListAnimalOutput.from(animal, breedNames.get(animal.getBreedId())));

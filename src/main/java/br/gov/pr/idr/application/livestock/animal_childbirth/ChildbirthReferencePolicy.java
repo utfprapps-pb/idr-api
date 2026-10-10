@@ -30,10 +30,7 @@ public final class ChildbirthReferencePolicy {
         if (calfId == null || calfId.equals(mother.getId().id())) {
             return; // no calf linked, or a self-reference that the aggregate itself rejects
         }
-        final var calfBelongsToProperty = animalGateway.findById(AnimalID.from(calfId))
-                .filter(calf -> calf.getPropertyId().equals(mother.getPropertyId()))
-                .isPresent();
-        if (!calfBelongsToProperty) {
+        if (!animalGateway.existsByIdAndPropertyId(AnimalID.from(calfId), mother.getPropertyId())) {
             throw new NotificationException("Animal (bezerro) com o ID %s não encontrado".formatted(calfId),
                     notification);
         }

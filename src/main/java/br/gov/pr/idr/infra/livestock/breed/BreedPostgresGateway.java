@@ -7,17 +7,13 @@ import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.livestock.breed.persistence.BreedJPAEntity;
 import br.gov.pr.idr.infra.livestock.breed.persistence.BreedJPARepository;
-import br.gov.pr.idr.infra.livestock.breed.persistence.BreedJPARepository.BreedNameView;
 import br.gov.pr.idr.infra.livestock.breed.persistence.BreedSpecification;
 import br.gov.pr.idr.infra.shared.support.PageRequestFactory;
 import br.gov.pr.idr.infra.shared.support.PaginationFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -39,15 +35,6 @@ public class BreedPostgresGateway implements BreedGateway {
     @Override
     public Optional<Breed> findById(final BreedID id) {
         return repository.findById(id.id()).map(BreedJPAEntity::toAggregate);
-    }
-
-    @Override
-    public Map<BreedID, String> findNamesByIds(final Collection<BreedID> ids) {
-        if (ids.isEmpty()) {
-            return Map.of();
-        }
-        return repository.findByIdIn(ids.stream().map(BreedID::id).toList()).stream()
-                .collect(Collectors.toMap(view -> BreedID.from(view.getId()), BreedNameView::getBreedName));
     }
 
     @Override

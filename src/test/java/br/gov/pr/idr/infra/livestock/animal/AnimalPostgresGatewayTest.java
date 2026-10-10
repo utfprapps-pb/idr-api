@@ -194,21 +194,13 @@ class AnimalPostgresGatewayTest {
     }
 
     @Test
-    @DisplayName("findIdentifiersByIds busca só id e identificador, numa única consulta")
-    void shouldFindIdentifiersByIdsWithOneProjectionQuery() {
-        final var first = AnimalID.unique();
-        final var view = mock(AnimalJPARepository.AnimalIdentifierView.class);
-        when(view.getId()).thenReturn(first.id());
-        when(view.getIdentifier()).thenReturn("Mimosa");
-        when(repository.findByIdIn(List.of(first.id()))).thenReturn(List.of(view));
+    @DisplayName("existsByIdAndPropertyId responde pelo repositório, sem carregar o animal")
+    void shouldCheckOwnershipWithoutLoadingTheAnimal() {
+        final var id = AnimalID.unique();
+        final var propertyId = PropertyID.unique();
+        when(repository.existsByIdAndPropertyId(id.id(), propertyId.id())).thenReturn(true);
 
-        assertEquals(Map.of(first, "Mimosa"), gateway.findIdentifiersByIds(List.of(first)));
-    }
-
-    @Test
-    @DisplayName("findIdentifiersByIds sem ids não consulta o banco")
-    void shouldNotQueryIdentifiersWhenThereAreNoIds() {
-        assertTrue(gateway.findIdentifiersByIds(List.of()).isEmpty());
-        verifyNoInteractions(repository);
+        assertTrue(gateway.existsByIdAndPropertyId(id, propertyId));
+        verify(repository, never()).findById(any());
     }
 }

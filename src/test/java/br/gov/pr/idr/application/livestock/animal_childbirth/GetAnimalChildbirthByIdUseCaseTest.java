@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_childbirth;
 
+import br.gov.pr.idr.application.livestock.shared.LivestockNameLookup;
 import br.gov.pr.idr.application.livestock.animal_childbirth.retrieve.get.GetAnimalChildbirthByIdCommand;
 import br.gov.pr.idr.application.livestock.animal_childbirth.retrieve.get.GetAnimalChildbirthByIdUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -47,8 +48,7 @@ import static org.mockito.Mockito.when;
 class GetAnimalChildbirthByIdUseCaseTest {
 
     @Mock AnimalChildbirthGateway gateway;
-    @Mock BreedGateway breedGateway;
-    @Mock AnimalGateway animalGateway;
+    @Mock LivestockNameLookup nameLookup;
     @Mock AnimalAccessPolicy accessPolicy;
 
     private final UUID propertyId = UUID.randomUUID();
@@ -80,10 +80,8 @@ class GetAnimalChildbirthByIdUseCaseTest {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
         when(gateway.findById(AnimalChildbirthID.from(childbirthId)))
                 .thenReturn(Optional.of(childbirthOf(animalId, calfId)));
-        when(breedGateway.findById(BreedID.from(breedId)))
-                .thenReturn(Optional.of(Breed.with(BreedID.from(breedId), "Jersey")));
-        when(animalGateway.findById(AnimalID.from(calfId)))
-                .thenReturn(Optional.of(animal(calfId, propertyId, "Bezerra 7")));
+        when(nameLookup.breedName(BreedID.from(breedId))).thenReturn("Jersey");
+        when(nameLookup.animalIdentifier(AnimalID.from(calfId))).thenReturn("Bezerra 7");
 
         final var output = useCase.execute(command());
 

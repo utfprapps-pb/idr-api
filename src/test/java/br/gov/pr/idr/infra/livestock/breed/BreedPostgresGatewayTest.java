@@ -72,28 +72,6 @@ class BreedPostgresGatewayTest {
         assertTrue(result.isPresent());
     }
 
-    @Test
-    @DisplayName("findNamesByIds busca só id e nome, numa única consulta")
-    void shouldFindNamesByIdsWithOneProjectionQuery() {
-        final var first = BreedID.unique();
-        final var second = BreedID.unique();
-        final var view = mock(BreedJPARepository.BreedNameView.class);
-        when(view.getId()).thenReturn(first.id());
-        when(view.getBreedName()).thenReturn("Gir");
-        when(repository.findByIdIn(List.of(first.id(), second.id()))).thenReturn(List.of(view));
-
-        final var result = gateway.findNamesByIds(List.of(first, second));
-
-        assertEquals(Map.of(first, "Gir"), result);
-        verify(repository, never()).findAllById(any());
-    }
-
-    @Test
-    @DisplayName("findNamesByIds sem ids não consulta o banco")
-    void shouldNotQueryWhenThereAreNoIds() {
-        assertTrue(gateway.findNamesByIds(List.of()).isEmpty());
-        verifyNoInteractions(repository);
-    }
 
     @Test
     @DisplayName("deve retornar Optional vazio quando raça não é encontrada")

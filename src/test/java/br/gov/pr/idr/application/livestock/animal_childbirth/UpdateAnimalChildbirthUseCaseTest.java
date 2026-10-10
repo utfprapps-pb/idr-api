@@ -113,8 +113,8 @@ class UpdateAnimalChildbirthUseCaseTest {
         when(gateway.findById(AnimalChildbirthID.from(childbirthId)))
                 .thenReturn(Optional.of(childbirthOf(animalId, null)));
         when(breedGateway.existsById(BreedID.from(breedId))).thenReturn(true);
-        when(animalGateway.findById(AnimalID.from(calfId)))
-                .thenReturn(Optional.of(animal(calfId, UUID.randomUUID(), "Bezerra")));
+        when(animalGateway.existsByIdAndPropertyId(AnimalID.from(calfId), PropertyID.from(propertyId)))
+                .thenReturn(false);
 
         assertThrows(NotificationException.class, () -> useCase.execute(command(calfId)));
         verify(gateway, never()).update(any());

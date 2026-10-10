@@ -41,10 +41,7 @@ public class CreateAnimalUseCase extends UseCase<CreateAnimalCommand, CreateAnim
         if (command.animalMotherId() != null) {
             animalMotherId = AnimalID.from(command.animalMotherId());
             final var motherId = animalMotherId;
-            final var motherBelongsToProperty = animalGateway.findById(motherId)
-                    .filter(mother -> mother.getPropertyId().equals(PropertyID.from(command.propertyId())))
-                    .isPresent();
-            if (!motherBelongsToProperty) {
+            if (!animalGateway.existsByIdAndPropertyId(motherId, PropertyID.from(command.propertyId()))) {
                 throw new NotificationException(
                         "Animal (mãe) com o ID %s não encontrado".formatted(motherId.id()), notification);
             }

@@ -85,7 +85,7 @@ class CreateAnimalUseCaseTest {
     void shouldThrowWhenAnimalMotherIdDoesNotExist() {
         when(accessPolicy.ensureAccessToProperty(any(), any())).thenReturn(property);
         when(breedGateway.existsById(any())).thenReturn(true);
-        when(animalGateway.findById(any())).thenReturn(Optional.empty());
+        when(animalGateway.existsByIdAndPropertyId(any(), any())).thenReturn(false);
         final var command = new CreateAnimalCommand(propertyId, "tecnico@idr.com", UUID.randomUUID(), breedId,
                 "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
         assertThrows(NotificationException.class, () -> useCase.execute(command));
@@ -97,10 +97,8 @@ class CreateAnimalUseCaseTest {
         when(breedGateway.existsById(any())).thenReturn(true);
 
         final var motherId = UUID.randomUUID();
-        final var motherFromAnotherProperty = Animal.with(AnimalID.from(motherId),
-                PropertyID.from(UUID.randomUUID()), null, BreedID.unique(), "T", "Mae", "F", "Vivo",
-                LocalDate.now(), 1f, 1f, 1f, 1f);
-        when(animalGateway.findById(AnimalID.from(motherId))).thenReturn(Optional.of(motherFromAnotherProperty));
+        when(animalGateway.existsByIdAndPropertyId(AnimalID.from(motherId), PropertyID.from(propertyId)))
+                .thenReturn(false);
 
         final var command = new CreateAnimalCommand(propertyId, "tecnico@idr.com", motherId, breedId,
                 "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);

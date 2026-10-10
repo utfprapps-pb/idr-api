@@ -1,12 +1,12 @@
 package br.gov.pr.idr.application.livestock.animal;
 
+import br.gov.pr.idr.application.livestock.shared.LivestockNameLookup;
 import br.gov.pr.idr.application.livestock.animal.retrieve.list.ListAnimalCommand;
 import br.gov.pr.idr.application.livestock.animal.retrieve.list.ListAnimalUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
-import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.domain.property_management.producer.ProducerID;
@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 class ListAnimalUseCaseTest {
 
     @Mock AnimalGateway animalGateway;
-    @Mock BreedGateway breedGateway;
+    @Mock LivestockNameLookup nameLookup;
     @Mock AnimalAccessPolicy accessPolicy;
     @InjectMocks ListAnimalUseCase useCase;
 
@@ -61,7 +61,7 @@ class ListAnimalUseCaseTest {
     void shouldListOnlyAnimalsOfAuthorizedProperty() {
         when(accessPolicy.ensureAccessToProperty(propertyId, "tecnico@idr.com")).thenReturn(property);
         when(animalGateway.search(eq(PropertyID.from(propertyId)), any())).thenReturn(somePagination());
-        when(breedGateway.findNamesByIds(Set.of(breedId))).thenReturn(Map.of(breedId, "Gir"));
+        when(nameLookup.breedNames(Set.of(breedId))).thenReturn(Map.of(breedId, "Gir"));
 
         final var output = useCase.execute(new ListAnimalCommand(propertyId, "tecnico@idr.com",
                 SearchQuery.from(0, 10, "", "identifier", "asc")));

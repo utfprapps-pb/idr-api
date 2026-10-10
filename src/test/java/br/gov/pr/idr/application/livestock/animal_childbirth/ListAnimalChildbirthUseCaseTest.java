@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_childbirth;
 
+import br.gov.pr.idr.application.livestock.shared.LivestockNameLookup;
 import br.gov.pr.idr.application.livestock.animal_childbirth.retrieve.list.ListAnimalChildbirthCommand;
 import br.gov.pr.idr.application.livestock.animal_childbirth.retrieve.list.ListAnimalChildbirthUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -48,8 +49,7 @@ import static org.mockito.Mockito.when;
 class ListAnimalChildbirthUseCaseTest {
 
     @Mock AnimalChildbirthGateway gateway;
-    @Mock BreedGateway breedGateway;
-    @Mock AnimalGateway animalGateway;
+    @Mock LivestockNameLookup nameLookup;
     @Mock AnimalAccessPolicy accessPolicy;
 
     private final UUID propertyId = UUID.randomUUID();
@@ -71,12 +71,12 @@ class ListAnimalChildbirthUseCaseTest {
     @InjectMocks ListAnimalChildbirthUseCase useCase;
 
     @Test
-    @DisplayName("resolve raça e bezerro da página inteira em uma consulta cada")
+    @DisplayName("resolve raça e bezerro da página inteira em uma consulta cada; sem bezerro, não consulta animais")
     void shouldResolveNamesOncePerPage() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
         when(gateway.search(any(), any()))
                 .thenReturn(new Pagination<>(0, 10, 1, List.of(childbirthOf(animalId, null))));
-        when(breedGateway.findNamesByIds(Set.of(BreedID.from(breedId))))
+        when(nameLookup.breedNames(Set.of(BreedID.from(breedId))))
                 .thenReturn(Map.of(BreedID.from(breedId), "Gir"));
 
         final var output = useCase.execute(new ListAnimalChildbirthCommand(propertyId, animalId, "tecnico@idr.com",
@@ -85,8 +85,8 @@ class ListAnimalChildbirthUseCaseTest {
         assertEquals(1, output.total());
         assertEquals("Gir", output.items().get(0).breedName());
         assertNull(output.items().get(0).calfIdentifier());
-        verify(breedGateway, times(1)).findNamesByIds(any());
-        verify(animalGateway, times(1)).findIdentifiersByIds(Set.of());
+        verify(nameLookup, times(1)).breedNames(any());
+        verify(nameLookup, never()).animalIdentifiers(any());
     }
 
     @Test

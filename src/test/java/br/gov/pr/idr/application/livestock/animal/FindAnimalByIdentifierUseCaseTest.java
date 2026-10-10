@@ -1,13 +1,12 @@
 package br.gov.pr.idr.application.livestock.animal;
 
+import br.gov.pr.idr.application.livestock.shared.LivestockNameLookup;
 import br.gov.pr.idr.application.livestock.animal.retrieve.find.FindAnimalByIdentifierCommand;
 import br.gov.pr.idr.application.livestock.animal.retrieve.find.FindAnimalByIdentifierUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
-import br.gov.pr.idr.domain.livestock.breed.Breed;
-import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.domain.property_management.producer.ProducerID;
@@ -36,7 +35,7 @@ import static org.mockito.Mockito.when;
 class FindAnimalByIdentifierUseCaseTest {
 
     @Mock AnimalGateway animalGateway;
-    @Mock BreedGateway breedGateway;
+    @Mock LivestockNameLookup nameLookup;
     @Mock AnimalAccessPolicy accessPolicy;
     @InjectMocks FindAnimalByIdentifierUseCase useCase;
 
@@ -64,7 +63,7 @@ class FindAnimalByIdentifierUseCaseTest {
                 "T", "Mimosa", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
         when(animalGateway.findByPropertyIdAndIdentifier(PropertyID.from(propertyId), "Mimosa"))
                 .thenReturn(Optional.of(animal));
-        when(breedGateway.findById(breedId)).thenReturn(Optional.of(Breed.with(breedId, "Jersey")));
+        when(nameLookup.breedName(breedId)).thenReturn("Jersey");
 
         final var output = useCase.execute(
                 new FindAnimalByIdentifierCommand(propertyId, "Mimosa", "tecnico@idr.com"));

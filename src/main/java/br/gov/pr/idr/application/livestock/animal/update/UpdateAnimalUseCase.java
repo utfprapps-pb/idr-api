@@ -45,10 +45,7 @@ public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnim
                 throw new NotificationException(
                         "Animal com o ID %s não pode ser sua própria mãe".formatted(motherId.id()), notification);
             }
-            final var motherBelongsToProperty = animalGateway.findById(motherId)
-                    .filter(mother -> mother.getPropertyId().equals(PropertyID.from(command.propertyId())))
-                    .isPresent();
-            if (!motherBelongsToProperty) {
+            if (!animalGateway.existsByIdAndPropertyId(motherId, PropertyID.from(command.propertyId()))) {
                 throw new NotificationException(
                         "Animal (mãe) com o ID %s não encontrado".formatted(motherId.id()), notification);
             }
