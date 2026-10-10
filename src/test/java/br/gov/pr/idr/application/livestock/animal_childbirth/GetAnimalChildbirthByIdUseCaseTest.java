@@ -80,10 +80,10 @@ class GetAnimalChildbirthByIdUseCaseTest {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
         when(gateway.findById(AnimalChildbirthID.from(childbirthId)))
                 .thenReturn(Optional.of(childbirthOf(animalId, calfId)));
-        when(breedGateway.findAllById(Set.of(BreedID.from(breedId))))
-                .thenReturn(List.of(Breed.with(BreedID.from(breedId), "Jersey")));
-        when(animalGateway.findAllById(Set.of(AnimalID.from(calfId))))
-                .thenReturn(List.of(animal(calfId, propertyId, "Bezerra 7")));
+        when(breedGateway.findById(BreedID.from(breedId)))
+                .thenReturn(Optional.of(Breed.with(BreedID.from(breedId), "Jersey")));
+        when(animalGateway.findById(AnimalID.from(calfId)))
+                .thenReturn(Optional.of(animal(calfId, propertyId, "Bezerra 7")));
 
         final var output = useCase.execute(command());
 

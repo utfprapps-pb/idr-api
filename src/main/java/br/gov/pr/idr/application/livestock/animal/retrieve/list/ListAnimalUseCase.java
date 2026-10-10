@@ -5,7 +5,6 @@ import br.gov.pr.idr.application.shared.stereotype.QueryUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
-import br.gov.pr.idr.domain.livestock.breed.Breed;
 import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
@@ -32,9 +31,8 @@ public class ListAnimalUseCase extends UseCase<ListAnimalCommand, Pagination<Lis
         final var page = animalGateway.search(PropertyID.from(command.propertyId()), command.query());
 
         // One lookup for every breed on the page, so the list does not issue a query per animal.
-        final var breedIds = page.items().stream().map(Animal::getBreedId).collect(Collectors.toSet());
-        final var breedNames = breedGateway.findAllById(breedIds).stream()
-                .collect(Collectors.toMap(Breed::getId, Breed::getBreedName));
+        final var breedNames = breedGateway.findNamesByIds(
+                page.items().stream().map(Animal::getBreedId).collect(Collectors.toSet()));
 
         return page.map(animal -> ListAnimalOutput.from(animal, breedNames.get(animal.getBreedId())));
     }

@@ -29,6 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -75,8 +76,8 @@ class ListAnimalChildbirthUseCaseTest {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
         when(gateway.search(any(), any()))
                 .thenReturn(new Pagination<>(0, 10, 1, List.of(childbirthOf(animalId, null))));
-        when(breedGateway.findAllById(Set.of(BreedID.from(breedId))))
-                .thenReturn(List.of(Breed.with(BreedID.from(breedId), "Gir")));
+        when(breedGateway.findNamesByIds(Set.of(BreedID.from(breedId))))
+                .thenReturn(Map.of(BreedID.from(breedId), "Gir"));
 
         final var output = useCase.execute(new ListAnimalChildbirthCommand(propertyId, animalId, "tecnico@idr.com",
                 SearchQuery.from(0, 10, "", "childbirthDate", "asc")));
@@ -84,7 +85,7 @@ class ListAnimalChildbirthUseCaseTest {
         assertEquals(1, output.total());
         assertEquals("Gir", output.items().get(0).breedName());
         assertNull(output.items().get(0).calfIdentifier());
-        verify(breedGateway, times(1)).findAllById(any());
+        verify(breedGateway, times(1)).findNamesByIds(any());
         verify(animalGateway, never()).findAllById(any());
     }
 

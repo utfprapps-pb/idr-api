@@ -6,7 +6,6 @@ import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
-import br.gov.pr.idr.domain.livestock.breed.Breed;
 import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.city.CityID;
@@ -25,6 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -61,7 +61,7 @@ class ListAnimalUseCaseTest {
     void shouldListOnlyAnimalsOfAuthorizedProperty() {
         when(accessPolicy.ensureAccessToProperty(propertyId, "tecnico@idr.com")).thenReturn(property);
         when(animalGateway.search(eq(PropertyID.from(propertyId)), any())).thenReturn(somePagination());
-        when(breedGateway.findAllById(Set.of(breedId))).thenReturn(List.of(Breed.with(breedId, "Gir")));
+        when(breedGateway.findNamesByIds(Set.of(breedId))).thenReturn(Map.of(breedId, "Gir"));
 
         final var output = useCase.execute(new ListAnimalCommand(propertyId, "tecnico@idr.com",
                 SearchQuery.from(0, 10, "", "identifier", "asc")));

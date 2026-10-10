@@ -1,18 +1,18 @@
 package br.gov.pr.idr.application.livestock.animal_childbirth.retrieve.get;
 
-import br.gov.pr.idr.application.livestock.animal_childbirth.ChildbirthReferencePolicy;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
 import br.gov.pr.idr.application.shared.stereotype.QueryUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
+import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirth;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirthGateway;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirthID;
+import br.gov.pr.idr.domain.livestock.breed.Breed;
 import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
 
-import java.util.List;
 
 @QueryUseCase
 public class GetAnimalChildbirthByIdUseCase extends UseCase<GetAnimalChildbirthByIdCommand,
@@ -40,10 +40,9 @@ public class GetAnimalChildbirthByIdUseCase extends UseCase<GetAnimalChildbirthB
                 .filter(p -> p.getAnimalId().equals(AnimalID.from(command.animalId())))
                 .orElseThrow(() -> NotFoundException.with(AnimalChildbirth.class, id));
 
-        final var breedNames = ChildbirthReferencePolicy.breedNames(breedGateway, List.of(animalChildbirth));
-        final var calfIdentifiers = ChildbirthReferencePolicy.calfIdentifiers(animalGateway, List.of(animalChildbirth));
         return GetAnimalChildbirthByIdOutput.from(animalChildbirth,
-                breedNames.get(animalChildbirth.getBreedId()),
-                animalChildbirth.getCalfId().map(calfIdentifiers::get).orElse(null));
+                breedGateway.findById(animalChildbirth.getBreedId()).map(Breed::getBreedName).orElse(null),
+                animalChildbirth.getCalfId().flatMap(animalGateway::findById).map(Animal::getIdentifier)
+                        .orElse(null));
     }
 }

@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
-/** Same record for GET and every search item; {@code breedName}/{@code calfIdentifier} are for display. */
+/** {@code breedName}/{@code calfIdentifier} are for display; same fields as each search item. */
 public record GetAnimalChildbirthByIdOutput(
         UUID id,
         UUID animalId,

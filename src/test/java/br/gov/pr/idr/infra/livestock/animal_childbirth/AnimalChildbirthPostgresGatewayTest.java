@@ -129,7 +129,6 @@ class AnimalChildbirthPostgresGatewayTest {
         assertTrue(result.isPresent());
         assertEquals(animalChildbirth.getAnimalId(), result.get().getAnimalId());
         assertEquals(animalChildbirth.getChildbirthDate(), result.get().getChildbirthDate());
-        assertEquals(animalChildbirth.getChildbirthDate(), result.get().getChildbirthDate());
     }
 
     @Test
