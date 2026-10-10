@@ -72,6 +72,20 @@ class BreedPostgresGatewayTest {
     }
 
     @Test
+    @DisplayName("deve buscar várias raças por ID numa única consulta")
+    void shouldFindAllByIdInOneQuery() {
+        final var first = BreedID.unique();
+        final var second = BreedID.unique();
+        when(repository.findAllById(List.of(first.id(), second.id()))).thenReturn(List.of(entityMock));
+        when(entityMock.toAggregate()).thenReturn(validBreed());
+
+        final var result = gateway.findAllById(List.of(first, second));
+
+        assertEquals(1, result.size());
+        verify(repository).findAllById(List.of(first.id(), second.id()));
+    }
+
+    @Test
     @DisplayName("deve retornar Optional vazio quando raça não é encontrada")
     void shouldReturnEmptyWhenNotFound() {
         final var id = BreedID.unique();

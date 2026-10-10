@@ -5,6 +5,8 @@ import br.gov.pr.idr.application.livestock.animal.retrieve.get.GetAnimalByIdUseC
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
+import br.gov.pr.idr.domain.livestock.breed.Breed;
+import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
@@ -16,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,20 +30,24 @@ import static org.mockito.Mockito.when;
 class GetAnimalByIdUseCaseTest {
 
     @Mock AnimalAccessPolicy accessPolicy;
+    @Mock BreedGateway breedGateway;
     @InjectMocks GetAnimalByIdUseCase useCase;
 
     private final UUID propertyId = UUID.randomUUID();
     private final UUID animalId = UUID.randomUUID();
+    private final BreedID breedId = BreedID.unique();
     private final Animal existingAnimal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null,
-            BreedID.unique(), "T", "Mimosa", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+            breedId, "T", "Mimosa", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
 
     @Test
     void shouldReturnAnimalWhenAuthorized() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(existingAnimal);
+        when(breedGateway.findById(breedId)).thenReturn(Optional.of(Breed.with(breedId, "Holandesa")));
 
         final var output = useCase.execute(new GetAnimalByIdCommand(propertyId, animalId, "tecnico@idr.com"));
 
         assertEquals("Mimosa", output.identifier());
+        assertEquals("Holandesa", output.breedName());
     }
 
     @Test

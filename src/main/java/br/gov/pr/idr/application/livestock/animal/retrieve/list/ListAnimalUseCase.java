@@ -3,25 +3,39 @@ package br.gov.pr.idr.application.livestock.animal.retrieve.list;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
 import br.gov.pr.idr.application.shared.stereotype.QueryUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
+import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
+import br.gov.pr.idr.domain.livestock.breed.Breed;
+import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
+
+import java.util.stream.Collectors;
 
 @QueryUseCase
 public class ListAnimalUseCase extends UseCase<ListAnimalCommand, Pagination<ListAnimalOutput>> {
 
     private final AnimalGateway animalGateway;
+    private final BreedGateway breedGateway;
     private final AnimalAccessPolicy accessPolicy;
 
-    public ListAnimalUseCase(final AnimalGateway animalGateway, final AnimalAccessPolicy accessPolicy) {
+    public ListAnimalUseCase(final AnimalGateway animalGateway, final BreedGateway breedGateway,
+                             final AnimalAccessPolicy accessPolicy) {
         this.animalGateway = animalGateway;
+        this.breedGateway = breedGateway;
         this.accessPolicy = accessPolicy;
     }
 
     @Override
     public Pagination<ListAnimalOutput> execute(final ListAnimalCommand command) {
         accessPolicy.ensureAccessToProperty(command.propertyId(), command.username());
-        return animalGateway.search(PropertyID.from(command.propertyId()), command.query())
-                .map(ListAnimalOutput::from);
+        final var page = animalGateway.search(PropertyID.from(command.propertyId()), command.query());
+
+        // One lookup for every breed on the page, so the list does not issue a query per animal.
+        final var breedIds = page.items().stream().map(Animal::getBreedId).collect(Collectors.toSet());
+        final var breedNames = breedGateway.findAllById(breedIds).stream()
+                .collect(Collectors.toMap(Breed::getId, Breed::getBreedName));
+
+        return page.map(animal -> ListAnimalOutput.from(animal, breedNames.get(animal.getBreedId())));
     }
 }

@@ -6,6 +6,8 @@ import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
+import br.gov.pr.idr.domain.livestock.breed.Breed;
+import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.domain.property_management.producer.ProducerID;
@@ -34,6 +36,7 @@ import static org.mockito.Mockito.when;
 class FindAnimalByIdentifierUseCaseTest {
 
     @Mock AnimalGateway animalGateway;
+    @Mock BreedGateway breedGateway;
     @Mock AnimalAccessPolicy accessPolicy;
     @InjectMocks FindAnimalByIdentifierUseCase useCase;
 
@@ -56,16 +59,19 @@ class FindAnimalByIdentifierUseCaseTest {
     @Test
     void shouldReturnAnimalWhenFoundWithinAuthorizedProperty() {
         when(accessPolicy.ensureAccessToProperty(propertyId, "tecnico@idr.com")).thenReturn(property);
-        final var animal = Animal.with(AnimalID.unique(), PropertyID.from(propertyId), null, BreedID.unique(),
+        final var breedId = BreedID.unique();
+        final var animal = Animal.with(AnimalID.unique(), PropertyID.from(propertyId), null, breedId,
                 "T", "Mimosa", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
         when(animalGateway.findByPropertyIdAndIdentifier(PropertyID.from(propertyId), "Mimosa"))
                 .thenReturn(Optional.of(animal));
+        when(breedGateway.findById(breedId)).thenReturn(Optional.of(Breed.with(breedId, "Jersey")));
 
         final var output = useCase.execute(
                 new FindAnimalByIdentifierCommand(propertyId, "Mimosa", "tecnico@idr.com"));
 
         assertTrue(output.isPresent());
         assertEquals("Mimosa", output.get().identifier());
+        assertEquals("Jersey", output.get().breedName());
     }
 
     @Test

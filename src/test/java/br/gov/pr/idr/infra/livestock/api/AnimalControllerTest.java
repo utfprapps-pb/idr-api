@@ -132,13 +132,14 @@ class AnimalControllerTest {
     void shouldGetAnimalById() throws Exception {
         final var propertyId = UUID.randomUUID();
         final var id = UUID.randomUUID();
-        final var output = new GetAnimalByIdOutput(id, propertyId, null, UUID.randomUUID(), "Bovino", "Mimosa",
+        final var output = new GetAnimalByIdOutput(id, propertyId, null, UUID.randomUUID(), "Holandesa", "Bovino", "Mimosa",
                 "F", "Normal", LocalDate.of(2020, 1, 1), 30f, 180f, 220f, 3.5f);
         when(getAnimalByIdUseCase.execute(any())).thenReturn(output);
 
         mockMvc.perform(get("/properties/" + propertyId + "/animals/" + id).principal(AUTH))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(id.toString()));
+                .andExpect(jsonPath("$.id").value(id.toString()))
+                .andExpect(jsonPath("$.breedName").value("Holandesa"));
 
         final var captor = ArgumentCaptor.forClass(GetAnimalByIdCommand.class);
         verify(getAnimalByIdUseCase).execute(captor.capture());
@@ -151,7 +152,7 @@ class AnimalControllerTest {
     void shouldSearchAnimalsScopedByPropertyIdInPath() throws Exception {
         final var propertyA = UUID.randomUUID();
         final var animalFromPropertyA = new ListAnimalOutput(UUID.randomUUID(), propertyA, null,
-                UUID.randomUUID(), "Bovino", "Mimosa", "F", "Normal", LocalDate.of(2020, 1, 1), 30f, 180f,
+                UUID.randomUUID(), "Holandesa", "Bovino", "Mimosa", "F", "Normal", LocalDate.of(2020, 1, 1), 30f, 180f,
                 220f, 3.5f);
         final var pagination = new Pagination<>(0, 10, 1L, List.of(animalFromPropertyA));
         when(listAnimalUseCase.execute(any())).thenReturn(pagination);
@@ -159,7 +160,8 @@ class AnimalControllerTest {
         mockMvc.perform(get("/properties/" + propertyA + "/animals/search").principal(AUTH))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.total").value(1))
-                .andExpect(jsonPath("$.items[0].propertyId").value(propertyA.toString()));
+                .andExpect(jsonPath("$.items[0].propertyId").value(propertyA.toString()))
+                .andExpect(jsonPath("$.items[0].breedName").value("Holandesa"));
 
         final var captor = ArgumentCaptor.forClass(ListAnimalCommand.class);
         verify(listAnimalUseCase).execute(captor.capture());
@@ -190,7 +192,7 @@ class AnimalControllerTest {
     void shouldFindAnimalByIdentifier() throws Exception {
         final var propertyId = UUID.randomUUID();
         final var output = new GetAnimalByIdOutput(UUID.randomUUID(), propertyId, null, UUID.randomUUID(),
-                "Bovino", "Mimosa", "F", "Normal", LocalDate.of(2020, 1, 1), 30f, 180f, 220f, 3.5f);
+                "Holandesa", "Bovino", "Mimosa", "F", "Normal", LocalDate.of(2020, 1, 1), 30f, 180f, 220f, 3.5f);
         when(findAnimalByIdentifierUseCase.execute(any())).thenReturn(Optional.of(output));
 
         mockMvc.perform(get("/properties/" + propertyId + "/animals/findAnimal/Mimosa").principal(AUTH))

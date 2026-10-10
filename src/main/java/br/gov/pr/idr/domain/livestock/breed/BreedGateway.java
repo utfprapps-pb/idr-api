@@ -3,6 +3,8 @@ package br.gov.pr.idr.domain.livestock.breed;
 import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public interface BreedGateway {
@@ -12,6 +14,8 @@ public interface BreedGateway {
     Breed save(final Breed breed);
 
     Optional<Breed> findById(final BreedID id);
+
+    List<Breed> findAllById(final Collection<BreedID> ids);
 
     Breed update(final Breed breed);
 

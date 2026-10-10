@@ -10,6 +10,7 @@ public record GetAnimalByIdOutput(
         UUID propertyId,
         UUID animalMotherId,
         UUID breedId,
+        String breedName,
         String type,
         String identifier,
         String gender,
@@ -21,12 +22,13 @@ public record GetAnimalByIdOutput(
         Float ecc
 ) {
 
-    public static GetAnimalByIdOutput from(final Animal entity) {
+    public static GetAnimalByIdOutput from(final Animal entity, final String breedName) {
         return new GetAnimalByIdOutput(
                 entity.getId().id(),
                 entity.getPropertyId().id(),
                 entity.getAnimalMotherId().map(id -> id.id()).orElse(null),
                 entity.getBreedId().id(),
+                breedName,
                 entity.getType(),
                 entity.getIdentifier(),
                 entity.getGender(),
