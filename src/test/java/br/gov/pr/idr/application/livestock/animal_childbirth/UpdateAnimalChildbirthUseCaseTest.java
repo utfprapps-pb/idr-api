@@ -19,10 +19,10 @@ import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -67,7 +67,13 @@ class UpdateAnimalChildbirthUseCaseTest {
                 LocalDate.of(2024, 3, 10), ChildbirthGender.FEMALE, new BigDecimal("35.5"), ChildbirthCondition.ALIVE,
                 BreedID.from(breedId), calfId == null ? null : AnimalID.from(calfId));
     }
-    @InjectMocks UpdateAnimalChildbirthUseCase useCase;
+    UpdateAnimalChildbirthUseCase useCase;
+
+    @BeforeEach
+    void setUp() {
+        // Real policy over mocked gateways: the reference rules are exercised, not stubbed away.
+        useCase = new UpdateAnimalChildbirthUseCase(gateway, new ChildbirthReferencePolicy(breedGateway, animalGateway), accessPolicy);
+    }
 
     private UpdateAnimalChildbirthCommand command(final UUID calfId) {
         return new UpdateAnimalChildbirthCommand(propertyId, animalId, childbirthId, "tecnico@idr.com",

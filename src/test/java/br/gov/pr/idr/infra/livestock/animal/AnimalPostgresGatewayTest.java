@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -193,13 +194,21 @@ class AnimalPostgresGatewayTest {
     }
 
     @Test
-    @DisplayName("deve buscar vários animais por ID numa única consulta")
-    void shouldFindAllByIdInOneQuery() {
+    @DisplayName("findIdentifiersByIds busca só id e identificador, numa única consulta")
+    void shouldFindIdentifiersByIdsWithOneProjectionQuery() {
         final var first = AnimalID.unique();
-        final var second = AnimalID.unique();
-        when(repository.findAllById(List.of(first.id(), second.id()))).thenReturn(List.of());
+        final var view = mock(AnimalJPARepository.AnimalIdentifierView.class);
+        when(view.getId()).thenReturn(first.id());
+        when(view.getIdentifier()).thenReturn("Mimosa");
+        when(repository.findByIdIn(List.of(first.id()))).thenReturn(List.of(view));
 
-        assertTrue(gateway.findAllById(List.of(first, second)).isEmpty());
-        verify(repository).findAllById(List.of(first.id(), second.id()));
+        assertEquals(Map.of(first, "Mimosa"), gateway.findIdentifiersByIds(List.of(first)));
+    }
+
+    @Test
+    @DisplayName("findIdentifiersByIds sem ids não consulta o banco")
+    void shouldNotQueryIdentifiersWhenThereAreNoIds() {
+        assertTrue(gateway.findIdentifiersByIds(List.of()).isEmpty());
+        verifyNoInteractions(repository);
     }
 }

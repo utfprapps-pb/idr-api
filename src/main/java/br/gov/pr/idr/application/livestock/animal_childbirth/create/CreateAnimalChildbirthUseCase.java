@@ -4,11 +4,9 @@ import br.gov.pr.idr.application.livestock.animal_childbirth.ChildbirthReference
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
 import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
-import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirth;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirthGateway;
-import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 
 @CommandUseCase
@@ -16,16 +14,14 @@ public class CreateAnimalChildbirthUseCase extends UseCase<CreateAnimalChildbirt
         CreateAnimalChildbirthOutput> {
 
     private final AnimalChildbirthGateway animalChildbirthGateway;
-    private final BreedGateway breedGateway;
-    private final AnimalGateway animalGateway;
+    private final ChildbirthReferencePolicy referencePolicy;
     private final AnimalAccessPolicy accessPolicy;
 
     public CreateAnimalChildbirthUseCase(final AnimalChildbirthGateway animalChildbirthGateway,
-                                         final BreedGateway breedGateway, final AnimalGateway animalGateway,
+                                         final ChildbirthReferencePolicy referencePolicy,
                                          final AnimalAccessPolicy accessPolicy) {
         this.animalChildbirthGateway = animalChildbirthGateway;
-        this.breedGateway = breedGateway;
-        this.animalGateway = animalGateway;
+        this.referencePolicy = referencePolicy;
         this.accessPolicy = accessPolicy;
     }
 
@@ -33,7 +29,7 @@ public class CreateAnimalChildbirthUseCase extends UseCase<CreateAnimalChildbirt
     public CreateAnimalChildbirthOutput execute(final CreateAnimalChildbirthCommand command) {
         final var mother = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
                 command.username());
-        ChildbirthReferencePolicy.ensureValid(breedGateway, animalGateway, mother, command.breedId(), command.calfId());
+        referencePolicy.ensureValid(mother, command.breedId(), command.calfId());
 
         final var animalChildbirth = AnimalChildbirth.create(mother.getId(), command.childbirthDate(),
                 command.gender(), command.weight(), command.condition(),

@@ -8,14 +8,16 @@ import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.livestock.animal.persistence.AnimalJPAEntity;
 import br.gov.pr.idr.infra.livestock.animal.persistence.AnimalJPARepository;
+import br.gov.pr.idr.infra.livestock.animal.persistence.AnimalJPARepository.AnimalIdentifierView;
 import br.gov.pr.idr.infra.shared.support.PageRequestFactory;
 import br.gov.pr.idr.infra.shared.support.PaginationFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -36,10 +38,13 @@ public class AnimalPostgresGateway implements AnimalGateway {
     }
 
     @Override
-    public List<Animal> findAllById(final Collection<AnimalID> ids) {
-        return repository.findAllById(ids.stream().map(AnimalID::id).toList()).stream()
-                .map(AnimalJPAEntity::toAggregate)
-                .toList();
+    public Map<AnimalID, String> findIdentifiersByIds(final Collection<AnimalID> ids) {
+        if (ids.isEmpty()) {
+            return Map.of();
+        }
+        return repository.findByIdIn(ids.stream().map(AnimalID::id).toList()).stream()
+                .collect(Collectors.toMap(view -> AnimalID.from(view.getId()),
+                        AnimalIdentifierView::getIdentifier));
     }
 
     @Override

@@ -4,6 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,4 +15,13 @@ public interface AnimalJPARepository extends JpaRepository<AnimalJPAEntity, UUID
                                                                                 Pageable pageable);
 
     Optional<AnimalJPAEntity> findByPropertyIdAndIdentifier(UUID propertyId, String identifier);
+
+    /** Closed projection: selects only id and identifier. */
+    List<AnimalIdentifierView> findByIdIn(Collection<UUID> ids);
+
+    interface AnimalIdentifierView {
+        UUID getId();
+
+        String getIdentifier();
+    }
 }

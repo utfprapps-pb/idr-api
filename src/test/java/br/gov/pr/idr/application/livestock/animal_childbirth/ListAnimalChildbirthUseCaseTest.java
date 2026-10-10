@@ -71,7 +71,7 @@ class ListAnimalChildbirthUseCaseTest {
     @InjectMocks ListAnimalChildbirthUseCase useCase;
 
     @Test
-    @DisplayName("resolve raça e bezerro da página inteira em uma consulta cada; sem bezerro, não consulta animais")
+    @DisplayName("resolve raça e bezerro da página inteira em uma consulta cada")
     void shouldResolveNamesOncePerPage() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
         when(gateway.search(any(), any()))
@@ -86,7 +86,7 @@ class ListAnimalChildbirthUseCaseTest {
         assertEquals("Gir", output.items().get(0).breedName());
         assertNull(output.items().get(0).calfIdentifier());
         verify(breedGateway, times(1)).findNamesByIds(any());
-        verify(animalGateway, never()).findAllById(any());
+        verify(animalGateway, times(1)).findIdentifiersByIds(Set.of());
     }
 
     @Test

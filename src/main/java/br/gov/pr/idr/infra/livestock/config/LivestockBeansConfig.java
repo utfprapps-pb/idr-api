@@ -1,8 +1,10 @@
 package br.gov.pr.idr.infra.livestock.config;
 
+import br.gov.pr.idr.application.livestock.animal_childbirth.ChildbirthReferencePolicy;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
 import br.gov.pr.idr.domain.iam.user.UserGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
+import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.property_management.city.CityGateway;
 import br.gov.pr.idr.domain.property_management.property.PropertyGateway;
 import org.springframework.context.annotation.Bean;
@@ -17,5 +19,11 @@ public class LivestockBeansConfig {
                                                    final CityGateway cityGateway,
                                                    final AnimalGateway animalGateway) {
         return new AnimalAccessPolicy(propertyGateway, userGateway, cityGateway, animalGateway);
+    }
+
+    @Bean
+    public ChildbirthReferencePolicy childbirthReferencePolicy(final BreedGateway breedGateway,
+                                                               final AnimalGateway animalGateway) {
+        return new ChildbirthReferencePolicy(breedGateway, animalGateway);
     }
 }

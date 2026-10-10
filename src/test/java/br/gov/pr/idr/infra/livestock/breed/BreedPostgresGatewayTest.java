@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -72,17 +73,26 @@ class BreedPostgresGatewayTest {
     }
 
     @Test
-    @DisplayName("deve buscar várias raças por ID numa única consulta")
-    void shouldFindAllByIdInOneQuery() {
+    @DisplayName("findNamesByIds busca só id e nome, numa única consulta")
+    void shouldFindNamesByIdsWithOneProjectionQuery() {
         final var first = BreedID.unique();
         final var second = BreedID.unique();
-        when(repository.findAllById(List.of(first.id(), second.id()))).thenReturn(List.of(entityMock));
-        when(entityMock.toAggregate()).thenReturn(validBreed());
+        final var view = mock(BreedJPARepository.BreedNameView.class);
+        when(view.getId()).thenReturn(first.id());
+        when(view.getBreedName()).thenReturn("Gir");
+        when(repository.findByIdIn(List.of(first.id(), second.id()))).thenReturn(List.of(view));
 
-        final var result = gateway.findAllById(List.of(first, second));
+        final var result = gateway.findNamesByIds(List.of(first, second));
 
-        assertEquals(1, result.size());
-        verify(repository).findAllById(List.of(first.id(), second.id()));
+        assertEquals(Map.of(first, "Gir"), result);
+        verify(repository, never()).findAllById(any());
+    }
+
+    @Test
+    @DisplayName("findNamesByIds sem ids não consulta o banco")
+    void shouldNotQueryWhenThereAreNoIds() {
+        assertTrue(gateway.findNamesByIds(List.of()).isEmpty());
+        verifyNoInteractions(repository);
     }
 
     @Test

@@ -5,7 +5,7 @@ import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface AnimalGateway {
@@ -14,7 +14,8 @@ public interface AnimalGateway {
 
     Optional<Animal> findById(final AnimalID id);
 
-    List<Animal> findAllById(final Collection<AnimalID> ids);
+    /** Animal identifiers for display, in one lookup; unknown ids are absent from the map. */
+    Map<AnimalID, String> findIdentifiersByIds(final Collection<AnimalID> ids);
 
     Animal update(final Animal animal);
 

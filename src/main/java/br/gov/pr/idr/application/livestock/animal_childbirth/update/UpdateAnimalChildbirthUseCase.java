@@ -4,12 +4,10 @@ import br.gov.pr.idr.application.livestock.animal_childbirth.ChildbirthReference
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
 import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
-import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirth;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirthGateway;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirthID;
-import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
 
@@ -18,16 +16,14 @@ public class UpdateAnimalChildbirthUseCase extends UseCase<UpdateAnimalChildbirt
         UpdateAnimalChildbirthOutput> {
 
     private final AnimalChildbirthGateway animalChildbirthGateway;
-    private final BreedGateway breedGateway;
-    private final AnimalGateway animalGateway;
+    private final ChildbirthReferencePolicy referencePolicy;
     private final AnimalAccessPolicy accessPolicy;
 
     public UpdateAnimalChildbirthUseCase(final AnimalChildbirthGateway animalChildbirthGateway,
-                                         final BreedGateway breedGateway, final AnimalGateway animalGateway,
+                                         final ChildbirthReferencePolicy referencePolicy,
                                          final AnimalAccessPolicy accessPolicy) {
         this.animalChildbirthGateway = animalChildbirthGateway;
-        this.breedGateway = breedGateway;
-        this.animalGateway = animalGateway;
+        this.referencePolicy = referencePolicy;
         this.accessPolicy = accessPolicy;
     }
 
@@ -39,7 +35,7 @@ public class UpdateAnimalChildbirthUseCase extends UseCase<UpdateAnimalChildbirt
         final var animalChildbirth = animalChildbirthGateway.findById(id)
                 .filter(p -> p.getAnimalId().equals(mother.getId()))
                 .orElseThrow(() -> NotFoundException.with(AnimalChildbirth.class, id));
-        ChildbirthReferencePolicy.ensureValid(breedGateway, animalGateway, mother, command.breedId(), command.calfId());
+        referencePolicy.ensureValid(mother, command.breedId(), command.calfId());
 
         final var updatedAnimalChildbirth = animalChildbirth.update(command.childbirthDate(), command.gender(),
                 command.weight(), command.condition(),

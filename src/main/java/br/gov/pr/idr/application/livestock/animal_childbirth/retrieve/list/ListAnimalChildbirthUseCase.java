@@ -1,6 +1,5 @@
 package br.gov.pr.idr.application.livestock.animal_childbirth.retrieve.list;
 
-import br.gov.pr.idr.application.livestock.animal_childbirth.ChildbirthReferencePolicy;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
 import br.gov.pr.idr.application.shared.stereotype.QueryUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
@@ -39,7 +38,8 @@ public class ListAnimalChildbirthUseCase extends UseCase<ListAnimalChildbirthCom
         // One lookup per referenced catalog for the whole page, never one per row.
         final var breedNames = breedGateway.findNamesByIds(
                 page.items().stream().map(AnimalChildbirth::getBreedId).collect(Collectors.toSet()));
-        final var calfIdentifiers = ChildbirthReferencePolicy.calfIdentifiers(animalGateway, page.items());
+        final var calfIdentifiers = animalGateway.findIdentifiersByIds(page.items().stream()
+                .flatMap(childbirth -> childbirth.getCalfId().stream()).collect(Collectors.toSet()));
         return page.map(childbirth -> ListAnimalChildbirthOutput.from(childbirth,
                 breedNames.get(childbirth.getBreedId()),
                 childbirth.getCalfId().map(calfIdentifiers::get).orElse(null)));
