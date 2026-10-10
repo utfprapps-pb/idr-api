@@ -181,12 +181,14 @@ Classes em pacotes `..domain..exceptions..` devem terminar com **`Exception`** (
 | Adaptadores REST (`infra..api`) | MockMvc | `./mvnw test` |
 | Regras de arquitetura | ArchUnit (`ArchitectureTest`) | `./mvnw test` |
 | **Adaptadores de persistência** (`infra`: Gateways, repositórios, projeções, `import.sql`) | **Postgres real em Docker** (Testcontainers), anotação `@PersistenceAdapterTest` | `./mvnw verify -Pit` |
+| **API ponta a ponta** (HTTP → filtro JWT → Use Case → banco) | Aplicação inteira + Postgres real, `@ApiIntegrationTest` + `ApiTestSupport` | `./mvnw verify -Pit` |
 
 - **Testes de integração rodam sob demanda.** `./mvnw test` (e o build padrão) não precisa de Docker: testes com a tag JUnit `integration` são ignorados. O profile `it` roda esses testes com o failsafe contra um Postgres descartável criado pelo Testcontainers (mesma versão principal do `idr-db`), em porta aleatória — nunca o banco de desenvolvimento, cujo schema é `create-drop`.
 - **Requisito:** Docker em execução (Docker Desktop, Rancher Desktop, etc.). A primeira execução baixa as imagens `postgres:18-alpine` e `testcontainers/ryuk`.
 - **Novo teste de banco:** anote a classe com `@PersistenceAdapterTest` (de `infra.shared.testing`), que já aplica `@DataJpaTest`, o Postgres real e a tag `integration`. Cada teste roda numa transação desfeita ao final; schema e seed carregam uma vez.
+- **Novo teste de API:** anote a classe com `@ApiIntegrationTest` e estenda `ApiTestSupport`. As requisições passam pela cadeia de segurança real com um JWT do técnico do seed (`tecnico1@idr.com`, vinculado a todas as propriedades do seed); os caminhos não levam o `/api` do context-path. O armazenamento de objetos (MinIO) é mockado. Use para fixar o contrato que o front consome: formato do JSON, validações e regras de acesso.
 - **Seed:** `SeedDataDatabaseTest` confere que cada insert do `import.sql` foi aplicado — o Hibernate só registra no log um insert que falha.
-- Rode só um teste de banco: `./mvnw verify -Pit -Dtest=none -Dsurefire.failIfNoSpecifiedTests=false -Dit.test=NomeDoTeste`.
+- Rode só um teste de integração: `./mvnw verify -Pit -Dtest=none -Dsurefire.failIfNoSpecifiedTests=false -Dit.test=NomeDoTeste`.
 
 ---
 
