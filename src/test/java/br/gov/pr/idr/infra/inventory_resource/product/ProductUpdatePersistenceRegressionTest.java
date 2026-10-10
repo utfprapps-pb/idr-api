@@ -4,10 +4,10 @@ import br.gov.pr.idr.domain.inventory_resource.active_principle.ActivePrincipleI
 import br.gov.pr.idr.domain.inventory_resource.product.Product;
 import br.gov.pr.idr.domain.inventory_resource.product_category.ProductCategoryID;
 import br.gov.pr.idr.infra.inventory_resource.product.persistence.ProductJPARepository;
+import br.gov.pr.idr.infra.shared.testing.PersistenceAdapterTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * instance with the same ID was already loaded in the same transaction
  * (findById(), called earlier in the same @Transactional Use Case method).
  * This test reproduces that exact call shape: save -> findById -> update
- * -> flush, all in one transaction, against a real (H2) persistence
- * context rather than a mocked repository.
+ * -> flush, all in one transaction, against a real Postgres persistence
+ * context (Testcontainers) rather than a mocked repository.
  */
-@DataJpaTest
+@PersistenceAdapterTest
 class ProductUpdatePersistenceRegressionTest {
 
     @Autowired

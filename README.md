@@ -128,6 +128,7 @@ public class CreatePropertyUseCase extends UseCase<CreatePropertyCommand, Create
 - Toda interface declarada em `domain` representa uma porta de saída e deve terminar com **`Gateway`** (ex.: `PropertyGateway`, `EmailGateway`).
 - Toda implementação concreta de um `Gateway` é um adaptador e deve residir em `infra` (ex.: `PropertyPostgresGateway`, `ThymeleafEmailGateway`).
 - O `application` depende apenas da interface; o Spring injeta a implementação correta em tempo de execução (Inversão de Dependência).
+- **Gateways são sobre agregados** (persistir, buscar, checar existência). Consultas que servem só para exibição — nomes e identificadores que um `Output` mostra ao lado de um ID — ficam numa **porta de leitura** declarada em `application` (ex.: `LivestockNameLookup`), implementada em `infra` com projeções (ex.: `PostgresLivestockNameLookup`). Assim o domínio não ganha métodos de tela.
 
 ---
 
@@ -172,6 +173,23 @@ Classes em pacotes `..domain..exceptions..` devem terminar com **`Exception`** (
 
 ---
 
+## 🧪 Testes
+
+| Camada | Como testar | Comando |
+|---|---|---|
+| `domain` e `application` | JUnit + Mockito, sem Spring (Gateways mockados) | `./mvnw test` |
+| Adaptadores REST (`infra..api`) | MockMvc | `./mvnw test` |
+| Regras de arquitetura | ArchUnit (`ArchitectureTest`) | `./mvnw test` |
+| **Adaptadores de persistência** (`infra`: Gateways, repositórios, projeções, `import.sql`) | **Postgres real em Docker** (Testcontainers), anotação `@PersistenceAdapterTest` | `./mvnw verify -Pit` |
+
+- **Testes de integração rodam sob demanda.** `./mvnw test` (e o build padrão) não precisa de Docker: testes com a tag JUnit `integration` são ignorados. O profile `it` roda esses testes com o failsafe contra um Postgres descartável criado pelo Testcontainers (mesma versão principal do `idr-db`), em porta aleatória — nunca o banco de desenvolvimento, cujo schema é `create-drop`.
+- **Requisito:** Docker em execução (Docker Desktop, Rancher Desktop, etc.). A primeira execução baixa as imagens `postgres:18-alpine` e `testcontainers/ryuk`.
+- **Novo teste de banco:** anote a classe com `@PersistenceAdapterTest` (de `infra.shared.testing`), que já aplica `@DataJpaTest`, o Postgres real e a tag `integration`. Cada teste roda numa transação desfeita ao final; schema e seed carregam uma vez.
+- **Seed:** `SeedDataDatabaseTest` confere que cada insert do `import.sql` foi aplicado — o Hibernate só registra no log um insert que falha.
+- Rode só um teste de banco: `./mvnw verify -Pit -Dtest=none -Dsurefire.failIfNoSpecifiedTests=false -Dit.test=NomeDoTeste`.
+
+---
+
 ## 🚀 Guia de Migração (Best Practices)
 
 Ao migrar uma entidade de `legacy` para a arquitetura hexagonal:
@@ -183,7 +201,8 @@ Ao migrar uma entidade de `legacy` para a arquitetura hexagonal:
 5. **DTOs:** utilize `record`s para `Command`/`Output` (em `application`) e para `Request`/`Response` (em `infra`).
 6. **Adaptadores:** implemente o Gateway em `infra` (ex.: `XxxPostgresGateway`), a entidade JPA (`XxxJPAEntity`) e o `Controller` REST.
 7. **Desacoplamento:** a camada `application` não deve conhecer JPA ou Controller — comunica-se apenas através de Portas (Gateways) definidas no `domain`.
-8. **Valide com os testes arquiteturais:** rode `ArchitectureTest` antes de abrir o PR.
+8. **Teste o adaptador de persistência no banco real:** crie um teste `@PersistenceAdapterTest` para o Gateway (consultas derivadas, projeções, soft delete) e rode `./mvnw verify -Pit`.
+9. **Valide com os testes arquiteturais:** rode `ArchitectureTest` antes de abrir o PR.
 
 ---
 
