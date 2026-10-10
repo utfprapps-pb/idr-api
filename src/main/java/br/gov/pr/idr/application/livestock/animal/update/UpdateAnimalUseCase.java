@@ -37,7 +37,7 @@ public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnim
                     notification);
         }
 
-        AnimalID animalMotherId = null;
+        AnimalID animalMotherId = existingAnimal.getAnimalMotherId().orElse(null);
         if (command.animalMotherId() != null) {
             animalMotherId = AnimalID.from(command.animalMotherId());
             final var motherId = animalMotherId;
@@ -54,10 +54,22 @@ public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnim
             }
         }
 
-        final var updatedAnimal = existingAnimal.update(animalMotherId, breedId, command.type(),
-                command.identifier(), command.gender(), command.bornCondition(), command.bornDate(),
-                command.bornWeight(), command.previousWeight(), command.currentWeight(), command.ecc());
+        // PATCH semantics: a field absent (null) in the request keeps its current value.
+        final var updatedAnimal = existingAnimal.update(animalMotherId, breedId,
+                orCurrent(command.type(), existingAnimal.getType()),
+                command.identifier(),
+                orCurrent(command.gender(), existingAnimal.getGender()),
+                orCurrent(command.bornCondition(), existingAnimal.getBornCondition()),
+                orCurrent(command.bornDate(), existingAnimal.getBornDate()),
+                orCurrent(command.bornWeight(), existingAnimal.getBornWeight()),
+                orCurrent(command.previousWeight(), existingAnimal.getPreviousWeight()),
+                orCurrent(command.currentWeight(), existingAnimal.getCurrentWeight()),
+                orCurrent(command.ecc(), existingAnimal.getEcc()));
 
         return UpdateAnimalOutput.from(animalGateway.update(updatedAnimal));
+    }
+
+    private static <T> T orCurrent(final T incoming, final T current) {
+        return incoming != null ? incoming : current;
     }
 }

@@ -63,6 +63,34 @@ class UpdateAnimalUseCaseTest {
     }
 
     @Test
+    @DisplayName("PATCH parcial: campos ausentes mantêm o valor atual (form envia só identificador e raça)")
+    void shouldKeepCurrentValuesForFieldsAbsentFromRequest() {
+        final var motherId = AnimalID.unique();
+        final var bornDate = LocalDate.of(2019, 6, 23);
+        final var animalWithData = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), motherId,
+                BreedID.unique(), "type 1", "Mimosa", "F", "Vivo", bornDate, 12f, 45f, 62f, 32f);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animalWithData);
+        when(breedGateway.existsById(any())).thenReturn(true);
+        when(animalGateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        final var output = useCase.execute(new UpdateAnimalCommand(propertyId, animalId, "tecnico@idr.com",
+                null, breedId, null, "Mimosa Editada", null, null, null, null, null, null, null));
+
+        assertEquals("Mimosa Editada", output.identifier());
+        assertEquals(breedId, output.breedId());
+        assertEquals(motherId.id(), output.animalMotherId());
+        assertEquals("type 1", output.type());
+        assertEquals("F", output.gender());
+        assertEquals("Vivo", output.bornCondition());
+        assertEquals(bornDate, output.bornDate());
+        assertEquals(12f, output.bornWeight());
+        assertEquals(45f, output.previousWeight());
+        assertEquals(62f, output.currentWeight());
+        assertEquals(32f, output.ecc());
+        verify(animalGateway, never()).findById(any());
+    }
+
+    @Test
     void shouldThrowForbiddenWhenAccessGuardDenies() {
         when(accessPolicy.ensureAccessToAnimal(any(), any(), any())).thenThrow(ForbiddenException.with("x"));
         assertThrows(ForbiddenException.class, () -> useCase.execute(validCommand()));
