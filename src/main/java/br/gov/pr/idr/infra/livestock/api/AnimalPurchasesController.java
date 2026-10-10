@@ -21,6 +21,7 @@ import br.gov.pr.idr.infra.livestock.animal_purchases.models.update.UpdateAnimal
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import br.gov.pr.idr.infra.shared.support.AuthenticationSupport;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +44,7 @@ public class AnimalPurchasesController {
                                                                   final Authentication authentication,
                                                                   @RequestBody @Valid
                                                                   CreateAnimalPurchasesRequest request) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var command = new CreateAnimalPurchasesCommand(propertyId, animalId, username,
                 request.datePurchase(), request.birthDate(), request.value());
         final var output = createAnimalPurchasesUseCase.execute(command);
@@ -57,7 +58,7 @@ public class AnimalPurchasesController {
                                                                   final Authentication authentication,
                                                                   @RequestBody @Valid
                                                                   UpdateAnimalPurchasesRequest request) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var command = new UpdateAnimalPurchasesCommand(propertyId, animalId, id, username,
                 request.datePurchase(), request.birthDate(), request.value());
         final var output = updateAnimalPurchasesUseCase.execute(command);
@@ -69,7 +70,7 @@ public class AnimalPurchasesController {
                                         @PathVariable UUID animalId,
                                         @PathVariable UUID id,
                                         final Authentication authentication) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         deleteAnimalPurchasesUseCase.execute(new DeleteAnimalPurchasesCommand(propertyId, animalId, id,
                 username));
         return ResponseEntity.noContent().build();
@@ -80,7 +81,7 @@ public class AnimalPurchasesController {
                                                                   @PathVariable UUID animalId,
                                                                   @PathVariable UUID id,
                                                                   final Authentication authentication) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var output = getAnimalPurchasesByIdUseCase.execute(
                 new GetAnimalPurchasesByIdCommand(propertyId, animalId, id, username));
         return ResponseEntity.ok(output);
@@ -96,18 +97,10 @@ public class AnimalPurchasesController {
             @RequestParam(required = false) final String terms,
             @RequestParam(defaultValue = "datePurchase") final String sort,
             @RequestParam(defaultValue = "asc") final String direction) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var query = SearchQuery.from(page, perPage, terms, sort, direction);
         final var output = listAnimalPurchasesUseCase.execute(
                 new ListAnimalPurchasesCommand(propertyId, animalId, username, query));
         return ResponseEntity.ok(output);
-    }
-
-    private String getUsername(final Authentication authentication) {
-        final var principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal == null) {
-            throw new IllegalStateException("Authentication principal is null");
-        }
-        return principal.toString();
     }
 }

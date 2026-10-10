@@ -9,6 +9,7 @@ import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.livestock.animal_diseases.persistence.AnimalDiseasesJPAEntity;
 import br.gov.pr.idr.infra.livestock.animal_diseases.persistence.AnimalDiseasesJPARepository;
 import br.gov.pr.idr.infra.shared.support.PageRequestFactory;
+import br.gov.pr.idr.infra.shared.support.PaginationFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +20,6 @@ import java.util.Optional;
 public class AnimalDiseasesPostgresGateway implements AnimalDiseasesGateway {
 
     private final AnimalDiseasesJPARepository repository;
-
-    @Override
-    public boolean existsById(final AnimalDiseasesID id) {
-        return repository.existsById(id.id());
-    }
 
     @Override
     public AnimalDiseases save(final AnimalDiseases animalDiseases) {
@@ -54,7 +50,6 @@ public class AnimalDiseasesPostgresGateway implements AnimalDiseasesGateway {
     public Pagination<AnimalDiseases> search(final AnimalID animalId, final SearchQuery query) {
         final var pageRequest = PageRequestFactory.from(query, "diagnosisDate");
         final var page = repository.findAllByAnimalId(animalId.id(), pageRequest);
-        return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(),
-                page.map(AnimalDiseasesJPAEntity::toAggregate).toList());
+        return PaginationFactory.from(page, AnimalDiseasesJPAEntity::toAggregate);
     }
 }

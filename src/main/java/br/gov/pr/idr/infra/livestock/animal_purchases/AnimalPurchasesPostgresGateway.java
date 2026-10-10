@@ -9,6 +9,7 @@ import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.livestock.animal_purchases.persistence.AnimalPurchasesJPAEntity;
 import br.gov.pr.idr.infra.livestock.animal_purchases.persistence.AnimalPurchasesJPARepository;
 import br.gov.pr.idr.infra.shared.support.PageRequestFactory;
+import br.gov.pr.idr.infra.shared.support.PaginationFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +20,6 @@ import java.util.Optional;
 public class AnimalPurchasesPostgresGateway implements AnimalPurchasesGateway {
 
     private final AnimalPurchasesJPARepository repository;
-
-    @Override
-    public boolean existsById(final AnimalPurchasesID id) {
-        return repository.existsById(id.id());
-    }
 
     @Override
     public AnimalPurchases save(final AnimalPurchases animalPurchases) {
@@ -54,7 +50,6 @@ public class AnimalPurchasesPostgresGateway implements AnimalPurchasesGateway {
     public Pagination<AnimalPurchases> search(final AnimalID animalId, final SearchQuery query) {
         final var pageRequest = PageRequestFactory.from(query, "datePurchase");
         final var page = repository.findAllByAnimalId(animalId.id(), pageRequest);
-        return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(),
-                page.map(AnimalPurchasesJPAEntity::toAggregate).toList());
+        return PaginationFactory.from(page, AnimalPurchasesJPAEntity::toAggregate);
     }
 }

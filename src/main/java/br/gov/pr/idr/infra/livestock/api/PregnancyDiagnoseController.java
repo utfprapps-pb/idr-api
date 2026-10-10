@@ -21,6 +21,7 @@ import br.gov.pr.idr.infra.livestock.pregnancy_diagnose.models.update.UpdatePreg
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import br.gov.pr.idr.infra.shared.support.AuthenticationSupport;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +44,7 @@ public class PregnancyDiagnoseController {
                                                                     final Authentication authentication,
                                                                     @RequestBody @Valid
                                                                     CreatePregnancyDiagnoseRequest request) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var command = new CreatePregnancyDiagnoseCommand(propertyId, animalId, username,
                 request.diagnoseDate(), request.lastIa());
         final var output = createPregnancyDiagnoseUseCase.execute(command);
@@ -57,7 +58,7 @@ public class PregnancyDiagnoseController {
                                                                     final Authentication authentication,
                                                                     @RequestBody @Valid
                                                                     UpdatePregnancyDiagnoseRequest request) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var command = new UpdatePregnancyDiagnoseCommand(propertyId, animalId, id, username,
                 request.diagnoseDate(), request.lastIa());
         final var output = updatePregnancyDiagnoseUseCase.execute(command);
@@ -69,7 +70,7 @@ public class PregnancyDiagnoseController {
                                         @PathVariable UUID animalId,
                                         @PathVariable UUID id,
                                         final Authentication authentication) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         deletePregnancyDiagnoseUseCase.execute(new DeletePregnancyDiagnoseCommand(propertyId, animalId, id,
                 username));
         return ResponseEntity.noContent().build();
@@ -80,7 +81,7 @@ public class PregnancyDiagnoseController {
                                                                     @PathVariable UUID animalId,
                                                                     @PathVariable UUID id,
                                                                     final Authentication authentication) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var output = getPregnancyDiagnoseByIdUseCase.execute(
                 new GetPregnancyDiagnoseByIdCommand(propertyId, animalId, id, username));
         return ResponseEntity.ok(output);
@@ -96,18 +97,10 @@ public class PregnancyDiagnoseController {
             @RequestParam(required = false) final String terms,
             @RequestParam(defaultValue = "diagnoseDate") final String sort,
             @RequestParam(defaultValue = "asc") final String direction) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var query = SearchQuery.from(page, perPage, terms, sort, direction);
         final var output = listPregnancyDiagnoseUseCase.execute(
                 new ListPregnancyDiagnoseCommand(propertyId, animalId, username, query));
         return ResponseEntity.ok(output);
-    }
-
-    private String getUsername(final Authentication authentication) {
-        final var principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal == null) {
-            throw new IllegalStateException("Authentication principal is null");
-        }
-        return principal.toString();
     }
 }

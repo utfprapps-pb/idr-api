@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface MedicationGateway {
 
-    boolean existsById(final MedicationID id);
-
     Medication save(final Medication medication);
 
     Optional<Medication> findById(final MedicationID id);

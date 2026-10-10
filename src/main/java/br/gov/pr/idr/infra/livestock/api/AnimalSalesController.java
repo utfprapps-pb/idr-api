@@ -21,6 +21,7 @@ import br.gov.pr.idr.infra.livestock.animal_sales.models.update.UpdateAnimalSale
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import br.gov.pr.idr.infra.shared.support.AuthenticationSupport;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +44,7 @@ public class AnimalSalesController {
                                                                final Authentication authentication,
                                                                @RequestBody @Valid
                                                                CreateAnimalSalesRequest request) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var command = new CreateAnimalSalesCommand(propertyId, animalId, username,
                 request.dateSale(), request.reason(), request.value(), request.destination());
         final var output = createAnimalSalesUseCase.execute(command);
@@ -57,7 +58,7 @@ public class AnimalSalesController {
                                                                final Authentication authentication,
                                                                @RequestBody @Valid
                                                                UpdateAnimalSalesRequest request) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var command = new UpdateAnimalSalesCommand(propertyId, animalId, id, username,
                 request.dateSale(), request.reason(), request.value(), request.destination());
         final var output = updateAnimalSalesUseCase.execute(command);
@@ -69,7 +70,7 @@ public class AnimalSalesController {
                                         @PathVariable UUID animalId,
                                         @PathVariable UUID id,
                                         final Authentication authentication) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         deleteAnimalSalesUseCase.execute(new DeleteAnimalSalesCommand(propertyId, animalId, id,
                 username));
         return ResponseEntity.noContent().build();
@@ -80,7 +81,7 @@ public class AnimalSalesController {
                                                                @PathVariable UUID animalId,
                                                                @PathVariable UUID id,
                                                                final Authentication authentication) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var output = getAnimalSalesByIdUseCase.execute(
                 new GetAnimalSalesByIdCommand(propertyId, animalId, id, username));
         return ResponseEntity.ok(output);
@@ -96,18 +97,10 @@ public class AnimalSalesController {
             @RequestParam(required = false) final String terms,
             @RequestParam(defaultValue = "dateSale") final String sort,
             @RequestParam(defaultValue = "asc") final String direction) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var query = SearchQuery.from(page, perPage, terms, sort, direction);
         final var output = listAnimalSalesUseCase.execute(
                 new ListAnimalSalesCommand(propertyId, animalId, username, query));
         return ResponseEntity.ok(output);
-    }
-
-    private String getUsername(final Authentication authentication) {
-        final var principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal == null) {
-            throw new IllegalStateException("Authentication principal is null");
-        }
-        return principal.toString();
     }
 }

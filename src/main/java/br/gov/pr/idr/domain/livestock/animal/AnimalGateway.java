@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface AnimalGateway {
 
-    boolean existsById(final AnimalID id);
-
     Animal save(final Animal animal);
 
     Optional<Animal> findById(final AnimalID id);

@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface PregnancyDiagnoseGateway {
 
-    boolean existsById(final PregnancyDiagnoseID id);
-
     PregnancyDiagnose save(final PregnancyDiagnose pregnancyDiagnose);
 
     Optional<PregnancyDiagnose> findById(final PregnancyDiagnoseID id);

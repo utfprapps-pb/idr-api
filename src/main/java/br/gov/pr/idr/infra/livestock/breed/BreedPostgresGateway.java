@@ -9,6 +9,7 @@ import br.gov.pr.idr.infra.livestock.breed.persistence.BreedJPAEntity;
 import br.gov.pr.idr.infra.livestock.breed.persistence.BreedJPARepository;
 import br.gov.pr.idr.infra.livestock.breed.persistence.BreedSpecification;
 import br.gov.pr.idr.infra.shared.support.PageRequestFactory;
+import br.gov.pr.idr.infra.shared.support.PaginationFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -46,8 +47,7 @@ public class BreedPostgresGateway implements BreedGateway {
         final var terms = PageRequestFactory.terms(query.terms());
         final var pageRequest = PageRequestFactory.from(query, "breedName");
         final var page = repository.findAll(BreedSpecification.withTerms(terms), pageRequest);
-        return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(),
-                page.map(BreedJPAEntity::toAggregate).toList());
+        return PaginationFactory.from(page, BreedJPAEntity::toAggregate);
     }
 
     @Override

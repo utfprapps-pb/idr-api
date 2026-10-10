@@ -21,6 +21,7 @@ import br.gov.pr.idr.infra.livestock.mastitis.models.update.UpdateMastitisRespon
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import br.gov.pr.idr.infra.shared.support.AuthenticationSupport;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +43,7 @@ public class MastitisController {
                                                            @PathVariable UUID animalId,
                                                            final Authentication authentication,
                                                            @RequestBody @Valid CreateMastitisRequest request) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var command = new CreateMastitisCommand(propertyId, animalId, username, request.diagnoseDate(),
                 request.mastitisType(), request.cmtResult(), request.ad(), request.ae(), request.pd(),
                 request.pe());
@@ -56,7 +57,7 @@ public class MastitisController {
                                                            @PathVariable UUID id,
                                                            final Authentication authentication,
                                                            @RequestBody @Valid UpdateMastitisRequest request) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var command = new UpdateMastitisCommand(propertyId, animalId, id, username, request.diagnoseDate(),
                 request.mastitisType(), request.cmtResult(), request.ad(), request.ae(), request.pd(),
                 request.pe());
@@ -69,7 +70,7 @@ public class MastitisController {
                                         @PathVariable UUID animalId,
                                         @PathVariable UUID id,
                                         final Authentication authentication) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         deleteMastitisUseCase.execute(new DeleteMastitisCommand(propertyId, animalId, id, username));
         return ResponseEntity.noContent().build();
     }
@@ -79,7 +80,7 @@ public class MastitisController {
                                                            @PathVariable UUID animalId,
                                                            @PathVariable UUID id,
                                                            final Authentication authentication) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var output = getMastitisByIdUseCase.execute(
                 new GetMastitisByIdCommand(propertyId, animalId, id, username));
         return ResponseEntity.ok(output);
@@ -95,18 +96,10 @@ public class MastitisController {
             @RequestParam(required = false) final String terms,
             @RequestParam(defaultValue = "diagnoseDate") final String sort,
             @RequestParam(defaultValue = "asc") final String direction) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var query = SearchQuery.from(page, perPage, terms, sort, direction);
         final var output = listMastitisUseCase.execute(
                 new ListMastitisCommand(propertyId, animalId, username, query));
         return ResponseEntity.ok(output);
-    }
-
-    private String getUsername(final Authentication authentication) {
-        final var principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal == null) {
-            throw new IllegalStateException("Authentication principal is null");
-        }
-        return principal.toString();
     }
 }

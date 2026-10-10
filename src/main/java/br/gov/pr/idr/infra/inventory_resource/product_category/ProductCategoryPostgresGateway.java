@@ -9,6 +9,7 @@ import br.gov.pr.idr.infra.inventory_resource.product_category.persistence.Produ
 import br.gov.pr.idr.infra.inventory_resource.product_category.persistence.ProductCategoryJPARepository;
 import br.gov.pr.idr.infra.inventory_resource.product_category.persistence.ProductCategorySpecification;
 import br.gov.pr.idr.infra.shared.support.PageRequestFactory;
+import br.gov.pr.idr.infra.shared.support.PaginationFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -46,8 +47,7 @@ public class ProductCategoryPostgresGateway implements ProductCategoryGateway {
         final var terms = PageRequestFactory.terms(query.terms());
         final var pageRequest = PageRequestFactory.from(query, "description");
         final var page = repository.findAll(ProductCategorySpecification.withTerms(terms), pageRequest);
-        return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(),
-                page.map(ProductCategoryJPAEntity::toAggregate).toList());
+        return PaginationFactory.from(page, ProductCategoryJPAEntity::toAggregate);
     }
 
     @Override

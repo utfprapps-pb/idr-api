@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface InseminationGateway {
 
-    boolean existsById(final InseminationID id);
-
     Insemination save(final Insemination insemination);
 
     Optional<Insemination> findById(final InseminationID id);

@@ -21,6 +21,7 @@ import br.gov.pr.idr.infra.livestock.animal_diseases.models.update.UpdateAnimalD
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import br.gov.pr.idr.infra.shared.support.AuthenticationSupport;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +44,7 @@ public class AnimalDiseasesController {
                                                                   final Authentication authentication,
                                                                   @RequestBody @Valid
                                                                   CreateAnimalDiseasesRequest request) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var command = new CreateAnimalDiseasesCommand(propertyId, animalId, username,
                 request.diagnosis(), request.diagnosisDate());
         final var output = createAnimalDiseasesUseCase.execute(command);
@@ -57,7 +58,7 @@ public class AnimalDiseasesController {
                                                                   final Authentication authentication,
                                                                   @RequestBody @Valid
                                                                   UpdateAnimalDiseasesRequest request) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var command = new UpdateAnimalDiseasesCommand(propertyId, animalId, id, username,
                 request.diagnosis(), request.diagnosisDate());
         final var output = updateAnimalDiseasesUseCase.execute(command);
@@ -69,7 +70,7 @@ public class AnimalDiseasesController {
                                         @PathVariable UUID animalId,
                                         @PathVariable UUID id,
                                         final Authentication authentication) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         deleteAnimalDiseasesUseCase.execute(new DeleteAnimalDiseasesCommand(propertyId, animalId, id,
                 username));
         return ResponseEntity.noContent().build();
@@ -80,7 +81,7 @@ public class AnimalDiseasesController {
                                                                   @PathVariable UUID animalId,
                                                                   @PathVariable UUID id,
                                                                   final Authentication authentication) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var output = getAnimalDiseasesByIdUseCase.execute(
                 new GetAnimalDiseasesByIdCommand(propertyId, animalId, id, username));
         return ResponseEntity.ok(output);
@@ -96,18 +97,10 @@ public class AnimalDiseasesController {
             @RequestParam(required = false) final String terms,
             @RequestParam(defaultValue = "diagnosisDate") final String sort,
             @RequestParam(defaultValue = "asc") final String direction) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var query = SearchQuery.from(page, perPage, terms, sort, direction);
         final var output = listAnimalDiseasesUseCase.execute(
                 new ListAnimalDiseasesCommand(propertyId, animalId, username, query));
         return ResponseEntity.ok(output);
-    }
-
-    private String getUsername(final Authentication authentication) {
-        final var principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal == null) {
-            throw new IllegalStateException("Authentication principal is null");
-        }
-        return principal.toString();
     }
 }

@@ -112,15 +112,6 @@ class MedicationPostgresGatewayTest {
     }
 
     @Test
-    @DisplayName("deve verificar existência por ID")
-    void shouldCheckExistsById() {
-        final var id = MedicationID.unique();
-        when(repository.existsById(id.id())).thenReturn(true);
-
-        assertTrue(gateway.existsById(id));
-    }
-
-    @Test
     @DisplayName("roundtrip: salvar e recuperar medicação mantém dados íntegros")
     void shouldRoundtripSaveAndFind() {
         final var animalId = AnimalID.unique();

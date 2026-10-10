@@ -9,6 +9,7 @@ import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.livestock.animal_sales.persistence.AnimalSalesJPAEntity;
 import br.gov.pr.idr.infra.livestock.animal_sales.persistence.AnimalSalesJPARepository;
 import br.gov.pr.idr.infra.shared.support.PageRequestFactory;
+import br.gov.pr.idr.infra.shared.support.PaginationFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +20,6 @@ import java.util.Optional;
 public class AnimalSalesPostgresGateway implements AnimalSalesGateway {
 
     private final AnimalSalesJPARepository repository;
-
-    @Override
-    public boolean existsById(final AnimalSalesID id) {
-        return repository.existsById(id.id());
-    }
 
     @Override
     public AnimalSales save(final AnimalSales animalSales) {
@@ -54,7 +50,6 @@ public class AnimalSalesPostgresGateway implements AnimalSalesGateway {
     public Pagination<AnimalSales> search(final AnimalID animalId, final SearchQuery query) {
         final var pageRequest = PageRequestFactory.from(query, "dateSale");
         final var page = repository.findAllByAnimalId(animalId.id(), pageRequest);
-        return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(),
-                page.map(AnimalSalesJPAEntity::toAggregate).toList());
+        return PaginationFactory.from(page, AnimalSalesJPAEntity::toAggregate);
     }
 }

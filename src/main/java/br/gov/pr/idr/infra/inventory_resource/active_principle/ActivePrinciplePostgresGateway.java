@@ -9,6 +9,7 @@ import br.gov.pr.idr.infra.inventory_resource.active_principle.persistence.Activ
 import br.gov.pr.idr.infra.inventory_resource.active_principle.persistence.ActivePrincipleJPARepository;
 import br.gov.pr.idr.infra.inventory_resource.active_principle.persistence.ActivePrincipleSpecification;
 import br.gov.pr.idr.infra.shared.support.PageRequestFactory;
+import br.gov.pr.idr.infra.shared.support.PaginationFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -46,8 +47,7 @@ public class ActivePrinciplePostgresGateway implements ActivePrincipleGateway {
         final var terms = PageRequestFactory.terms(query.terms());
         final var pageRequest = PageRequestFactory.from(query, "name");
         final var page = repository.findAll(ActivePrincipleSpecification.withTerms(terms), pageRequest);
-        return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(),
-                page.map(ActivePrincipleJPAEntity::toAggregate).toList());
+        return PaginationFactory.from(page, ActivePrincipleJPAEntity::toAggregate);
     }
 
     @Override

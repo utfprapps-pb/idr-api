@@ -9,6 +9,7 @@ import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.livestock.pregnancy_diagnose.persistence.PregnancyDiagnoseJPAEntity;
 import br.gov.pr.idr.infra.livestock.pregnancy_diagnose.persistence.PregnancyDiagnoseJPARepository;
 import br.gov.pr.idr.infra.shared.support.PageRequestFactory;
+import br.gov.pr.idr.infra.shared.support.PaginationFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +20,6 @@ import java.util.Optional;
 public class PregnancyDiagnosePostgresGateway implements PregnancyDiagnoseGateway {
 
     private final PregnancyDiagnoseJPARepository repository;
-
-    @Override
-    public boolean existsById(final PregnancyDiagnoseID id) {
-        return repository.existsById(id.id());
-    }
 
     @Override
     public PregnancyDiagnose save(final PregnancyDiagnose pregnancyDiagnose) {
@@ -54,7 +50,6 @@ public class PregnancyDiagnosePostgresGateway implements PregnancyDiagnoseGatewa
     public Pagination<PregnancyDiagnose> search(final AnimalID animalId, final SearchQuery query) {
         final var pageRequest = PageRequestFactory.from(query, "diagnoseDate");
         final var page = repository.findAllByAnimalId(animalId.id(), pageRequest);
-        return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(),
-                page.map(PregnancyDiagnoseJPAEntity::toAggregate).toList());
+        return PaginationFactory.from(page, PregnancyDiagnoseJPAEntity::toAggregate);
     }
 }

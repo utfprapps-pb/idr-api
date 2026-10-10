@@ -9,6 +9,7 @@ import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.inventory_resource.medication.persistence.MedicationJPAEntity;
 import br.gov.pr.idr.infra.inventory_resource.medication.persistence.MedicationJPARepository;
 import br.gov.pr.idr.infra.shared.support.PageRequestFactory;
+import br.gov.pr.idr.infra.shared.support.PaginationFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +20,6 @@ import java.util.Optional;
 public class MedicationPostgresGateway implements MedicationGateway {
 
     private final MedicationJPARepository repository;
-
-    @Override
-    public boolean existsById(final MedicationID id) {
-        return repository.existsById(id.id());
-    }
 
     @Override
     public Medication save(final Medication medication) {
@@ -54,7 +50,6 @@ public class MedicationPostgresGateway implements MedicationGateway {
     public Pagination<Medication> search(final AnimalID animalId, final SearchQuery query) {
         final var pageRequest = PageRequestFactory.from(query, "applicationDate");
         final var page = repository.findAllByAnimalId(animalId.id(), pageRequest);
-        return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(),
-                page.map(MedicationJPAEntity::toAggregate).toList());
+        return PaginationFactory.from(page, MedicationJPAEntity::toAggregate);
     }
 }

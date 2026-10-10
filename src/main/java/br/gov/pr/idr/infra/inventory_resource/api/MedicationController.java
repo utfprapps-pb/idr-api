@@ -21,6 +21,7 @@ import br.gov.pr.idr.infra.inventory_resource.medication.models.update.UpdateMed
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import br.gov.pr.idr.infra.shared.support.AuthenticationSupport;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +43,7 @@ public class MedicationController {
                                                              @PathVariable UUID animalId,
                                                              final Authentication authentication,
                                                              @RequestBody @Valid CreateMedicationRequest request) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var command = new CreateMedicationCommand(propertyId, animalId, username, request.productId(),
                 request.applicationDate(), request.appliedDose(), request.applicationWay());
         final var output = createMedicationUseCase.execute(command);
@@ -55,7 +56,7 @@ public class MedicationController {
                                                              @PathVariable UUID id,
                                                              final Authentication authentication,
                                                              @RequestBody @Valid UpdateMedicationRequest request) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var command = new UpdateMedicationCommand(propertyId, animalId, id, username, request.productId(),
                 request.applicationDate(), request.appliedDose(), request.applicationWay());
         final var output = updateMedicationUseCase.execute(command);
@@ -67,7 +68,7 @@ public class MedicationController {
                                         @PathVariable UUID animalId,
                                         @PathVariable UUID id,
                                         final Authentication authentication) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         deleteMedicationUseCase.execute(new DeleteMedicationCommand(propertyId, animalId, id, username));
         return ResponseEntity.noContent().build();
     }
@@ -77,7 +78,7 @@ public class MedicationController {
                                                              @PathVariable UUID animalId,
                                                              @PathVariable UUID id,
                                                              final Authentication authentication) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var output = getMedicationByIdUseCase.execute(
                 new GetMedicationByIdCommand(propertyId, animalId, id, username));
         return ResponseEntity.ok(output);
@@ -93,18 +94,10 @@ public class MedicationController {
             @RequestParam(required = false) final String terms,
             @RequestParam(defaultValue = "applicationDate") final String sort,
             @RequestParam(defaultValue = "asc") final String direction) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var query = SearchQuery.from(page, perPage, terms, sort, direction);
         final var output = listMedicationUseCase.execute(
                 new ListMedicationCommand(propertyId, animalId, username, query));
         return ResponseEntity.ok(output);
-    }
-
-    private String getUsername(final Authentication authentication) {
-        final var principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal == null) {
-            throw new IllegalStateException("Authentication principal is null");
-        }
-        return principal.toString();
     }
 }

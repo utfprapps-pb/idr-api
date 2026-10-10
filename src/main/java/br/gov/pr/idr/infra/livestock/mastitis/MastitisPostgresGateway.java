@@ -9,6 +9,7 @@ import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.livestock.mastitis.persistence.MastitisJPAEntity;
 import br.gov.pr.idr.infra.livestock.mastitis.persistence.MastitisJPARepository;
 import br.gov.pr.idr.infra.shared.support.PageRequestFactory;
+import br.gov.pr.idr.infra.shared.support.PaginationFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +20,6 @@ import java.util.Optional;
 public class MastitisPostgresGateway implements MastitisGateway {
 
     private final MastitisJPARepository repository;
-
-    @Override
-    public boolean existsById(final MastitisID id) {
-        return repository.existsById(id.id());
-    }
 
     @Override
     public Mastitis save(final Mastitis mastitis) {
@@ -54,7 +50,6 @@ public class MastitisPostgresGateway implements MastitisGateway {
     public Pagination<Mastitis> search(final AnimalID animalId, final SearchQuery query) {
         final var pageRequest = PageRequestFactory.from(query, "diagnoseDate");
         final var page = repository.findAllByAnimalId(animalId.id(), pageRequest);
-        return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(),
-                page.map(MastitisJPAEntity::toAggregate).toList());
+        return PaginationFactory.from(page, MastitisJPAEntity::toAggregate);
     }
 }

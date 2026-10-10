@@ -21,6 +21,7 @@ import br.gov.pr.idr.infra.livestock.insemination.models.update.UpdateInseminati
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import br.gov.pr.idr.infra.shared.support.AuthenticationSupport;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +43,7 @@ public class InseminationController {
                                                                @PathVariable UUID animalId,
                                                                final Authentication authentication,
                                                                @RequestBody @Valid CreateInseminationRequest request) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var command = new CreateInseminationCommand(propertyId, animalId, username, request.iaDate(),
                 request.bull());
         final var output = createInseminationUseCase.execute(command);
@@ -55,7 +56,7 @@ public class InseminationController {
                                                                @PathVariable UUID id,
                                                                final Authentication authentication,
                                                                @RequestBody @Valid UpdateInseminationRequest request) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var command = new UpdateInseminationCommand(propertyId, animalId, id, username, request.iaDate(),
                 request.bull());
         final var output = updateInseminationUseCase.execute(command);
@@ -67,7 +68,7 @@ public class InseminationController {
                                         @PathVariable UUID animalId,
                                         @PathVariable UUID id,
                                         final Authentication authentication) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         deleteInseminationUseCase.execute(new DeleteInseminationCommand(propertyId, animalId, id, username));
         return ResponseEntity.noContent().build();
     }
@@ -77,7 +78,7 @@ public class InseminationController {
                                                                @PathVariable UUID animalId,
                                                                @PathVariable UUID id,
                                                                final Authentication authentication) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var output = getInseminationByIdUseCase.execute(
                 new GetInseminationByIdCommand(propertyId, animalId, id, username));
         return ResponseEntity.ok(output);
@@ -93,18 +94,10 @@ public class InseminationController {
             @RequestParam(required = false) final String terms,
             @RequestParam(defaultValue = "iaDate") final String sort,
             @RequestParam(defaultValue = "asc") final String direction) {
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         final var query = SearchQuery.from(page, perPage, terms, sort, direction);
         final var output = listInseminationUseCase.execute(
                 new ListInseminationCommand(propertyId, animalId, username, query));
         return ResponseEntity.ok(output);
-    }
-
-    private String getUsername(final Authentication authentication) {
-        final var principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal == null) {
-            throw new IllegalStateException("Authentication principal is null");
-        }
-        return principal.toString();
     }
 }

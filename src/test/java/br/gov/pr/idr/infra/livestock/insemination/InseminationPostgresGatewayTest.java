@@ -110,15 +110,6 @@ class InseminationPostgresGatewayTest {
     }
 
     @Test
-    @DisplayName("deve verificar existência por ID")
-    void shouldCheckExistsById() {
-        final var id = InseminationID.unique();
-        when(repository.existsById(id.id())).thenReturn(true);
-
-        assertTrue(gateway.existsById(id));
-    }
-
-    @Test
     @DisplayName("roundtrip: salvar e recuperar inseminação mantém dados íntegros")
     void shouldRoundtripSaveAndFind() {
         final var animalId = AnimalID.unique();

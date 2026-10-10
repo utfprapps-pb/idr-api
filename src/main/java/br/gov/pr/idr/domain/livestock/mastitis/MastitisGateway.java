@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface MastitisGateway {
 
-    boolean existsById(final MastitisID id);
-
     Mastitis save(final Mastitis mastitis);
 
     Optional<Mastitis> findById(final MastitisID id);
