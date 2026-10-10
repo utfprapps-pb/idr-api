@@ -13,6 +13,8 @@ import br.gov.pr.idr.infra.shared.support.PaginationFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -31,6 +33,13 @@ public class AnimalPostgresGateway implements AnimalGateway {
     public Optional<Animal> findById(final AnimalID id) {
         return repository.findById(id.id())
                 .map(AnimalJPAEntity::toAggregate);
+    }
+
+    @Override
+    public List<Animal> findAllById(final Collection<AnimalID> ids) {
+        return repository.findAllById(ids.stream().map(AnimalID::id).toList()).stream()
+                .map(AnimalJPAEntity::toAggregate)
+                .toList();
     }
 
     @Override

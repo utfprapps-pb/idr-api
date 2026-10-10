@@ -191,4 +191,15 @@ class AnimalPostgresGatewayTest {
 
         assertTrue(result.isEmpty());
     }
+
+    @Test
+    @DisplayName("deve buscar vários animais por ID numa única consulta")
+    void shouldFindAllByIdInOneQuery() {
+        final var first = AnimalID.unique();
+        final var second = AnimalID.unique();
+        when(repository.findAllById(List.of(first.id(), second.id()))).thenReturn(List.of());
+
+        assertTrue(gateway.findAllById(List.of(first, second)).isEmpty());
+        verify(repository).findAllById(List.of(first.id(), second.id()));
+    }
 }
