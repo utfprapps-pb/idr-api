@@ -19,13 +19,13 @@ class AnimalSalesApiTest extends ApiTestSupport {
     @Test
     @DisplayName("grava e devolve peso, valor e os enums em português que o front traduz")
     void shouldRoundTripSale() throws Exception {
-        final var created = mockMvc.perform(authenticated(post(CHARMOSA + "/sales").content("""
+        final var created = perform(post(CHARMOSA + "/sales").content("""
                         {"dateSale":"2024-06-10","reason":"DESCARTE","value":1500.00,
-                         "destination":"ABATE","weight":450.50}""")))
+                         "destination":"ABATE","weight":450.50}"""))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        mockMvc.perform(authenticated(get(CHARMOSA + "/sales/" + idOf(created))))
+        perform(get(CHARMOSA + "/sales/" + idOf(created)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.dateSale").value("2024-06-10"))
                 .andExpect(jsonPath("$.reason").value("DESCARTE"))

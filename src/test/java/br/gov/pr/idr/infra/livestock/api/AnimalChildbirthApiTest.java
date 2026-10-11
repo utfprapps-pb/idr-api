@@ -30,12 +30,12 @@ class AnimalChildbirthApiTest extends ApiTestSupport {
     @Test
     @DisplayName("registra parto sem bezerro e devolve o nome da raça na leitura")
     void shouldRecordChildbirthWithoutCalf() throws Exception {
-        final var created = mockMvc.perform(authenticated(post(MIMOSA + "/childbirths").content(childbirth(null))))
+        final var created = perform(post(MIMOSA + "/childbirths").content(childbirth(null)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.calfId").value(nullValue()))
                 .andReturn();
 
-        mockMvc.perform(authenticated(get(MIMOSA + "/childbirths/" + idOf(created))))
+        perform(get(MIMOSA + "/childbirths/" + idOf(created)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.childbirthDate").value("2024-06-10"))
                 .andExpect(jsonPath("$.weight").value(35.5))
@@ -46,14 +46,14 @@ class AnimalChildbirthApiTest extends ApiTestSupport {
     @Test
     @DisplayName("vincula um bezerro da mesma propriedade e devolve o identificador dele")
     void shouldLinkCalfOfTheSameProperty() throws Exception {
-        final var created = mockMvc.perform(authenticated(post(MIMOSA + "/childbirths").content(childbirth(null))))
+        final var created = perform(post(MIMOSA + "/childbirths").content(childbirth(null)))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        mockMvc.perform(authenticated(put(MIMOSA + "/childbirths/" + idOf(created)).content(childbirth(CHARMOSA))))
+        perform(put(MIMOSA + "/childbirths/" + idOf(created)).content(childbirth(CHARMOSA)))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(authenticated(get(MIMOSA + "/childbirths/" + idOf(created))))
+        perform(get(MIMOSA + "/childbirths/" + idOf(created)))
                 .andExpect(jsonPath("$.calfId").value(CHARMOSA))
                 .andExpect(jsonPath("$.calfIdentifier").value("Charmosa"));
     }
@@ -61,16 +61,24 @@ class AnimalChildbirthApiTest extends ApiTestSupport {
     @Test
     @DisplayName("recusa bezerro de outra propriedade")
     void shouldRejectCalfFromAnotherProperty() throws Exception {
-        mockMvc.perform(authenticated(post(MIMOSA + "/childbirths").content(childbirth(ESTRELA_OTHER_PROPERTY))))
+        perform(post(MIMOSA + "/childbirths").content(childbirth(ESTRELA_OTHER_PROPERTY)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     @DisplayName("recusa animal que não pertence à propriedade do caminho")
     void shouldRejectAnimalOutsideTheProperty() throws Exception {
-        mockMvc.perform(authenticated(get(
-                        "/properties/c0000000-0000-0000-0000-000000000002/animals/e0000000-0000-0000-0000-000000000001/childbirths/search")))
+        perform(get(
+                        "/properties/c0000000-0000-0000-0000-000000000002/animals/e0000000-0000-0000-0000-000000000001/childbirths/search"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("ordenação por campo desconhecido é erro do cliente (400), sem expor a entidade")
+    void shouldRejectUnknownSortField() throws Exception {
+        perform(get(MIMOSA + "/childbirths/search?sort=foo"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Campo de ordenação inválido"));
     }
 
     @Test

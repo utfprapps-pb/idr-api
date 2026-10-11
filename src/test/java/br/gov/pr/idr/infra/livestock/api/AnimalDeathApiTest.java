@@ -23,11 +23,11 @@ class AnimalDeathApiTest extends ApiTestSupport {
     @Test
     @DisplayName("registra a morte e devolve data e causa na leitura")
     void shouldRecordDeath() throws Exception {
-        final var created = mockMvc.perform(authenticated(post(LEITOSA + "/deaths").content(DEATH)))
+        final var created = perform(post(LEITOSA + "/deaths").content(DEATH))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        mockMvc.perform(authenticated(get(LEITOSA + "/deaths/" + idOf(created))))
+        perform(get(LEITOSA + "/deaths/" + idOf(created)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.reason").value("Pneumonia"))
                 .andExpect(jsonPath("$.deathDate").value("2024-06-10"));
@@ -36,10 +36,10 @@ class AnimalDeathApiTest extends ApiTestSupport {
     @Test
     @DisplayName("recusa uma segunda morte para o mesmo animal")
     void shouldRejectSecondDeath() throws Exception {
-        mockMvc.perform(authenticated(post(ESTRELA + "/deaths").content(DEATH)))
+        perform(post(ESTRELA + "/deaths").content(DEATH))
                 .andExpect(status().isBadRequest());
 
-        mockMvc.perform(authenticated(get(ESTRELA + "/deaths/search")))
+        perform(get(ESTRELA + "/deaths/search"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.total").value(1));
     }

@@ -29,7 +29,7 @@ class MedicationApiTest extends ApiTestSupport {
     @Test
     @DisplayName("exige o produto (o front ainda não envia productId)")
     void shouldRequireProduct() throws Exception {
-        mockMvc.perform(authenticated(post(MIMOSA + "/medications").content(medication(null))))
+        perform(post(MIMOSA + "/medications").content(medication(null)))
                 .andExpect(status().isBadRequest())
                 // Error timestamps are UTC instants (ISO-8601 with Z), whatever the server's time zone.
                 .andExpect(jsonPath("$.timestamp").value(matchesPattern("[0-9]{4}-[0-9]{2}-[0-9]{2}T.*Z")));
@@ -38,17 +38,17 @@ class MedicationApiTest extends ApiTestSupport {
     @Test
     @DisplayName("troca o produto no PUT e nunca o apaga")
     void shouldKeepProductAcrossUpdates() throws Exception {
-        final var created = mockMvc.perform(authenticated(post(MIMOSA + "/medications").content(medication(PRODUCT_1))))
+        final var created = perform(post(MIMOSA + "/medications").content(medication(PRODUCT_1)))
                 .andExpect(status().isOk())
                 .andReturn();
         final var path = MIMOSA + "/medications/" + idOf(created);
 
-        mockMvc.perform(authenticated(put(path).content(medication(PRODUCT_2))))
+        perform(put(path).content(medication(PRODUCT_2)))
                 .andExpect(status().isOk());
-        mockMvc.perform(authenticated(put(path).content(medication(null))))
+        perform(put(path).content(medication(null)))
                 .andExpect(status().isBadRequest());
 
-        mockMvc.perform(authenticated(get(path)))
+        perform(get(path))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(PRODUCT_2))
                 .andExpect(jsonPath("$.applicationDate").value("2024-06-10"));
