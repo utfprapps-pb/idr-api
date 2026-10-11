@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,13 +26,13 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors().forEach(error ->
             errors.add(FieldError.from(error.getField(), error.getDefaultMessage()))
         );
-        return new ErrorResponse(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Erro de validação", errors);
+        return new ErrorResponse(Instant.now(), HttpStatus.BAD_REQUEST.value(), "Erro de validação", errors);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
-        return new ErrorResponse(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "Corpo da requisição ausente ou inválido",
+        return new ErrorResponse(Instant.now(), HttpStatus.BAD_REQUEST.value(), "Corpo da requisição ausente ou inválido",
                 List.of(FieldError.from(ERROR, "O corpo da requisição é obrigatório")));
     }
 
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleGenericException(Exception ex) {
         String message = ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage();
-        return new ErrorResponse(LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR.value(), message,
+        return new ErrorResponse(Instant.now(), HttpStatus.INTERNAL_SERVER_ERROR.value(), message,
                 List.of(FieldError.from(ERROR, message)));
     }
 
@@ -73,6 +73,6 @@ public class GlobalExceptionHandler {
                 ex.getErrors().stream()
                         .map(error -> FieldError.from(error.field(), error.message()))
                         .toList();
-        return new ErrorResponse(LocalDateTime.now(), status.value(), ex.getContext(), errors);
+        return new ErrorResponse(Instant.now(), status.value(), ex.getContext(), errors);
     }
 }

@@ -5,6 +5,7 @@ import br.gov.pr.idr.infra.shared.testing.ApiTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -29,7 +30,9 @@ class MedicationApiTest extends ApiTestSupport {
     @DisplayName("exige o produto (o front ainda não envia productId)")
     void shouldRequireProduct() throws Exception {
         mockMvc.perform(authenticated(post(MIMOSA + "/medications").content(medication(null))))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                // Error timestamps are UTC instants (ISO-8601 with Z), whatever the server's time zone.
+                .andExpect(jsonPath("$.timestamp").value(matchesPattern("[0-9]{4}-[0-9]{2}-[0-9]{2}T.*Z")));
     }
 
     @Test
