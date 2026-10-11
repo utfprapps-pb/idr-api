@@ -119,7 +119,6 @@
 			<artifactId>minio</artifactId>
 			<version>8.5.17</version>
 		</dependency>
-		<!-- Integration tests against a real Postgres (Testcontainers), run with: ./mvnw verify -Pit -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-testcontainers</artifactId>
@@ -157,7 +156,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<!-- Unit tests only; tests tagged "integration" need Docker and run in the `it` profile. -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
@@ -180,7 +178,6 @@
 	</build>
 
 	<profiles>
-		<!-- On-demand integration tests against a real Postgres in Docker: ./mvnw verify -Pit -->
 		<profile>
 			<id>it</id>
 			<build>
