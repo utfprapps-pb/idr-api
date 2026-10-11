@@ -21,14 +21,17 @@ public final class ChildbirthReferencePolicy {
         this.animalGateway = animalGateway;
     }
 
-    /** A raça deve existir; um bezerro vinculado deve existir e pertencer à propriedade da mãe. */
+    /**
+     * A raça deve existir; um bezerro vinculado deve existir e pertencer à propriedade da mãe. Bezerro igual à
+     * própria mãe não é checado aqui: o agregado {@code AnimalChildbirth} já rejeita essa autorreferência.
+     */
     public void ensureValid(final Animal mother, final UUID breedId, final UUID calfId) {
         final var notification = NotificationValidation.create();
         if (breedId != null && !breedGateway.existsById(BreedID.from(breedId))) {
             throw new NotificationException("Raça com o ID %s não encontrada".formatted(breedId), notification);
         }
         if (calfId == null || calfId.equals(mother.getId().id())) {
-            return; // sem bezerro vinculado, ou autorreferência, que o próprio agregado rejeita
+            return;
         }
         if (!animalGateway.existsByIdAndPropertyId(AnimalID.from(calfId), mother.getPropertyId())) {
             throw new NotificationException("Animal (bezerro) com o ID %s não encontrado".formatted(calfId),

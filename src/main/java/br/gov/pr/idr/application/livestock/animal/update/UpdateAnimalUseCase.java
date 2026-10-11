@@ -51,7 +51,6 @@ public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnim
             }
         }
 
-        // Semântica de PATCH: campo ausente (null) na requisição mantém o valor atual.
         final var updatedAnimal = existingAnimal.update(animalMotherId, breedId,
                 orCurrent(command.type(), existingAnimal.getType()),
                 command.identifier(),
@@ -66,6 +65,7 @@ public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnim
         return UpdateAnimalOutput.from(animalGateway.update(updatedAnimal));
     }
 
+    /** Semântica de PATCH: campo ausente (null) na requisição mantém o valor atual. */
     private static <T> T orCurrent(final T incoming, final T current) {
         return incoming != null ? incoming : current;
     }
