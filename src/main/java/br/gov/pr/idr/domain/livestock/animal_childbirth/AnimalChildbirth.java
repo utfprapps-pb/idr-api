@@ -13,8 +13,8 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 /**
- * A childbirth of the mother {@code animalId}. The calf may optionally be linked to an animal of the same
- * property ({@code calfId}); it stays empty when the calf is not formally part of the herd.
+ * Parto da mãe {@code animalId}. O bezerro pode, opcionalmente, ser vinculado a um animal da mesma propriedade
+ * ({@code calfId}); fica vazio quando o bezerro não faz parte formalmente do rebanho.
  */
 public class AnimalChildbirth extends AggregateRoot<AnimalChildbirthID> {
 

@@ -26,7 +26,7 @@ public class CreateAnimalDeathUseCase extends UseCase<CreateAnimalDeathCommand,
         final var animal = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
                 command.username());
 
-        // An animal dies only once: an existing death is edited, never duplicated.
+        // Um animal só morre uma vez: a morte existente é editada, nunca duplicada.
         if (animalDeathGateway.existsByAnimalId(animal.getId())) {
             throw new NotificationException("O animal com o ID %s já possui morte registrada"
                     .formatted(animal.getId().id()), NotificationValidation.create());

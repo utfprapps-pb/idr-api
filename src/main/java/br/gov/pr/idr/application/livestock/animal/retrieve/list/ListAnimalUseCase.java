@@ -30,7 +30,7 @@ public class ListAnimalUseCase extends UseCase<ListAnimalCommand, Pagination<Lis
         accessPolicy.ensureAccessToProperty(command.propertyId(), command.username());
         final var page = animalGateway.search(PropertyID.from(command.propertyId()), command.query());
 
-        // One lookup for every breed on the page, so the list does not issue a query per animal.
+        // Uma única busca para todas as raças da página, em vez de uma consulta por animal.
         final var breedNames = nameLookup.breedNames(
                 page.items().stream().map(Animal::getBreedId).collect(Collectors.toSet()));
 

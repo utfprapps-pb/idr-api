@@ -17,9 +17,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
- * Hibernate loads {@code import.sql} at startup and only logs a statement that fails, so a broken seed row
- * (a renamed column, a missing NOT NULL value) goes unnoticed. This checks every seeded table holds exactly as
- * many rows as the seed inserts into it.
+ * O Hibernate carrega o {@code import.sql} na subida e só registra no log um comando que falha, então uma linha
+ * quebrada do seed (coluna renomeada, valor NOT NULL ausente) passa despercebida. Este teste confere que cada
+ * tabela do seed tem exatamente tantas linhas quanto o seed insere nela.
  */
 @PersistenceAdapterTest
 @DisplayName("import.sql — seed carregado por completo")

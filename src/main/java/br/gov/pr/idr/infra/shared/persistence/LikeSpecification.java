@@ -10,7 +10,7 @@ public final class LikeSpecification {
 
     private LikeSpecification() {}
 
-    /** Case-insensitive "contains" on {@code field}; {@code %} and {@code _} in the terms match literally. */
+    /** "Contém" sem diferenciar maiúsculas em {@code field}; {@code %} e {@code _} nos termos valem literalmente. */
     public static <T> Specification<T> withTerms(final String terms, final String field) {
         return (root, query, cb) -> {
             if (terms == null || terms.isBlank()) return cb.conjunction();

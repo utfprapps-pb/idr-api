@@ -12,9 +12,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Integration test of a persistence adapter (JPA repositories, gateways, projections) against a real Postgres in
- * Docker. Tagged {@code integration}: skipped by {@code mvn test}, run on demand with {@code ./mvnw verify -Pit}.
- * Each test runs in a transaction that is rolled back; the schema and the {@code import.sql} seed load once.
+ * Teste de integração de um adaptador de persistência (repositórios JPA, gateways, projeções) contra um Postgres
+ * real em Docker. Tag {@code integration}: ignorado no {@code mvn test}, roda sob demanda com
+ * {@code ./mvnw verify -Pit}. Cada teste roda numa transação desfeita ao final; o schema e o seed do
+ * {@code import.sql} carregam uma vez só.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

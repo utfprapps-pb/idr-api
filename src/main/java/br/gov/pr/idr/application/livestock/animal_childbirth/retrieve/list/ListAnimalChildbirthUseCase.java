@@ -32,7 +32,7 @@ public class ListAnimalChildbirthUseCase extends UseCase<ListAnimalChildbirthCom
         accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
         final var page = animalChildbirthGateway.search(AnimalID.from(command.animalId()), command.query());
 
-        // One lookup per referenced catalog for the whole page, never one per row (an empty set costs no I/O).
+        // Uma busca por catálogo referenciado para a página inteira, nunca uma por linha (conjunto vazio não faz I/O).
         final var breedNames = nameLookup.breedNames(
                 page.items().stream().map(AnimalChildbirth::getBreedId).collect(Collectors.toSet()));
         final var calfIdentifiers = nameLookup.animalIdentifiers(

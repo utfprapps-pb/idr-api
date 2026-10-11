@@ -31,7 +31,7 @@ class MedicationApiTest extends ApiTestSupport {
     void shouldRequireProduct() throws Exception {
         perform(post(MIMOSA + "/medications").content(medication(null)))
                 .andExpect(status().isBadRequest())
-                // Error timestamps are UTC instants (ISO-8601 with Z), whatever the server's time zone.
+                // O timestamp de erro é um instante UTC (ISO-8601 com Z), qualquer que seja o fuso do servidor.
                 .andExpect(jsonPath("$.timestamp").value(matchesPattern("[0-9]{4}-[0-9]{2}-[0-9]{2}T.*Z")));
     }
 

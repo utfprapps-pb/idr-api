@@ -14,10 +14,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * End-to-end API test: the whole application (security filters, controllers, use cases, gateways) over HTTP against
- * a real Postgres in Docker, seeded by {@code import.sql}. Tagged {@code integration}: skipped by {@code mvn test},
- * run on demand with {@code ./mvnw verify -Pit}. Each test runs in a transaction that is rolled back. Object storage
- * is mocked so the context starts without MinIO. Extend {@link ApiTestSupport} for the authenticated client.
+ * Teste de API ponta a ponta: a aplicação inteira (filtros de segurança, controllers, use cases, gateways) via
+ * HTTP contra um Postgres real em Docker, populado pelo {@code import.sql}. Tag {@code integration}: ignorado no
+ * {@code mvn test}, roda sob demanda com {@code ./mvnw verify -Pit}. Cada teste roda numa transação desfeita ao
+ * final. O armazenamento de objetos é mockado, então o contexto sobe sem MinIO. Estenda {@link ApiTestSupport}
+ * para ter o cliente autenticado.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

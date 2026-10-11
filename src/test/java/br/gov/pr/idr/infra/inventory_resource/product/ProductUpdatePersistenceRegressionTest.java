@@ -14,15 +14,15 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Regression test: before the version-threading fix, update() threw
- * org.hibernate.NonUniqueObjectException against a real database, because
- * the JPA entity's @Version field was never populated on update, causing
- * Spring Data to treat it as a new entity (persist()) while a managed
- * instance with the same ID was already loaded in the same transaction
- * (findById(), called earlier in the same @Transactional Use Case method).
- * This test reproduces that exact call shape: save -> findById -> update
- * -> flush, all in one transaction, against a real Postgres persistence
- * context (Testcontainers) rather than a mocked repository.
+ * Teste de regressão: antes da correção que repassa a versão, update() lançava
+ * org.hibernate.NonUniqueObjectException contra um banco real, porque o campo
+ * {@code @Version} da entidade JPA nunca era preenchido no update. Com isso o
+ * Spring Data tratava a entidade como nova (persist()) enquanto uma instância
+ * gerenciada com o mesmo ID já estava carregada na mesma transação (o findById()
+ * chamado antes, no mesmo método {@code @Transactional} do Use Case).
+ * Este teste reproduz exatamente essa sequência: save -> findById -> update ->
+ * flush, numa única transação, contra um contexto de persistência Postgres real
+ * (Testcontainers) em vez de um repositório mockado.
  */
 @PersistenceAdapterTest
 class ProductUpdatePersistenceRegressionTest {

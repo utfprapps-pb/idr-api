@@ -10,7 +10,7 @@ import java.util.UUID;
 public interface BreedJPARepository extends JpaRepository<BreedJPAEntity, UUID>,
         JpaSpecificationExecutor<BreedJPAEntity> {
 
-    /** Closed projection: selects only id and name. */
+    /** Projeção fechada: seleciona só id e nome. */
     List<BreedNameView> findByIdIn(Collection<UUID> ids);
 
     interface BreedNameView {

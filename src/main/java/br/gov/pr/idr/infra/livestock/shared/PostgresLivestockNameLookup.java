@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/** Answers {@link LivestockNameLookup} with two-column projections instead of loading aggregates. */
+/** Atende {@link LivestockNameLookup} com projeções de duas colunas, sem carregar agregados. */
 @RequiredArgsConstructor
 @Component
 public class PostgresLivestockNameLookup implements LivestockNameLookup {

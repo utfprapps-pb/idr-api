@@ -51,7 +51,7 @@ public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnim
             }
         }
 
-        // PATCH semantics: a field absent (null) in the request keeps its current value.
+        // Semântica de PATCH: campo ausente (null) na requisição mantém o valor atual.
         final var updatedAnimal = existingAnimal.update(animalMotherId, breedId,
                 orCurrent(command.type(), existingAnimal.getType()),
                 command.identifier(),

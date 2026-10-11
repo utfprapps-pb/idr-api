@@ -6,9 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 
 /**
- * Throwaway Postgres for integration tests. {@link ServiceConnection} wires the datasource to it, so tests never
- * touch the development database (whose schema is create-drop). Same major version as the dev {@code idr-db}.
- * Spring's test-context cache reuses one container for every test class sharing this configuration.
+ * Postgres descartável para os testes de integração. O {@link ServiceConnection} liga o datasource a ele, então os
+ * testes nunca tocam o banco de desenvolvimento (cujo schema é create-drop). Mesma versão principal do
+ * {@code idr-db} de dev. O cache de contexto de teste do Spring reaproveita um único container para todas as
+ * classes de teste que compartilham esta configuração.
  */
 @TestConfiguration(proxyBeanMethods = false)
 public class PostgresContainerConfiguration {

@@ -10,7 +10,7 @@ import br.gov.pr.idr.domain.shared.tactical.validation.NotificationValidation;
 
 import java.util.UUID;
 
-/** Cross-aggregate checks for what a childbirth points to: the calf's breed and the optional calf animal. */
+/** Validações entre agregados das referências de um parto: a raça do bezerro e o animal bezerro, opcional. */
 public final class ChildbirthReferencePolicy {
 
     private final BreedGateway breedGateway;
@@ -21,14 +21,14 @@ public final class ChildbirthReferencePolicy {
         this.animalGateway = animalGateway;
     }
 
-    /** The breed must exist; a linked calf must exist and belong to the mother's property. */
+    /** A raça deve existir; um bezerro vinculado deve existir e pertencer à propriedade da mãe. */
     public void ensureValid(final Animal mother, final UUID breedId, final UUID calfId) {
         final var notification = NotificationValidation.create();
         if (breedId != null && !breedGateway.existsById(BreedID.from(breedId))) {
             throw new NotificationException("Raça com o ID %s não encontrada".formatted(breedId), notification);
         }
         if (calfId == null || calfId.equals(mother.getId().id())) {
-            return; // no calf linked, or a self-reference that the aggregate itself rejects
+            return; // sem bezerro vinculado, ou autorreferência, que o próprio agregado rejeita
         }
         if (!animalGateway.existsByIdAndPropertyId(AnimalID.from(calfId), mother.getPropertyId())) {
             throw new NotificationException("Animal (bezerro) com o ID %s não encontrado".formatted(calfId),

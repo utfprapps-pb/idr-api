@@ -56,7 +56,7 @@ class CreateAnimalChildbirthUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        // Real policy over mocked gateways: the reference rules are exercised, not stubbed away.
+        // Policy real sobre gateways mockados: as regras de referência são exercitadas, não simuladas.
         useCase = new CreateAnimalChildbirthUseCase(gateway, new ChildbirthReferencePolicy(breedGateway, animalGateway), accessPolicy);
     }
 

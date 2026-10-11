@@ -60,7 +60,7 @@ class SpringBeanDefinitionConflictTest {
         scanner.addIncludeFilter(new AnnotationTypeFilter(Component.class));
         scanner.addIncludeFilter(new AnnotationTypeFilter(Repository.class));
 
-        // A BeanDefinitionStoreException here means duplicated bean names.
+        // Uma BeanDefinitionStoreException aqui significa nomes de bean duplicados.
         final int registered = org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> scanner.scan(BASE_PACKAGE),
                 "Conflito de definição de bean detectado (nomes de bean duplicados)");
         org.junit.jupiter.api.Assertions.assertTrue(registered > 0,

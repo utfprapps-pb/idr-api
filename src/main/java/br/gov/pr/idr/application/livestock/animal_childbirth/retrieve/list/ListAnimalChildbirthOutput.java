@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
-/** {@code breedName}/{@code calfIdentifier} are for display; same fields as the GET output. */
+/** {@code breedName}/{@code calfIdentifier} são para exibição; mesmos campos da saída do GET. */
 public record ListAnimalChildbirthOutput(
         UUID id,
         UUID animalId,

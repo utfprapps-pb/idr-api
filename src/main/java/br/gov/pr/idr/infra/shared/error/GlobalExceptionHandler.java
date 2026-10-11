@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
                 List.of(FieldError.from(ERROR, "O corpo da requisição é obrigatório")));
     }
 
-    /** An unknown {@code sort} field in a search: client error, without exposing the entity it was resolved against. */
+    /** Campo de {@code sort} desconhecido numa busca: erro do cliente, sem expor a entidade consultada. */
     @ExceptionHandler(PropertyReferenceException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handlePropertyReference(PropertyReferenceException ex) {

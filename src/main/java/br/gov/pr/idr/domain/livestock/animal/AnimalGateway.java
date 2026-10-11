@@ -12,7 +12,7 @@ public interface AnimalGateway {
 
     Optional<Animal> findById(final AnimalID id);
 
-    /** Whether the animal exists and belongs to the given property, without loading it. */
+    /** Se o animal existe e pertence à propriedade informada, sem carregá-lo. */
     boolean existsByIdAndPropertyId(final AnimalID id, final PropertyID propertyId);
 
     Animal update(final Animal animal);

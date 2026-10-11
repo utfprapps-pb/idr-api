@@ -17,13 +17,13 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 /**
- * HTTP client for {@link ApiIntegrationTest}s. Requests go through the real security filter chain with a JWT issued
- * for the seeded technician, who is assigned to every seeded property. Paths are relative to the servlet context
- * ({@code /api} is not part of them).
+ * Cliente HTTP dos {@link ApiIntegrationTest}. As requisições passam pela cadeia real de filtros de segurança com
+ * um JWT emitido para o técnico do seed, vinculado a todas as propriedades do seed. Os caminhos são relativos ao
+ * contexto do servlet (não levam o {@code /api}).
  * <p>
- * The test transaction is rolled back at the end, so {@link #perform} flushes and clears the persistence context
- * after every request: writes really reach Postgres (constraints, column types) and the next request reads them back
- * from the database instead of Hibernate's first-level cache.
+ * A transação do teste é desfeita ao final, por isso {@link #perform} faz flush e limpa o contexto de persistência
+ * após cada requisição: as escritas chegam de fato ao Postgres (constraints, tipos de coluna) e a requisição
+ * seguinte lê do banco, não do cache de primeiro nível do Hibernate.
  */
 public abstract class ApiTestSupport {
 
@@ -43,7 +43,7 @@ public abstract class ApiTestSupport {
         token = jwtService.generateToken(userDetailsService.loadUserByUsername(TECHNICIAN));
     }
 
-    /** Sends the request as the technician (JSON body as-is), then flushes and clears the persistence context. */
+    /** Envia a requisição como o técnico (corpo JSON como está), depois faz flush e limpa o contexto de persistência. */
     protected ResultActions perform(final MockHttpServletRequestBuilder request) throws Exception {
         final var result = mockMvc.perform(request.header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON));

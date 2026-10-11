@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Read-side port: display names of livestock references (breed name, animal identifier) for query outputs.
- * Kept out of the domain gateways, which stay about persisting aggregates.
+ * Porta de leitura: nomes de exibição das referências de livestock (nome da raça, identificador do animal) para
+ * as saídas de consulta. Fica fora dos gateways de domínio, que tratam só da persistência dos agregados.
  *
- * <p>Contract: each call is a single lookup for the whole collection; an empty collection returns an empty map
- * without any I/O; unknown ids are absent from the map.
+ * <p>Contrato: cada chamada é uma única busca para a coleção inteira; coleção vazia devolve mapa vazio sem I/O;
+ * ids desconhecidos ficam fora do mapa.
  */
 public interface LivestockNameLookup {
 

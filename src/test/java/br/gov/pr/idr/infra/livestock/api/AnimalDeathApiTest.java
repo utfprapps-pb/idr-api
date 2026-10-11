@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AnimalDeathApiTest extends ApiTestSupport {
 
     private static final String LEITOSA = "/properties/c0000000-0000-0000-0000-000000000001/animals/e0000000-0000-0000-0000-000000000003";
-    /** Already dead in the seed. */
+    /** Já está morta no seed. */
     private static final String ESTRELA = "/properties/c0000000-0000-0000-0000-000000000002/animals/e0000000-0000-0000-0000-000000000004";
     private static final String DEATH = """
             {"reason":"Pneumonia","deathDate":"2024-06-10"}""";
