@@ -2,7 +2,6 @@ package br.gov.pr.idr.architecture;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
@@ -61,13 +60,10 @@ class SpringBeanDefinitionConflictTest {
         scanner.addIncludeFilter(new AnnotationTypeFilter(Component.class));
         scanner.addIncludeFilter(new AnnotationTypeFilter(Repository.class));
 
-        try {
-            final int registered = scanner.scan(BASE_PACKAGE);
-            org.junit.jupiter.api.Assertions.assertTrue(registered > 0,
-                    "Esperado registrar ao menos um bean candidato no pacote " + BASE_PACKAGE);
-        } catch (final BeanDefinitionStoreException ex) {
-            org.junit.jupiter.api.Assertions.fail(
-                    "Conflito de definição de bean detectado (nomes de bean duplicados): " + ex.getMessage(), ex);
-        }
+        // A BeanDefinitionStoreException here means duplicated bean names.
+        final int registered = org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> scanner.scan(BASE_PACKAGE),
+                "Conflito de definição de bean detectado (nomes de bean duplicados)");
+        org.junit.jupiter.api.Assertions.assertTrue(registered > 0,
+                "Esperado registrar ao menos um bean candidato no pacote " + BASE_PACKAGE);
     }
 }

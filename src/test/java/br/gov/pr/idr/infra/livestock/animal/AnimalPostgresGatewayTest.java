@@ -19,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -118,11 +117,6 @@ class AnimalPostgresGatewayTest {
     void shouldRoundtripSaveAndFind() {
         final var propertyId = PropertyID.unique();
         final var animal = validAnimal(propertyId);
-        when(repository.save(any())).thenAnswer(invocation -> {
-            final AnimalJPAEntity entity = invocation.getArgument(0);
-            return entity;
-        });
-
         final var savedEntity = AnimalJPAEntity.from(animal);
         when(repository.save(any())).thenReturn(savedEntity);
         when(repository.findById(animal.getId().id())).thenReturn(Optional.of(savedEntity));

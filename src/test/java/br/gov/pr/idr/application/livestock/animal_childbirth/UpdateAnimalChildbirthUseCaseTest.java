@@ -11,14 +11,11 @@ import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirthGateway;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirthID;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.vo.ChildbirthCondition;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.vo.ChildbirthGender;
-import br.gov.pr.idr.domain.livestock.breed.Breed;
 import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
-import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
-import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,17 +25,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

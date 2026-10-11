@@ -87,18 +87,4 @@ class UpdateProductUseCaseTest {
                 new UpdateProductCommand(productId, "P2", "D2", "W2", activePrincipleId, categoryId)));
         verify(productGateway, never()).update(any());
     }
-
-    @Test
-    void shouldThrowComprehensibleErrorWhenReferencedActivePrincipleWasSoftDeleted() {
-        // activePrincipleGateway.existsById returns false here to simulate the @SQLRestriction
-        // on ActivePrincipleJPAEntity excluding a soft-deleted row from existence checks.
-        final var product = Product.create("P1", "D1", "W1",
-                ActivePrincipleID.from(activePrincipleId), ProductCategoryID.from(categoryId));
-        when(productGateway.findById(any())).thenReturn(Optional.of(product));
-        when(activePrincipleGateway.existsById(any())).thenReturn(false);
-
-        assertThrows(NotificationException.class, () -> useCase.execute(
-                new UpdateProductCommand(productId, "P2", "D2", "W2", activePrincipleId, categoryId)));
-        verify(productGateway, never()).update(any());
-    }
 }

@@ -1,6 +1,5 @@
 package br.gov.pr.idr.infra.shared.persistence;
 
-import br.gov.pr.idr.infra.livestock.breed.persistence.BreedJPAEntity;
 import br.gov.pr.idr.infra.livestock.breed.persistence.BreedJPARepository;
 import br.gov.pr.idr.infra.livestock.breed.persistence.BreedSpecification;
 import br.gov.pr.idr.infra.shared.testing.PersistenceAdapterTest;

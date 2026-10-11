@@ -5,19 +5,15 @@ import br.gov.pr.idr.application.livestock.animal_childbirth.retrieve.list.ListA
 import br.gov.pr.idr.application.livestock.animal_childbirth.retrieve.list.ListAnimalChildbirthUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
-import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirth;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirthGateway;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirthID;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.vo.ChildbirthCondition;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.vo.ChildbirthGender;
-import br.gov.pr.idr.domain.livestock.breed.Breed;
-import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
-import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +27,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
