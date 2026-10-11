@@ -81,7 +81,7 @@ class ListAnimalChildbirthUseCaseTest {
         assertEquals("Gir", output.items().get(0).breedName());
         assertNull(output.items().get(0).calfIdentifier());
         verify(nameLookup, times(1)).breedNames(any());
-        verify(nameLookup, never()).animalIdentifiers(any());
+        verify(nameLookup, times(1)).animalIdentifiers(Set.of());
     }
 
     @Test

@@ -9,7 +9,6 @@ import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirth;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirthGateway;
 import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @QueryUseCase
@@ -33,13 +32,11 @@ public class ListAnimalChildbirthUseCase extends UseCase<ListAnimalChildbirthCom
         accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
         final var page = animalChildbirthGateway.search(AnimalID.from(command.animalId()), command.query());
 
-        // One lookup per referenced catalog for the whole page, never one per row; no calves, no animal lookup.
+        // One lookup per referenced catalog for the whole page, never one per row (an empty set costs no I/O).
         final var breedNames = nameLookup.breedNames(
                 page.items().stream().map(AnimalChildbirth::getBreedId).collect(Collectors.toSet()));
-        final var calfIds = page.items().stream()
-                .flatMap(childbirth -> childbirth.getCalfId().stream()).collect(Collectors.toSet());
-        final Map<AnimalID, String> calfIdentifiers = calfIds.isEmpty()
-                ? Map.of() : nameLookup.animalIdentifiers(calfIds);
+        final var calfIdentifiers = nameLookup.animalIdentifiers(
+                page.items().stream().flatMap(childbirth -> childbirth.getCalfId().stream()).collect(Collectors.toSet()));
         return page.map(childbirth -> ListAnimalChildbirthOutput.from(childbirth,
                 breedNames.get(childbirth.getBreedId()),
                 childbirth.getCalfId().map(calfIdentifiers::get).orElse(null)));
