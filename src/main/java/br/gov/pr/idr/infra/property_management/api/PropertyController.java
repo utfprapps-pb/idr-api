@@ -18,6 +18,7 @@ import br.gov.pr.idr.infra.property_management.property.models.create.CreateProp
 import br.gov.pr.idr.infra.property_management.property.models.search.SearchPropertyResponse;
 import br.gov.pr.idr.infra.property_management.property.models.update.UpdatePropertyRequest;
 import br.gov.pr.idr.infra.property_management.property.models.update.UpdatePropertyResponse;
+import br.gov.pr.idr.infra.shared.support.AuthenticationSupport;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -120,7 +121,7 @@ public class PropertyController {
             @RequestParam(defaultValue = "name") final String sort,
             @RequestParam(defaultValue = "asc") final String direction) {
         final var query = SearchQuery.from(page, perPage, terms, sort, direction);
-        final var username = this.getUsername(authentication);
+        final var username = AuthenticationSupport.username(authentication);
         return searchPropertyUseCase.execute(SearchPropertyCommand.from(username, query))
                 .map(SearchPropertyResponse::from);
     }
@@ -160,13 +161,5 @@ public class PropertyController {
         } catch (IOException e) {
             throw new UncheckedIOException("Falha ao ler arquivo anexado: " + file.getOriginalFilename(), e);
         }
-    }
-
-    private String getUsername(final Authentication authentication) {
-        final var principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal == null) {
-            throw new IllegalStateException("Authentication principal is null");
-        }
-        return principal.toString();
     }
 }
