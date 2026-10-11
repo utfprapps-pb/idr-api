@@ -4,6 +4,7 @@ import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.ForbiddenException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.UnprocessableEntityException;
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,6 +35,14 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
         return new ErrorResponse(Instant.now(), HttpStatus.BAD_REQUEST.value(), "Corpo da requisição ausente ou inválido",
                 List.of(FieldError.from(ERROR, "O corpo da requisição é obrigatório")));
+    }
+
+    /** An unknown {@code sort} field in a search: client error, without exposing the entity it was resolved against. */
+    @ExceptionHandler(PropertyReferenceException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlePropertyReference(PropertyReferenceException ex) {
+        return new ErrorResponse(Instant.now(), HttpStatus.BAD_REQUEST.value(), "Campo de ordenação inválido",
+                List.of(FieldError.from("sort", "Campo de ordenação inválido: " + ex.getPropertyName())));
     }
 
     @ExceptionHandler(UnprocessableEntityException.class)
