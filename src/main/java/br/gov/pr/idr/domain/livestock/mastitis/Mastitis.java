@@ -7,6 +7,10 @@ import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
 import java.time.LocalDate;
 
+/**
+ * Diagnóstico de mastite de um animal: tipo, resultado do CMT e o resultado por teto ({@code ad}, {@code ae},
+ * {@code pd}, {@code pe}: anterior direito/esquerdo, posterior direito/esquerdo).
+ */
 public class Mastitis extends AggregateRoot<MastitisID> {
 
     private final AnimalID animalId;

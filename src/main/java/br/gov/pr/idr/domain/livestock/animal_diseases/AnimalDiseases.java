@@ -7,6 +7,7 @@ import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
 import java.time.LocalDate;
 
+/** Doença diagnosticada num animal. O diagnóstico é texto livre, não referencia o catálogo de doenças. */
 public class AnimalDiseases extends AggregateRoot<AnimalDiseasesID> {
 
     private final AnimalID animalId;

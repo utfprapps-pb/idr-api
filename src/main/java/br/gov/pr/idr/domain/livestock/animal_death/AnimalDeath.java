@@ -7,6 +7,7 @@ import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
 import java.time.LocalDate;
 
+/** Morte de um animal, com causa e data. Cada animal tem no máximo uma (garantido no caso de uso de criação). */
 public class AnimalDeath extends AggregateRoot<AnimalDeathID> {
 
     private final AnimalID animalId;

@@ -7,6 +7,7 @@ import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
 import java.time.LocalDate;
 
+/** Diagnóstico de gestação de um animal, com a data da última inseminação ({@code lastIa}). */
 public class PregnancyDiagnose extends AggregateRoot<PregnancyDiagnoseID> {
 
     private final AnimalID animalId;

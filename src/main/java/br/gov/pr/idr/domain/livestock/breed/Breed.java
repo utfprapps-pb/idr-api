@@ -4,6 +4,7 @@ import br.gov.pr.idr.domain.shared.tactical.AggregateRoot;
 import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
 import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
+/** Raça, catálogo global (sem vínculo com propriedade). O nome é obrigatório. */
 public class Breed extends AggregateRoot<BreedID> {
 
     private String breedName;

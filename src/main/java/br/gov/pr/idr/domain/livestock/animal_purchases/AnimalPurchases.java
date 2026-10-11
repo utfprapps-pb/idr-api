@@ -8,6 +8,7 @@ import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/** Compra de um animal: data, data de nascimento, valor e peso. O valor não é validado, como no legado. */
 public class AnimalPurchases extends AggregateRoot<AnimalPurchasesID> {
 
     private final AnimalID animalId;

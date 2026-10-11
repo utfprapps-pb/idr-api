@@ -6,6 +6,7 @@ import br.gov.pr.idr.domain.shared.tactical.AggregateRoot;
 import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
 import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
+/** Produto do catálogo global, com princípio ativo e categoria obrigatórios. */
 public class Product extends AggregateRoot<ProductID> {
 
     private String name;

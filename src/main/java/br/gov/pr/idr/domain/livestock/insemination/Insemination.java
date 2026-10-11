@@ -7,6 +7,7 @@ import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
 import java.time.LocalDate;
 
+/** Inseminação artificial de um animal. O touro é texto livre, não referencia um animal do rebanho. */
 public class Insemination extends AggregateRoot<InseminationID> {
 
     private final AnimalID animalId;

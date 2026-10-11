@@ -4,6 +4,7 @@ import br.gov.pr.idr.domain.shared.tactical.AggregateRoot;
 import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
 import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
+/** Categoria de produtos, catálogo global. A descrição é obrigatória. */
 public class ProductCategory extends AggregateRoot<ProductCategoryID> {
 
     private String description;

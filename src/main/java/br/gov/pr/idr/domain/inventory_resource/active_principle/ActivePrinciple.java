@@ -4,6 +4,7 @@ import br.gov.pr.idr.domain.shared.tactical.AggregateRoot;
 import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
 import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
+/** Princípio ativo de produtos, catálogo global. O nome é obrigatório. */
 public class ActivePrinciple extends AggregateRoot<ActivePrincipleID> {
 
     private String name;

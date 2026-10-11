@@ -10,6 +10,10 @@ import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Venda de um animal: data, motivo, destino, valor e peso. Motivo e destino são enums com valores em português,
+ * que o front traduz. O valor não é validado, como no legado.
+ */
 public class AnimalSales extends AggregateRoot<AnimalSalesID> {
 
     private final AnimalID animalId;

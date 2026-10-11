@@ -9,6 +9,10 @@ import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 import java.time.LocalDate;
 import java.util.Optional;
 
+/**
+ * Animal do rebanho de uma propriedade. A propriedade é fixa desde a criação; raça e identificador são obrigatórios.
+ * A mãe ({@code animalMotherId}) é opcional e, quando informada, deve ser outro animal da mesma propriedade.
+ */
 public class Animal extends AggregateRoot<AnimalID> {
 
     private final PropertyID propertyId;

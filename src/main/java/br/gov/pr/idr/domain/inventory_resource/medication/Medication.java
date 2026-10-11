@@ -8,6 +8,10 @@ import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
 
 import java.time.LocalDate;
 
+/**
+ * Aplicação de um produto num animal: produto, data, dose e via de aplicação. Mora em {@code inventory_resource},
+ * junto do produto, mas o acesso é controlado pela propriedade do animal ({@code livestock}).
+ */
 public class Medication extends AggregateRoot<MedicationID> {
 
     private final AnimalID animalId;

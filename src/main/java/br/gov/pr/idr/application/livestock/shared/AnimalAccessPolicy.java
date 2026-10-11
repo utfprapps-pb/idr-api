@@ -15,6 +15,10 @@ import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
 
 import java.util.UUID;
 
+/**
+ * Autorização dos casos de uso de livestock: o usuário precisa ter acesso à propriedade do caminho e o animal precisa
+ * pertencer a ela. Animal de outra propriedade responde como não encontrado, sem revelar que existe.
+ */
 public final class AnimalAccessPolicy {
 
     private final PropertyGateway propertyGateway;
