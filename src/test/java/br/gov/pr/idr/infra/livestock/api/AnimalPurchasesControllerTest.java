@@ -231,8 +231,6 @@ class AnimalPurchasesControllerTest {
         when(getAnimalPurchasesByIdUseCase.execute(any()))
                 .thenThrow(NotFoundException.with("Compra não encontrada"));
 
-        // NotFoundException não tem @ExceptionHandler específico em GlobalExceptionHandler; cai no handler
-        // genérico de DomainException, que responde 400 (mesmo comportamento já coberto em AnimalControllerTest).
         mockMvc.perform(get(basePath(propertyId, animalId) + "/" + id).principal(AUTH))
                 .andExpect(status().isBadRequest());
     }

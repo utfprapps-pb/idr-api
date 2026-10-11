@@ -149,8 +149,6 @@ class AnimalDiseasesPostgresGatewayTest {
         verify(repository).findAllByAnimalId(animalIdCaptor.capture(), any(Pageable.class));
         assertEquals(animalA.id(), animalIdCaptor.getValue());
 
-        // Outro animal nunca é consultado: o gateway delega exclusivamente para o animalId informado,
-        // nunca busca por "todas as doenças" sem escopo de animal.
         verify(repository, never()).findAll(any(Pageable.class));
     }
 

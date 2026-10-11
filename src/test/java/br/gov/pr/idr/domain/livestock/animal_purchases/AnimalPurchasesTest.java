@@ -32,9 +32,7 @@ class AnimalPurchasesTest {
 
     @Test
     void shouldAllowNegativeValue() {
-        // Fixa o comportamento atual do sistema legado: não há validação de value >= 0.
-        // Isto é uma decisão deliberada (ver Review Focus da Task 6), não um descuido — não adicionar
-        // validação aqui sem uma decisão explícita de produto.
+        // Como no legado, value não é validado; mudar isso exige decisão de produto.
         assertDoesNotThrow(() -> AnimalPurchases.create(AnimalID.unique(), LocalDate.now(), LocalDate.now(),
                 BigDecimal.valueOf(-100), BigDecimal.valueOf(450)));
     }

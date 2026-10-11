@@ -165,8 +165,6 @@ class AnimalControllerTest {
 
         final var captor = ArgumentCaptor.forClass(ListAnimalCommand.class);
         verify(listAnimalUseCase).execute(captor.capture());
-        // O propertyId usado na busca vem exclusivamente do path, nunca de um parâmetro de query ou do corpo,
-        // o que é exatamente o que fecha a falha de segurança original (rota com wildcard ignorava a propriedade).
         assertEquals(propertyA, captor.getValue().propertyId());
     }
 
@@ -234,9 +232,6 @@ class AnimalControllerTest {
         final var id = UUID.randomUUID();
         when(getAnimalByIdUseCase.execute(any())).thenThrow(NotFoundException.with("Animal não encontrado"));
 
-        // NotFoundException não tem @ExceptionHandler específico em GlobalExceptionHandler; cai no handler
-        // genérico de DomainException, que responde 400 (comportamento já existente e coberto por
-        // GlobalExceptionHandlerTest).
         mockMvc.perform(get("/properties/" + propertyId + "/animals/" + id).principal(AUTH))
                 .andExpect(status().isBadRequest());
     }

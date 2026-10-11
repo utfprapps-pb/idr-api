@@ -154,8 +154,6 @@ class AnimalPostgresGatewayTest {
                 anyString(), any(Pageable.class));
         assertEquals(propertyA.id(), propertyIdCaptor.getValue());
 
-        // A propriedade B nunca é consultada: o gateway delega exclusivamente para o propertyId informado,
-        // nunca busca por "todos os animais" sem escopo de propriedade.
         verify(repository, never()).findAll(any(Pageable.class));
     }
 

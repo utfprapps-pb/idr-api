@@ -227,8 +227,6 @@ class PregnancyDiagnoseControllerTest {
         when(getPregnancyDiagnoseByIdUseCase.execute(any()))
                 .thenThrow(NotFoundException.with("Diagnóstico de gestação não encontrado"));
 
-        // NotFoundException não tem @ExceptionHandler específico em GlobalExceptionHandler; cai no handler
-        // genérico de DomainException, que responde 400 (mesmo comportamento já coberto em AnimalControllerTest).
         mockMvc.perform(get(basePath(propertyId, animalId) + "/" + id).principal(AUTH))
                 .andExpect(status().isBadRequest());
     }
