@@ -18,6 +18,8 @@ pipeline {
         MINIO_SECRET_KEY="${MINIO_CRED_PSW}"
         MINIO_SECURE=true
         MINIO_PORT=443
+
+        CORS_ALLOWED_ORIGINS="https://idr.app.pb.utfpr.edu.br"
     }
 
     stages {   
