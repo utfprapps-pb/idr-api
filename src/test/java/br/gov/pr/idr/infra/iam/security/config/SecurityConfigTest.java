@@ -22,6 +22,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.time.Instant;
+import java.util.List;
 
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,7 +45,8 @@ class SecurityConfigTest {
 
     @BeforeEach
     void setUp() {
-        config = new SecurityConfig(jwtService, jwtProperties, userDetailsService, issueRefreshTokenUseCase);
+        final var corsProperties = new CorsProperties(List.of("https://idr.app.pb.utfpr.edu.br", "http://localhost:5173"));
+        config = new SecurityConfig(jwtService, jwtProperties, userDetailsService, issueRefreshTokenUseCase, corsProperties);
     }
 
     @Test
@@ -81,10 +83,9 @@ class SecurityConfigTest {
         final var cors = source.getCorsConfigurations().get("/**");
 
         assertNotNull(cors);
-        assertNotNull(cors.getAllowedOrigins());
-        assertTrue(cors.getAllowedOrigins().contains("*"));
+        assertEquals(List.of("https://idr.app.pb.utfpr.edu.br", "http://localhost:5173"), cors.getAllowedOrigins());
         assertTrue(cors.getAllowedMethods().containsAll(
-                java.util.List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")));
+                List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")));
         assertTrue(cors.getAllowedHeaders().contains("Authorization"));
         assertTrue(cors.getAllowedHeaders().contains("Content-Type"));
     }
