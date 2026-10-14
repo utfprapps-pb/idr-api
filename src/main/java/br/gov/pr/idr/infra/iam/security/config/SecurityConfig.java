@@ -32,24 +32,27 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableConfigurationProperties(JwtProperties.class)
+@EnableConfigurationProperties({JwtProperties.class, CorsProperties.class})
 public class SecurityConfig {
 
     private final JwtService jwtService;
     private final JwtProperties jwtProperties;
     private final UserDetailsService userDetailsService;
     private final IssueRefreshTokenUseCase issueRefreshTokenUseCase;
+    private final CorsProperties corsProperties;
 
     public SecurityConfig(
             JwtService jwtService,
             JwtProperties jwtProperties,
             UserDetailsService userDetailsService,
-            IssueRefreshTokenUseCase issueRefreshTokenUseCase
+            IssueRefreshTokenUseCase issueRefreshTokenUseCase,
+            CorsProperties corsProperties
     ) {
         this.jwtService = jwtService;
         this.jwtProperties = jwtProperties;
         this.userDetailsService = userDetailsService;
         this.issueRefreshTokenUseCase = issueRefreshTokenUseCase;
+        this.corsProperties = corsProperties;
     }
 
     @Bean
@@ -98,7 +101,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*", "http://localhost:5173/", "http://127.0.0.1:5173/"));
+        configuration.setAllowedOrigins(corsProperties.allowedOrigins());
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "OPTIONS", "DELETE"));
         configuration.setAllowedHeaders(List.of(
                 "Authorization", "x-xsrf-token",
