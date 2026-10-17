@@ -10,6 +10,7 @@ import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.infra.property_management.property.models.sync.DownloadSyncResponse;
 import br.gov.pr.idr.infra.property_management.property.models.sync.UploadSyncRequest;
 import br.gov.pr.idr.infra.property_management.property.models.sync.UploadSyncResponse;
+import br.gov.pr.idr.infra.shared.support.AuthenticationSupport;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -54,12 +55,7 @@ public class SyncController {
     }
 
     private UserID resolveUserId(final Authentication authentication) {
-        final var principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal == null) {
-            throw new IllegalStateException("Authentication principal is null");
-        }
-        final var username = principal.toString();
-        final var user = findUserByUsernameUseCase.execute(username);
+        final var user = findUserByUsernameUseCase.execute(AuthenticationSupport.username(authentication));
         return UserID.from(user.id());
     }
 }

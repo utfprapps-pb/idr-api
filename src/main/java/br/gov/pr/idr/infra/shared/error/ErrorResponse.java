@@ -1,7 +1,7 @@
 package br.gov.pr.idr.infra.shared.error;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
-public record ErrorResponse(LocalDateTime timestamp, int status, String message, List<FieldError> errors) {
+public record ErrorResponse(Instant timestamp, int status, String message, List<FieldError> errors) {
 }

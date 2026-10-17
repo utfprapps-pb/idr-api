@@ -128,6 +128,7 @@ public class CreatePropertyUseCase extends UseCase<CreatePropertyCommand, Create
 - Toda interface declarada em `domain` representa uma porta de saída e deve terminar com **`Gateway`** (ex.: `PropertyGateway`, `EmailGateway`).
 - Toda implementação concreta de um `Gateway` é um adaptador e deve residir em `infra` (ex.: `PropertyPostgresGateway`, `ThymeleafEmailGateway`).
 - O `application` depende apenas da interface; o Spring injeta a implementação correta em tempo de execução (Inversão de Dependência).
+- Consultas só de exibição (ex.: o nome de um ID num `Output`) não entram no Gateway: usam uma porta de leitura em `application` (ex.: `LivestockNameLookup`), implementada em `infra`.
 
 ---
 
@@ -172,6 +173,15 @@ Classes em pacotes `..domain..exceptions..` devem terminar com **`Exception`** (
 
 ---
 
+## 🧪 Testes
+
+- `./mvnw test`: testes unitários, MockMvc e ArchUnit. Não precisa de Docker.
+- `./mvnw verify -Pit`: testes com a tag `integration`, contra um Postgres descartável (Testcontainers). Precisa de Docker e nunca usa o banco de desenvolvimento.
+  - Persistência: anote com `@PersistenceAdapterTest`.
+  - API ponta a ponta: anote com `@ApiIntegrationTest` e estenda `ApiTestSupport` (JWT de `tecnico1@idr.com`, MinIO mockado).
+
+---
+
 ## 🚀 Guia de Migração (Best Practices)
 
 Ao migrar uma entidade de `legacy` para a arquitetura hexagonal:
@@ -183,7 +193,8 @@ Ao migrar uma entidade de `legacy` para a arquitetura hexagonal:
 5. **DTOs:** utilize `record`s para `Command`/`Output` (em `application`) e para `Request`/`Response` (em `infra`).
 6. **Adaptadores:** implemente o Gateway em `infra` (ex.: `XxxPostgresGateway`), a entidade JPA (`XxxJPAEntity`) e o `Controller` REST.
 7. **Desacoplamento:** a camada `application` não deve conhecer JPA ou Controller — comunica-se apenas através de Portas (Gateways) definidas no `domain`.
-8. **Valide com os testes arquiteturais:** rode `ArchitectureTest` antes de abrir o PR.
+8. **Teste o Gateway no banco real** com `@PersistenceAdapterTest` (`./mvnw verify -Pit`).
+9. **Valide com os testes arquiteturais:** rode `ArchitectureTest` antes de abrir o PR.
 
 ---
 
