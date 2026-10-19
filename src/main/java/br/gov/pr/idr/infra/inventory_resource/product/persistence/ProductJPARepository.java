@@ -16,6 +16,6 @@ public interface ProductJPARepository extends JpaRepository<ProductJPAEntity, UU
             "FROM ProductJPAEntity p " +
             "LEFT JOIN ActivePrincipleJPAEntity ap ON p.activePrincipleId = ap.id " +
             "LEFT JOIN ProductCategoryJPAEntity pc ON p.categoryId = pc.id " +
-            "WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :terms, '%'))")
-    Page<ListProductQueryResult> search(@Param("terms") String terms, Pageable pageable);
+            "WHERE LOWER(p.name) LIKE :pattern ESCAPE '\\'")
+    Page<ListProductQueryResult> search(@Param("pattern") String pattern, Pageable pageable);
 }

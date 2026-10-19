@@ -173,27 +173,27 @@ class ProductPostgresGatewayTest {
     }
 
     @Test
-    @DisplayName("deve tratar terms nulo como string vazia na busca")
+    @DisplayName("deve tratar terms nulo como busca sem filtro")
     void shouldTreatNullTermsAsEmptyOnSearch() {
         final var page = new PageImpl<ListProductQueryResult>(List.of());
-        when(repository.search(eq(""), any(Pageable.class))).thenReturn(page);
+        when(repository.search(eq("%%"), any(Pageable.class))).thenReturn(page);
 
         final var query = SearchQuery.from(0, 10, null, "name", "asc");
         final var result = gateway.search(query);
 
         assertEquals(0, result.total());
-        verify(repository).search(eq(""), any(Pageable.class));
+        verify(repository).search(eq("%%"), any(Pageable.class));
     }
 
     @Test
-    @DisplayName("deve remover espaços em branco dos terms na busca")
+    @DisplayName("deve remover espaços e passar os terms como padrão de contém em minúsculas")
     void shouldTrimTermsOnSearch() {
         final var page = new PageImpl<ListProductQueryResult>(List.of());
-        when(repository.search(eq("Vacina"), any(Pageable.class))).thenReturn(page);
+        when(repository.search(eq("%vacina%"), any(Pageable.class))).thenReturn(page);
 
         final var query = SearchQuery.from(0, 10, "  Vacina  ", "name", "asc");
         gateway.search(query);
 
-        verify(repository).search(eq("Vacina"), any(Pageable.class));
+        verify(repository).search(eq("%vacina%"), any(Pageable.class));
     }
 }

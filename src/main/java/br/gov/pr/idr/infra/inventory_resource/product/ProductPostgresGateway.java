@@ -8,11 +8,14 @@ import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
 import br.gov.pr.idr.infra.inventory_resource.product.persistence.ProductJPAEntity;
 import br.gov.pr.idr.infra.inventory_resource.product.persistence.ProductJPARepository;
+import br.gov.pr.idr.infra.shared.persistence.LikeSpecification;
 import br.gov.pr.idr.infra.shared.support.PageRequestFactory;
+import br.gov.pr.idr.infra.shared.support.PaginationFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 @RequiredArgsConstructor
 @Component
@@ -45,8 +48,8 @@ public class ProductPostgresGateway implements ProductGateway {
     @Override
     public Pagination<ListProductQueryResult> search(final SearchQuery query) {
         final var pageRequest = PageRequestFactory.from(query);
-        final var page = repository.search(PageRequestFactory.terms(query.terms()), pageRequest);
-        return new Pagination<>(page.getNumber(), page.getSize(), page.getTotalElements(), page.getContent());
+        final var pattern = LikeSpecification.containsPattern(PageRequestFactory.terms(query.terms()));
+        return PaginationFactory.from(repository.search(pattern, pageRequest), Function.identity());
     }
 
     @Override

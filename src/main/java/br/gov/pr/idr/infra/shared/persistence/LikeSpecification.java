@@ -14,9 +14,16 @@ public final class LikeSpecification {
     public static <T> Specification<T> withTerms(final String terms, final String field) {
         return (root, query, cb) -> {
             if (terms == null || terms.isBlank()) return cb.conjunction();
-            final var pattern = "%" + escape(terms.toLowerCase(Locale.ROOT)) + "%";
-            return cb.like(cb.lower(root.get(field)), pattern, ESCAPE);
+            return cb.like(cb.lower(root.get(field)), containsPattern(terms), ESCAPE);
         };
+    }
+
+    /**
+     * Padrão de "contém" em minúsculas, com {@code %}, {@code _} e {@code \} escapados, para consultas JPQL
+     * que usam {@code LOWER(campo) LIKE :pattern ESCAPE '\'}. Termos vazios casam com tudo.
+     */
+    public static String containsPattern(final String terms) {
+        return terms == null ? "%" : "%" + escape(terms.toLowerCase(Locale.ROOT)) + "%";
     }
 
     private static String escape(final String terms) {
