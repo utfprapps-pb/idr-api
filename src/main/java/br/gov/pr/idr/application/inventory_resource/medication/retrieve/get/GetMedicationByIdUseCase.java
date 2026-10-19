@@ -26,8 +26,7 @@ public class GetMedicationByIdUseCase extends UseCase<GetMedicationByIdCommand, 
         accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
 
         final var id = MedicationID.from(command.medicationId());
-        final var medication = medicationGateway.findById(id)
-                .filter(m -> m.getAnimalId().equals(AnimalID.from(command.animalId())))
+        final var medication = medicationGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))
                 .orElseThrow(() -> NotFoundException.with(Medication.class, id));
 
         return GetMedicationByIdOutput.from(medication);

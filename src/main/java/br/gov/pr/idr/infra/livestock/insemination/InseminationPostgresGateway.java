@@ -28,8 +28,8 @@ public class InseminationPostgresGateway implements InseminationGateway {
     }
 
     @Override
-    public Optional<Insemination> findById(final InseminationID id) {
-        return repository.findById(id.id())
+    public Optional<Insemination> findByIdAndAnimalId(final InseminationID id, final AnimalID animalId) {
+        return repository.findByIdAndAnimalId(id.id(), animalId.id())
                 .map(InseminationJPAEntity::toAggregate);
     }
 

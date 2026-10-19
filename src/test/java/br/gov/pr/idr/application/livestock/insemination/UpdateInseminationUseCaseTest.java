@@ -44,8 +44,6 @@ class UpdateInseminationUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final Insemination existingInsemination = Insemination.with(InseminationID.from(inseminationId),
             AnimalID.from(animalId), LocalDate.now(), "Touro 1");
-    private final Insemination inseminationOfAnotherAnimal = Insemination.with(InseminationID.from(inseminationId),
-            AnimalID.unique(), LocalDate.now(), "Touro 1");
 
     private UpdateInseminationCommand validCommand() {
         return new UpdateInseminationCommand(propertyId, animalId, inseminationId, "tecnico@idr.com",
@@ -55,7 +53,7 @@ class UpdateInseminationUseCaseTest {
     @Test
     void shouldUpdateWhenInseminationBelongsToAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(InseminationID.from(inseminationId))).thenReturn(Optional.of(existingInsemination));
+        when(gateway.findByIdAndAnimalId(InseminationID.from(inseminationId), AnimalID.from(animalId))).thenReturn(Optional.of(existingInsemination));
         when(gateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
 
         final var output = useCase.execute(validCommand());
@@ -73,8 +71,8 @@ class UpdateInseminationUseCaseTest {
     @Test
     void shouldThrowNotFoundWhenInseminationBelongsToAnotherAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(InseminationID.from(inseminationId)))
-                .thenReturn(Optional.of(inseminationOfAnotherAnimal));
+        when(gateway.findByIdAndAnimalId(InseminationID.from(inseminationId), AnimalID.from(animalId)))
+                .thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> useCase.execute(validCommand()));
         verify(gateway, never()).update(any());

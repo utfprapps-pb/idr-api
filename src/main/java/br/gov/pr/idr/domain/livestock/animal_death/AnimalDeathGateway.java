@@ -10,7 +10,7 @@ public interface AnimalDeathGateway {
 
     AnimalDeath save(final AnimalDeath animalDeath);
 
-    Optional<AnimalDeath> findById(final AnimalDeathID id);
+    Optional<AnimalDeath> findByIdAndAnimalId(final AnimalDeathID id, final AnimalID animalId);
 
     AnimalDeath update(final AnimalDeath animalDeath);
 

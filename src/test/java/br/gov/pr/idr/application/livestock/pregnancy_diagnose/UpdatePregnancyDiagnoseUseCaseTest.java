@@ -45,8 +45,6 @@ class UpdatePregnancyDiagnoseUseCaseTest {
     private final PregnancyDiagnose existingPregnancyDiagnose = PregnancyDiagnose.with(
             PregnancyDiagnoseID.from(pregnancyDiagnoseId), AnimalID.from(animalId), LocalDate.now(),
             LocalDate.now());
-    private final PregnancyDiagnose pregnancyDiagnoseOfAnotherAnimal = PregnancyDiagnose.with(
-            PregnancyDiagnoseID.from(pregnancyDiagnoseId), AnimalID.unique(), LocalDate.now(), LocalDate.now());
 
     private UpdatePregnancyDiagnoseCommand validCommand() {
         return new UpdatePregnancyDiagnoseCommand(propertyId, animalId, pregnancyDiagnoseId, "tecnico@idr.com",
@@ -56,7 +54,7 @@ class UpdatePregnancyDiagnoseUseCaseTest {
     @Test
     void shouldUpdateWhenPregnancyDiagnoseBelongsToAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(PregnancyDiagnoseID.from(pregnancyDiagnoseId)))
+        when(gateway.findByIdAndAnimalId(PregnancyDiagnoseID.from(pregnancyDiagnoseId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingPregnancyDiagnose));
         when(gateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -75,8 +73,8 @@ class UpdatePregnancyDiagnoseUseCaseTest {
     @Test
     void shouldThrowNotFoundWhenPregnancyDiagnoseBelongsToAnotherAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(PregnancyDiagnoseID.from(pregnancyDiagnoseId)))
-                .thenReturn(Optional.of(pregnancyDiagnoseOfAnotherAnimal));
+        when(gateway.findByIdAndAnimalId(PregnancyDiagnoseID.from(pregnancyDiagnoseId), AnimalID.from(animalId)))
+                .thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> useCase.execute(validCommand()));
         verify(gateway, never()).update(any());

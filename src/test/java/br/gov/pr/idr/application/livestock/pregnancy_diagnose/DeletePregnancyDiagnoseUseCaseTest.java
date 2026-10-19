@@ -44,8 +44,6 @@ class DeletePregnancyDiagnoseUseCaseTest {
     private final PregnancyDiagnose existingPregnancyDiagnose = PregnancyDiagnose.with(
             PregnancyDiagnoseID.from(pregnancyDiagnoseId), AnimalID.from(animalId), LocalDate.now(),
             LocalDate.now());
-    private final PregnancyDiagnose pregnancyDiagnoseOfAnotherAnimal = PregnancyDiagnose.with(
-            PregnancyDiagnoseID.from(pregnancyDiagnoseId), AnimalID.unique(), LocalDate.now(), LocalDate.now());
 
     private DeletePregnancyDiagnoseCommand validCommand() {
         return new DeletePregnancyDiagnoseCommand(propertyId, animalId, pregnancyDiagnoseId, "tecnico@idr.com");
@@ -54,7 +52,7 @@ class DeletePregnancyDiagnoseUseCaseTest {
     @Test
     void shouldDeleteWhenPregnancyDiagnoseBelongsToAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(PregnancyDiagnoseID.from(pregnancyDiagnoseId)))
+        when(gateway.findByIdAndAnimalId(PregnancyDiagnoseID.from(pregnancyDiagnoseId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingPregnancyDiagnose));
 
         useCase.execute(validCommand());
@@ -72,8 +70,8 @@ class DeletePregnancyDiagnoseUseCaseTest {
     @Test
     void shouldThrowNotFoundWhenPregnancyDiagnoseBelongsToAnotherAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(PregnancyDiagnoseID.from(pregnancyDiagnoseId)))
-                .thenReturn(Optional.of(pregnancyDiagnoseOfAnotherAnimal));
+        when(gateway.findByIdAndAnimalId(PregnancyDiagnoseID.from(pregnancyDiagnoseId), AnimalID.from(animalId)))
+                .thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> useCase.execute(validCommand()));
         verify(gateway, never()).deleteById(any());

@@ -26,8 +26,7 @@ public class DeletePregnancyDiagnoseUseCase extends VoidUseCase<DeletePregnancyD
         accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
 
         final var id = PregnancyDiagnoseID.from(command.pregnancyDiagnoseId());
-        final var pregnancyDiagnose = pregnancyDiagnoseGateway.findById(id)
-                .filter(p -> p.getAnimalId().equals(AnimalID.from(command.animalId())))
+        final var pregnancyDiagnose = pregnancyDiagnoseGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))
                 .orElseThrow(() -> NotFoundException.with(PregnancyDiagnose.class, id));
 
         pregnancyDiagnoseGateway.deleteById(pregnancyDiagnose.getId());

@@ -28,8 +28,8 @@ public class PregnancyDiagnosePostgresGateway implements PregnancyDiagnoseGatewa
     }
 
     @Override
-    public Optional<PregnancyDiagnose> findById(final PregnancyDiagnoseID id) {
-        return repository.findById(id.id())
+    public Optional<PregnancyDiagnose> findByIdAndAnimalId(final PregnancyDiagnoseID id, final AnimalID animalId) {
+        return repository.findByIdAndAnimalId(id.id(), animalId.id())
                 .map(PregnancyDiagnoseJPAEntity::toAggregate);
     }
 

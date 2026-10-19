@@ -10,7 +10,7 @@ public interface PregnancyDiagnoseGateway {
 
     PregnancyDiagnose save(final PregnancyDiagnose pregnancyDiagnose);
 
-    Optional<PregnancyDiagnose> findById(final PregnancyDiagnoseID id);
+    Optional<PregnancyDiagnose> findByIdAndAnimalId(final PregnancyDiagnoseID id, final AnimalID animalId);
 
     PregnancyDiagnose update(final PregnancyDiagnose pregnancyDiagnose);
 

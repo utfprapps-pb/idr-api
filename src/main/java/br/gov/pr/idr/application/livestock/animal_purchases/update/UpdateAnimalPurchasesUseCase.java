@@ -27,8 +27,7 @@ public class UpdateAnimalPurchasesUseCase extends UseCase<UpdateAnimalPurchasesC
         accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
 
         final var id = AnimalPurchasesID.from(command.animalPurchasesId());
-        final var animalPurchases = animalPurchasesGateway.findById(id)
-                .filter(p -> p.getAnimalId().equals(AnimalID.from(command.animalId())))
+        final var animalPurchases = animalPurchasesGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))
                 .orElseThrow(() -> NotFoundException.with(AnimalPurchases.class, id));
 
         final var updatedAnimalPurchases = animalPurchases.update(command.datePurchase(), command.birthDate(),

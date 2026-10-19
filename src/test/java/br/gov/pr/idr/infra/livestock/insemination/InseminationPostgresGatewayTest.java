@@ -75,10 +75,10 @@ class InseminationPostgresGatewayTest {
         final var animalId = AnimalID.unique();
         final var insemination = validInsemination(animalId);
         final var id = insemination.getId();
-        when(repository.findById(id.id())).thenReturn(Optional.of(entityMock));
+        when(repository.findByIdAndAnimalId(id.id(), animalId.id())).thenReturn(Optional.of(entityMock));
         when(entityMock.toAggregate()).thenReturn(insemination);
 
-        final var result = gateway.findById(id);
+        final var result = gateway.findByIdAndAnimalId(id, animalId);
 
         assertTrue(result.isPresent());
         assertEquals(insemination.getBull(), result.get().getBull());
@@ -88,10 +88,11 @@ class InseminationPostgresGatewayTest {
     @Test
     @DisplayName("deve retornar Optional vazio quando inseminação não é encontrada por ID")
     void shouldReturnEmptyWhenNotFoundById() {
+        final var animalId = AnimalID.unique();
         final var id = InseminationID.unique();
-        when(repository.findById(id.id())).thenReturn(Optional.empty());
+        when(repository.findByIdAndAnimalId(id.id(), animalId.id())).thenReturn(Optional.empty());
 
-        final var result = gateway.findById(id);
+        final var result = gateway.findByIdAndAnimalId(id, animalId);
 
         assertTrue(result.isEmpty());
     }
@@ -117,10 +118,10 @@ class InseminationPostgresGatewayTest {
 
         final var savedEntity = InseminationJPAEntity.from(insemination);
         when(repository.save(any())).thenReturn(savedEntity);
-        when(repository.findById(insemination.getId().id())).thenReturn(Optional.of(savedEntity));
+        when(repository.findByIdAndAnimalId(insemination.getId().id(), insemination.getAnimalId().id())).thenReturn(Optional.of(savedEntity));
 
         gateway.save(insemination);
-        final var result = gateway.findById(insemination.getId());
+        final var result = gateway.findByIdAndAnimalId(insemination.getId(), insemination.getAnimalId());
 
         assertTrue(result.isPresent());
         assertEquals(insemination.getBull(), result.get().getBull());

@@ -32,8 +32,7 @@ public class UpdateAnimalChildbirthUseCase extends UseCase<UpdateAnimalChildbirt
         final var mother = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
                 command.username());
         final var id = AnimalChildbirthID.from(command.animalChildbirthId());
-        final var animalChildbirth = animalChildbirthGateway.findById(id)
-                .filter(p -> p.getAnimalId().equals(mother.getId()))
+        final var animalChildbirth = animalChildbirthGateway.findByIdAndAnimalId(id, mother.getId())
                 .orElseThrow(() -> NotFoundException.with(AnimalChildbirth.class, id));
         referencePolicy.ensureBreedExists(command.breedId());
         referencePolicy.ensureAnimalInProperty(command.calfId(), mother.getPropertyId(), "bezerro");

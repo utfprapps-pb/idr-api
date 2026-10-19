@@ -28,8 +28,8 @@ public class MastitisPostgresGateway implements MastitisGateway {
     }
 
     @Override
-    public Optional<Mastitis> findById(final MastitisID id) {
-        return repository.findById(id.id())
+    public Optional<Mastitis> findByIdAndAnimalId(final MastitisID id, final AnimalID animalId) {
+        return repository.findByIdAndAnimalId(id.id(), animalId.id())
                 .map(MastitisJPAEntity::toAggregate);
     }
 

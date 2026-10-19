@@ -27,8 +27,7 @@ public class UpdateAnimalDiseasesUseCase extends UseCase<UpdateAnimalDiseasesCom
         accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
 
         final var id = AnimalDiseasesID.from(command.animalDiseasesId());
-        final var animalDiseases = animalDiseasesGateway.findById(id)
-                .filter(p -> p.getAnimalId().equals(AnimalID.from(command.animalId())))
+        final var animalDiseases = animalDiseasesGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))
                 .orElseThrow(() -> NotFoundException.with(AnimalDiseases.class, id));
 
         final var updatedAnimalDiseases = animalDiseases.update(command.diagnosis(), command.diagnosisDate());

@@ -46,9 +46,6 @@ class UpdateAnimalPurchasesUseCaseTest {
     private final AnimalPurchases existingAnimalPurchases = AnimalPurchases.with(
             AnimalPurchasesID.from(animalPurchasesId), AnimalID.from(animalId), LocalDate.now(),
             LocalDate.now(), BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
-    private final AnimalPurchases animalPurchasesOfAnotherAnimal = AnimalPurchases.with(
-            AnimalPurchasesID.from(animalPurchasesId), AnimalID.unique(), LocalDate.now(), LocalDate.now(),
-            BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
 
     private UpdateAnimalPurchasesCommand validCommand() {
         return new UpdateAnimalPurchasesCommand(propertyId, animalId, animalPurchasesId, "tecnico@idr.com",
@@ -58,7 +55,7 @@ class UpdateAnimalPurchasesUseCaseTest {
     @Test
     void shouldUpdateWhenAnimalPurchasesBelongsToAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(AnimalPurchasesID.from(animalPurchasesId)))
+        when(gateway.findByIdAndAnimalId(AnimalPurchasesID.from(animalPurchasesId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingAnimalPurchases));
         when(gateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -78,8 +75,8 @@ class UpdateAnimalPurchasesUseCaseTest {
     @Test
     void shouldThrowNotFoundWhenAnimalPurchasesBelongsToAnotherAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(AnimalPurchasesID.from(animalPurchasesId)))
-                .thenReturn(Optional.of(animalPurchasesOfAnotherAnimal));
+        when(gateway.findByIdAndAnimalId(AnimalPurchasesID.from(animalPurchasesId), AnimalID.from(animalId)))
+                .thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> useCase.execute(validCommand()));
         verify(gateway, never()).update(any());

@@ -28,8 +28,8 @@ public class AnimalDeathPostgresGateway implements AnimalDeathGateway {
     }
 
     @Override
-    public Optional<AnimalDeath> findById(final AnimalDeathID id) {
-        return repository.findById(id.id())
+    public Optional<AnimalDeath> findByIdAndAnimalId(final AnimalDeathID id, final AnimalID animalId) {
+        return repository.findByIdAndAnimalId(id.id(), animalId.id())
                 .map(AnimalDeathJPAEntity::toAggregate);
     }
 

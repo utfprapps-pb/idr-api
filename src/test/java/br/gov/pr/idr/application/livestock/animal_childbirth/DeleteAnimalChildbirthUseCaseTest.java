@@ -46,8 +46,6 @@ class DeleteAnimalChildbirthUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final AnimalChildbirth existingAnimalChildbirth = AnimalChildbirth.with(
             AnimalChildbirthID.from(animalChildbirthId), AnimalID.from(animalId), LocalDate.of(2024, 3, 10), ChildbirthGender.FEMALE, new BigDecimal("35.5"), ChildbirthCondition.ALIVE, BreedID.unique(), null);
-    private final AnimalChildbirth animalChildbirthOfAnotherAnimal = AnimalChildbirth.with(
-            AnimalChildbirthID.from(animalChildbirthId), AnimalID.unique(), LocalDate.of(2024, 3, 10), ChildbirthGender.FEMALE, new BigDecimal("35.5"), ChildbirthCondition.ALIVE, BreedID.unique(), null);
 
     private DeleteAnimalChildbirthCommand validCommand() {
         return new DeleteAnimalChildbirthCommand(propertyId, animalId, animalChildbirthId, "tecnico@idr.com");
@@ -56,7 +54,7 @@ class DeleteAnimalChildbirthUseCaseTest {
     @Test
     void shouldDeleteWhenAnimalChildbirthBelongsToAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(AnimalChildbirthID.from(animalChildbirthId)))
+        when(gateway.findByIdAndAnimalId(AnimalChildbirthID.from(animalChildbirthId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingAnimalChildbirth));
 
         useCase.execute(validCommand());
@@ -74,8 +72,8 @@ class DeleteAnimalChildbirthUseCaseTest {
     @Test
     void shouldThrowNotFoundWhenAnimalChildbirthBelongsToAnotherAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(AnimalChildbirthID.from(animalChildbirthId)))
-                .thenReturn(Optional.of(animalChildbirthOfAnotherAnimal));
+        when(gateway.findByIdAndAnimalId(AnimalChildbirthID.from(animalChildbirthId), AnimalID.from(animalId)))
+                .thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> useCase.execute(validCommand()));
         verify(gateway, never()).deleteById(any());

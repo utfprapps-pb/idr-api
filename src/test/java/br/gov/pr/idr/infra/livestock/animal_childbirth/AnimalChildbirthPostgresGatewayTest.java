@@ -79,10 +79,10 @@ class AnimalChildbirthPostgresGatewayTest {
         final var animalId = AnimalID.unique();
         final var animalChildbirth = validAnimalChildbirth(animalId);
         final var id = animalChildbirth.getId();
-        when(repository.findById(id.id())).thenReturn(Optional.of(entityMock));
+        when(repository.findByIdAndAnimalId(id.id(), animalId.id())).thenReturn(Optional.of(entityMock));
         when(entityMock.toAggregate()).thenReturn(animalChildbirth);
 
-        final var result = gateway.findById(id);
+        final var result = gateway.findByIdAndAnimalId(id, animalId);
 
         assertTrue(result.isPresent());
         assertEquals(animalChildbirth.getChildbirthDate(), result.get().getChildbirthDate());
@@ -92,10 +92,11 @@ class AnimalChildbirthPostgresGatewayTest {
     @Test
     @DisplayName("deve retornar Optional vazio quando parto não é encontrado por ID")
     void shouldReturnEmptyWhenNotFoundById() {
+        final var animalId = AnimalID.unique();
         final var id = AnimalChildbirthID.unique();
-        when(repository.findById(id.id())).thenReturn(Optional.empty());
+        when(repository.findByIdAndAnimalId(id.id(), animalId.id())).thenReturn(Optional.empty());
 
-        final var result = gateway.findById(id);
+        final var result = gateway.findByIdAndAnimalId(id, animalId);
 
         assertTrue(result.isEmpty());
     }
@@ -121,10 +122,10 @@ class AnimalChildbirthPostgresGatewayTest {
 
         final var savedEntity = AnimalChildbirthJPAEntity.from(animalChildbirth);
         when(repository.save(any())).thenReturn(savedEntity);
-        when(repository.findById(animalChildbirth.getId().id())).thenReturn(Optional.of(savedEntity));
+        when(repository.findByIdAndAnimalId(animalChildbirth.getId().id(), animalChildbirth.getAnimalId().id())).thenReturn(Optional.of(savedEntity));
 
         gateway.save(animalChildbirth);
-        final var result = gateway.findById(animalChildbirth.getId());
+        final var result = gateway.findByIdAndAnimalId(animalChildbirth.getId(), animalChildbirth.getAnimalId());
 
         assertTrue(result.isPresent());
         assertEquals(animalChildbirth.getAnimalId(), result.get().getAnimalId());

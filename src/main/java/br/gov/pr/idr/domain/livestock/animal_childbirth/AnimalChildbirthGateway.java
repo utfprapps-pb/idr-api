@@ -10,7 +10,7 @@ public interface AnimalChildbirthGateway {
 
     AnimalChildbirth save(final AnimalChildbirth animalChildbirth);
 
-    Optional<AnimalChildbirth> findById(final AnimalChildbirthID id);
+    Optional<AnimalChildbirth> findByIdAndAnimalId(final AnimalChildbirthID id, final AnimalID animalId);
 
     AnimalChildbirth update(final AnimalChildbirth animalChildbirth);
 

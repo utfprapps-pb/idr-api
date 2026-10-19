@@ -25,8 +25,7 @@ public class GetMastitisByIdUseCase extends UseCase<GetMastitisByIdCommand, GetM
         accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
 
         final var id = MastitisID.from(command.mastitisId());
-        final var mastitis = mastitisGateway.findById(id)
-                .filter(m -> m.getAnimalId().equals(AnimalID.from(command.animalId())))
+        final var mastitis = mastitisGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))
                 .orElseThrow(() -> NotFoundException.with(Mastitis.class, id));
 
         return GetMastitisByIdOutput.from(mastitis);

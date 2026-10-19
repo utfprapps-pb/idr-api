@@ -26,8 +26,7 @@ public class DeleteAnimalChildbirthUseCase extends VoidUseCase<DeleteAnimalChild
         accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
 
         final var id = AnimalChildbirthID.from(command.animalChildbirthId());
-        final var animalChildbirth = animalChildbirthGateway.findById(id)
-                .filter(p -> p.getAnimalId().equals(AnimalID.from(command.animalId())))
+        final var animalChildbirth = animalChildbirthGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))
                 .orElseThrow(() -> NotFoundException.with(AnimalChildbirth.class, id));
 
         animalChildbirthGateway.deleteById(animalChildbirth.getId());

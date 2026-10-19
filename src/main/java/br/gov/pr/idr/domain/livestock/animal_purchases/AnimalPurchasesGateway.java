@@ -10,7 +10,7 @@ public interface AnimalPurchasesGateway {
 
     AnimalPurchases save(final AnimalPurchases animalPurchases);
 
-    Optional<AnimalPurchases> findById(final AnimalPurchasesID id);
+    Optional<AnimalPurchases> findByIdAndAnimalId(final AnimalPurchasesID id, final AnimalID animalId);
 
     AnimalPurchases update(final AnimalPurchases animalPurchases);
 

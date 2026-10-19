@@ -10,7 +10,7 @@ public interface InseminationGateway {
 
     Insemination save(final Insemination insemination);
 
-    Optional<Insemination> findById(final InseminationID id);
+    Optional<Insemination> findByIdAndAnimalId(final InseminationID id, final AnimalID animalId);
 
     Insemination update(final Insemination insemination);
 

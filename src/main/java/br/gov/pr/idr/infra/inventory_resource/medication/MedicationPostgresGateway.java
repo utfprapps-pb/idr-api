@@ -28,8 +28,8 @@ public class MedicationPostgresGateway implements MedicationGateway {
     }
 
     @Override
-    public Optional<Medication> findById(final MedicationID id) {
-        return repository.findById(id.id())
+    public Optional<Medication> findByIdAndAnimalId(final MedicationID id, final AnimalID animalId) {
+        return repository.findByIdAndAnimalId(id.id(), animalId.id())
                 .map(MedicationJPAEntity::toAggregate);
     }
 

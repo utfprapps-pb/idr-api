@@ -44,8 +44,6 @@ class UpdateMastitisUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final Mastitis existingMastitis = Mastitis.with(MastitisID.from(mastitisId), AnimalID.from(animalId),
             LocalDate.now(), "Clinica", "+", "Positivo", "Negativo", "Positivo", "Negativo");
-    private final Mastitis mastitisOfAnotherAnimal = Mastitis.with(MastitisID.from(mastitisId), AnimalID.unique(),
-            LocalDate.now(), "Clinica", "+", "Positivo", "Negativo", "Positivo", "Negativo");
 
     private UpdateMastitisCommand validCommand() {
         return new UpdateMastitisCommand(propertyId, animalId, mastitisId, "tecnico@idr.com", LocalDate.now(),
@@ -55,7 +53,7 @@ class UpdateMastitisUseCaseTest {
     @Test
     void shouldUpdateWhenMastitisBelongsToAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(MastitisID.from(mastitisId))).thenReturn(Optional.of(existingMastitis));
+        when(gateway.findByIdAndAnimalId(MastitisID.from(mastitisId), AnimalID.from(animalId))).thenReturn(Optional.of(existingMastitis));
         when(gateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
 
         final var output = useCase.execute(validCommand());
@@ -73,7 +71,7 @@ class UpdateMastitisUseCaseTest {
     @Test
     void shouldThrowNotFoundWhenMastitisBelongsToAnotherAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(MastitisID.from(mastitisId))).thenReturn(Optional.of(mastitisOfAnotherAnimal));
+        when(gateway.findByIdAndAnimalId(MastitisID.from(mastitisId), AnimalID.from(animalId))).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> useCase.execute(validCommand()));
         verify(gateway, never()).update(any());

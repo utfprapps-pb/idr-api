@@ -19,6 +19,7 @@ class AnimalChildbirthApiTest extends ApiTestSupport {
     private static final String MIMOSA = "/properties/c0000000-0000-0000-0000-000000000001/animals/e0000000-0000-0000-0000-000000000001";
     private static final String HOLANDES = "6f8b8953-72ab-4525-afdf-2ee4d0561b5e";
     private static final String CHARMOSA = "e0000000-0000-0000-0000-000000000002";
+    private static final String CHARMOSA_PATH = "/properties/c0000000-0000-0000-0000-000000000001/animals/" + CHARMOSA;
     private static final String ESTRELA_OTHER_PROPERTY = "e0000000-0000-0000-0000-000000000004";
 
     private static String childbirth(final String calfId) {
@@ -56,6 +57,17 @@ class AnimalChildbirthApiTest extends ApiTestSupport {
         perform(get(MIMOSA + "/childbirths/" + idOf(created)))
                 .andExpect(jsonPath("$.calfId").value(CHARMOSA))
                 .andExpect(jsonPath("$.calfIdentifier").value("Charmosa"));
+    }
+
+    @Test
+    @DisplayName("não devolve o parto pelo caminho de outro animal")
+    void shouldNotExposeChildbirthUnderAnotherAnimal() throws Exception {
+        final var created = perform(post(MIMOSA + "/childbirths").content(childbirth(null)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        perform(get(CHARMOSA_PATH + "/childbirths/" + idOf(created)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

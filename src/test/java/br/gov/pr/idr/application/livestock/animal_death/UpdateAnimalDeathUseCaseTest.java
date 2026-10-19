@@ -44,8 +44,6 @@ class UpdateAnimalDeathUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final AnimalDeath existingAnimalDeath = AnimalDeath.with(
             AnimalDeathID.from(animalDeathId), AnimalID.from(animalId), "Picada de cobra", LocalDate.now());
-    private final AnimalDeath animalDeathOfAnotherAnimal = AnimalDeath.with(
-            AnimalDeathID.from(animalDeathId), AnimalID.unique(), "Picada de cobra", LocalDate.now());
 
     private UpdateAnimalDeathCommand validCommand() {
         return new UpdateAnimalDeathCommand(propertyId, animalId, animalDeathId, "tecnico@idr.com",
@@ -55,7 +53,7 @@ class UpdateAnimalDeathUseCaseTest {
     @Test
     void shouldUpdateWhenAnimalDeathBelongsToAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(AnimalDeathID.from(animalDeathId)))
+        when(gateway.findByIdAndAnimalId(AnimalDeathID.from(animalDeathId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingAnimalDeath));
         when(gateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -74,8 +72,8 @@ class UpdateAnimalDeathUseCaseTest {
     @Test
     void shouldThrowNotFoundWhenAnimalDeathBelongsToAnotherAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(AnimalDeathID.from(animalDeathId)))
-                .thenReturn(Optional.of(animalDeathOfAnotherAnimal));
+        when(gateway.findByIdAndAnimalId(AnimalDeathID.from(animalDeathId), AnimalID.from(animalId)))
+                .thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> useCase.execute(validCommand()));
         verify(gateway, never()).update(any());

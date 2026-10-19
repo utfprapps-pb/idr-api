@@ -43,14 +43,11 @@ class GetAnimalPurchasesByIdUseCaseTest {
     private final AnimalPurchases existingAnimalPurchases = AnimalPurchases.with(
             AnimalPurchasesID.from(animalPurchasesId), AnimalID.from(animalId), LocalDate.of(2024, 1, 1),
             LocalDate.of(2023, 1, 1), BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
-    private final AnimalPurchases animalPurchasesOfAnotherAnimal = AnimalPurchases.with(
-            AnimalPurchasesID.from(animalPurchasesId), AnimalID.unique(), LocalDate.now(), LocalDate.now(),
-            BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
 
     @Test
     void shouldReturnAnimalPurchasesWhenItBelongsToAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(AnimalPurchasesID.from(animalPurchasesId)))
+        when(gateway.findByIdAndAnimalId(AnimalPurchasesID.from(animalPurchasesId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingAnimalPurchases));
 
         final var output = useCase.execute(new GetAnimalPurchasesByIdCommand(propertyId, animalId,
@@ -62,8 +59,8 @@ class GetAnimalPurchasesByIdUseCaseTest {
     @Test
     void shouldThrowNotFoundWhenAnimalPurchasesBelongsToAnotherAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(AnimalPurchasesID.from(animalPurchasesId)))
-                .thenReturn(Optional.of(animalPurchasesOfAnotherAnimal));
+        when(gateway.findByIdAndAnimalId(AnimalPurchasesID.from(animalPurchasesId), AnimalID.from(animalId)))
+                .thenReturn(Optional.empty());
         assertThrows(NotFoundException.class,
                 () -> useCase.execute(new GetAnimalPurchasesByIdCommand(propertyId, animalId,
                         animalPurchasesId, "tecnico@idr.com")));

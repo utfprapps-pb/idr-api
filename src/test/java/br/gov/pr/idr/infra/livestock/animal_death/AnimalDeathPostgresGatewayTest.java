@@ -75,10 +75,10 @@ class AnimalDeathPostgresGatewayTest {
         final var animalId = AnimalID.unique();
         final var animalDeath = validAnimalDeath(animalId);
         final var id = animalDeath.getId();
-        when(repository.findById(id.id())).thenReturn(Optional.of(entityMock));
+        when(repository.findByIdAndAnimalId(id.id(), animalId.id())).thenReturn(Optional.of(entityMock));
         when(entityMock.toAggregate()).thenReturn(animalDeath);
 
-        final var result = gateway.findById(id);
+        final var result = gateway.findByIdAndAnimalId(id, animalId);
 
         assertTrue(result.isPresent());
         assertEquals(animalDeath.getReason(), result.get().getReason());
@@ -88,10 +88,11 @@ class AnimalDeathPostgresGatewayTest {
     @Test
     @DisplayName("deve retornar Optional vazio quando morte não é encontrada por ID")
     void shouldReturnEmptyWhenNotFoundById() {
+        final var animalId = AnimalID.unique();
         final var id = AnimalDeathID.unique();
-        when(repository.findById(id.id())).thenReturn(Optional.empty());
+        when(repository.findByIdAndAnimalId(id.id(), animalId.id())).thenReturn(Optional.empty());
 
-        final var result = gateway.findById(id);
+        final var result = gateway.findByIdAndAnimalId(id, animalId);
 
         assertTrue(result.isEmpty());
     }
@@ -117,10 +118,10 @@ class AnimalDeathPostgresGatewayTest {
 
         final var savedEntity = AnimalDeathJPAEntity.from(animalDeath);
         when(repository.save(any())).thenReturn(savedEntity);
-        when(repository.findById(animalDeath.getId().id())).thenReturn(Optional.of(savedEntity));
+        when(repository.findByIdAndAnimalId(animalDeath.getId().id(), animalDeath.getAnimalId().id())).thenReturn(Optional.of(savedEntity));
 
         gateway.save(animalDeath);
-        final var result = gateway.findById(animalDeath.getId());
+        final var result = gateway.findByIdAndAnimalId(animalDeath.getId(), animalDeath.getAnimalId());
 
         assertTrue(result.isPresent());
         assertEquals(animalDeath.getAnimalId(), result.get().getAnimalId());

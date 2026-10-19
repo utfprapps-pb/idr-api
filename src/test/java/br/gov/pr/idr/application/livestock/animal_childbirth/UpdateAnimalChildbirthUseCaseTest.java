@@ -77,7 +77,7 @@ class UpdateAnimalChildbirthUseCaseTest {
     @Test
     void shouldUpdateWhenChildbirthBelongsToAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
-        when(gateway.findById(AnimalChildbirthID.from(childbirthId)))
+        when(gateway.findByIdAndAnimalId(AnimalChildbirthID.from(childbirthId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(childbirthOf(animalId, null)));
         when(breedGateway.existsById(BreedID.from(breedId))).thenReturn(true);
         when(gateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
@@ -92,8 +92,8 @@ class UpdateAnimalChildbirthUseCaseTest {
     @Test
     void shouldThrowNotFoundWhenChildbirthBelongsToAnotherAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
-        when(gateway.findById(AnimalChildbirthID.from(childbirthId)))
-                .thenReturn(Optional.of(childbirthOf(UUID.randomUUID(), null)));
+        when(gateway.findByIdAndAnimalId(AnimalChildbirthID.from(childbirthId), AnimalID.from(animalId)))
+                .thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> useCase.execute(command(null)));
         verify(gateway, never()).update(any());
@@ -103,7 +103,7 @@ class UpdateAnimalChildbirthUseCaseTest {
     void shouldRejectCalfFromAnotherPropertyOnUpdate() {
         final var calfId = UUID.randomUUID();
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
-        when(gateway.findById(AnimalChildbirthID.from(childbirthId)))
+        when(gateway.findByIdAndAnimalId(AnimalChildbirthID.from(childbirthId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(childbirthOf(animalId, null)));
         when(breedGateway.existsById(BreedID.from(breedId))).thenReturn(true);
         when(animalGateway.existsByIdAndPropertyId(AnimalID.from(calfId), PropertyID.from(propertyId)))

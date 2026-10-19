@@ -47,9 +47,6 @@ class DeleteAnimalSalesUseCaseTest {
     private final AnimalSales existingAnimalSales = AnimalSales.with(
             AnimalSalesID.from(animalSalesId), AnimalID.from(animalId), LocalDate.now(),
             Reason.VOLUNTARIA, BigDecimal.valueOf(1500), Destination.ABATE, BigDecimal.valueOf(450));
-    private final AnimalSales animalSalesOfAnotherAnimal = AnimalSales.with(
-            AnimalSalesID.from(animalSalesId), AnimalID.unique(), LocalDate.now(), Reason.VOLUNTARIA,
-            BigDecimal.valueOf(1500), Destination.ABATE, BigDecimal.valueOf(450));
 
     private DeleteAnimalSalesCommand validCommand() {
         return new DeleteAnimalSalesCommand(propertyId, animalId, animalSalesId, "tecnico@idr.com");
@@ -58,7 +55,7 @@ class DeleteAnimalSalesUseCaseTest {
     @Test
     void shouldDeleteWhenAnimalSalesBelongsToAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(AnimalSalesID.from(animalSalesId)))
+        when(gateway.findByIdAndAnimalId(AnimalSalesID.from(animalSalesId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingAnimalSales));
 
         useCase.execute(validCommand());
@@ -76,8 +73,8 @@ class DeleteAnimalSalesUseCaseTest {
     @Test
     void shouldThrowNotFoundWhenAnimalSalesBelongsToAnotherAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(AnimalSalesID.from(animalSalesId)))
-                .thenReturn(Optional.of(animalSalesOfAnotherAnimal));
+        when(gateway.findByIdAndAnimalId(AnimalSalesID.from(animalSalesId), AnimalID.from(animalId)))
+                .thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> useCase.execute(validCommand()));
         verify(gateway, never()).deleteById(any());

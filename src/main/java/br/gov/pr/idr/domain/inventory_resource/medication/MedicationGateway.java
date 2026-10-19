@@ -10,7 +10,7 @@ public interface MedicationGateway {
 
     Medication save(final Medication medication);
 
-    Optional<Medication> findById(final MedicationID id);
+    Optional<Medication> findByIdAndAnimalId(final MedicationID id, final AnimalID animalId);
 
     Medication update(final Medication medication);
 

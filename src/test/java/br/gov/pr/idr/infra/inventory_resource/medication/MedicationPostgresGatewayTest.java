@@ -77,10 +77,10 @@ class MedicationPostgresGatewayTest {
         final var animalId = AnimalID.unique();
         final var medication = validMedication(animalId);
         final var id = medication.getId();
-        when(repository.findById(id.id())).thenReturn(Optional.of(entityMock));
+        when(repository.findByIdAndAnimalId(id.id(), animalId.id())).thenReturn(Optional.of(entityMock));
         when(entityMock.toAggregate()).thenReturn(medication);
 
-        final var result = gateway.findById(id);
+        final var result = gateway.findByIdAndAnimalId(id, animalId);
 
         assertTrue(result.isPresent());
         assertEquals(medication.getAppliedDose(), result.get().getAppliedDose());
@@ -90,10 +90,11 @@ class MedicationPostgresGatewayTest {
     @Test
     @DisplayName("deve retornar Optional vazio quando medicação não é encontrada por ID")
     void shouldReturnEmptyWhenNotFoundById() {
+        final var animalId = AnimalID.unique();
         final var id = MedicationID.unique();
-        when(repository.findById(id.id())).thenReturn(Optional.empty());
+        when(repository.findByIdAndAnimalId(id.id(), animalId.id())).thenReturn(Optional.empty());
 
-        final var result = gateway.findById(id);
+        final var result = gateway.findByIdAndAnimalId(id, animalId);
 
         assertTrue(result.isEmpty());
     }
@@ -119,10 +120,10 @@ class MedicationPostgresGatewayTest {
 
         final var savedEntity = MedicationJPAEntity.from(medication);
         when(repository.save(any())).thenReturn(savedEntity);
-        when(repository.findById(medication.getId().id())).thenReturn(Optional.of(savedEntity));
+        when(repository.findByIdAndAnimalId(medication.getId().id(), medication.getAnimalId().id())).thenReturn(Optional.of(savedEntity));
 
         gateway.save(medication);
-        final var result = gateway.findById(medication.getId());
+        final var result = gateway.findByIdAndAnimalId(medication.getId(), medication.getAnimalId());
 
         assertTrue(result.isPresent());
         assertEquals(medication.getAppliedDose(), result.get().getAppliedDose());

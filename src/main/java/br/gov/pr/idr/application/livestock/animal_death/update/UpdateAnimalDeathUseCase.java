@@ -27,8 +27,7 @@ public class UpdateAnimalDeathUseCase extends UseCase<UpdateAnimalDeathCommand,
         accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
 
         final var id = AnimalDeathID.from(command.animalDeathId());
-        final var animalDeath = animalDeathGateway.findById(id)
-                .filter(p -> p.getAnimalId().equals(AnimalID.from(command.animalId())))
+        final var animalDeath = animalDeathGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))
                 .orElseThrow(() -> NotFoundException.with(AnimalDeath.class, id));
 
         final var updatedAnimalDeath = animalDeath.update(command.reason(), command.deathDate());

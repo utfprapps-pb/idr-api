@@ -75,10 +75,10 @@ class PregnancyDiagnosePostgresGatewayTest {
         final var animalId = AnimalID.unique();
         final var pregnancyDiagnose = validPregnancyDiagnose(animalId);
         final var id = pregnancyDiagnose.getId();
-        when(repository.findById(id.id())).thenReturn(Optional.of(entityMock));
+        when(repository.findByIdAndAnimalId(id.id(), animalId.id())).thenReturn(Optional.of(entityMock));
         when(entityMock.toAggregate()).thenReturn(pregnancyDiagnose);
 
-        final var result = gateway.findById(id);
+        final var result = gateway.findByIdAndAnimalId(id, animalId);
 
         assertTrue(result.isPresent());
         assertEquals(pregnancyDiagnose.getLastIa(), result.get().getLastIa());
@@ -88,10 +88,11 @@ class PregnancyDiagnosePostgresGatewayTest {
     @Test
     @DisplayName("deve retornar Optional vazio quando diagnóstico não é encontrado por ID")
     void shouldReturnEmptyWhenNotFoundById() {
+        final var animalId = AnimalID.unique();
         final var id = PregnancyDiagnoseID.unique();
-        when(repository.findById(id.id())).thenReturn(Optional.empty());
+        when(repository.findByIdAndAnimalId(id.id(), animalId.id())).thenReturn(Optional.empty());
 
-        final var result = gateway.findById(id);
+        final var result = gateway.findByIdAndAnimalId(id, animalId);
 
         assertTrue(result.isEmpty());
     }
@@ -117,10 +118,10 @@ class PregnancyDiagnosePostgresGatewayTest {
 
         final var savedEntity = PregnancyDiagnoseJPAEntity.from(pregnancyDiagnose);
         when(repository.save(any())).thenReturn(savedEntity);
-        when(repository.findById(pregnancyDiagnose.getId().id())).thenReturn(Optional.of(savedEntity));
+        when(repository.findByIdAndAnimalId(pregnancyDiagnose.getId().id(), pregnancyDiagnose.getAnimalId().id())).thenReturn(Optional.of(savedEntity));
 
         gateway.save(pregnancyDiagnose);
-        final var result = gateway.findById(pregnancyDiagnose.getId());
+        final var result = gateway.findByIdAndAnimalId(pregnancyDiagnose.getId(), pregnancyDiagnose.getAnimalId());
 
         assertTrue(result.isPresent());
         assertEquals(pregnancyDiagnose.getAnimalId(), result.get().getAnimalId());

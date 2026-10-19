@@ -26,8 +26,7 @@ public class GetInseminationByIdUseCase extends UseCase<GetInseminationByIdComma
         accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
 
         final var id = InseminationID.from(command.inseminationId());
-        final var insemination = inseminationGateway.findById(id)
-                .filter(i -> i.getAnimalId().equals(AnimalID.from(command.animalId())))
+        final var insemination = inseminationGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))
                 .orElseThrow(() -> NotFoundException.with(Insemination.class, id));
 
         return GetInseminationByIdOutput.from(insemination);

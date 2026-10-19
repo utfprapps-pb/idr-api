@@ -43,8 +43,6 @@ class DeleteInseminationUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final Insemination existingInsemination = Insemination.with(InseminationID.from(inseminationId),
             AnimalID.from(animalId), LocalDate.now(), "Touro 1");
-    private final Insemination inseminationOfAnotherAnimal = Insemination.with(InseminationID.from(inseminationId),
-            AnimalID.unique(), LocalDate.now(), "Touro 1");
 
     private DeleteInseminationCommand validCommand() {
         return new DeleteInseminationCommand(propertyId, animalId, inseminationId, "tecnico@idr.com");
@@ -53,7 +51,7 @@ class DeleteInseminationUseCaseTest {
     @Test
     void shouldDeleteWhenInseminationBelongsToAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(InseminationID.from(inseminationId))).thenReturn(Optional.of(existingInsemination));
+        when(gateway.findByIdAndAnimalId(InseminationID.from(inseminationId), AnimalID.from(animalId))).thenReturn(Optional.of(existingInsemination));
 
         useCase.execute(validCommand());
 
@@ -70,8 +68,8 @@ class DeleteInseminationUseCaseTest {
     @Test
     void shouldThrowNotFoundWhenInseminationBelongsToAnotherAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(InseminationID.from(inseminationId)))
-                .thenReturn(Optional.of(inseminationOfAnotherAnimal));
+        when(gateway.findByIdAndAnimalId(InseminationID.from(inseminationId), AnimalID.from(animalId)))
+                .thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> useCase.execute(validCommand()));
         verify(gateway, never()).deleteById(any());

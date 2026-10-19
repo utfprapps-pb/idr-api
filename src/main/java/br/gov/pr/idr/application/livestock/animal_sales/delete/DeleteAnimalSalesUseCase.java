@@ -26,8 +26,7 @@ public class DeleteAnimalSalesUseCase extends VoidUseCase<DeleteAnimalSalesComma
         accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
 
         final var id = AnimalSalesID.from(command.animalSalesId());
-        final var animalSales = animalSalesGateway.findById(id)
-                .filter(p -> p.getAnimalId().equals(AnimalID.from(command.animalId())))
+        final var animalSales = animalSalesGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))
                 .orElseThrow(() -> NotFoundException.with(AnimalSales.class, id));
 
         animalSalesGateway.deleteById(animalSales.getId());

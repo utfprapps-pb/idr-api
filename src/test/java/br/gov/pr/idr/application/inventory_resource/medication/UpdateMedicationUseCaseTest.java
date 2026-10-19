@@ -49,8 +49,6 @@ class UpdateMedicationUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final Medication existingMedication = Medication.with(MedicationID.from(medicationId),
             AnimalID.from(animalId), ProductID.unique(), LocalDate.now(), "10ml", "IM");
-    private final Medication medicationOfAnotherAnimal = Medication.with(MedicationID.from(medicationId),
-            AnimalID.unique(), ProductID.unique(), LocalDate.now(), "10ml", "IM");
 
     private UpdateMedicationCommand validCommand() {
         return new UpdateMedicationCommand(propertyId, animalId, medicationId, "tecnico@idr.com", productId,
@@ -60,7 +58,7 @@ class UpdateMedicationUseCaseTest {
     @Test
     void shouldUpdateWhenMedicationBelongsToAnimalAndProductExists() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(MedicationID.from(medicationId))).thenReturn(Optional.of(existingMedication));
+        when(gateway.findByIdAndAnimalId(MedicationID.from(medicationId), AnimalID.from(animalId))).thenReturn(Optional.of(existingMedication));
         when(productGateway.existsById(any())).thenReturn(true);
         when(gateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -72,7 +70,7 @@ class UpdateMedicationUseCaseTest {
     @Test
     void shouldThrowWhenProductDoesNotExist() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(MedicationID.from(medicationId))).thenReturn(Optional.of(existingMedication));
+        when(gateway.findByIdAndAnimalId(MedicationID.from(medicationId), AnimalID.from(animalId))).thenReturn(Optional.of(existingMedication));
         when(productGateway.existsById(any())).thenReturn(false);
 
         assertThrows(NotificationException.class, () -> useCase.execute(validCommand()));
@@ -89,8 +87,8 @@ class UpdateMedicationUseCaseTest {
     @Test
     void shouldThrowNotFoundWhenMedicationBelongsToAnotherAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(MedicationID.from(medicationId)))
-                .thenReturn(Optional.of(medicationOfAnotherAnimal));
+        when(gateway.findByIdAndAnimalId(MedicationID.from(medicationId), AnimalID.from(animalId)))
+                .thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> useCase.execute(validCommand()));
         verify(gateway, never()).update(any());

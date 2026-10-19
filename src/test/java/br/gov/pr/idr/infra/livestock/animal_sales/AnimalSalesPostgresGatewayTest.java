@@ -79,10 +79,10 @@ class AnimalSalesPostgresGatewayTest {
         final var animalId = AnimalID.unique();
         final var animalSales = validAnimalSales(animalId);
         final var id = animalSales.getId();
-        when(repository.findById(id.id())).thenReturn(Optional.of(entityMock));
+        when(repository.findByIdAndAnimalId(id.id(), animalId.id())).thenReturn(Optional.of(entityMock));
         when(entityMock.toAggregate()).thenReturn(animalSales);
 
-        final var result = gateway.findById(id);
+        final var result = gateway.findByIdAndAnimalId(id, animalId);
 
         assertTrue(result.isPresent());
         assertEquals(animalSales.getValue(), result.get().getValue());
@@ -92,10 +92,11 @@ class AnimalSalesPostgresGatewayTest {
     @Test
     @DisplayName("deve retornar Optional vazio quando venda não é encontrada por ID")
     void shouldReturnEmptyWhenNotFoundById() {
+        final var animalId = AnimalID.unique();
         final var id = AnimalSalesID.unique();
-        when(repository.findById(id.id())).thenReturn(Optional.empty());
+        when(repository.findByIdAndAnimalId(id.id(), animalId.id())).thenReturn(Optional.empty());
 
-        final var result = gateway.findById(id);
+        final var result = gateway.findByIdAndAnimalId(id, animalId);
 
         assertTrue(result.isEmpty());
     }
@@ -121,10 +122,10 @@ class AnimalSalesPostgresGatewayTest {
 
         final var savedEntity = AnimalSalesJPAEntity.from(animalSales);
         when(repository.save(any())).thenReturn(savedEntity);
-        when(repository.findById(animalSales.getId().id())).thenReturn(Optional.of(savedEntity));
+        when(repository.findByIdAndAnimalId(animalSales.getId().id(), animalSales.getAnimalId().id())).thenReturn(Optional.of(savedEntity));
 
         gateway.save(animalSales);
-        final var result = gateway.findById(animalSales.getId());
+        final var result = gateway.findByIdAndAnimalId(animalSales.getId(), animalSales.getAnimalId());
 
         assertTrue(result.isPresent());
         assertEquals(animalSales.getAnimalId(), result.get().getAnimalId());

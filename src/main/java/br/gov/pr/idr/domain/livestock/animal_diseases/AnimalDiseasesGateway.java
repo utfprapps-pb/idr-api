@@ -10,7 +10,7 @@ public interface AnimalDiseasesGateway {
 
     AnimalDiseases save(final AnimalDiseases animalDiseases);
 
-    Optional<AnimalDiseases> findById(final AnimalDiseasesID id);
+    Optional<AnimalDiseases> findByIdAndAnimalId(final AnimalDiseasesID id, final AnimalID animalId);
 
     AnimalDiseases update(final AnimalDiseases animalDiseases);
 

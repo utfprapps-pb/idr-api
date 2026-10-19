@@ -10,7 +10,7 @@ public interface MastitisGateway {
 
     Mastitis save(final Mastitis mastitis);
 
-    Optional<Mastitis> findById(final MastitisID id);
+    Optional<Mastitis> findByIdAndAnimalId(final MastitisID id, final AnimalID animalId);
 
     Mastitis update(final Mastitis mastitis);
 

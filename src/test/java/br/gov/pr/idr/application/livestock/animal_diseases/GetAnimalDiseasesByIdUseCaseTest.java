@@ -42,13 +42,11 @@ class GetAnimalDiseasesByIdUseCaseTest {
     private final AnimalDiseases existingAnimalDiseases = AnimalDiseases.with(
             AnimalDiseasesID.from(animalDiseasesId), AnimalID.from(animalId), "Febre aftosa",
             LocalDate.of(2024, 1, 1));
-    private final AnimalDiseases animalDiseasesOfAnotherAnimal = AnimalDiseases.with(
-            AnimalDiseasesID.from(animalDiseasesId), AnimalID.unique(), "Febre aftosa", LocalDate.now());
 
     @Test
     void shouldReturnAnimalDiseasesWhenItBelongsToAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(AnimalDiseasesID.from(animalDiseasesId)))
+        when(gateway.findByIdAndAnimalId(AnimalDiseasesID.from(animalDiseasesId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingAnimalDiseases));
 
         final var output = useCase.execute(new GetAnimalDiseasesByIdCommand(propertyId, animalId,
@@ -60,8 +58,8 @@ class GetAnimalDiseasesByIdUseCaseTest {
     @Test
     void shouldThrowNotFoundWhenAnimalDiseasesBelongsToAnotherAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(AnimalDiseasesID.from(animalDiseasesId)))
-                .thenReturn(Optional.of(animalDiseasesOfAnotherAnimal));
+        when(gateway.findByIdAndAnimalId(AnimalDiseasesID.from(animalDiseasesId), AnimalID.from(animalId)))
+                .thenReturn(Optional.empty());
         assertThrows(NotFoundException.class,
                 () -> useCase.execute(new GetAnimalDiseasesByIdCommand(propertyId, animalId,
                         animalDiseasesId, "tecnico@idr.com")));

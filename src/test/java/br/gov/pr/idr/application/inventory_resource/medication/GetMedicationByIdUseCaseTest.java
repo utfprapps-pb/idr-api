@@ -42,13 +42,11 @@ class GetMedicationByIdUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final Medication existingMedication = Medication.with(MedicationID.from(medicationId),
             AnimalID.from(animalId), ProductID.unique(), LocalDate.now(), "10ml", "IM");
-    private final Medication medicationOfAnotherAnimal = Medication.with(MedicationID.from(medicationId),
-            AnimalID.unique(), ProductID.unique(), LocalDate.now(), "10ml", "IM");
 
     @Test
     void shouldReturnMedicationWhenItBelongsToAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(MedicationID.from(medicationId))).thenReturn(Optional.of(existingMedication));
+        when(gateway.findByIdAndAnimalId(MedicationID.from(medicationId), AnimalID.from(animalId))).thenReturn(Optional.of(existingMedication));
 
         final var output = useCase.execute(new GetMedicationByIdCommand(propertyId, animalId, medicationId,
                 "tecnico@idr.com"));
@@ -59,8 +57,8 @@ class GetMedicationByIdUseCaseTest {
     @Test
     void shouldThrowNotFoundWhenMedicationBelongsToAnotherAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
-        when(gateway.findById(MedicationID.from(medicationId)))
-                .thenReturn(Optional.of(medicationOfAnotherAnimal));
+        when(gateway.findByIdAndAnimalId(MedicationID.from(medicationId), AnimalID.from(animalId)))
+                .thenReturn(Optional.empty());
         assertThrows(NotFoundException.class,
                 () -> useCase.execute(new GetMedicationByIdCommand(propertyId, animalId, medicationId,
                         "tecnico@idr.com")));

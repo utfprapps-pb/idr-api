@@ -65,7 +65,7 @@ class GetAnimalChildbirthByIdUseCaseTest {
     void shouldReturnBreedNameAndCalfIdentifier() {
         final var calfId = UUID.randomUUID();
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
-        when(gateway.findById(AnimalChildbirthID.from(childbirthId)))
+        when(gateway.findByIdAndAnimalId(AnimalChildbirthID.from(childbirthId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(childbirthOf(animalId, calfId)));
         when(nameLookup.breedName(BreedID.from(breedId))).thenReturn("Jersey");
         when(nameLookup.animalIdentifier(AnimalID.from(calfId))).thenReturn("Bezerra 7");
@@ -80,8 +80,8 @@ class GetAnimalChildbirthByIdUseCaseTest {
     @Test
     void shouldThrowNotFoundWhenChildbirthBelongsToAnotherAnimal() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
-        when(gateway.findById(AnimalChildbirthID.from(childbirthId)))
-                .thenReturn(Optional.of(childbirthOf(UUID.randomUUID(), null)));
+        when(gateway.findByIdAndAnimalId(AnimalChildbirthID.from(childbirthId), AnimalID.from(animalId)))
+                .thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> useCase.execute(command()));
     }

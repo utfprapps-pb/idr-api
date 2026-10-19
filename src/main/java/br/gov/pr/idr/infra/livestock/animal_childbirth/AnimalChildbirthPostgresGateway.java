@@ -28,8 +28,8 @@ public class AnimalChildbirthPostgresGateway implements AnimalChildbirthGateway 
     }
 
     @Override
-    public Optional<AnimalChildbirth> findById(final AnimalChildbirthID id) {
-        return repository.findById(id.id())
+    public Optional<AnimalChildbirth> findByIdAndAnimalId(final AnimalChildbirthID id, final AnimalID animalId) {
+        return repository.findByIdAndAnimalId(id.id(), animalId.id())
                 .map(AnimalChildbirthJPAEntity::toAggregate);
     }
 

@@ -76,10 +76,10 @@ class MastitisPostgresGatewayTest {
         final var animalId = AnimalID.unique();
         final var mastitis = validMastitis(animalId);
         final var id = mastitis.getId();
-        when(repository.findById(id.id())).thenReturn(Optional.of(entityMock));
+        when(repository.findByIdAndAnimalId(id.id(), animalId.id())).thenReturn(Optional.of(entityMock));
         when(entityMock.toAggregate()).thenReturn(mastitis);
 
-        final var result = gateway.findById(id);
+        final var result = gateway.findByIdAndAnimalId(id, animalId);
 
         assertTrue(result.isPresent());
         assertEquals(mastitis.getMastitisType(), result.get().getMastitisType());
@@ -89,10 +89,11 @@ class MastitisPostgresGatewayTest {
     @Test
     @DisplayName("deve retornar Optional vazio quando mastite não é encontrada por ID")
     void shouldReturnEmptyWhenNotFoundById() {
+        final var animalId = AnimalID.unique();
         final var id = MastitisID.unique();
-        when(repository.findById(id.id())).thenReturn(Optional.empty());
+        when(repository.findByIdAndAnimalId(id.id(), animalId.id())).thenReturn(Optional.empty());
 
-        final var result = gateway.findById(id);
+        final var result = gateway.findByIdAndAnimalId(id, animalId);
 
         assertTrue(result.isEmpty());
     }
@@ -118,10 +119,10 @@ class MastitisPostgresGatewayTest {
 
         final var savedEntity = MastitisJPAEntity.from(mastitis);
         when(repository.save(any())).thenReturn(savedEntity);
-        when(repository.findById(mastitis.getId().id())).thenReturn(Optional.of(savedEntity));
+        when(repository.findByIdAndAnimalId(mastitis.getId().id(), mastitis.getAnimalId().id())).thenReturn(Optional.of(savedEntity));
 
         gateway.save(mastitis);
-        final var result = gateway.findById(mastitis.getId());
+        final var result = gateway.findByIdAndAnimalId(mastitis.getId(), mastitis.getAnimalId());
 
         assertTrue(result.isPresent());
         assertEquals(mastitis.getMastitisType(), result.get().getMastitisType());

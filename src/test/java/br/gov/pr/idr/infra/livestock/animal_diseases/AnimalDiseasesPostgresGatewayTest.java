@@ -75,10 +75,10 @@ class AnimalDiseasesPostgresGatewayTest {
         final var animalId = AnimalID.unique();
         final var animalDiseases = validAnimalDiseases(animalId);
         final var id = animalDiseases.getId();
-        when(repository.findById(id.id())).thenReturn(Optional.of(entityMock));
+        when(repository.findByIdAndAnimalId(id.id(), animalId.id())).thenReturn(Optional.of(entityMock));
         when(entityMock.toAggregate()).thenReturn(animalDiseases);
 
-        final var result = gateway.findById(id);
+        final var result = gateway.findByIdAndAnimalId(id, animalId);
 
         assertTrue(result.isPresent());
         assertEquals(animalDiseases.getDiagnosis(), result.get().getDiagnosis());
@@ -88,10 +88,11 @@ class AnimalDiseasesPostgresGatewayTest {
     @Test
     @DisplayName("deve retornar Optional vazio quando doença não é encontrada por ID")
     void shouldReturnEmptyWhenNotFoundById() {
+        final var animalId = AnimalID.unique();
         final var id = AnimalDiseasesID.unique();
-        when(repository.findById(id.id())).thenReturn(Optional.empty());
+        when(repository.findByIdAndAnimalId(id.id(), animalId.id())).thenReturn(Optional.empty());
 
-        final var result = gateway.findById(id);
+        final var result = gateway.findByIdAndAnimalId(id, animalId);
 
         assertTrue(result.isEmpty());
     }
@@ -117,10 +118,10 @@ class AnimalDiseasesPostgresGatewayTest {
 
         final var savedEntity = AnimalDiseasesJPAEntity.from(animalDiseases);
         when(repository.save(any())).thenReturn(savedEntity);
-        when(repository.findById(animalDiseases.getId().id())).thenReturn(Optional.of(savedEntity));
+        when(repository.findByIdAndAnimalId(animalDiseases.getId().id(), animalDiseases.getAnimalId().id())).thenReturn(Optional.of(savedEntity));
 
         gateway.save(animalDiseases);
-        final var result = gateway.findById(animalDiseases.getId());
+        final var result = gateway.findByIdAndAnimalId(animalDiseases.getId(), animalDiseases.getAnimalId());
 
         assertTrue(result.isPresent());
         assertEquals(animalDiseases.getAnimalId(), result.get().getAnimalId());

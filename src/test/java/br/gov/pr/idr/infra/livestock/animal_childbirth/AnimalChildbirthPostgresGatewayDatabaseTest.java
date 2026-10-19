@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @PersistenceAdapterTest
 @DisplayName("AnimalChildbirthPostgresGateway — Postgres real")
@@ -43,7 +44,7 @@ class AnimalChildbirthPostgresGatewayDatabaseTest {
         entityManager.flush();
         entityManager.clear();
 
-        final var reloaded = gateway.findById(saved.getId()).orElseThrow();
+        final var reloaded = gateway.findByIdAndAnimalId(saved.getId(), saved.getAnimalId()).orElseThrow();
 
         assertEquals(LocalDate.of(2024, 6, 10), reloaded.getChildbirthDate());
         assertEquals(ChildbirthGender.MALE, reloaded.getGender());
@@ -51,6 +52,24 @@ class AnimalChildbirthPostgresGatewayDatabaseTest {
         assertEquals(0, new BigDecimal("38.40").compareTo(reloaded.getWeight()));
         assertEquals(breedId, reloaded.getBreedId());
         assertEquals(Optional.of(calfId), reloaded.getCalfId());
+    }
+
+    @Test
+    @DisplayName("só encontra o parto pela mãe dona dele, e não depois do soft delete")
+    void shouldFindOnlyByOwnerAndNotAfterDelete() {
+        final var saved = gateway.save(AnimalChildbirth.create(AnimalID.unique(), LocalDate.of(2024, 6, 10),
+                ChildbirthGender.FEMALE, new BigDecimal("35"), ChildbirthCondition.ALIVE, BreedID.unique(), null));
+        entityManager.flush();
+        entityManager.clear();
+
+        assertTrue(gateway.findByIdAndAnimalId(saved.getId(), saved.getAnimalId()).isPresent());
+        assertTrue(gateway.findByIdAndAnimalId(saved.getId(), AnimalID.unique()).isEmpty());
+
+        gateway.deleteById(saved.getId());
+        entityManager.flush();
+        entityManager.clear();
+
+        assertTrue(gateway.findByIdAndAnimalId(saved.getId(), saved.getAnimalId()).isEmpty());
     }
 
     @Test
