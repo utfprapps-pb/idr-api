@@ -97,6 +97,9 @@ public class Animal extends AggregateRoot<AnimalID> {
         if (this.identifier == null || this.identifier.isBlank()) {
             handler.append(DomainError.from("O identificador do animal é obrigatório"));
         }
+        if (this.animalMotherId != null && this.animalMotherId.equals(getId())) {
+            handler.append(DomainError.from("O animal não pode ser a própria mãe"));
+        }
     }
 
     public PropertyID getPropertyId() {

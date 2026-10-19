@@ -1,27 +1,25 @@
 package br.gov.pr.idr.application.livestock.animal.update;
 
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
+import br.gov.pr.idr.application.livestock.shared.LivestockReferencePolicy;
 import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
-import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
-import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
-import br.gov.pr.idr.domain.shared.tactical.validation.NotificationValidation;
 
 @CommandUseCase
 public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnimalOutput> {
 
     private final AnimalGateway animalGateway;
-    private final BreedGateway breedGateway;
+    private final LivestockReferencePolicy referencePolicy;
     private final AnimalAccessPolicy accessPolicy;
 
-    public UpdateAnimalUseCase(final AnimalGateway animalGateway, final BreedGateway breedGateway,
+    public UpdateAnimalUseCase(final AnimalGateway animalGateway, final LivestockReferencePolicy referencePolicy,
                                 final AnimalAccessPolicy accessPolicy) {
         this.animalGateway = animalGateway;
-        this.breedGateway = breedGateway;
+        this.referencePolicy = referencePolicy;
         this.accessPolicy = accessPolicy;
     }
 
@@ -29,29 +27,14 @@ public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnim
     public UpdateAnimalOutput execute(final UpdateAnimalCommand command) {
         final var existingAnimal = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
                 command.username());
+        referencePolicy.ensureBreedExists(command.breedId());
+        referencePolicy.ensureAnimalInProperty(command.animalMotherId(), PropertyID.from(command.propertyId()),
+                "mãe");
 
-        final var notification = NotificationValidation.create();
-        final var breedId = BreedID.from(command.breedId());
-        if (!breedGateway.existsById(breedId)) {
-            throw new NotificationException("Raça com o ID %s não encontrada".formatted(breedId.id()),
-                    notification);
-        }
-
-        AnimalID animalMotherId = existingAnimal.getAnimalMotherId().orElse(null);
-        if (command.animalMotherId() != null) {
-            animalMotherId = AnimalID.from(command.animalMotherId());
-            final var motherId = animalMotherId;
-            if (motherId.equals(existingAnimal.getId())) {
-                throw new NotificationException(
-                        "Animal com o ID %s não pode ser sua própria mãe".formatted(motherId.id()), notification);
-            }
-            if (!animalGateway.existsByIdAndPropertyId(motherId, PropertyID.from(command.propertyId()))) {
-                throw new NotificationException(
-                        "Animal (mãe) com o ID %s não encontrado".formatted(motherId.id()), notification);
-            }
-        }
-
-        final var updatedAnimal = existingAnimal.update(animalMotherId, breedId,
+        final var updatedAnimal = existingAnimal.update(
+                orCurrent(command.animalMotherId() == null ? null : AnimalID.from(command.animalMotherId()),
+                        existingAnimal.getAnimalMotherId().orElse(null)),
+                BreedID.from(command.breedId()),
                 orCurrent(command.type(), existingAnimal.getType()),
                 command.identifier(),
                 orCurrent(command.gender(), existingAnimal.getGender()),

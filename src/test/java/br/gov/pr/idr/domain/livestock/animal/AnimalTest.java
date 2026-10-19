@@ -41,6 +41,14 @@ class AnimalTest {
     }
 
     @Test
+    void shouldFailWhenMotherIsTheAnimalItself() {
+        final var animal = Animal.create(PropertyID.unique(), null, BreedID.unique(), "T", "I",
+                "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+        assertThrows(NotificationException.class, () -> animal.update(animal.getId(), BreedID.unique(), "T",
+                "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f));
+    }
+
+    @Test
     void updateShouldNotChangePropertyId() {
         final var original = Animal.create(PropertyID.unique(), null, BreedID.unique(), "T", "I",
                 "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);

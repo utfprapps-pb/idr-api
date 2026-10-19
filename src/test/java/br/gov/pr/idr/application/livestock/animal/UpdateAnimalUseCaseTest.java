@@ -3,6 +3,7 @@ package br.gov.pr.idr.application.livestock.animal;
 import br.gov.pr.idr.application.livestock.animal.update.UpdateAnimalCommand;
 import br.gov.pr.idr.application.livestock.animal.update.UpdateAnimalUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
+import br.gov.pr.idr.application.livestock.shared.LivestockReferencePolicy;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
@@ -11,10 +12,10 @@ import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.ForbiddenException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -35,7 +36,13 @@ class UpdateAnimalUseCaseTest {
     @Mock AnimalGateway animalGateway;
     @Mock BreedGateway breedGateway;
     @Mock AnimalAccessPolicy accessPolicy;
-    @InjectMocks UpdateAnimalUseCase useCase;
+    UpdateAnimalUseCase useCase;
+
+    @BeforeEach
+    void setUp() {
+        useCase = new UpdateAnimalUseCase(animalGateway, new LivestockReferencePolicy(breedGateway, animalGateway),
+                accessPolicy);
+    }
 
     private final UUID propertyId = UUID.randomUUID();
     private final UUID animalId = UUID.randomUUID();
@@ -134,7 +141,9 @@ class UpdateAnimalUseCaseTest {
 
         final var command = new UpdateAnimalCommand(propertyId, animalId, "tecnico@idr.com", animalId,
                 breedId, "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+        when(animalGateway.existsByIdAndPropertyId(AnimalID.from(animalId), PropertyID.from(propertyId)))
+                .thenReturn(true);
         assertThrows(NotificationException.class, () -> useCase.execute(command));
-        verify(animalGateway, never()).existsByIdAndPropertyId(any(), any());
+        verify(animalGateway, never()).update(any());
     }
 }

@@ -1,7 +1,7 @@
 package br.gov.pr.idr.application.livestock.animal_childbirth.update;
 
-import br.gov.pr.idr.application.livestock.animal_childbirth.ChildbirthReferencePolicy;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
+import br.gov.pr.idr.application.livestock.shared.LivestockReferencePolicy;
 import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
@@ -16,11 +16,11 @@ public class UpdateAnimalChildbirthUseCase extends UseCase<UpdateAnimalChildbirt
         UpdateAnimalChildbirthOutput> {
 
     private final AnimalChildbirthGateway animalChildbirthGateway;
-    private final ChildbirthReferencePolicy referencePolicy;
+    private final LivestockReferencePolicy referencePolicy;
     private final AnimalAccessPolicy accessPolicy;
 
     public UpdateAnimalChildbirthUseCase(final AnimalChildbirthGateway animalChildbirthGateway,
-                                         final ChildbirthReferencePolicy referencePolicy,
+                                         final LivestockReferencePolicy referencePolicy,
                                          final AnimalAccessPolicy accessPolicy) {
         this.animalChildbirthGateway = animalChildbirthGateway;
         this.referencePolicy = referencePolicy;
@@ -35,7 +35,8 @@ public class UpdateAnimalChildbirthUseCase extends UseCase<UpdateAnimalChildbirt
         final var animalChildbirth = animalChildbirthGateway.findById(id)
                 .filter(p -> p.getAnimalId().equals(mother.getId()))
                 .orElseThrow(() -> NotFoundException.with(AnimalChildbirth.class, id));
-        referencePolicy.ensureValid(mother, command.breedId(), command.calfId());
+        referencePolicy.ensureBreedExists(command.breedId());
+        referencePolicy.ensureAnimalInProperty(command.calfId(), mother.getPropertyId(), "bezerro");
 
         final var updatedAnimalChildbirth = animalChildbirth.update(command.childbirthDate(), command.gender(),
                 command.weight(), command.condition(),

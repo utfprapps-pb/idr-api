@@ -3,6 +3,7 @@ package br.gov.pr.idr.application.livestock.animal;
 import br.gov.pr.idr.application.livestock.animal.create.CreateAnimalCommand;
 import br.gov.pr.idr.application.livestock.animal.create.CreateAnimalUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
+import br.gov.pr.idr.application.livestock.shared.LivestockReferencePolicy;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
 import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
@@ -12,10 +13,10 @@ import br.gov.pr.idr.domain.property_management.property.Property;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.ForbiddenException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -37,7 +38,13 @@ class CreateAnimalUseCaseTest {
     @Mock AnimalGateway animalGateway;
     @Mock BreedGateway breedGateway;
     @Mock AnimalAccessPolicy accessPolicy;
-    @InjectMocks CreateAnimalUseCase useCase;
+    CreateAnimalUseCase useCase;
+
+    @BeforeEach
+    void setUp() {
+        useCase = new CreateAnimalUseCase(animalGateway, new LivestockReferencePolicy(breedGateway, animalGateway),
+                accessPolicy);
+    }
 
     private final UUID propertyId = UUID.randomUUID();
     private final UUID breedId = UUID.randomUUID();

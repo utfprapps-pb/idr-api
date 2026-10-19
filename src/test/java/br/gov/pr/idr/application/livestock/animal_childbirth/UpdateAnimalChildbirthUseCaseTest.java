@@ -3,6 +3,7 @@ package br.gov.pr.idr.application.livestock.animal_childbirth;
 import br.gov.pr.idr.application.livestock.animal_childbirth.update.UpdateAnimalChildbirthCommand;
 import br.gov.pr.idr.application.livestock.animal_childbirth.update.UpdateAnimalChildbirthUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
+import br.gov.pr.idr.application.livestock.shared.LivestockReferencePolicy;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
@@ -64,7 +65,7 @@ class UpdateAnimalChildbirthUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        useCase = new UpdateAnimalChildbirthUseCase(gateway, new ChildbirthReferencePolicy(breedGateway, animalGateway), accessPolicy);
+        useCase = new UpdateAnimalChildbirthUseCase(gateway, new LivestockReferencePolicy(breedGateway, animalGateway), accessPolicy);
     }
 
     private UpdateAnimalChildbirthCommand command(final UUID calfId) {

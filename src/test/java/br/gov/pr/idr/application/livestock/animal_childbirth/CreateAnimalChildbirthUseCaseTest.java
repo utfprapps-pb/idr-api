@@ -3,6 +3,7 @@ package br.gov.pr.idr.application.livestock.animal_childbirth;
 import br.gov.pr.idr.application.livestock.animal_childbirth.create.CreateAnimalChildbirthCommand;
 import br.gov.pr.idr.application.livestock.animal_childbirth.create.CreateAnimalChildbirthUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
+import br.gov.pr.idr.application.livestock.shared.LivestockReferencePolicy;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
@@ -56,7 +57,7 @@ class CreateAnimalChildbirthUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        useCase = new CreateAnimalChildbirthUseCase(gateway, new ChildbirthReferencePolicy(breedGateway, animalGateway), accessPolicy);
+        useCase = new CreateAnimalChildbirthUseCase(gateway, new LivestockReferencePolicy(breedGateway, animalGateway), accessPolicy);
     }
 
     private CreateAnimalChildbirthCommand command(final UUID calfId) {
@@ -110,6 +111,8 @@ class CreateAnimalChildbirthUseCaseTest {
     void shouldRejectMotherAsItsOwnCalf() {
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
         when(breedGateway.existsById(BreedID.from(breedId))).thenReturn(true);
+        when(animalGateway.existsByIdAndPropertyId(AnimalID.from(animalId), PropertyID.from(propertyId)))
+                .thenReturn(true);
 
         assertThrows(NotificationException.class, () -> useCase.execute(command(animalId)));
         verify(gateway, never()).save(any());

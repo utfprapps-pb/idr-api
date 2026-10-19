@@ -1,7 +1,7 @@
 package br.gov.pr.idr.infra.livestock.config;
 
-import br.gov.pr.idr.application.livestock.animal_childbirth.ChildbirthReferencePolicy;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
+import br.gov.pr.idr.application.livestock.shared.LivestockReferencePolicy;
 import br.gov.pr.idr.domain.iam.user.UserGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
@@ -22,8 +22,8 @@ public class LivestockBeansConfig {
     }
 
     @Bean
-    public ChildbirthReferencePolicy childbirthReferencePolicy(final BreedGateway breedGateway,
-                                                               final AnimalGateway animalGateway) {
-        return new ChildbirthReferencePolicy(breedGateway, animalGateway);
+    public LivestockReferencePolicy livestockReferencePolicy(final BreedGateway breedGateway,
+                                                             final AnimalGateway animalGateway) {
+        return new LivestockReferencePolicy(breedGateway, animalGateway);
     }
 }
