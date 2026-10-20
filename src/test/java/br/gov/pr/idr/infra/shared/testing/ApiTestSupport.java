@@ -45,7 +45,23 @@ public abstract class ApiTestSupport {
 
     /** Envia a requisição como o técnico (corpo JSON como está), depois faz flush e limpa o contexto de persistência. */
     protected ResultActions perform(final MockHttpServletRequestBuilder request) throws Exception {
-        final var result = mockMvc.perform(request.header("Authorization", "Bearer " + token)
+        return send(request, token);
+    }
+
+    /** Como {@link #perform}, mas autenticado como {@code username} (ex.: um usuário inserido pelo próprio teste). */
+    protected ResultActions performAs(final String username, final MockHttpServletRequestBuilder request)
+            throws Exception {
+        entityManager.flush();
+        return send(request, jwtService.generateToken(userDetailsService.loadUserByUsername(username)));
+    }
+
+    /** Executa SQL nativo dentro da transação do teste (desfeita ao final). */
+    protected void sql(final String statement) {
+        entityManager.createNativeQuery(statement).executeUpdate();
+    }
+
+    private ResultActions send(final MockHttpServletRequestBuilder request, final String bearer) throws Exception {
+        final var result = mockMvc.perform(request.header("Authorization", "Bearer " + bearer)
                 .contentType(MediaType.APPLICATION_JSON));
         entityManager.flush();
         entityManager.clear();
