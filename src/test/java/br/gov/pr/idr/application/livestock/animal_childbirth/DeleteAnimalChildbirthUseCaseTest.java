@@ -3,6 +3,7 @@ package br.gov.pr.idr.application.livestock.animal_childbirth;
 import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.vo.ChildbirthCondition;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.vo.ChildbirthGender;
+
 import java.math.BigDecimal;
 import br.gov.pr.idr.application.livestock.animal_childbirth.delete.DeleteAnimalChildbirthCommand;
 import br.gov.pr.idr.application.livestock.animal_childbirth.delete.DeleteAnimalChildbirthUseCase;
