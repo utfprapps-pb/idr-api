@@ -1,5 +1,6 @@
 package br.gov.pr.idr.infra.iam.security.jwt;
 
+import br.gov.pr.idr.infra.iam.user.persistence.UserJPAEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,10 +13,11 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -68,8 +70,10 @@ class JwtAuthorizationFilterTest {
         request.addHeader("Authorization", "Bearer valid.token.here");
         final var response = new MockHttpServletResponse();
         final var chain = new MockFilterChain();
-        final var userDetails = new User("joao.silva", "pwd",
-                List.of(new SimpleGrantedAuthority("TECNICO")));
+        final var userDetails = mock(UserJPAEntity.class);
+        when(userDetails.getUsername()).thenReturn("joao.silva");
+        when(userDetails.getId()).thenReturn(UUID.randomUUID());
+        when(userDetails.getDomainPermissions()).thenReturn(Set.of());
 
         when(jwtService.extractUsername("valid.token.here")).thenReturn("joao.silva");
         when(userDetailsService.loadUserByUsername("joao.silva")).thenReturn(userDetails);
@@ -78,7 +82,7 @@ class JwtAuthorizationFilterTest {
 
         final var auth = SecurityContextHolder.getContext().getAuthentication();
         assertNotNull(auth);
-        assertEquals("joao.silva", auth.getPrincipal());
+        assertEquals("joao.silva", auth.getPrincipal().toString());
     }
 
     @Test
