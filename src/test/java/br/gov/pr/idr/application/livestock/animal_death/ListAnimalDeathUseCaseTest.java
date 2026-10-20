@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_death;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal_death.retrieve.list.ListAnimalDeathCommand;
 import br.gov.pr.idr.application.livestock.animal_death.retrieve.list.ListAnimalDeathUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -45,10 +46,10 @@ class ListAnimalDeathUseCaseTest {
 
     @Test
     void shouldReturnEmptyPageWhenAnimalHasNoAnimalDeath() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.search(eq(AnimalID.from(animalId)), any())).thenReturn(new Pagination<>(0, 10, 0L, List.of()));
         final var output = useCase.execute(new ListAnimalDeathCommand(propertyId, animalId,
-                "tecnico@idr.com", SearchQuery.from(0, 10, "", "deathDate", "asc")));
+                PropertySearchScope.unrestricted(), SearchQuery.from(0, 10, "", "deathDate", "asc")));
         assertEquals(0, output.total());
     }
 
@@ -56,7 +57,7 @@ class ListAnimalDeathUseCaseTest {
     void shouldThrowWhenAnimalIsNotAccessible() {
         when(accessPolicy.ensureAccessToAnimal(any(), any(), any())).thenThrow(ForbiddenException.with("x"));
         assertThrows(ForbiddenException.class, () -> useCase.execute(new ListAnimalDeathCommand(propertyId,
-                animalId, "tecnico@idr.com", SearchQuery.from(0, 10, "", "deathDate", "asc"))));
+                animalId, PropertySearchScope.unrestricted(), SearchQuery.from(0, 10, "", "deathDate", "asc"))));
         verify(gateway, never()).search(any(), any());
     }
 }

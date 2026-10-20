@@ -24,7 +24,7 @@ public class UpdateAnimalDeathUseCase extends UseCase<UpdateAnimalDeathCommand,
 
     @Override
     public UpdateAnimalDeathOutput execute(final UpdateAnimalDeathCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         final var id = AnimalDeathID.from(command.animalDeathId());
         final var animalDeath = animalDeathGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))

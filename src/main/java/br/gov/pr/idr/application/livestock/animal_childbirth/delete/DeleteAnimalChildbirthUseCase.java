@@ -23,7 +23,7 @@ public class DeleteAnimalChildbirthUseCase extends VoidUseCase<DeleteAnimalChild
 
     @Override
     public void execute(final DeleteAnimalChildbirthCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         final var id = AnimalChildbirthID.from(command.animalChildbirthId());
         final var animalChildbirth = animalChildbirthGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))

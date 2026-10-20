@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_childbirth;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.shared.LivestockNameLookup;
 import br.gov.pr.idr.application.livestock.animal_childbirth.retrieve.list.ListAnimalChildbirthCommand;
 import br.gov.pr.idr.application.livestock.animal_childbirth.retrieve.list.ListAnimalChildbirthUseCase;
@@ -68,13 +69,13 @@ class ListAnimalChildbirthUseCaseTest {
     @Test
     @DisplayName("resolve raça e bezerro da página inteira em uma consulta cada; sem bezerro, não consulta animais")
     void shouldResolveNamesOncePerPage() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(mother);
         when(gateway.search(any(), any()))
                 .thenReturn(new Pagination<>(0, 10, 1, List.of(childbirthOf(animalId, null))));
         when(nameLookup.breedNames(Set.of(BreedID.from(breedId))))
                 .thenReturn(Map.of(BreedID.from(breedId), "Gir"));
 
-        final var output = useCase.execute(new ListAnimalChildbirthCommand(propertyId, animalId, "tecnico@idr.com",
+        final var output = useCase.execute(new ListAnimalChildbirthCommand(propertyId, animalId, PropertySearchScope.unrestricted(),
                 SearchQuery.from(0, 10, "", "childbirthDate", "asc")));
 
         assertEquals(1, output.total());
@@ -89,7 +90,7 @@ class ListAnimalChildbirthUseCaseTest {
         when(accessPolicy.ensureAccessToAnimal(any(), any(), any())).thenThrow(NotFoundException.with("x"));
 
         assertThrows(NotFoundException.class, () -> useCase.execute(new ListAnimalChildbirthCommand(propertyId,
-                animalId, "tecnico@idr.com", SearchQuery.from(0, 10, "", "childbirthDate", "asc"))));
+                animalId, PropertySearchScope.unrestricted(), SearchQuery.from(0, 10, "", "childbirthDate", "asc"))));
         verify(gateway, never()).search(any(), any());
     }
 }

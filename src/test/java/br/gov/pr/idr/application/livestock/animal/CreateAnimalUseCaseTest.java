@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal.create.CreateAnimalCommand;
 import br.gov.pr.idr.application.livestock.animal.create.CreateAnimalUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -51,7 +52,7 @@ class CreateAnimalUseCaseTest {
     private final UUID breedId = UUID.randomUUID();
 
     private CreateAnimalCommand validCommand() {
-        return new CreateAnimalCommand(propertyId, "tecnico@idr.com", null, breedId, "Leiteiro", "Mimosa", "F",
+        return new CreateAnimalCommand(propertyId, PropertySearchScope.unrestricted(), null, breedId, "Leiteiro", "Mimosa", "F",
                 "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     }
 
@@ -60,7 +61,7 @@ class CreateAnimalUseCaseTest {
         when(breedGateway.existsById(any())).thenReturn(true);
         when(animalGateway.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
-        final var command = new CreateAnimalCommand(propertyId, "tecnico@idr.com", null, breedId, "Leiteiro",
+        final var command = new CreateAnimalCommand(propertyId, PropertySearchScope.unrestricted(), null, breedId, "Leiteiro",
                 "Mimosa", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
 
         final var output = useCase.execute(command);
@@ -86,7 +87,7 @@ class CreateAnimalUseCaseTest {
     void shouldThrowWhenAnimalMotherIdDoesNotExist() {
         when(breedGateway.existsById(any())).thenReturn(true);
         when(animalGateway.existsByIdAndPropertyId(any(), any())).thenReturn(false);
-        final var command = new CreateAnimalCommand(propertyId, "tecnico@idr.com", UUID.randomUUID(), breedId,
+        final var command = new CreateAnimalCommand(propertyId, PropertySearchScope.unrestricted(), UUID.randomUUID(), breedId,
                 "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
         assertThrows(NotificationException.class, () -> useCase.execute(command));
     }
@@ -99,7 +100,7 @@ class CreateAnimalUseCaseTest {
         when(animalGateway.existsByIdAndPropertyId(AnimalID.from(motherId), PropertyID.from(propertyId)))
                 .thenReturn(false);
 
-        final var command = new CreateAnimalCommand(propertyId, "tecnico@idr.com", motherId, breedId,
+        final var command = new CreateAnimalCommand(propertyId, PropertySearchScope.unrestricted(), motherId, breedId,
                 "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
         assertThrows(NotificationException.class, () -> useCase.execute(command));
     }

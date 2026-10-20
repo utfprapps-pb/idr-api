@@ -1,5 +1,7 @@
 package br.gov.pr.idr.infra.inventory_resource.api;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
+import br.gov.pr.idr.infra.iam.security.AuthenticatedUser;
 import br.gov.pr.idr.application.inventory_resource.medication.create.CreateMedicationCommand;
 import br.gov.pr.idr.application.inventory_resource.medication.create.CreateMedicationOutput;
 import br.gov.pr.idr.application.inventory_resource.medication.create.CreateMedicationUseCase;
@@ -55,7 +57,8 @@ class MedicationControllerTest {
     private MockMvc mockMvc;
 
     private static final UsernamePasswordAuthenticationToken AUTH =
-            new UsernamePasswordAuthenticationToken("tecnico@idr.com", null, List.of());
+            new UsernamePasswordAuthenticationToken(
+                    new AuthenticatedUser("tecnico@idr.com", PropertySearchScope::unrestricted), null, List.of());
 
     @BeforeEach
     void setUp() {
@@ -97,7 +100,7 @@ class MedicationControllerTest {
         verify(createMedicationUseCase).execute(captor.capture());
         assertEquals(propertyId, captor.getValue().propertyId());
         assertEquals(animalId, captor.getValue().animalId());
-        assertEquals("tecnico@idr.com", captor.getValue().username());
+        assertEquals(PropertySearchScope.unrestricted(), captor.getValue().scope());
         assertEquals(productId, captor.getValue().productId());
         assertEquals(LocalDate.of(2024, 3, 10), captor.getValue().applicationDate());
         assertEquals("10ml", captor.getValue().appliedDose());
@@ -128,7 +131,7 @@ class MedicationControllerTest {
         assertEquals(propertyId, captor.getValue().propertyId());
         assertEquals(animalId, captor.getValue().animalId());
         assertEquals(id, captor.getValue().medicationId());
-        assertEquals("tecnico@idr.com", captor.getValue().username());
+        assertEquals(PropertySearchScope.unrestricted(), captor.getValue().scope());
         assertEquals(productId, captor.getValue().productId());
     }
 
@@ -148,7 +151,7 @@ class MedicationControllerTest {
         assertEquals(propertyId, captor.getValue().propertyId());
         assertEquals(animalId, captor.getValue().animalId());
         assertEquals(id, captor.getValue().medicationId());
-        assertEquals("tecnico@idr.com", captor.getValue().username());
+        assertEquals(PropertySearchScope.unrestricted(), captor.getValue().scope());
     }
 
     @Test

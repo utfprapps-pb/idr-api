@@ -19,7 +19,7 @@ public class DeleteAnimalUseCase extends VoidUseCase<DeleteAnimalCommand> {
     @Override
     public void execute(final DeleteAnimalCommand command) {
         final var animal = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
-                command.username());
+                command.scope());
         animalGateway.deleteById(animal.getId());
     }
 }

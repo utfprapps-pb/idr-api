@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal.delete.DeleteAnimalCommand;
 import br.gov.pr.idr.application.livestock.animal.delete.DeleteAnimalUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -40,20 +41,20 @@ class DeleteAnimalUseCaseTest {
 
     @Test
     void shouldDeleteWhenAuthorized() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(existingAnimal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(existingAnimal);
 
-        useCase.execute(new DeleteAnimalCommand(propertyId, animalId, "tecnico@idr.com"));
+        useCase.execute(new DeleteAnimalCommand(propertyId, animalId, PropertySearchScope.unrestricted()));
 
         verify(animalGateway).deleteById(existingAnimal.getId());
     }
 
     @Test
     void shouldThrowNotFoundWhenAnimalBelongsToAnotherProperty() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com"))
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted()))
                 .thenThrow(NotFoundException.with("Animal com o ID %s não encontrado".formatted(animalId)));
 
         assertThrows(NotFoundException.class,
-                () -> useCase.execute(new DeleteAnimalCommand(propertyId, animalId, "tecnico@idr.com")));
+                () -> useCase.execute(new DeleteAnimalCommand(propertyId, animalId, PropertySearchScope.unrestricted())));
         verify(animalGateway, never()).deleteById(any());
     }
 }

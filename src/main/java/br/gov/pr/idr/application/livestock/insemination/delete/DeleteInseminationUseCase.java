@@ -23,7 +23,7 @@ public class DeleteInseminationUseCase extends VoidUseCase<DeleteInseminationCom
 
     @Override
     public void execute(final DeleteInseminationCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         final var id = InseminationID.from(command.inseminationId());
         final var insemination = inseminationGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))

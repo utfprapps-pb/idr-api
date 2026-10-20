@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.mastitis;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.mastitis.retrieve.get.GetMastitisByIdCommand;
 import br.gov.pr.idr.application.livestock.mastitis.retrieve.get.GetMastitisByIdUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -44,21 +45,21 @@ class GetMastitisByIdUseCaseTest {
 
     @Test
     void shouldReturnMastitisWhenItBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(MastitisID.from(mastitisId), AnimalID.from(animalId))).thenReturn(Optional.of(existingMastitis));
 
         final var output = useCase.execute(new GetMastitisByIdCommand(propertyId, animalId, mastitisId,
-                "tecnico@idr.com"));
+                PropertySearchScope.unrestricted()));
 
         assertEquals("Clinica", output.mastitisType());
     }
 
     @Test
     void shouldThrowNotFoundWhenMastitisBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(MastitisID.from(mastitisId), AnimalID.from(animalId))).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class,
                 () -> useCase.execute(new GetMastitisByIdCommand(propertyId, animalId, mastitisId,
-                        "tecnico@idr.com")));
+                        PropertySearchScope.unrestricted())));
     }
 }

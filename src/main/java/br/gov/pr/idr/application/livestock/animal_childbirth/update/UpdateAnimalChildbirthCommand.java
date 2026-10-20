@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_childbirth.update;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.vo.ChildbirthCondition;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.vo.ChildbirthGender;
 
@@ -11,7 +12,7 @@ public record UpdateAnimalChildbirthCommand(
         UUID propertyId,
         UUID animalId,
         UUID animalChildbirthId,
-        String username,
+        PropertySearchScope scope,
         LocalDate childbirthDate,
         ChildbirthGender gender,
         BigDecimal weight,

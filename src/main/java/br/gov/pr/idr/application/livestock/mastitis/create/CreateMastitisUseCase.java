@@ -20,7 +20,7 @@ public class CreateMastitisUseCase extends UseCase<CreateMastitisCommand, Create
     @Override
     public CreateMastitisOutput execute(final CreateMastitisCommand command) {
         final var animal = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
-                command.username());
+                command.scope());
 
         final var mastitis = Mastitis.create(animal.getId(), command.diagnoseDate(), command.mastitisType(),
                 command.cmtResult(), command.ad(), command.ae(), command.pd(), command.pe());

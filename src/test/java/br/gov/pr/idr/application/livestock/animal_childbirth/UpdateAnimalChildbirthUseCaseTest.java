@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_childbirth;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal_childbirth.update.UpdateAnimalChildbirthCommand;
 import br.gov.pr.idr.application.livestock.animal_childbirth.update.UpdateAnimalChildbirthUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -69,14 +70,14 @@ class UpdateAnimalChildbirthUseCaseTest {
     }
 
     private UpdateAnimalChildbirthCommand command(final UUID calfId) {
-        return new UpdateAnimalChildbirthCommand(propertyId, animalId, childbirthId, "tecnico@idr.com",
+        return new UpdateAnimalChildbirthCommand(propertyId, animalId, childbirthId, PropertySearchScope.unrestricted(),
                 LocalDate.of(2024, 4, 1), ChildbirthGender.MALE, new BigDecimal("40"), ChildbirthCondition.DEAD,
                 breedId, calfId);
     }
 
     @Test
     void shouldUpdateWhenChildbirthBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(mother);
         when(gateway.findByIdAndAnimalId(AnimalChildbirthID.from(childbirthId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(childbirthOf(animalId, null)));
         when(breedGateway.existsById(BreedID.from(breedId))).thenReturn(true);
@@ -91,7 +92,7 @@ class UpdateAnimalChildbirthUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenChildbirthBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(mother);
         when(gateway.findByIdAndAnimalId(AnimalChildbirthID.from(childbirthId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
 
@@ -102,7 +103,7 @@ class UpdateAnimalChildbirthUseCaseTest {
     @Test
     void shouldRejectCalfFromAnotherPropertyOnUpdate() {
         final var calfId = UUID.randomUUID();
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(mother);
         when(gateway.findByIdAndAnimalId(AnimalChildbirthID.from(childbirthId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(childbirthOf(animalId, null)));
         when(breedGateway.existsById(BreedID.from(breedId))).thenReturn(true);

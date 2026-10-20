@@ -44,8 +44,8 @@ public class PregnancyDiagnoseController {
                                                                     final Authentication authentication,
                                                                     @RequestBody @Valid
                                                                     CreatePregnancyDiagnoseRequest request) {
-        final var username = AuthenticationSupport.username(authentication);
-        final var command = new CreatePregnancyDiagnoseCommand(propertyId, animalId, username,
+        final var scope = AuthenticationSupport.scope(authentication);
+        final var command = new CreatePregnancyDiagnoseCommand(propertyId, animalId, scope,
                 request.diagnoseDate(), request.lastIa());
         final var output = createPregnancyDiagnoseUseCase.execute(command);
         return ResponseEntity.ok(CreatePregnancyDiagnoseResponse.from(output));
@@ -58,8 +58,8 @@ public class PregnancyDiagnoseController {
                                                                     final Authentication authentication,
                                                                     @RequestBody @Valid
                                                                     UpdatePregnancyDiagnoseRequest request) {
-        final var username = AuthenticationSupport.username(authentication);
-        final var command = new UpdatePregnancyDiagnoseCommand(propertyId, animalId, id, username,
+        final var scope = AuthenticationSupport.scope(authentication);
+        final var command = new UpdatePregnancyDiagnoseCommand(propertyId, animalId, id, scope,
                 request.diagnoseDate(), request.lastIa());
         final var output = updatePregnancyDiagnoseUseCase.execute(command);
         return ResponseEntity.ok(UpdatePregnancyDiagnoseResponse.from(output));
@@ -70,9 +70,9 @@ public class PregnancyDiagnoseController {
                                         @PathVariable UUID animalId,
                                         @PathVariable UUID id,
                                         final Authentication authentication) {
-        final var username = AuthenticationSupport.username(authentication);
+        final var scope = AuthenticationSupport.scope(authentication);
         deletePregnancyDiagnoseUseCase.execute(new DeletePregnancyDiagnoseCommand(propertyId, animalId, id,
-                username));
+                scope));
         return ResponseEntity.noContent().build();
     }
 
@@ -81,9 +81,9 @@ public class PregnancyDiagnoseController {
                                                                     @PathVariable UUID animalId,
                                                                     @PathVariable UUID id,
                                                                     final Authentication authentication) {
-        final var username = AuthenticationSupport.username(authentication);
+        final var scope = AuthenticationSupport.scope(authentication);
         final var output = getPregnancyDiagnoseByIdUseCase.execute(
-                new GetPregnancyDiagnoseByIdCommand(propertyId, animalId, id, username));
+                new GetPregnancyDiagnoseByIdCommand(propertyId, animalId, id, scope));
         return ResponseEntity.ok(output);
     }
 
@@ -97,10 +97,10 @@ public class PregnancyDiagnoseController {
             @RequestParam(required = false) final String terms,
             @RequestParam(defaultValue = "diagnoseDate") final String sort,
             @RequestParam(defaultValue = "asc") final String direction) {
-        final var username = AuthenticationSupport.username(authentication);
+        final var scope = AuthenticationSupport.scope(authentication);
         final var query = SearchQuery.from(page, perPage, terms, sort, direction);
         final var output = listPregnancyDiagnoseUseCase.execute(
-                new ListPregnancyDiagnoseCommand(propertyId, animalId, username, query));
+                new ListPregnancyDiagnoseCommand(propertyId, animalId, scope, query));
         return ResponseEntity.ok(output);
     }
 }

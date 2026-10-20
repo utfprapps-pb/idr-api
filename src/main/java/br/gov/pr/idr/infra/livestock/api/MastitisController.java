@@ -43,8 +43,8 @@ public class MastitisController {
                                                            @PathVariable UUID animalId,
                                                            final Authentication authentication,
                                                            @RequestBody @Valid CreateMastitisRequest request) {
-        final var username = AuthenticationSupport.username(authentication);
-        final var command = new CreateMastitisCommand(propertyId, animalId, username, request.diagnoseDate(),
+        final var scope = AuthenticationSupport.scope(authentication);
+        final var command = new CreateMastitisCommand(propertyId, animalId, scope, request.diagnoseDate(),
                 request.mastitisType(), request.cmtResult(), request.ad(), request.ae(), request.pd(),
                 request.pe());
         final var output = createMastitisUseCase.execute(command);
@@ -57,8 +57,8 @@ public class MastitisController {
                                                            @PathVariable UUID id,
                                                            final Authentication authentication,
                                                            @RequestBody @Valid UpdateMastitisRequest request) {
-        final var username = AuthenticationSupport.username(authentication);
-        final var command = new UpdateMastitisCommand(propertyId, animalId, id, username, request.diagnoseDate(),
+        final var scope = AuthenticationSupport.scope(authentication);
+        final var command = new UpdateMastitisCommand(propertyId, animalId, id, scope, request.diagnoseDate(),
                 request.mastitisType(), request.cmtResult(), request.ad(), request.ae(), request.pd(),
                 request.pe());
         final var output = updateMastitisUseCase.execute(command);
@@ -70,8 +70,8 @@ public class MastitisController {
                                         @PathVariable UUID animalId,
                                         @PathVariable UUID id,
                                         final Authentication authentication) {
-        final var username = AuthenticationSupport.username(authentication);
-        deleteMastitisUseCase.execute(new DeleteMastitisCommand(propertyId, animalId, id, username));
+        final var scope = AuthenticationSupport.scope(authentication);
+        deleteMastitisUseCase.execute(new DeleteMastitisCommand(propertyId, animalId, id, scope));
         return ResponseEntity.noContent().build();
     }
 
@@ -80,9 +80,9 @@ public class MastitisController {
                                                            @PathVariable UUID animalId,
                                                            @PathVariable UUID id,
                                                            final Authentication authentication) {
-        final var username = AuthenticationSupport.username(authentication);
+        final var scope = AuthenticationSupport.scope(authentication);
         final var output = getMastitisByIdUseCase.execute(
-                new GetMastitisByIdCommand(propertyId, animalId, id, username));
+                new GetMastitisByIdCommand(propertyId, animalId, id, scope));
         return ResponseEntity.ok(output);
     }
 
@@ -96,10 +96,10 @@ public class MastitisController {
             @RequestParam(required = false) final String terms,
             @RequestParam(defaultValue = "diagnoseDate") final String sort,
             @RequestParam(defaultValue = "asc") final String direction) {
-        final var username = AuthenticationSupport.username(authentication);
+        final var scope = AuthenticationSupport.scope(authentication);
         final var query = SearchQuery.from(page, perPage, terms, sort, direction);
         final var output = listMastitisUseCase.execute(
-                new ListMastitisCommand(propertyId, animalId, username, query));
+                new ListMastitisCommand(propertyId, animalId, scope, query));
         return ResponseEntity.ok(output);
     }
 }

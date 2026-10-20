@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.insemination;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.insemination.delete.DeleteInseminationCommand;
 import br.gov.pr.idr.application.livestock.insemination.delete.DeleteInseminationUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -45,12 +46,12 @@ class DeleteInseminationUseCaseTest {
             AnimalID.from(animalId), LocalDate.now(), "Touro 1");
 
     private DeleteInseminationCommand validCommand() {
-        return new DeleteInseminationCommand(propertyId, animalId, inseminationId, "tecnico@idr.com");
+        return new DeleteInseminationCommand(propertyId, animalId, inseminationId, PropertySearchScope.unrestricted());
     }
 
     @Test
     void shouldDeleteWhenInseminationBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(InseminationID.from(inseminationId), AnimalID.from(animalId))).thenReturn(Optional.of(existingInsemination));
 
         useCase.execute(validCommand());
@@ -67,7 +68,7 @@ class DeleteInseminationUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenInseminationBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(InseminationID.from(inseminationId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
 

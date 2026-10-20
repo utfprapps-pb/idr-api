@@ -23,7 +23,7 @@ public class DeleteAnimalDiseasesUseCase extends VoidUseCase<DeleteAnimalDisease
 
     @Override
     public void execute(final DeleteAnimalDiseasesCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         final var id = AnimalDiseasesID.from(command.animalDiseasesId());
         final var animalDiseases = animalDiseasesGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))

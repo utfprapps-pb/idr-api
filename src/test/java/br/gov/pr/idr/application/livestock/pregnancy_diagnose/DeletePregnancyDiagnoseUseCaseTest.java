@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.pregnancy_diagnose;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.pregnancy_diagnose.delete.DeletePregnancyDiagnoseCommand;
 import br.gov.pr.idr.application.livestock.pregnancy_diagnose.delete.DeletePregnancyDiagnoseUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -46,12 +47,12 @@ class DeletePregnancyDiagnoseUseCaseTest {
             LocalDate.now());
 
     private DeletePregnancyDiagnoseCommand validCommand() {
-        return new DeletePregnancyDiagnoseCommand(propertyId, animalId, pregnancyDiagnoseId, "tecnico@idr.com");
+        return new DeletePregnancyDiagnoseCommand(propertyId, animalId, pregnancyDiagnoseId, PropertySearchScope.unrestricted());
     }
 
     @Test
     void shouldDeleteWhenPregnancyDiagnoseBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(PregnancyDiagnoseID.from(pregnancyDiagnoseId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingPregnancyDiagnose));
 
@@ -69,7 +70,7 @@ class DeletePregnancyDiagnoseUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenPregnancyDiagnoseBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(PregnancyDiagnoseID.from(pregnancyDiagnoseId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
 

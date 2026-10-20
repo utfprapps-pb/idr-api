@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_diseases;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal_diseases.delete.DeleteAnimalDiseasesCommand;
 import br.gov.pr.idr.application.livestock.animal_diseases.delete.DeleteAnimalDiseasesUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -45,12 +46,12 @@ class DeleteAnimalDiseasesUseCaseTest {
             AnimalDiseasesID.from(animalDiseasesId), AnimalID.from(animalId), "Febre aftosa", LocalDate.now());
 
     private DeleteAnimalDiseasesCommand validCommand() {
-        return new DeleteAnimalDiseasesCommand(propertyId, animalId, animalDiseasesId, "tecnico@idr.com");
+        return new DeleteAnimalDiseasesCommand(propertyId, animalId, animalDiseasesId, PropertySearchScope.unrestricted());
     }
 
     @Test
     void shouldDeleteWhenAnimalDiseasesBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalDiseasesID.from(animalDiseasesId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingAnimalDiseases));
 
@@ -68,7 +69,7 @@ class DeleteAnimalDiseasesUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenAnimalDiseasesBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalDiseasesID.from(animalDiseasesId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
 

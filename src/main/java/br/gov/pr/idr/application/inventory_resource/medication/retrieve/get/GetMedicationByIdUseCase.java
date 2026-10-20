@@ -23,7 +23,7 @@ public class GetMedicationByIdUseCase extends UseCase<GetMedicationByIdCommand, 
 
     @Override
     public GetMedicationByIdOutput execute(final GetMedicationByIdCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         final var id = MedicationID.from(command.medicationId());
         final var medication = medicationGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))

@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.insemination;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.insemination.update.UpdateInseminationCommand;
 import br.gov.pr.idr.application.livestock.insemination.update.UpdateInseminationUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -46,13 +47,13 @@ class UpdateInseminationUseCaseTest {
             AnimalID.from(animalId), LocalDate.now(), "Touro 1");
 
     private UpdateInseminationCommand validCommand() {
-        return new UpdateInseminationCommand(propertyId, animalId, inseminationId, "tecnico@idr.com",
+        return new UpdateInseminationCommand(propertyId, animalId, inseminationId, PropertySearchScope.unrestricted(),
                 LocalDate.now(), "Touro 2");
     }
 
     @Test
     void shouldUpdateWhenInseminationBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(InseminationID.from(inseminationId), AnimalID.from(animalId))).thenReturn(Optional.of(existingInsemination));
         when(gateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -70,7 +71,7 @@ class UpdateInseminationUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenInseminationBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(InseminationID.from(inseminationId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
 

@@ -21,7 +21,7 @@ public class ListInseminationUseCase extends UseCase<ListInseminationCommand, Pa
 
     @Override
     public Pagination<ListInseminationOutput> execute(final ListInseminationCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         return inseminationGateway.search(AnimalID.from(command.animalId()), command.query())
                 .map(ListInseminationOutput::from);

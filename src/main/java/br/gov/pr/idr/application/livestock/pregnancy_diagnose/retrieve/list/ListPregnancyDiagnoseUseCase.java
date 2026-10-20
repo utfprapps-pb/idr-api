@@ -22,7 +22,7 @@ public class ListPregnancyDiagnoseUseCase extends UseCase<ListPregnancyDiagnoseC
 
     @Override
     public Pagination<ListPregnancyDiagnoseOutput> execute(final ListPregnancyDiagnoseCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         return pregnancyDiagnoseGateway.search(AnimalID.from(command.animalId()), command.query())
                 .map(ListPregnancyDiagnoseOutput::from);

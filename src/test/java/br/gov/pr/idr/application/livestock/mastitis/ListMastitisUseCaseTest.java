@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.mastitis;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.mastitis.retrieve.list.ListMastitisCommand;
 import br.gov.pr.idr.application.livestock.mastitis.retrieve.list.ListMastitisUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -45,9 +46,9 @@ class ListMastitisUseCaseTest {
 
     @Test
     void shouldReturnEmptyPageWhenAnimalHasNoMastitis() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.search(eq(AnimalID.from(animalId)), any())).thenReturn(new Pagination<>(0, 10, 0L, List.of()));
-        final var output = useCase.execute(new ListMastitisCommand(propertyId, animalId, "tecnico@idr.com",
+        final var output = useCase.execute(new ListMastitisCommand(propertyId, animalId, PropertySearchScope.unrestricted(),
                 SearchQuery.from(0, 10, "", "diagnoseDate", "asc")));
         assertEquals(0, output.total());
     }
@@ -56,7 +57,7 @@ class ListMastitisUseCaseTest {
     void shouldThrowWhenAnimalIsNotAccessible() {
         when(accessPolicy.ensureAccessToAnimal(any(), any(), any())).thenThrow(ForbiddenException.with("x"));
         assertThrows(ForbiddenException.class, () -> useCase.execute(new ListMastitisCommand(propertyId,
-                animalId, "tecnico@idr.com", SearchQuery.from(0, 10, "", "diagnoseDate", "asc"))));
+                animalId, PropertySearchScope.unrestricted(), SearchQuery.from(0, 10, "", "diagnoseDate", "asc"))));
         verify(gateway, never()).search(any(), any());
     }
 }

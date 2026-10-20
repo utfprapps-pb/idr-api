@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_diseases;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal_diseases.create.CreateAnimalDiseasesCommand;
 import br.gov.pr.idr.application.livestock.animal_diseases.create.CreateAnimalDiseasesUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -40,13 +41,13 @@ class CreateAnimalDiseasesUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
 
     private CreateAnimalDiseasesCommand validCreateCommand() {
-        return new CreateAnimalDiseasesCommand(propertyId, animalId, "tecnico@idr.com", "Febre aftosa",
+        return new CreateAnimalDiseasesCommand(propertyId, animalId, PropertySearchScope.unrestricted(), "Febre aftosa",
                 LocalDate.of(2024, 1, 1));
     }
 
     @Test
     void shouldCreateWhenAnimalIsAccessible() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.save(any())).thenAnswer(inv -> inv.getArgument(0));
         final var output = useCase.execute(validCreateCommand());
         assertEquals("Febre aftosa", output.diagnosis());

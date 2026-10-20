@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_childbirth;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.vo.ChildbirthCondition;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.vo.ChildbirthGender;
 import java.math.BigDecimal;
@@ -48,12 +49,12 @@ class DeleteAnimalChildbirthUseCaseTest {
             AnimalChildbirthID.from(animalChildbirthId), AnimalID.from(animalId), LocalDate.of(2024, 3, 10), ChildbirthGender.FEMALE, new BigDecimal("35.5"), ChildbirthCondition.ALIVE, BreedID.unique(), null);
 
     private DeleteAnimalChildbirthCommand validCommand() {
-        return new DeleteAnimalChildbirthCommand(propertyId, animalId, animalChildbirthId, "tecnico@idr.com");
+        return new DeleteAnimalChildbirthCommand(propertyId, animalId, animalChildbirthId, PropertySearchScope.unrestricted());
     }
 
     @Test
     void shouldDeleteWhenAnimalChildbirthBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalChildbirthID.from(animalChildbirthId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingAnimalChildbirth));
 
@@ -71,7 +72,7 @@ class DeleteAnimalChildbirthUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenAnimalChildbirthBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalChildbirthID.from(animalChildbirthId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
 

@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_purchases;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal_purchases.update.UpdateAnimalPurchasesCommand;
 import br.gov.pr.idr.application.livestock.animal_purchases.update.UpdateAnimalPurchasesUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -48,13 +49,13 @@ class UpdateAnimalPurchasesUseCaseTest {
             LocalDate.now(), BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
 
     private UpdateAnimalPurchasesCommand validCommand() {
-        return new UpdateAnimalPurchasesCommand(propertyId, animalId, animalPurchasesId, "tecnico@idr.com",
+        return new UpdateAnimalPurchasesCommand(propertyId, animalId, animalPurchasesId, PropertySearchScope.unrestricted(),
                 LocalDate.of(2024, 4, 1), LocalDate.of(2023, 4, 1), BigDecimal.valueOf(2000), BigDecimal.valueOf(480));
     }
 
     @Test
     void shouldUpdateWhenAnimalPurchasesBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalPurchasesID.from(animalPurchasesId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingAnimalPurchases));
         when(gateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
@@ -74,7 +75,7 @@ class UpdateAnimalPurchasesUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenAnimalPurchasesBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalPurchasesID.from(animalPurchasesId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
 

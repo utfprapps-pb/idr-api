@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_death;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal_death.update.UpdateAnimalDeathCommand;
 import br.gov.pr.idr.application.livestock.animal_death.update.UpdateAnimalDeathUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -46,13 +47,13 @@ class UpdateAnimalDeathUseCaseTest {
             AnimalDeathID.from(animalDeathId), AnimalID.from(animalId), "Picada de cobra", LocalDate.now());
 
     private UpdateAnimalDeathCommand validCommand() {
-        return new UpdateAnimalDeathCommand(propertyId, animalId, animalDeathId, "tecnico@idr.com",
+        return new UpdateAnimalDeathCommand(propertyId, animalId, animalDeathId, PropertySearchScope.unrestricted(),
                 "Timpanismo", LocalDate.of(2024, 4, 1));
     }
 
     @Test
     void shouldUpdateWhenAnimalDeathBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalDeathID.from(animalDeathId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingAnimalDeath));
         when(gateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
@@ -71,7 +72,7 @@ class UpdateAnimalDeathUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenAnimalDeathBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalDeathID.from(animalDeathId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
 

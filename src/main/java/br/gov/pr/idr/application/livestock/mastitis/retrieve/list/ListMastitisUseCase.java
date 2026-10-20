@@ -20,7 +20,7 @@ public class ListMastitisUseCase extends UseCase<ListMastitisCommand, Pagination
 
     @Override
     public Pagination<ListMastitisOutput> execute(final ListMastitisCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         return mastitisGateway.search(AnimalID.from(command.animalId()), command.query())
                 .map(ListMastitisOutput::from);

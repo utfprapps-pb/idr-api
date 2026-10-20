@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_sales;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal_sales.delete.DeleteAnimalSalesCommand;
 import br.gov.pr.idr.application.livestock.animal_sales.delete.DeleteAnimalSalesUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -49,12 +50,12 @@ class DeleteAnimalSalesUseCaseTest {
             Reason.VOLUNTARIA, BigDecimal.valueOf(1500), Destination.ABATE, BigDecimal.valueOf(450));
 
     private DeleteAnimalSalesCommand validCommand() {
-        return new DeleteAnimalSalesCommand(propertyId, animalId, animalSalesId, "tecnico@idr.com");
+        return new DeleteAnimalSalesCommand(propertyId, animalId, animalSalesId, PropertySearchScope.unrestricted());
     }
 
     @Test
     void shouldDeleteWhenAnimalSalesBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalSalesID.from(animalSalesId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingAnimalSales));
 
@@ -72,7 +73,7 @@ class DeleteAnimalSalesUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenAnimalSalesBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalSalesID.from(animalSalesId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
 

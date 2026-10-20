@@ -26,7 +26,7 @@ public class CreateAnimalUseCase extends UseCase<CreateAnimalCommand, CreateAnim
 
     @Override
     public CreateAnimalOutput execute(final CreateAnimalCommand command) {
-        accessPolicy.ensureAccessToProperty(command.propertyId(), command.username());
+        accessPolicy.ensureAccessToProperty(command.propertyId(), command.scope());
         final var propertyId = PropertyID.from(command.propertyId());
         referencePolicy.ensureBreedExists(command.breedId());
         referencePolicy.ensureAnimalInProperty(command.animalMotherId(), propertyId, "mãe");

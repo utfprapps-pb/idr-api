@@ -23,7 +23,7 @@ public class DeleteAnimalDeathUseCase extends VoidUseCase<DeleteAnimalDeathComma
 
     @Override
     public void execute(final DeleteAnimalDeathCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         final var id = AnimalDeathID.from(command.animalDeathId());
         final var animalDeath = animalDeathGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))

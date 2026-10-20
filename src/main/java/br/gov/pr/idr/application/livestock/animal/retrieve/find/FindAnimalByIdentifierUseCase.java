@@ -27,7 +27,7 @@ public class FindAnimalByIdentifierUseCase
 
     @Override
     public Optional<GetAnimalByIdOutput> execute(final FindAnimalByIdentifierCommand command) {
-        accessPolicy.ensureAccessToProperty(command.propertyId(), command.username());
+        accessPolicy.ensureAccessToProperty(command.propertyId(), command.scope());
         return animalGateway.findByPropertyIdAndIdentifier(PropertyID.from(command.propertyId()),
                 command.identifier()).map(animal -> GetAnimalByIdOutput.from(animal,
                 nameLookup.breedName(animal.getBreedId())));

@@ -44,8 +44,8 @@ public class AnimalPurchasesController {
                                                                   final Authentication authentication,
                                                                   @RequestBody @Valid
                                                                   CreateAnimalPurchasesRequest request) {
-        final var username = AuthenticationSupport.username(authentication);
-        final var command = new CreateAnimalPurchasesCommand(propertyId, animalId, username,
+        final var scope = AuthenticationSupport.scope(authentication);
+        final var command = new CreateAnimalPurchasesCommand(propertyId, animalId, scope,
                 request.datePurchase(), request.birthDate(), request.value(), request.weight());
         final var output = createAnimalPurchasesUseCase.execute(command);
         return ResponseEntity.ok(CreateAnimalPurchasesResponse.from(output));
@@ -58,8 +58,8 @@ public class AnimalPurchasesController {
                                                                   final Authentication authentication,
                                                                   @RequestBody @Valid
                                                                   UpdateAnimalPurchasesRequest request) {
-        final var username = AuthenticationSupport.username(authentication);
-        final var command = new UpdateAnimalPurchasesCommand(propertyId, animalId, id, username,
+        final var scope = AuthenticationSupport.scope(authentication);
+        final var command = new UpdateAnimalPurchasesCommand(propertyId, animalId, id, scope,
                 request.datePurchase(), request.birthDate(), request.value(), request.weight());
         final var output = updateAnimalPurchasesUseCase.execute(command);
         return ResponseEntity.ok(UpdateAnimalPurchasesResponse.from(output));
@@ -70,9 +70,9 @@ public class AnimalPurchasesController {
                                         @PathVariable UUID animalId,
                                         @PathVariable UUID id,
                                         final Authentication authentication) {
-        final var username = AuthenticationSupport.username(authentication);
+        final var scope = AuthenticationSupport.scope(authentication);
         deleteAnimalPurchasesUseCase.execute(new DeleteAnimalPurchasesCommand(propertyId, animalId, id,
-                username));
+                scope));
         return ResponseEntity.noContent().build();
     }
 
@@ -81,9 +81,9 @@ public class AnimalPurchasesController {
                                                                   @PathVariable UUID animalId,
                                                                   @PathVariable UUID id,
                                                                   final Authentication authentication) {
-        final var username = AuthenticationSupport.username(authentication);
+        final var scope = AuthenticationSupport.scope(authentication);
         final var output = getAnimalPurchasesByIdUseCase.execute(
-                new GetAnimalPurchasesByIdCommand(propertyId, animalId, id, username));
+                new GetAnimalPurchasesByIdCommand(propertyId, animalId, id, scope));
         return ResponseEntity.ok(output);
     }
 
@@ -97,10 +97,10 @@ public class AnimalPurchasesController {
             @RequestParam(required = false) final String terms,
             @RequestParam(defaultValue = "datePurchase") final String sort,
             @RequestParam(defaultValue = "asc") final String direction) {
-        final var username = AuthenticationSupport.username(authentication);
+        final var scope = AuthenticationSupport.scope(authentication);
         final var query = SearchQuery.from(page, perPage, terms, sort, direction);
         final var output = listAnimalPurchasesUseCase.execute(
-                new ListAnimalPurchasesCommand(propertyId, animalId, username, query));
+                new ListAnimalPurchasesCommand(propertyId, animalId, scope, query));
         return ResponseEntity.ok(output);
     }
 }

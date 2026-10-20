@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.mastitis;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.mastitis.delete.DeleteMastitisCommand;
 import br.gov.pr.idr.application.livestock.mastitis.delete.DeleteMastitisUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -45,12 +46,12 @@ class DeleteMastitisUseCaseTest {
             LocalDate.now(), "Clinica", "+", "Positivo", "Negativo", "Positivo", "Negativo");
 
     private DeleteMastitisCommand validCommand() {
-        return new DeleteMastitisCommand(propertyId, animalId, mastitisId, "tecnico@idr.com");
+        return new DeleteMastitisCommand(propertyId, animalId, mastitisId, PropertySearchScope.unrestricted());
     }
 
     @Test
     void shouldDeleteWhenMastitisBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(MastitisID.from(mastitisId), AnimalID.from(animalId))).thenReturn(Optional.of(existingMastitis));
 
         useCase.execute(validCommand());
@@ -67,7 +68,7 @@ class DeleteMastitisUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenMastitisBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(MastitisID.from(mastitisId), AnimalID.from(animalId))).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> useCase.execute(validCommand()));

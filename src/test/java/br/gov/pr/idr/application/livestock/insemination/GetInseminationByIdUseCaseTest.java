@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.insemination;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.insemination.retrieve.get.GetInseminationByIdCommand;
 import br.gov.pr.idr.application.livestock.insemination.retrieve.get.GetInseminationByIdUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -44,22 +45,22 @@ class GetInseminationByIdUseCaseTest {
 
     @Test
     void shouldReturnInseminationWhenItBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(InseminationID.from(inseminationId), AnimalID.from(animalId))).thenReturn(Optional.of(existingInsemination));
 
         final var output = useCase.execute(new GetInseminationByIdCommand(propertyId, animalId, inseminationId,
-                "tecnico@idr.com"));
+                PropertySearchScope.unrestricted()));
 
         assertEquals("Touro 1", output.bull());
     }
 
     @Test
     void shouldThrowNotFoundWhenInseminationBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(InseminationID.from(inseminationId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
         assertThrows(NotFoundException.class,
                 () -> useCase.execute(new GetInseminationByIdCommand(propertyId, animalId, inseminationId,
-                        "tecnico@idr.com")));
+                        PropertySearchScope.unrestricted())));
     }
 }

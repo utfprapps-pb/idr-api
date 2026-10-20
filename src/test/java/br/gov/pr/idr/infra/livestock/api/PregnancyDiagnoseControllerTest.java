@@ -1,5 +1,7 @@
 package br.gov.pr.idr.infra.livestock.api;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
+import br.gov.pr.idr.infra.iam.security.AuthenticatedUser;
 import br.gov.pr.idr.application.livestock.pregnancy_diagnose.create.CreatePregnancyDiagnoseCommand;
 import br.gov.pr.idr.application.livestock.pregnancy_diagnose.create.CreatePregnancyDiagnoseOutput;
 import br.gov.pr.idr.application.livestock.pregnancy_diagnose.create.CreatePregnancyDiagnoseUseCase;
@@ -55,7 +57,8 @@ class PregnancyDiagnoseControllerTest {
     private MockMvc mockMvc;
 
     private static final UsernamePasswordAuthenticationToken AUTH =
-            new UsernamePasswordAuthenticationToken("tecnico@idr.com", null, List.of());
+            new UsernamePasswordAuthenticationToken(
+                    new AuthenticatedUser("tecnico@idr.com", PropertySearchScope::unrestricted), null, List.of());
 
     @BeforeEach
     void setUp() {
@@ -95,7 +98,7 @@ class PregnancyDiagnoseControllerTest {
         verify(createPregnancyDiagnoseUseCase).execute(captor.capture());
         assertEquals(propertyId, captor.getValue().propertyId());
         assertEquals(animalId, captor.getValue().animalId());
-        assertEquals("tecnico@idr.com", captor.getValue().username());
+        assertEquals(PropertySearchScope.unrestricted(), captor.getValue().scope());
         assertEquals(LocalDate.of(2024, 3, 10), captor.getValue().diagnoseDate());
         assertEquals(LocalDate.of(2024, 1, 10), captor.getValue().lastIa());
     }
@@ -123,7 +126,7 @@ class PregnancyDiagnoseControllerTest {
         assertEquals(propertyId, captor.getValue().propertyId());
         assertEquals(animalId, captor.getValue().animalId());
         assertEquals(id, captor.getValue().pregnancyDiagnoseId());
-        assertEquals("tecnico@idr.com", captor.getValue().username());
+        assertEquals(PropertySearchScope.unrestricted(), captor.getValue().scope());
     }
 
     @Test
@@ -142,7 +145,7 @@ class PregnancyDiagnoseControllerTest {
         assertEquals(propertyId, captor.getValue().propertyId());
         assertEquals(animalId, captor.getValue().animalId());
         assertEquals(id, captor.getValue().pregnancyDiagnoseId());
-        assertEquals("tecnico@idr.com", captor.getValue().username());
+        assertEquals(PropertySearchScope.unrestricted(), captor.getValue().scope());
     }
 
     @Test

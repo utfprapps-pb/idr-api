@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_childbirth;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal_childbirth.create.CreateAnimalChildbirthCommand;
 import br.gov.pr.idr.application.livestock.animal_childbirth.create.CreateAnimalChildbirthUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -61,14 +62,14 @@ class CreateAnimalChildbirthUseCaseTest {
     }
 
     private CreateAnimalChildbirthCommand command(final UUID calfId) {
-        return new CreateAnimalChildbirthCommand(propertyId, animalId, "tecnico@idr.com", LocalDate.of(2024, 3, 10),
+        return new CreateAnimalChildbirthCommand(propertyId, animalId, PropertySearchScope.unrestricted(), LocalDate.of(2024, 3, 10),
                 ChildbirthGender.FEMALE, new BigDecimal("35.5"), ChildbirthCondition.ALIVE, breedId, calfId);
     }
 
     @Test
     @DisplayName("cria parto sem bezerro vinculado (bezerro fora do rebanho)")
     void shouldCreateWithoutCalf() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(mother);
         when(breedGateway.existsById(BreedID.from(breedId))).thenReturn(true);
         when(gateway.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -84,7 +85,7 @@ class CreateAnimalChildbirthUseCaseTest {
     @DisplayName("cria parto vinculando bezerro da mesma propriedade")
     void shouldCreateWithCalfOfSameProperty() {
         final var calfId = UUID.randomUUID();
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(mother);
         when(breedGateway.existsById(BreedID.from(breedId))).thenReturn(true);
         when(animalGateway.existsByIdAndPropertyId(AnimalID.from(calfId), PropertyID.from(propertyId)))
                 .thenReturn(true);
@@ -97,7 +98,7 @@ class CreateAnimalChildbirthUseCaseTest {
     @DisplayName("rejeita bezerro inexistente ou de outra propriedade (uma única consulta cobre os dois)")
     void shouldRejectCalfOutsideTheProperty() {
         final var calfId = UUID.randomUUID();
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(mother);
         when(breedGateway.existsById(BreedID.from(breedId))).thenReturn(true);
         when(animalGateway.existsByIdAndPropertyId(AnimalID.from(calfId), PropertyID.from(propertyId)))
                 .thenReturn(false);
@@ -109,7 +110,7 @@ class CreateAnimalChildbirthUseCaseTest {
     @Test
     @DisplayName("rejeita a própria mãe como bezerro")
     void shouldRejectMotherAsItsOwnCalf() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(mother);
         when(breedGateway.existsById(BreedID.from(breedId))).thenReturn(true);
         when(animalGateway.existsByIdAndPropertyId(AnimalID.from(animalId), PropertyID.from(propertyId)))
                 .thenReturn(true);
@@ -121,7 +122,7 @@ class CreateAnimalChildbirthUseCaseTest {
     @Test
     @DisplayName("rejeita raça inexistente")
     void shouldRejectUnknownBreed() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(mother);
         when(breedGateway.existsById(BreedID.from(breedId))).thenReturn(false);
 
         assertThrows(NotificationException.class, () -> useCase.execute(command(null)));

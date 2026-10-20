@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_death;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal_death.create.CreateAnimalDeathCommand;
 import br.gov.pr.idr.application.livestock.animal_death.create.CreateAnimalDeathUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -41,13 +42,13 @@ class CreateAnimalDeathUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
 
     private CreateAnimalDeathCommand validCreateCommand() {
-        return new CreateAnimalDeathCommand(propertyId, animalId, "tecnico@idr.com", "Picada de cobra",
+        return new CreateAnimalDeathCommand(propertyId, animalId, PropertySearchScope.unrestricted(), "Picada de cobra",
                 LocalDate.of(2024, 1, 1));
     }
 
     @Test
     void shouldCreateWhenAnimalIsAccessible() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.save(any())).thenAnswer(inv -> inv.getArgument(0));
         final var output = useCase.execute(validCreateCommand());
         assertEquals("Picada de cobra", output.reason());
@@ -63,7 +64,7 @@ class CreateAnimalDeathUseCaseTest {
     @Test
     @DisplayName("um animal só morre uma vez: segundo registro de morte é rejeitado")
     void shouldRejectSecondDeathForSameAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.existsByAnimalId(AnimalID.from(animalId))).thenReturn(true);
 
         assertThrows(NotificationException.class, () -> useCase.execute(validCreateCommand()));

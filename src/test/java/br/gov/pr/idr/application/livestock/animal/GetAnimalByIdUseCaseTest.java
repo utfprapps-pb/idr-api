@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.shared.LivestockNameLookup;
 import br.gov.pr.idr.application.livestock.animal.retrieve.get.GetAnimalByIdCommand;
 import br.gov.pr.idr.application.livestock.animal.retrieve.get.GetAnimalByIdUseCase;
@@ -39,10 +40,10 @@ class GetAnimalByIdUseCaseTest {
 
     @Test
     void shouldReturnAnimalWhenAuthorized() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(existingAnimal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(existingAnimal);
         when(nameLookup.breedName(breedId)).thenReturn("Holandesa");
 
-        final var output = useCase.execute(new GetAnimalByIdCommand(propertyId, animalId, "tecnico@idr.com"));
+        final var output = useCase.execute(new GetAnimalByIdCommand(propertyId, animalId, PropertySearchScope.unrestricted()));
 
         assertEquals("Mimosa", output.identifier());
         assertEquals("Holandesa", output.breedName());
@@ -50,10 +51,10 @@ class GetAnimalByIdUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenAnimalBelongsToAnotherProperty() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com"))
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted()))
                 .thenThrow(NotFoundException.with("Animal com o ID %s não encontrado".formatted(animalId)));
 
         assertThrows(NotFoundException.class,
-                () -> useCase.execute(new GetAnimalByIdCommand(propertyId, animalId, "tecnico@idr.com")));
+                () -> useCase.execute(new GetAnimalByIdCommand(propertyId, animalId, PropertySearchScope.unrestricted())));
     }
 }

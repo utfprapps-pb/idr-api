@@ -29,7 +29,7 @@ public class GetAnimalChildbirthByIdUseCase extends UseCase<GetAnimalChildbirthB
 
     @Override
     public GetAnimalChildbirthByIdOutput execute(final GetAnimalChildbirthByIdCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
         final var id = AnimalChildbirthID.from(command.animalChildbirthId());
         final var animalChildbirth = animalChildbirthGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))
                 .orElseThrow(() -> NotFoundException.with(AnimalChildbirth.class, id));

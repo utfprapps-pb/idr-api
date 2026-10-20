@@ -19,7 +19,7 @@ public class GetAnimalByIdUseCase extends UseCase<GetAnimalByIdCommand, GetAnima
     @Override
     public GetAnimalByIdOutput execute(final GetAnimalByIdCommand command) {
         final var animal = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
-                command.username());
+                command.scope());
         return GetAnimalByIdOutput.from(animal, nameLookup.breedName(animal.getBreedId()));
     }
 }

@@ -28,7 +28,7 @@ public class CreateAnimalChildbirthUseCase extends UseCase<CreateAnimalChildbirt
     @Override
     public CreateAnimalChildbirthOutput execute(final CreateAnimalChildbirthCommand command) {
         final var mother = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
-                command.username());
+                command.scope());
         referencePolicy.ensureBreedExists(command.breedId());
         referencePolicy.ensureAnimalInProperty(command.calfId(), mother.getPropertyId(), "bezerro");
 

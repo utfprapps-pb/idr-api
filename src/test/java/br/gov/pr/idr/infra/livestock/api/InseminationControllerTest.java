@@ -1,5 +1,7 @@
 package br.gov.pr.idr.infra.livestock.api;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
+import br.gov.pr.idr.infra.iam.security.AuthenticatedUser;
 import br.gov.pr.idr.application.livestock.insemination.create.CreateInseminationCommand;
 import br.gov.pr.idr.application.livestock.insemination.create.CreateInseminationOutput;
 import br.gov.pr.idr.application.livestock.insemination.create.CreateInseminationUseCase;
@@ -55,7 +57,8 @@ class InseminationControllerTest {
     private MockMvc mockMvc;
 
     private static final UsernamePasswordAuthenticationToken AUTH =
-            new UsernamePasswordAuthenticationToken("tecnico@idr.com", null, List.of());
+            new UsernamePasswordAuthenticationToken(
+                    new AuthenticatedUser("tecnico@idr.com", PropertySearchScope::unrestricted), null, List.of());
 
     @BeforeEach
     void setUp() {
@@ -95,7 +98,7 @@ class InseminationControllerTest {
         verify(createInseminationUseCase).execute(captor.capture());
         assertEquals(propertyId, captor.getValue().propertyId());
         assertEquals(animalId, captor.getValue().animalId());
-        assertEquals("tecnico@idr.com", captor.getValue().username());
+        assertEquals(PropertySearchScope.unrestricted(), captor.getValue().scope());
         assertEquals(LocalDate.of(2024, 3, 10), captor.getValue().iaDate());
         assertEquals("Touro Teste", captor.getValue().bull());
     }
@@ -122,7 +125,7 @@ class InseminationControllerTest {
         assertEquals(propertyId, captor.getValue().propertyId());
         assertEquals(animalId, captor.getValue().animalId());
         assertEquals(id, captor.getValue().inseminationId());
-        assertEquals("tecnico@idr.com", captor.getValue().username());
+        assertEquals(PropertySearchScope.unrestricted(), captor.getValue().scope());
     }
 
     @Test
@@ -141,7 +144,7 @@ class InseminationControllerTest {
         assertEquals(propertyId, captor.getValue().propertyId());
         assertEquals(animalId, captor.getValue().animalId());
         assertEquals(id, captor.getValue().inseminationId());
-        assertEquals("tecnico@idr.com", captor.getValue().username());
+        assertEquals(PropertySearchScope.unrestricted(), captor.getValue().scope());
     }
 
     @Test

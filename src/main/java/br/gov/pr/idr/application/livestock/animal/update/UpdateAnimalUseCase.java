@@ -26,7 +26,7 @@ public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnim
     @Override
     public UpdateAnimalOutput execute(final UpdateAnimalCommand command) {
         final var existingAnimal = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
-                command.username());
+                command.scope());
         referencePolicy.ensureBreedExists(command.breedId());
         referencePolicy.ensureAnimalInProperty(command.animalMotherId(), PropertyID.from(command.propertyId()),
                 "mãe");

@@ -27,7 +27,7 @@ public class CreateMedicationUseCase extends UseCase<CreateMedicationCommand, Cr
     @Override
     public CreateMedicationOutput execute(final CreateMedicationCommand command) {
         final var animal = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
-                command.username());
+                command.scope());
 
         final var productId = ProductID.from(command.productId());
         final var medication = Medication.create(animal.getId(), productId, command.applicationDate(),

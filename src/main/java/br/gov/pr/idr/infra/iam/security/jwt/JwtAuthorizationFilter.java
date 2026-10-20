@@ -1,5 +1,6 @@
 package br.gov.pr.idr.infra.iam.security.jwt;
 
+import br.gov.pr.idr.infra.iam.security.AuthenticatedUser;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +42,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             final var userDetails = userDetailsService.loadUserByUsername(username);
             final var authToken = new UsernamePasswordAuthenticationToken(
-                    userDetails.getUsername(),
+                    AuthenticatedUser.from(userDetails),
                     null,
                     userDetails.getAuthorities()
             );

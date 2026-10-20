@@ -29,7 +29,7 @@ public class ListAnimalChildbirthUseCase extends UseCase<ListAnimalChildbirthCom
 
     @Override
     public Pagination<ListAnimalChildbirthOutput> execute(final ListAnimalChildbirthCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
         final var page = animalChildbirthGateway.search(AnimalID.from(command.animalId()), command.query());
 
         final var breedNames = nameLookup.breedNames(

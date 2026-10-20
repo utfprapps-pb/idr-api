@@ -24,7 +24,7 @@ public class CreateAnimalDeathUseCase extends UseCase<CreateAnimalDeathCommand,
     @Override
     public CreateAnimalDeathOutput execute(final CreateAnimalDeathCommand command) {
         final var animal = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
-                command.username());
+                command.scope());
 
         if (animalDeathGateway.existsByAnimalId(animal.getId())) {
             throw new NotificationException("O animal com o ID %s já possui morte registrada"

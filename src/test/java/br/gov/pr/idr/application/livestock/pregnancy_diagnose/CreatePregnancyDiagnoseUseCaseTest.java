@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.pregnancy_diagnose;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.pregnancy_diagnose.create.CreatePregnancyDiagnoseCommand;
 import br.gov.pr.idr.application.livestock.pregnancy_diagnose.create.CreatePregnancyDiagnoseUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -40,13 +41,13 @@ class CreatePregnancyDiagnoseUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
 
     private CreatePregnancyDiagnoseCommand validCreateCommand() {
-        return new CreatePregnancyDiagnoseCommand(propertyId, animalId, "tecnico@idr.com", LocalDate.now(),
+        return new CreatePregnancyDiagnoseCommand(propertyId, animalId, PropertySearchScope.unrestricted(), LocalDate.now(),
                 LocalDate.of(2023, 11, 1));
     }
 
     @Test
     void shouldCreateWhenAnimalIsAccessible() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.save(any())).thenAnswer(inv -> inv.getArgument(0));
         final var output = useCase.execute(validCreateCommand());
         assertEquals(LocalDate.of(2023, 11, 1), output.lastIa());

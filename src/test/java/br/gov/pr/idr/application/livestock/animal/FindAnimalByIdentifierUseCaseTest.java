@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.shared.LivestockNameLookup;
 import br.gov.pr.idr.application.livestock.animal.retrieve.find.FindAnimalByIdentifierCommand;
 import br.gov.pr.idr.application.livestock.animal.retrieve.find.FindAnimalByIdentifierUseCase;
@@ -48,7 +49,7 @@ class FindAnimalByIdentifierUseCaseTest {
                 .thenReturn(Optional.empty());
 
         final var output = useCase.execute(
-                new FindAnimalByIdentifierCommand(propertyId, "Inexistente", "tecnico@idr.com"));
+                new FindAnimalByIdentifierCommand(propertyId, "Inexistente", PropertySearchScope.unrestricted()));
 
         assertTrue(output.isEmpty());
     }
@@ -63,7 +64,7 @@ class FindAnimalByIdentifierUseCaseTest {
         when(nameLookup.breedName(breedId)).thenReturn("Jersey");
 
         final var output = useCase.execute(
-                new FindAnimalByIdentifierCommand(propertyId, "Mimosa", "tecnico@idr.com"));
+                new FindAnimalByIdentifierCommand(propertyId, "Mimosa", PropertySearchScope.unrestricted()));
 
         assertTrue(output.isPresent());
         assertEquals("Mimosa", output.get().identifier());
@@ -72,9 +73,9 @@ class FindAnimalByIdentifierUseCaseTest {
 
     @Test
     void shouldThrowForbiddenWhenAccessGuardDenies() {
-        doThrow(ForbiddenException.with("x")).when(accessPolicy).ensureAccessToProperty(propertyId, "tecnico@idr.com");
+        doThrow(ForbiddenException.with("x")).when(accessPolicy).ensureAccessToProperty(propertyId, PropertySearchScope.unrestricted());
 
         assertThrows(ForbiddenException.class, () -> useCase.execute(
-                new FindAnimalByIdentifierCommand(propertyId, "Mimosa", "tecnico@idr.com")));
+                new FindAnimalByIdentifierCommand(propertyId, "Mimosa", PropertySearchScope.unrestricted())));
     }
 }

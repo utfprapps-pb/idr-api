@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.inventory_resource.medication;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.inventory_resource.medication.retrieve.get.GetMedicationByIdCommand;
 import br.gov.pr.idr.application.inventory_resource.medication.retrieve.get.GetMedicationByIdUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -45,22 +46,22 @@ class GetMedicationByIdUseCaseTest {
 
     @Test
     void shouldReturnMedicationWhenItBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(MedicationID.from(medicationId), AnimalID.from(animalId))).thenReturn(Optional.of(existingMedication));
 
         final var output = useCase.execute(new GetMedicationByIdCommand(propertyId, animalId, medicationId,
-                "tecnico@idr.com"));
+                PropertySearchScope.unrestricted()));
 
         assertEquals("10ml", output.appliedDose());
     }
 
     @Test
     void shouldThrowNotFoundWhenMedicationBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(MedicationID.from(medicationId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
         assertThrows(NotFoundException.class,
                 () -> useCase.execute(new GetMedicationByIdCommand(propertyId, animalId, medicationId,
-                        "tecnico@idr.com")));
+                        PropertySearchScope.unrestricted())));
     }
 }

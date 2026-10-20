@@ -22,7 +22,7 @@ public class CreateAnimalPurchasesUseCase extends UseCase<CreateAnimalPurchasesC
     @Override
     public CreateAnimalPurchasesOutput execute(final CreateAnimalPurchasesCommand command) {
         final var animal = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
-                command.username());
+                command.scope());
 
         final var animalPurchases = AnimalPurchases.create(animal.getId(), command.datePurchase(),
                 command.birthDate(), command.value(), command.weight());

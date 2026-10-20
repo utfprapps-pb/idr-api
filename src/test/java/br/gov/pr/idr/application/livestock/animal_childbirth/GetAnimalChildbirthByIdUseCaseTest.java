@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_childbirth;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.shared.LivestockNameLookup;
 import br.gov.pr.idr.application.livestock.animal_childbirth.retrieve.get.GetAnimalChildbirthByIdCommand;
 import br.gov.pr.idr.application.livestock.animal_childbirth.retrieve.get.GetAnimalChildbirthByIdUseCase;
@@ -57,14 +58,14 @@ class GetAnimalChildbirthByIdUseCaseTest {
     @InjectMocks GetAnimalChildbirthByIdUseCase useCase;
 
     private GetAnimalChildbirthByIdCommand command() {
-        return new GetAnimalChildbirthByIdCommand(propertyId, animalId, childbirthId, "tecnico@idr.com");
+        return new GetAnimalChildbirthByIdCommand(propertyId, animalId, childbirthId, PropertySearchScope.unrestricted());
     }
 
     @Test
     @DisplayName("devolve nome da raça e identificador do bezerro para exibição")
     void shouldReturnBreedNameAndCalfIdentifier() {
         final var calfId = UUID.randomUUID();
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(mother);
         when(gateway.findByIdAndAnimalId(AnimalChildbirthID.from(childbirthId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(childbirthOf(animalId, calfId)));
         when(nameLookup.breedName(BreedID.from(breedId))).thenReturn("Jersey");
@@ -79,7 +80,7 @@ class GetAnimalChildbirthByIdUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenChildbirthBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(mother);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(mother);
         when(gateway.findByIdAndAnimalId(AnimalChildbirthID.from(childbirthId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
 

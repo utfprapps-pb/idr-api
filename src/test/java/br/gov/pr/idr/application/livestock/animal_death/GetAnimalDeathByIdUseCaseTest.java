@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_death;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal_death.retrieve.get.GetAnimalDeathByIdCommand;
 import br.gov.pr.idr.application.livestock.animal_death.retrieve.get.GetAnimalDeathByIdUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -45,23 +46,23 @@ class GetAnimalDeathByIdUseCaseTest {
 
     @Test
     void shouldReturnAnimalDeathWhenItBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalDeathID.from(animalDeathId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingAnimalDeath));
 
         final var output = useCase.execute(new GetAnimalDeathByIdCommand(propertyId, animalId,
-                animalDeathId, "tecnico@idr.com"));
+                animalDeathId, PropertySearchScope.unrestricted()));
 
         assertEquals("Picada de cobra", output.reason());
     }
 
     @Test
     void shouldThrowNotFoundWhenAnimalDeathBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalDeathID.from(animalDeathId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
         assertThrows(NotFoundException.class,
                 () -> useCase.execute(new GetAnimalDeathByIdCommand(propertyId, animalId,
-                        animalDeathId, "tecnico@idr.com")));
+                        animalDeathId, PropertySearchScope.unrestricted())));
     }
 }

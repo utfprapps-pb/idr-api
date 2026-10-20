@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.inventory_resource.medication;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.inventory_resource.medication.create.CreateMedicationCommand;
 import br.gov.pr.idr.application.inventory_resource.medication.create.CreateMedicationUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -44,17 +45,17 @@ class CreateMedicationUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
 
     private CreateMedicationCommand validCreateCommand() {
-        return new CreateMedicationCommand(propertyId, animalId, "tecnico@idr.com", productId, LocalDate.now(),
+        return new CreateMedicationCommand(propertyId, animalId, PropertySearchScope.unrestricted(), productId, LocalDate.now(),
                 "10ml", "IM");
     }
 
     @Test
     void shouldCreateWhenAnimalIsAccessibleAndProductExists() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(productGateway.existsById(any())).thenReturn(true);
         when(gateway.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
-        final var output = useCase.execute(new CreateMedicationCommand(propertyId, animalId, "tecnico@idr.com",
+        final var output = useCase.execute(new CreateMedicationCommand(propertyId, animalId, PropertySearchScope.unrestricted(),
                 productId, LocalDate.now(), "10ml", "IM"));
 
         assertEquals("10ml", output.appliedDose());

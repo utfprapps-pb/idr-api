@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_diseases;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal_diseases.update.UpdateAnimalDiseasesCommand;
 import br.gov.pr.idr.application.livestock.animal_diseases.update.UpdateAnimalDiseasesUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -46,13 +47,13 @@ class UpdateAnimalDiseasesUseCaseTest {
             AnimalDiseasesID.from(animalDiseasesId), AnimalID.from(animalId), "Febre aftosa", LocalDate.now());
 
     private UpdateAnimalDiseasesCommand validCommand() {
-        return new UpdateAnimalDiseasesCommand(propertyId, animalId, animalDiseasesId, "tecnico@idr.com",
+        return new UpdateAnimalDiseasesCommand(propertyId, animalId, animalDiseasesId, PropertySearchScope.unrestricted(),
                 "Brucelose", LocalDate.of(2024, 4, 1));
     }
 
     @Test
     void shouldUpdateWhenAnimalDiseasesBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalDiseasesID.from(animalDiseasesId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingAnimalDiseases));
         when(gateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
@@ -71,7 +72,7 @@ class UpdateAnimalDiseasesUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenAnimalDiseasesBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalDiseasesID.from(animalDiseasesId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
 

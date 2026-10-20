@@ -22,7 +22,7 @@ public class ListAnimalDiseasesUseCase extends UseCase<ListAnimalDiseasesCommand
 
     @Override
     public Pagination<ListAnimalDiseasesOutput> execute(final ListAnimalDiseasesCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         return animalDiseasesGateway.search(AnimalID.from(command.animalId()), command.query())
                 .map(ListAnimalDiseasesOutput::from);

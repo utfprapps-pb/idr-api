@@ -22,7 +22,7 @@ public class ListAnimalDeathUseCase extends UseCase<ListAnimalDeathCommand,
 
     @Override
     public Pagination<ListAnimalDeathOutput> execute(final ListAnimalDeathCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         return animalDeathGateway.search(AnimalID.from(command.animalId()), command.query())
                 .map(ListAnimalDeathOutput::from);

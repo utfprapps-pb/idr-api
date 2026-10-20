@@ -24,7 +24,7 @@ public class UpdatePregnancyDiagnoseUseCase extends UseCase<UpdatePregnancyDiagn
 
     @Override
     public UpdatePregnancyDiagnoseOutput execute(final UpdatePregnancyDiagnoseCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         final var id = PregnancyDiagnoseID.from(command.pregnancyDiagnoseId());
         final var pregnancyDiagnose = pregnancyDiagnoseGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))

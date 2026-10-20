@@ -78,7 +78,7 @@ class JwtAuthorizationFilterTest {
 
         final var auth = SecurityContextHolder.getContext().getAuthentication();
         assertNotNull(auth);
-        assertEquals("joao.silva", auth.getPrincipal());
+        assertEquals("joao.silva", auth.getPrincipal().toString());
     }
 
     @Test

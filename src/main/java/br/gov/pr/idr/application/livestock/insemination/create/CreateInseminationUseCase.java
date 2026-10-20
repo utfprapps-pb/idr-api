@@ -21,7 +21,7 @@ public class CreateInseminationUseCase extends UseCase<CreateInseminationCommand
     @Override
     public CreateInseminationOutput execute(final CreateInseminationCommand command) {
         final var animal = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
-                command.username());
+                command.scope());
 
         final var insemination = Insemination.create(animal.getId(), command.iaDate(), command.bull());
 

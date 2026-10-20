@@ -23,7 +23,7 @@ public class GetInseminationByIdUseCase extends UseCase<GetInseminationByIdComma
 
     @Override
     public GetInseminationByIdOutput execute(final GetInseminationByIdCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         final var id = InseminationID.from(command.inseminationId());
         final var insemination = inseminationGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))

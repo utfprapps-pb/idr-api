@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal.update.UpdateAnimalCommand;
 import br.gov.pr.idr.application.livestock.animal.update.UpdateAnimalUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -51,17 +52,17 @@ class UpdateAnimalUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
 
     private UpdateAnimalCommand validCommand() {
-        return new UpdateAnimalCommand(propertyId, animalId, "tecnico@idr.com", null, breedId, "T", "I", "F",
+        return new UpdateAnimalCommand(propertyId, animalId, PropertySearchScope.unrestricted(), null, breedId, "T", "I", "F",
                 "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     }
 
     @Test
     void shouldUpdateAnimalKeepingOriginalPropertyId() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(existingAnimal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(existingAnimal);
         when(breedGateway.existsById(any())).thenReturn(true);
         when(animalGateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
 
-        final var output = useCase.execute(new UpdateAnimalCommand(propertyId, animalId, "tecnico@idr.com",
+        final var output = useCase.execute(new UpdateAnimalCommand(propertyId, animalId, PropertySearchScope.unrestricted(),
                 null, breedId, "T2", "I2", "M", "Morto", LocalDate.now(), 2f, 2f, 2f, 2f));
 
         assertEquals(propertyId, output.propertyId());
@@ -75,11 +76,11 @@ class UpdateAnimalUseCaseTest {
         final var bornDate = LocalDate.of(2019, 6, 23);
         final var animalWithData = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), motherId,
                 BreedID.unique(), "type 1", "Mimosa", "F", "Vivo", bornDate, 12f, 45f, 62f, 32f);
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animalWithData);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animalWithData);
         when(breedGateway.existsById(any())).thenReturn(true);
         when(animalGateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
 
-        final var output = useCase.execute(new UpdateAnimalCommand(propertyId, animalId, "tecnico@idr.com",
+        final var output = useCase.execute(new UpdateAnimalCommand(propertyId, animalId, PropertySearchScope.unrestricted(),
                 null, breedId, null, "Mimosa Editada", null, null, null, null, null, null, null));
 
         assertEquals("Mimosa Editada", output.identifier());
@@ -115,7 +116,7 @@ class UpdateAnimalUseCaseTest {
         when(accessPolicy.ensureAccessToAnimal(any(), any(), any())).thenReturn(existingAnimal);
         when(breedGateway.existsById(any())).thenReturn(true);
         when(animalGateway.existsByIdAndPropertyId(any(), any())).thenReturn(false);
-        final var command = new UpdateAnimalCommand(propertyId, animalId, "tecnico@idr.com", UUID.randomUUID(),
+        final var command = new UpdateAnimalCommand(propertyId, animalId, PropertySearchScope.unrestricted(), UUID.randomUUID(),
                 breedId, "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
         assertThrows(NotificationException.class, () -> useCase.execute(command));
     }
@@ -129,7 +130,7 @@ class UpdateAnimalUseCaseTest {
         when(animalGateway.existsByIdAndPropertyId(AnimalID.from(motherId), PropertyID.from(propertyId)))
                 .thenReturn(false);
 
-        final var command = new UpdateAnimalCommand(propertyId, animalId, "tecnico@idr.com", motherId,
+        final var command = new UpdateAnimalCommand(propertyId, animalId, PropertySearchScope.unrestricted(), motherId,
                 breedId, "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
         assertThrows(NotificationException.class, () -> useCase.execute(command));
     }
@@ -139,7 +140,7 @@ class UpdateAnimalUseCaseTest {
         when(accessPolicy.ensureAccessToAnimal(any(), any(), any())).thenReturn(existingAnimal);
         when(breedGateway.existsById(any())).thenReturn(true);
 
-        final var command = new UpdateAnimalCommand(propertyId, animalId, "tecnico@idr.com", animalId,
+        final var command = new UpdateAnimalCommand(propertyId, animalId, PropertySearchScope.unrestricted(), animalId,
                 breedId, "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
         when(animalGateway.existsByIdAndPropertyId(AnimalID.from(animalId), PropertyID.from(propertyId)))
                 .thenReturn(true);

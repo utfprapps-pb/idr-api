@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.inventory_resource.medication;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.inventory_resource.medication.update.UpdateMedicationCommand;
 import br.gov.pr.idr.application.inventory_resource.medication.update.UpdateMedicationUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -51,13 +52,13 @@ class UpdateMedicationUseCaseTest {
             AnimalID.from(animalId), ProductID.unique(), LocalDate.now(), "10ml", "IM");
 
     private UpdateMedicationCommand validCommand() {
-        return new UpdateMedicationCommand(propertyId, animalId, medicationId, "tecnico@idr.com", productId,
+        return new UpdateMedicationCommand(propertyId, animalId, medicationId, PropertySearchScope.unrestricted(), productId,
                 LocalDate.now(), "20ml", "SC");
     }
 
     @Test
     void shouldUpdateWhenMedicationBelongsToAnimalAndProductExists() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(MedicationID.from(medicationId), AnimalID.from(animalId))).thenReturn(Optional.of(existingMedication));
         when(productGateway.existsById(any())).thenReturn(true);
         when(gateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
@@ -69,7 +70,7 @@ class UpdateMedicationUseCaseTest {
 
     @Test
     void shouldThrowWhenProductDoesNotExist() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(MedicationID.from(medicationId), AnimalID.from(animalId))).thenReturn(Optional.of(existingMedication));
         when(productGateway.existsById(any())).thenReturn(false);
 
@@ -86,7 +87,7 @@ class UpdateMedicationUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenMedicationBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(MedicationID.from(medicationId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
 

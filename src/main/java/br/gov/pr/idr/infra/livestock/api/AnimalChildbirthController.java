@@ -44,8 +44,8 @@ public class AnimalChildbirthController {
                                                                  final Authentication authentication,
                                                                  @RequestBody @Valid
                                                                  CreateAnimalChildbirthRequest request) {
-        final var username = AuthenticationSupport.username(authentication);
-        final var command = new CreateAnimalChildbirthCommand(propertyId, animalId, username,
+        final var scope = AuthenticationSupport.scope(authentication);
+        final var command = new CreateAnimalChildbirthCommand(propertyId, animalId, scope,
                 request.childbirthDate(), request.gender(), request.weight(), request.condition(),
                 request.breedId(), request.calfId());
         final var output = createAnimalChildbirthUseCase.execute(command);
@@ -59,8 +59,8 @@ public class AnimalChildbirthController {
                                                                  final Authentication authentication,
                                                                  @RequestBody @Valid
                                                                  UpdateAnimalChildbirthRequest request) {
-        final var username = AuthenticationSupport.username(authentication);
-        final var command = new UpdateAnimalChildbirthCommand(propertyId, animalId, id, username,
+        final var scope = AuthenticationSupport.scope(authentication);
+        final var command = new UpdateAnimalChildbirthCommand(propertyId, animalId, id, scope,
                 request.childbirthDate(), request.gender(), request.weight(), request.condition(),
                 request.breedId(), request.calfId());
         final var output = updateAnimalChildbirthUseCase.execute(command);
@@ -72,9 +72,9 @@ public class AnimalChildbirthController {
                                        @PathVariable UUID animalId,
                                        @PathVariable UUID id,
                                        final Authentication authentication) {
-        final var username = AuthenticationSupport.username(authentication);
+        final var scope = AuthenticationSupport.scope(authentication);
         deleteAnimalChildbirthUseCase.execute(new DeleteAnimalChildbirthCommand(propertyId, animalId, id,
-                username));
+                scope));
         return ResponseEntity.noContent().build();
     }
 
@@ -83,9 +83,9 @@ public class AnimalChildbirthController {
                                                                  @PathVariable UUID animalId,
                                                                  @PathVariable UUID id,
                                                                  final Authentication authentication) {
-        final var username = AuthenticationSupport.username(authentication);
+        final var scope = AuthenticationSupport.scope(authentication);
         final var output = getAnimalChildbirthByIdUseCase.execute(
-                new GetAnimalChildbirthByIdCommand(propertyId, animalId, id, username));
+                new GetAnimalChildbirthByIdCommand(propertyId, animalId, id, scope));
         return ResponseEntity.ok(output);
     }
 
@@ -99,10 +99,10 @@ public class AnimalChildbirthController {
             @RequestParam(required = false) final String terms,
             @RequestParam(defaultValue = "childbirthDate") final String sort,
             @RequestParam(defaultValue = "asc") final String direction) {
-        final var username = AuthenticationSupport.username(authentication);
+        final var scope = AuthenticationSupport.scope(authentication);
         final var query = SearchQuery.from(page, perPage, terms, sort, direction);
         final var output = listAnimalChildbirthUseCase.execute(
-                new ListAnimalChildbirthCommand(propertyId, animalId, username, query));
+                new ListAnimalChildbirthCommand(propertyId, animalId, scope, query));
         return ResponseEntity.ok(output);
     }
 }

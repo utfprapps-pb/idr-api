@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.mastitis;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.mastitis.update.UpdateMastitisCommand;
 import br.gov.pr.idr.application.livestock.mastitis.update.UpdateMastitisUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -46,13 +47,13 @@ class UpdateMastitisUseCaseTest {
             LocalDate.now(), "Clinica", "+", "Positivo", "Negativo", "Positivo", "Negativo");
 
     private UpdateMastitisCommand validCommand() {
-        return new UpdateMastitisCommand(propertyId, animalId, mastitisId, "tecnico@idr.com", LocalDate.now(),
+        return new UpdateMastitisCommand(propertyId, animalId, mastitisId, PropertySearchScope.unrestricted(), LocalDate.now(),
                 "Subclinica", "-", "Negativo", "Positivo", "Negativo", "Positivo");
     }
 
     @Test
     void shouldUpdateWhenMastitisBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(MastitisID.from(mastitisId), AnimalID.from(animalId))).thenReturn(Optional.of(existingMastitis));
         when(gateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -70,7 +71,7 @@ class UpdateMastitisUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenMastitisBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(MastitisID.from(mastitisId), AnimalID.from(animalId))).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> useCase.execute(validCommand()));

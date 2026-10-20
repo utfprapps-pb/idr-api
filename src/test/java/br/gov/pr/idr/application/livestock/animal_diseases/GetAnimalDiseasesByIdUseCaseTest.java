@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_diseases;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal_diseases.retrieve.get.GetAnimalDiseasesByIdCommand;
 import br.gov.pr.idr.application.livestock.animal_diseases.retrieve.get.GetAnimalDiseasesByIdUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -45,23 +46,23 @@ class GetAnimalDiseasesByIdUseCaseTest {
 
     @Test
     void shouldReturnAnimalDiseasesWhenItBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalDiseasesID.from(animalDiseasesId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingAnimalDiseases));
 
         final var output = useCase.execute(new GetAnimalDiseasesByIdCommand(propertyId, animalId,
-                animalDiseasesId, "tecnico@idr.com"));
+                animalDiseasesId, PropertySearchScope.unrestricted()));
 
         assertEquals("Febre aftosa", output.diagnosis());
     }
 
     @Test
     void shouldThrowNotFoundWhenAnimalDiseasesBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalDiseasesID.from(animalDiseasesId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
         assertThrows(NotFoundException.class,
                 () -> useCase.execute(new GetAnimalDiseasesByIdCommand(propertyId, animalId,
-                        animalDiseasesId, "tecnico@idr.com")));
+                        animalDiseasesId, PropertySearchScope.unrestricted())));
     }
 }

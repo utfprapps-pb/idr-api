@@ -24,7 +24,7 @@ public class GetAnimalPurchasesByIdUseCase extends UseCase<GetAnimalPurchasesByI
 
     @Override
     public GetAnimalPurchasesByIdOutput execute(final GetAnimalPurchasesByIdCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         final var id = AnimalPurchasesID.from(command.animalPurchasesId());
         final var animalPurchases = animalPurchasesGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))

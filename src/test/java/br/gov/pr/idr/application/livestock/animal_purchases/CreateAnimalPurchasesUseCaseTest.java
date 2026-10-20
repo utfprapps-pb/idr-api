@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_purchases;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal_purchases.create.CreateAnimalPurchasesCommand;
 import br.gov.pr.idr.application.livestock.animal_purchases.create.CreateAnimalPurchasesUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -41,13 +42,13 @@ class CreateAnimalPurchasesUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
 
     private CreateAnimalPurchasesCommand validCreateCommand() {
-        return new CreateAnimalPurchasesCommand(propertyId, animalId, "tecnico@idr.com",
+        return new CreateAnimalPurchasesCommand(propertyId, animalId, PropertySearchScope.unrestricted(),
                 LocalDate.of(2024, 1, 1), LocalDate.of(2023, 1, 1), BigDecimal.valueOf(1500), BigDecimal.valueOf(450));
     }
 
     @Test
     void shouldCreateWhenAnimalIsAccessible() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.save(any())).thenAnswer(inv -> inv.getArgument(0));
         final var output = useCase.execute(validCreateCommand());
         assertEquals(BigDecimal.valueOf(1500), output.value());

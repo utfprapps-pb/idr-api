@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.shared.LivestockNameLookup;
 import br.gov.pr.idr.application.livestock.animal.retrieve.list.ListAnimalCommand;
 import br.gov.pr.idr.application.livestock.animal.retrieve.list.ListAnimalUseCase;
@@ -61,7 +62,7 @@ class ListAnimalUseCaseTest {
         when(animalGateway.search(eq(PropertyID.from(propertyId)), any())).thenReturn(somePagination());
         when(nameLookup.breedNames(Set.of(breedId))).thenReturn(Map.of(breedId, "Gir"));
 
-        final var output = useCase.execute(new ListAnimalCommand(propertyId, "tecnico@idr.com",
+        final var output = useCase.execute(new ListAnimalCommand(propertyId, PropertySearchScope.unrestricted(),
                 SearchQuery.from(0, 10, "", "identifier", "asc")));
 
         assertEquals(1, output.total());
@@ -73,7 +74,7 @@ class ListAnimalUseCaseTest {
         doThrow(ForbiddenException.with("x")).when(accessPolicy).ensureAccessToProperty(any(), any());
 
         assertThrows(ForbiddenException.class, () -> useCase.execute(new ListAnimalCommand(propertyId,
-                "tecnico@idr.com", SearchQuery.from(0, 10, "", "identifier", "asc"))));
+                PropertySearchScope.unrestricted(), SearchQuery.from(0, 10, "", "identifier", "asc"))));
         verify(animalGateway, never()).search(any(), any());
     }
 }

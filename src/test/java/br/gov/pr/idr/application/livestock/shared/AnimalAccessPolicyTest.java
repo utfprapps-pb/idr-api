@@ -1,11 +1,6 @@
 package br.gov.pr.idr.application.livestock.shared;
 
-import br.gov.pr.idr.domain.iam.permission.Permission;
-import br.gov.pr.idr.domain.iam.user.User;
-import br.gov.pr.idr.domain.iam.user.UserGateway;
-import br.gov.pr.idr.domain.iam.user.UserRole;
-import br.gov.pr.idr.domain.iam.user.vo.CPF;
-import br.gov.pr.idr.domain.iam.user.vo.Password;
+import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
@@ -23,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,9 +35,6 @@ class AnimalAccessPolicyTest {
     private PropertyGateway propertyGateway;
 
     @Mock
-    private UserGateway userGateway;
-
-    @Mock
     private AnimalGateway animalGateway;
 
     private AnimalAccessPolicy guard;
@@ -52,19 +43,13 @@ class AnimalAccessPolicyTest {
     private final PropertyID propertyIdB = PropertyID.unique();
     private final AnimalID animalId = AnimalID.unique();
 
-    private final User adminUser = userWithRole(UserRole.ADMIN);
+    private final PropertySearchScope unrestricted = PropertySearchScope.unrestricted();
     private final Animal animalOfPropertyA = animalOf(propertyIdA);
     private final Animal animalOfPropertyB = animalOf(propertyIdB);
 
     @BeforeEach
     void setUp() {
-        guard = new AnimalAccessPolicy(propertyGateway, userGateway, animalGateway);
-    }
-
-    private static User userWithRole(final UserRole role) {
-        return User.create("Usuário", "user-" + UUID.randomUUID(), Password.from("Senha@123", "Senha@123"),
-                CPF.from("529.982.247-25"), null, null, null, null, null, null, null,
-                Set.of(Permission.create(role, false, Set.of(), Set.of())));
+        guard = new AnimalAccessPolicy(propertyGateway, animalGateway);
     }
 
     private Animal animalOf(final PropertyID ownerPropertyId) {
@@ -75,48 +60,43 @@ class AnimalAccessPolicyTest {
     @Test
     @DisplayName("ensureAccessToProperty lança Forbidden quando a propriedade está fora do escopo")
     void ensureAccessToPropertyThrowsForbiddenWhenScopeDenies() {
-        final var technician = userWithRole(UserRole.TECNICO);
-        when(userGateway.findByUsername("tecnico@idr.com")).thenReturn(Optional.of(technician));
+        final var technicianScope = PropertySearchScope.byTechnician(UserID.unique());
         when(propertyGateway.existsById(propertyIdA)).thenReturn(true);
-        when(propertyGateway.isAccessibleBy(propertyIdA, PropertySearchScope.byTechnician(technician.getId())))
-                .thenReturn(false);
+        when(propertyGateway.isAccessibleBy(propertyIdA, technicianScope)).thenReturn(false);
 
         assertThrows(ForbiddenException.class,
-                () -> guard.ensureAccessToProperty(propertyIdA.id(), "tecnico@idr.com"));
+                () -> guard.ensureAccessToProperty(propertyIdA.id(), technicianScope));
     }
 
     @Test
     @DisplayName("ensureAccessToProperty lança NotFound quando a propriedade não existe, sem checar o escopo")
     void ensureAccessToPropertyThrowsNotFoundWhenPropertyDoesNotExist() {
-        when(userGateway.findByUsername(any())).thenReturn(Optional.of(adminUser));
         when(propertyGateway.existsById(any())).thenReturn(false);
 
         assertThrows(NotFoundException.class,
-                () -> guard.ensureAccessToProperty(UUID.randomUUID(), "admin@idr.com"));
+                () -> guard.ensureAccessToProperty(UUID.randomUUID(), unrestricted));
         verify(propertyGateway, never()).isAccessibleBy(any(), any());
     }
 
     @Test
     @DisplayName("ensureAccessToAnimal lança NotFound quando o animal pertence a outra propriedade")
     void ensureAccessToAnimalThrowsNotFoundWhenAnimalBelongsToAnotherProperty() {
-        when(userGateway.findByUsername(any())).thenReturn(Optional.of(adminUser));
         when(propertyGateway.existsById(propertyIdA)).thenReturn(true);
-        when(propertyGateway.isAccessibleBy(propertyIdA, PropertySearchScope.unrestricted())).thenReturn(true);
+        when(propertyGateway.isAccessibleBy(propertyIdA, unrestricted)).thenReturn(true);
         when(animalGateway.findById(animalId)).thenReturn(Optional.of(animalOfPropertyB));
 
         assertThrows(NotFoundException.class,
-                () -> guard.ensureAccessToAnimal(propertyIdA.id(), animalId.id(), "admin@idr.com"));
+                () -> guard.ensureAccessToAnimal(propertyIdA.id(), animalId.id(), unrestricted));
     }
 
     @Test
     @DisplayName("ensureAccessToAnimal retorna o animal quando ele pertence à propriedade autorizada")
     void ensureAccessToAnimalReturnsAnimalWhenItBelongsToTheAuthorizedProperty() {
-        when(userGateway.findByUsername(any())).thenReturn(Optional.of(adminUser));
         when(propertyGateway.existsById(propertyIdA)).thenReturn(true);
-        when(propertyGateway.isAccessibleBy(propertyIdA, PropertySearchScope.unrestricted())).thenReturn(true);
+        when(propertyGateway.isAccessibleBy(propertyIdA, unrestricted)).thenReturn(true);
         when(animalGateway.findById(animalId)).thenReturn(Optional.of(animalOfPropertyA));
 
-        final var result = guard.ensureAccessToAnimal(propertyIdA.id(), animalId.id(), "admin@idr.com");
+        final var result = guard.ensureAccessToAnimal(propertyIdA.id(), animalId.id(), unrestricted);
 
         assertEquals(animalId, result.getId());
     }

@@ -1,5 +1,7 @@
 package br.gov.pr.idr.infra.livestock.api;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
+import br.gov.pr.idr.infra.iam.security.AuthenticatedUser;
 import br.gov.pr.idr.application.livestock.animal_sales.create.CreateAnimalSalesCommand;
 import br.gov.pr.idr.application.livestock.animal_sales.create.CreateAnimalSalesOutput;
 import br.gov.pr.idr.application.livestock.animal_sales.create.CreateAnimalSalesUseCase;
@@ -58,7 +60,8 @@ class AnimalSalesControllerTest {
     private MockMvc mockMvc;
 
     private static final UsernamePasswordAuthenticationToken AUTH =
-            new UsernamePasswordAuthenticationToken("tecnico@idr.com", null, List.of());
+            new UsernamePasswordAuthenticationToken(
+                    new AuthenticatedUser("tecnico@idr.com", PropertySearchScope::unrestricted), null, List.of());
 
     @BeforeEach
     void setUp() {
@@ -100,7 +103,7 @@ class AnimalSalesControllerTest {
         verify(createAnimalSalesUseCase).execute(captor.capture());
         assertEquals(propertyId, captor.getValue().propertyId());
         assertEquals(animalId, captor.getValue().animalId());
-        assertEquals("tecnico@idr.com", captor.getValue().username());
+        assertEquals(PropertySearchScope.unrestricted(), captor.getValue().scope());
         assertEquals(LocalDate.of(2024, 3, 10), captor.getValue().dateSale());
         assertEquals(Reason.VOLUNTARIA, captor.getValue().reason());
         assertEquals(BigDecimal.valueOf(1500), captor.getValue().value());
@@ -132,7 +135,7 @@ class AnimalSalesControllerTest {
         assertEquals(propertyId, captor.getValue().propertyId());
         assertEquals(animalId, captor.getValue().animalId());
         assertEquals(id, captor.getValue().animalSalesId());
-        assertEquals("tecnico@idr.com", captor.getValue().username());
+        assertEquals(PropertySearchScope.unrestricted(), captor.getValue().scope());
     }
 
     @Test
@@ -151,7 +154,7 @@ class AnimalSalesControllerTest {
         assertEquals(propertyId, captor.getValue().propertyId());
         assertEquals(animalId, captor.getValue().animalId());
         assertEquals(id, captor.getValue().animalSalesId());
-        assertEquals("tecnico@idr.com", captor.getValue().username());
+        assertEquals(PropertySearchScope.unrestricted(), captor.getValue().scope());
     }
 
     @Test

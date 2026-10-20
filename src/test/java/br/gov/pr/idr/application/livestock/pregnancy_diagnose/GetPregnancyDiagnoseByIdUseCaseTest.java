@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.pregnancy_diagnose;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.pregnancy_diagnose.retrieve.get.GetPregnancyDiagnoseByIdCommand;
 import br.gov.pr.idr.application.livestock.pregnancy_diagnose.retrieve.get.GetPregnancyDiagnoseByIdUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -45,23 +46,23 @@ class GetPregnancyDiagnoseByIdUseCaseTest {
 
     @Test
     void shouldReturnPregnancyDiagnoseWhenItBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(PregnancyDiagnoseID.from(pregnancyDiagnoseId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingPregnancyDiagnose));
 
         final var output = useCase.execute(new GetPregnancyDiagnoseByIdCommand(propertyId, animalId,
-                pregnancyDiagnoseId, "tecnico@idr.com"));
+                pregnancyDiagnoseId, PropertySearchScope.unrestricted()));
 
         assertEquals(LocalDate.of(2023, 11, 1), output.lastIa());
     }
 
     @Test
     void shouldThrowNotFoundWhenPregnancyDiagnoseBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(PregnancyDiagnoseID.from(pregnancyDiagnoseId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
         assertThrows(NotFoundException.class,
                 () -> useCase.execute(new GetPregnancyDiagnoseByIdCommand(propertyId, animalId,
-                        pregnancyDiagnoseId, "tecnico@idr.com")));
+                        pregnancyDiagnoseId, PropertySearchScope.unrestricted())));
     }
 }

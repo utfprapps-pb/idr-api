@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.mastitis;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.mastitis.create.CreateMastitisCommand;
 import br.gov.pr.idr.application.livestock.mastitis.create.CreateMastitisUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -40,13 +41,13 @@ class CreateMastitisUseCaseTest {
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
 
     private CreateMastitisCommand validCreateCommand() {
-        return new CreateMastitisCommand(propertyId, animalId, "tecnico@idr.com", LocalDate.now(), "Clinica", "+",
+        return new CreateMastitisCommand(propertyId, animalId, PropertySearchScope.unrestricted(), LocalDate.now(), "Clinica", "+",
                 "Positivo", "Negativo", "Positivo", "Negativo");
     }
 
     @Test
     void shouldCreateWhenAnimalIsAccessible() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.save(any())).thenAnswer(inv -> inv.getArgument(0));
         final var output = useCase.execute(validCreateCommand());
         assertEquals("Clinica", output.mastitisType());

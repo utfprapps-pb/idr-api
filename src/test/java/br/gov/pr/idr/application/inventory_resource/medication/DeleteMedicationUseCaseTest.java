@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.inventory_resource.medication;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.inventory_resource.medication.delete.DeleteMedicationCommand;
 import br.gov.pr.idr.application.inventory_resource.medication.delete.DeleteMedicationUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -46,12 +47,12 @@ class DeleteMedicationUseCaseTest {
             AnimalID.from(animalId), ProductID.unique(), LocalDate.now(), "10ml", "IM");
 
     private DeleteMedicationCommand validCommand() {
-        return new DeleteMedicationCommand(propertyId, animalId, medicationId, "tecnico@idr.com");
+        return new DeleteMedicationCommand(propertyId, animalId, medicationId, PropertySearchScope.unrestricted());
     }
 
     @Test
     void shouldDeleteWhenMedicationBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(MedicationID.from(medicationId), AnimalID.from(animalId))).thenReturn(Optional.of(existingMedication));
 
         useCase.execute(validCommand());
@@ -68,7 +69,7 @@ class DeleteMedicationUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenMedicationBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(MedicationID.from(medicationId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
 

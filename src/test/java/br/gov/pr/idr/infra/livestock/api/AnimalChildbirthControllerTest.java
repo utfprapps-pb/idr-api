@@ -1,5 +1,7 @@
 package br.gov.pr.idr.infra.livestock.api;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
+import br.gov.pr.idr.infra.iam.security.AuthenticatedUser;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.vo.ChildbirthCondition;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.vo.ChildbirthGender;
 import java.math.BigDecimal;
@@ -59,7 +61,8 @@ class AnimalChildbirthControllerTest {
     private MockMvc mockMvc;
 
     private static final UsernamePasswordAuthenticationToken AUTH =
-            new UsernamePasswordAuthenticationToken("tecnico@idr.com", null, List.of());
+            new UsernamePasswordAuthenticationToken(
+                    new AuthenticatedUser("tecnico@idr.com", PropertySearchScope::unrestricted), null, List.of());
 
     @BeforeEach
     void setUp() {
@@ -101,7 +104,7 @@ class AnimalChildbirthControllerTest {
         verify(createAnimalChildbirthUseCase).execute(captor.capture());
         assertEquals(propertyId, captor.getValue().propertyId());
         assertEquals(animalId, captor.getValue().animalId());
-        assertEquals("tecnico@idr.com", captor.getValue().username());
+        assertEquals(PropertySearchScope.unrestricted(), captor.getValue().scope());
         assertEquals(LocalDate.of(2024, 3, 10), captor.getValue().childbirthDate());
         assertEquals(ChildbirthGender.FEMALE, captor.getValue().gender());
         assertEquals(new BigDecimal("35.5"), captor.getValue().weight());
@@ -133,7 +136,7 @@ class AnimalChildbirthControllerTest {
         assertEquals(propertyId, captor.getValue().propertyId());
         assertEquals(animalId, captor.getValue().animalId());
         assertEquals(id, captor.getValue().animalChildbirthId());
-        assertEquals("tecnico@idr.com", captor.getValue().username());
+        assertEquals(PropertySearchScope.unrestricted(), captor.getValue().scope());
     }
 
     @Test
@@ -152,7 +155,7 @@ class AnimalChildbirthControllerTest {
         assertEquals(propertyId, captor.getValue().propertyId());
         assertEquals(animalId, captor.getValue().animalId());
         assertEquals(id, captor.getValue().animalChildbirthId());
-        assertEquals("tecnico@idr.com", captor.getValue().username());
+        assertEquals(PropertySearchScope.unrestricted(), captor.getValue().scope());
     }
 
     @Test

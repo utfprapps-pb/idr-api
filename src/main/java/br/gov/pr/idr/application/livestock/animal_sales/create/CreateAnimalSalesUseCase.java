@@ -22,7 +22,7 @@ public class CreateAnimalSalesUseCase extends UseCase<CreateAnimalSalesCommand,
     @Override
     public CreateAnimalSalesOutput execute(final CreateAnimalSalesCommand command) {
         final var animal = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
-                command.username());
+                command.scope());
 
         final var animalSales = AnimalSales.create(animal.getId(), command.dateSale(),
                 command.reason(), command.value(), command.destination(), command.weight());

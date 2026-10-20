@@ -30,7 +30,7 @@ public class UpdateAnimalChildbirthUseCase extends UseCase<UpdateAnimalChildbirt
     @Override
     public UpdateAnimalChildbirthOutput execute(final UpdateAnimalChildbirthCommand command) {
         final var mother = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
-                command.username());
+                command.scope());
         final var id = AnimalChildbirthID.from(command.animalChildbirthId());
         final var animalChildbirth = animalChildbirthGateway.findByIdAndAnimalId(id, mother.getId())
                 .orElseThrow(() -> NotFoundException.with(AnimalChildbirth.class, id));

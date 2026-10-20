@@ -1,12 +1,13 @@
 package br.gov.pr.idr.application.livestock.animal.update;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import java.time.LocalDate;
 import java.util.UUID;
 
 public record UpdateAnimalCommand(
         UUID propertyId,
         UUID animalId,
-        String username,
+        PropertySearchScope scope,
         UUID animalMotherId,
         UUID breedId,
         String type,

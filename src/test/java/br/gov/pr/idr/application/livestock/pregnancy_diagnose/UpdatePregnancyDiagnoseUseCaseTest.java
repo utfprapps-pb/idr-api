@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.pregnancy_diagnose;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.pregnancy_diagnose.update.UpdatePregnancyDiagnoseCommand;
 import br.gov.pr.idr.application.livestock.pregnancy_diagnose.update.UpdatePregnancyDiagnoseUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -47,13 +48,13 @@ class UpdatePregnancyDiagnoseUseCaseTest {
             LocalDate.now());
 
     private UpdatePregnancyDiagnoseCommand validCommand() {
-        return new UpdatePregnancyDiagnoseCommand(propertyId, animalId, pregnancyDiagnoseId, "tecnico@idr.com",
+        return new UpdatePregnancyDiagnoseCommand(propertyId, animalId, pregnancyDiagnoseId, PropertySearchScope.unrestricted(),
                 LocalDate.of(2024, 4, 1), LocalDate.of(2024, 2, 1));
     }
 
     @Test
     void shouldUpdateWhenPregnancyDiagnoseBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(PregnancyDiagnoseID.from(pregnancyDiagnoseId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingPregnancyDiagnose));
         when(gateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
@@ -72,7 +73,7 @@ class UpdatePregnancyDiagnoseUseCaseTest {
 
     @Test
     void shouldThrowNotFoundWhenPregnancyDiagnoseBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(PregnancyDiagnoseID.from(pregnancyDiagnoseId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
 

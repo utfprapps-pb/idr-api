@@ -29,7 +29,7 @@ public class UpdateMedicationUseCase extends UseCase<UpdateMedicationCommand, Up
 
     @Override
     public UpdateMedicationOutput execute(final UpdateMedicationCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         final var id = MedicationID.from(command.medicationId());
         final var medication = medicationGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))

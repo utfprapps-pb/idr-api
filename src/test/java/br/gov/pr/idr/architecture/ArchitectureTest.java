@@ -122,6 +122,19 @@ class ArchitectureTest {
                     .allowEmptyShould(true)
                     .check(classes);
         }
+
+        @Test
+        @DisplayName("Application de livestock e inventory_resource não deve depender da application de outros contextos")
+        void livestockApplicationShouldNotDependOnOtherContextsApplication() {
+            noClasses()
+                    .that().resideInAnyPackage("..application.livestock..", "..application.inventory_resource..")
+                    .should().dependOnClassesThat().resideInAnyPackage(
+                            "..application.property_management..", "..application.iam..")
+                    .because("O acesso à propriedade chega resolvido no Command (PropertySearchScope) e é checado " +
+                             "pela porta PropertyGateway; livestock não conhece use cases nem policies de outros contextos")
+                    .allowEmptyShould(true)
+                    .check(classes);
+        }
     }
 
     // =========================================================================

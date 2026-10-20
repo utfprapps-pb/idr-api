@@ -24,7 +24,7 @@ public class UpdateAnimalSalesUseCase extends UseCase<UpdateAnimalSalesCommand,
 
     @Override
     public UpdateAnimalSalesOutput execute(final UpdateAnimalSalesCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         final var id = AnimalSalesID.from(command.animalSalesId());
         final var animalSales = animalSalesGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))

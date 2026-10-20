@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.livestock.animal_purchases;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.application.livestock.animal_purchases.retrieve.get.GetAnimalPurchasesByIdCommand;
 import br.gov.pr.idr.application.livestock.animal_purchases.retrieve.get.GetAnimalPurchasesByIdUseCase;
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
@@ -46,23 +47,23 @@ class GetAnimalPurchasesByIdUseCaseTest {
 
     @Test
     void shouldReturnAnimalPurchasesWhenItBelongsToAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalPurchasesID.from(animalPurchasesId), AnimalID.from(animalId)))
                 .thenReturn(Optional.of(existingAnimalPurchases));
 
         final var output = useCase.execute(new GetAnimalPurchasesByIdCommand(propertyId, animalId,
-                animalPurchasesId, "tecnico@idr.com"));
+                animalPurchasesId, PropertySearchScope.unrestricted()));
 
         assertEquals(BigDecimal.valueOf(1500), output.value());
     }
 
     @Test
     void shouldThrowNotFoundWhenAnimalPurchasesBelongsToAnotherAnimal() {
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, "tecnico@idr.com")).thenReturn(animal);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
         when(gateway.findByIdAndAnimalId(AnimalPurchasesID.from(animalPurchasesId), AnimalID.from(animalId)))
                 .thenReturn(Optional.empty());
         assertThrows(NotFoundException.class,
                 () -> useCase.execute(new GetAnimalPurchasesByIdCommand(propertyId, animalId,
-                        animalPurchasesId, "tecnico@idr.com")));
+                        animalPurchasesId, PropertySearchScope.unrestricted())));
     }
 }

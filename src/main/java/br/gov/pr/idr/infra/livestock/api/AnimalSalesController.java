@@ -44,8 +44,8 @@ public class AnimalSalesController {
                                                                final Authentication authentication,
                                                                @RequestBody @Valid
                                                                CreateAnimalSalesRequest request) {
-        final var username = AuthenticationSupport.username(authentication);
-        final var command = new CreateAnimalSalesCommand(propertyId, animalId, username,
+        final var scope = AuthenticationSupport.scope(authentication);
+        final var command = new CreateAnimalSalesCommand(propertyId, animalId, scope,
                 request.dateSale(), request.reason(), request.value(), request.destination(), request.weight());
         final var output = createAnimalSalesUseCase.execute(command);
         return ResponseEntity.ok(CreateAnimalSalesResponse.from(output));
@@ -58,8 +58,8 @@ public class AnimalSalesController {
                                                                final Authentication authentication,
                                                                @RequestBody @Valid
                                                                UpdateAnimalSalesRequest request) {
-        final var username = AuthenticationSupport.username(authentication);
-        final var command = new UpdateAnimalSalesCommand(propertyId, animalId, id, username,
+        final var scope = AuthenticationSupport.scope(authentication);
+        final var command = new UpdateAnimalSalesCommand(propertyId, animalId, id, scope,
                 request.dateSale(), request.reason(), request.value(), request.destination(), request.weight());
         final var output = updateAnimalSalesUseCase.execute(command);
         return ResponseEntity.ok(UpdateAnimalSalesResponse.from(output));
@@ -70,9 +70,9 @@ public class AnimalSalesController {
                                         @PathVariable UUID animalId,
                                         @PathVariable UUID id,
                                         final Authentication authentication) {
-        final var username = AuthenticationSupport.username(authentication);
+        final var scope = AuthenticationSupport.scope(authentication);
         deleteAnimalSalesUseCase.execute(new DeleteAnimalSalesCommand(propertyId, animalId, id,
-                username));
+                scope));
         return ResponseEntity.noContent().build();
     }
 
@@ -81,9 +81,9 @@ public class AnimalSalesController {
                                                                @PathVariable UUID animalId,
                                                                @PathVariable UUID id,
                                                                final Authentication authentication) {
-        final var username = AuthenticationSupport.username(authentication);
+        final var scope = AuthenticationSupport.scope(authentication);
         final var output = getAnimalSalesByIdUseCase.execute(
-                new GetAnimalSalesByIdCommand(propertyId, animalId, id, username));
+                new GetAnimalSalesByIdCommand(propertyId, animalId, id, scope));
         return ResponseEntity.ok(output);
     }
 
@@ -97,10 +97,10 @@ public class AnimalSalesController {
             @RequestParam(required = false) final String terms,
             @RequestParam(defaultValue = "dateSale") final String sort,
             @RequestParam(defaultValue = "asc") final String direction) {
-        final var username = AuthenticationSupport.username(authentication);
+        final var scope = AuthenticationSupport.scope(authentication);
         final var query = SearchQuery.from(page, perPage, terms, sort, direction);
         final var output = listAnimalSalesUseCase.execute(
-                new ListAnimalSalesCommand(propertyId, animalId, username, query));
+                new ListAnimalSalesCommand(propertyId, animalId, scope, query));
         return ResponseEntity.ok(output);
     }
 }

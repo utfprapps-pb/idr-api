@@ -45,8 +45,8 @@ public class AnimalController {
     public ResponseEntity<CreateAnimalResponse> create(@PathVariable UUID propertyId,
                                                          final Authentication authentication,
                                                          @RequestBody @Valid CreateAnimalRequest request) {
-        final var username = AuthenticationSupport.username(authentication);
-        final var command = new CreateAnimalCommand(propertyId, username, request.animalMotherId(),
+        final var scope = AuthenticationSupport.scope(authentication);
+        final var command = new CreateAnimalCommand(propertyId, scope, request.animalMotherId(),
                 request.breedId(), request.type(), request.identifier(), request.gender(),
                 request.bornCondition(), request.bornDate(), request.bornWeight(), request.previousWeight(),
                 request.currentWeight(), request.ecc());
@@ -59,8 +59,8 @@ public class AnimalController {
                                                         @PathVariable UUID id,
                                                         final Authentication authentication,
                                                         @RequestBody @Valid UpdateAnimalRequest request) {
-        final var username = AuthenticationSupport.username(authentication);
-        final var command = new UpdateAnimalCommand(propertyId, id, username, request.animalMotherId(),
+        final var scope = AuthenticationSupport.scope(authentication);
+        final var command = new UpdateAnimalCommand(propertyId, id, scope, request.animalMotherId(),
                 request.breedId(), request.type(), request.identifier(), request.gender(),
                 request.bornCondition(), request.bornDate(), request.bornWeight(), request.previousWeight(),
                 request.currentWeight(), request.ecc());
@@ -72,8 +72,8 @@ public class AnimalController {
     public ResponseEntity<Void> delete(@PathVariable UUID propertyId,
                                         @PathVariable UUID id,
                                         final Authentication authentication) {
-        final var username = AuthenticationSupport.username(authentication);
-        deleteAnimalUseCase.execute(new DeleteAnimalCommand(propertyId, id, username));
+        final var scope = AuthenticationSupport.scope(authentication);
+        deleteAnimalUseCase.execute(new DeleteAnimalCommand(propertyId, id, scope));
         return ResponseEntity.noContent().build();
     }
 
@@ -81,8 +81,8 @@ public class AnimalController {
     public ResponseEntity<GetAnimalByIdOutput> getById(@PathVariable UUID propertyId,
                                                         @PathVariable UUID id,
                                                         final Authentication authentication) {
-        final var username = AuthenticationSupport.username(authentication);
-        final var output = getAnimalByIdUseCase.execute(new GetAnimalByIdCommand(propertyId, id, username));
+        final var scope = AuthenticationSupport.scope(authentication);
+        final var output = getAnimalByIdUseCase.execute(new GetAnimalByIdCommand(propertyId, id, scope));
         return ResponseEntity.ok(output);
     }
 
@@ -95,9 +95,9 @@ public class AnimalController {
             @RequestParam(required = false) final String terms,
             @RequestParam(defaultValue = "identifier") final String sort,
             @RequestParam(defaultValue = "asc") final String direction) {
-        final var username = AuthenticationSupport.username(authentication);
+        final var scope = AuthenticationSupport.scope(authentication);
         final var query = SearchQuery.from(page, perPage, terms, sort, direction);
-        final var output = listAnimalUseCase.execute(new ListAnimalCommand(propertyId, username, query));
+        final var output = listAnimalUseCase.execute(new ListAnimalCommand(propertyId, scope, query));
         return ResponseEntity.ok(output);
     }
 
@@ -105,8 +105,8 @@ public class AnimalController {
     public ResponseEntity<GetAnimalByIdOutput> findByIdentifier(@PathVariable UUID propertyId,
                                                                  @PathVariable String identifier,
                                                                  final Authentication authentication) {
-        final var username = AuthenticationSupport.username(authentication);
-        final var command = new FindAnimalByIdentifierCommand(propertyId, identifier, username);
+        final var scope = AuthenticationSupport.scope(authentication);
+        final var command = new FindAnimalByIdentifierCommand(propertyId, identifier, scope);
         return findAnimalByIdentifierUseCase.execute(command)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

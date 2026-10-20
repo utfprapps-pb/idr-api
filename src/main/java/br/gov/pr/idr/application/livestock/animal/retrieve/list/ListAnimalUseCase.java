@@ -27,7 +27,7 @@ public class ListAnimalUseCase extends UseCase<ListAnimalCommand, Pagination<Lis
 
     @Override
     public Pagination<ListAnimalOutput> execute(final ListAnimalCommand command) {
-        accessPolicy.ensureAccessToProperty(command.propertyId(), command.username());
+        accessPolicy.ensureAccessToProperty(command.propertyId(), command.scope());
         final var page = animalGateway.search(PropertyID.from(command.propertyId()), command.query());
 
         final var breedNames = nameLookup.breedNames(

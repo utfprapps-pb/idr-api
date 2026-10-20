@@ -22,7 +22,7 @@ public class ListAnimalPurchasesUseCase extends UseCase<ListAnimalPurchasesComma
 
     @Override
     public Pagination<ListAnimalPurchasesOutput> execute(final ListAnimalPurchasesCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         return animalPurchasesGateway.search(AnimalID.from(command.animalId()), command.query())
                 .map(ListAnimalPurchasesOutput::from);

@@ -22,7 +22,7 @@ public class DeleteMastitisUseCase extends VoidUseCase<DeleteMastitisCommand> {
 
     @Override
     public void execute(final DeleteMastitisCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         final var id = MastitisID.from(command.mastitisId());
         final var mastitis = mastitisGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))

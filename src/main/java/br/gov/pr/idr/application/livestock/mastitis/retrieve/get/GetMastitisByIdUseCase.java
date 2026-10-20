@@ -22,7 +22,7 @@ public class GetMastitisByIdUseCase extends UseCase<GetMastitisByIdCommand, GetM
 
     @Override
     public GetMastitisByIdOutput execute(final GetMastitisByIdCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         final var id = MastitisID.from(command.mastitisId());
         final var mastitis = mastitisGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))

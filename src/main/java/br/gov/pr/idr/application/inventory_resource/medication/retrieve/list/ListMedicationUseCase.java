@@ -21,7 +21,7 @@ public class ListMedicationUseCase extends UseCase<ListMedicationCommand, Pagina
 
     @Override
     public Pagination<ListMedicationOutput> execute(final ListMedicationCommand command) {
-        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.username());
+        accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(), command.scope());
 
         return medicationGateway.search(AnimalID.from(command.animalId()), command.query())
                 .map(ListMedicationOutput::from);

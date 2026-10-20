@@ -22,7 +22,7 @@ public class CreatePregnancyDiagnoseUseCase extends UseCase<CreatePregnancyDiagn
     @Override
     public CreatePregnancyDiagnoseOutput execute(final CreatePregnancyDiagnoseCommand command) {
         final var animal = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
-                command.username());
+                command.scope());
 
         final var pregnancyDiagnose = PregnancyDiagnose.create(animal.getId(), command.diagnoseDate(),
                 command.lastIa());
