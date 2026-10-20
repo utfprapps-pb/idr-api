@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,8 +47,6 @@ class ListAnimalUseCaseTest {
     @InjectMocks ListAnimalUseCase useCase;
 
     private final UUID propertyId = UUID.randomUUID();
-    private final Property property = Property.with(PropertyID.from(propertyId), "Fazenda", null, null, null,
-            null, null, null, null, ProducerID.unique(), CityID.unique(), List.of(), List.of(), null, null);
 
     private final BreedID breedId = BreedID.unique();
 
@@ -59,7 +58,6 @@ class ListAnimalUseCaseTest {
 
     @Test
     void shouldListOnlyAnimalsOfAuthorizedProperty() {
-        when(accessPolicy.ensureAccessToProperty(propertyId, "tecnico@idr.com")).thenReturn(property);
         when(animalGateway.search(eq(PropertyID.from(propertyId)), any())).thenReturn(somePagination());
         when(nameLookup.breedNames(Set.of(breedId))).thenReturn(Map.of(breedId, "Gir"));
 
@@ -72,7 +70,7 @@ class ListAnimalUseCaseTest {
 
     @Test
     void shouldThrowForbiddenWhenAccessGuardDenies() {
-        when(accessPolicy.ensureAccessToProperty(any(), any())).thenThrow(ForbiddenException.with("x"));
+        doThrow(ForbiddenException.with("x")).when(accessPolicy).ensureAccessToProperty(any(), any());
 
         assertThrows(ForbiddenException.class, () -> useCase.execute(new ListAnimalCommand(propertyId,
                 "tecnico@idr.com", SearchQuery.from(0, 10, "", "identifier", "asc"))));

@@ -5,7 +5,6 @@ import br.gov.pr.idr.application.livestock.shared.LivestockReferencePolicy;
 import br.gov.pr.idr.domain.iam.user.UserGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
-import br.gov.pr.idr.domain.property_management.city.CityGateway;
 import br.gov.pr.idr.domain.property_management.property.PropertyGateway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,9 +15,8 @@ public class LivestockBeansConfig {
     @Bean
     public AnimalAccessPolicy animalAccessPolicy(final PropertyGateway propertyGateway,
                                                    final UserGateway userGateway,
-                                                   final CityGateway cityGateway,
                                                    final AnimalGateway animalGateway) {
-        return new AnimalAccessPolicy(propertyGateway, userGateway, cityGateway, animalGateway);
+        return new AnimalAccessPolicy(propertyGateway, userGateway, animalGateway);
     }
 
     @Bean

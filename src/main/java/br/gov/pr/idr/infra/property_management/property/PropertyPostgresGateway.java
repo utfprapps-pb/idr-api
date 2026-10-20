@@ -55,6 +55,17 @@ public class PropertyPostgresGateway implements PropertyGateway {
     }
 
     @Override
+    public boolean isAccessibleBy(final PropertyID id, final PropertySearchScope scope) {
+        return switch (scope.type()) {
+            case UNRESTRICTED -> repository.existsById(id.id());
+            case BY_LOCATION -> !scope.hasNoLocation()
+                    && repository.existsByIdAndLocation(id.id(), toUuids(scope.regionIds(), RegionID::id),
+                            toUuids(scope.cityIds(), CityID::id));
+            case BY_TECHNICIAN -> repository.existsByIdAndTechnician(id.id(), scope.technicianId().id());
+        };
+    }
+
+    @Override
     public void deleteById(PropertyID id) {
         repository.findById(id.id()).ifPresent(entity -> {
             entity.markDeleted();

@@ -28,6 +28,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,12 +41,9 @@ class FindAnimalByIdentifierUseCaseTest {
     @InjectMocks FindAnimalByIdentifierUseCase useCase;
 
     private final UUID propertyId = UUID.randomUUID();
-    private final Property property = Property.with(PropertyID.from(propertyId), "Fazenda", null, null, null,
-            null, null, null, null, ProducerID.unique(), CityID.unique(), List.of(), List.of(), null, null);
 
     @Test
     void shouldReturnEmptyWhenIdentifierNotFoundWithinAuthorizedProperty() {
-        when(accessPolicy.ensureAccessToProperty(propertyId, "tecnico@idr.com")).thenReturn(property);
         when(animalGateway.findByPropertyIdAndIdentifier(PropertyID.from(propertyId), "Inexistente"))
                 .thenReturn(Optional.empty());
 
@@ -57,7 +55,6 @@ class FindAnimalByIdentifierUseCaseTest {
 
     @Test
     void shouldReturnAnimalWhenFoundWithinAuthorizedProperty() {
-        when(accessPolicy.ensureAccessToProperty(propertyId, "tecnico@idr.com")).thenReturn(property);
         final var breedId = BreedID.unique();
         final var animal = Animal.with(AnimalID.unique(), PropertyID.from(propertyId), null, breedId,
                 "T", "Mimosa", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
@@ -75,8 +72,7 @@ class FindAnimalByIdentifierUseCaseTest {
 
     @Test
     void shouldThrowForbiddenWhenAccessGuardDenies() {
-        when(accessPolicy.ensureAccessToProperty(propertyId, "tecnico@idr.com"))
-                .thenThrow(ForbiddenException.with("x"));
+        doThrow(ForbiddenException.with("x")).when(accessPolicy).ensureAccessToProperty(propertyId, "tecnico@idr.com");
 
         assertThrows(ForbiddenException.class, () -> useCase.execute(
                 new FindAnimalByIdentifierCommand(propertyId, "Mimosa", "tecnico@idr.com")));

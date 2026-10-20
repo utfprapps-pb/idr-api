@@ -27,6 +27,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,8 +49,6 @@ class CreateAnimalUseCaseTest {
 
     private final UUID propertyId = UUID.randomUUID();
     private final UUID breedId = UUID.randomUUID();
-    private final Property property = Property.with(PropertyID.from(propertyId), "Fazenda", null, null, null,
-            null, null, null, null, ProducerID.unique(), CityID.unique(), List.of(), List.of(), null, null);
 
     private CreateAnimalCommand validCommand() {
         return new CreateAnimalCommand(propertyId, "tecnico@idr.com", null, breedId, "Leiteiro", "Mimosa", "F",
@@ -58,7 +57,6 @@ class CreateAnimalUseCaseTest {
 
     @Test
     void shouldCreateWhenAuthorizedAndBreedExists() {
-        when(accessPolicy.ensureAccessToProperty(propertyId, "tecnico@idr.com")).thenReturn(property);
         when(breedGateway.existsById(any())).thenReturn(true);
         when(animalGateway.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -73,21 +71,19 @@ class CreateAnimalUseCaseTest {
 
     @Test
     void shouldThrowForbiddenWhenAccessGuardDenies() {
-        when(accessPolicy.ensureAccessToProperty(any(), any())).thenThrow(ForbiddenException.with("x"));
+        doThrow(ForbiddenException.with("x")).when(accessPolicy).ensureAccessToProperty(any(), any());
         assertThrows(ForbiddenException.class, () -> useCase.execute(validCommand()));
         verify(animalGateway, never()).save(any());
     }
 
     @Test
     void shouldThrowWhenBreedDoesNotExist() {
-        when(accessPolicy.ensureAccessToProperty(any(), any())).thenReturn(property);
         when(breedGateway.existsById(any())).thenReturn(false);
         assertThrows(NotificationException.class, () -> useCase.execute(validCommand()));
     }
 
     @Test
     void shouldThrowWhenAnimalMotherIdDoesNotExist() {
-        when(accessPolicy.ensureAccessToProperty(any(), any())).thenReturn(property);
         when(breedGateway.existsById(any())).thenReturn(true);
         when(animalGateway.existsByIdAndPropertyId(any(), any())).thenReturn(false);
         final var command = new CreateAnimalCommand(propertyId, "tecnico@idr.com", UUID.randomUUID(), breedId,
@@ -97,7 +93,6 @@ class CreateAnimalUseCaseTest {
 
     @Test
     void shouldThrowWhenAnimalMotherBelongsToDifferentProperty() {
-        when(accessPolicy.ensureAccessToProperty(any(), any())).thenReturn(property);
         when(breedGateway.existsById(any())).thenReturn(true);
 
         final var motherId = UUID.randomUUID();

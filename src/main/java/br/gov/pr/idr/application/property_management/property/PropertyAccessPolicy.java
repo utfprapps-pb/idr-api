@@ -2,9 +2,7 @@ package br.gov.pr.idr.application.property_management.property;
 
 import br.gov.pr.idr.domain.iam.permission.Permission;
 import br.gov.pr.idr.domain.iam.user.User;
-import br.gov.pr.idr.domain.property_management.city.CityGateway;
 import br.gov.pr.idr.domain.property_management.city.CityID;
-import br.gov.pr.idr.domain.property_management.property.Property;
 import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
 import br.gov.pr.idr.domain.property_management.region.RegionID;
 
@@ -33,17 +31,6 @@ public final class PropertyAccessPolicy {
             case GERENCIA_MACRO, GERENCIA_REGIONAL, GERENCIA_MUNICIPAL ->
                     PropertySearchScope.byLocation(regionIdsOf(user), cityIdsOf(user));
             case TECNICO -> PropertySearchScope.byTechnician(user.getId());
-        };
-    }
-
-    public static boolean allows(final PropertySearchScope scope, final Property property, final CityGateway cityGateway) {
-        return switch (scope.type()) {
-            case UNRESTRICTED -> true;
-            case BY_TECHNICIAN -> property.getTechnicianIds().contains(scope.technicianId());
-            case BY_LOCATION -> scope.cityIds().contains(property.getCityId())
-                    || cityGateway.findById(property.getCityId())
-                            .map(city -> scope.regionIds().contains(city.getRegionId()))
-                            .orElse(false);
         };
     }
 
