@@ -1,6 +1,6 @@
 package br.gov.pr.idr.application.livestock.shared;
 
-import br.gov.pr.idr.application.property_management.property.retrieve.search.PropertyAccessPolicy;
+import br.gov.pr.idr.application.property_management.property.PropertyAccessPolicy;
 import br.gov.pr.idr.domain.iam.user.UserGateway;
 import br.gov.pr.idr.domain.iam.user.exceptions.UserException;
 import br.gov.pr.idr.domain.livestock.animal.Animal;

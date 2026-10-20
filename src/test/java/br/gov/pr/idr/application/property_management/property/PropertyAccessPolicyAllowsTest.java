@@ -1,4 +1,4 @@
-package br.gov.pr.idr.application.property_management.property.retrieve.search;
+package br.gov.pr.idr.application.property_management.property;
 
 import br.gov.pr.idr.domain.iam.user.UserID;
 import br.gov.pr.idr.domain.property_management.city.City;

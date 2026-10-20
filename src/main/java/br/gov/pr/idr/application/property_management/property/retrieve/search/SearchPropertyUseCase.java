@@ -1,5 +1,6 @@
 package br.gov.pr.idr.application.property_management.property.retrieve.search;
 
+import br.gov.pr.idr.application.property_management.property.PropertyAccessPolicy;
 import br.gov.pr.idr.application.shared.stereotype.QueryUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.iam.user.UserGateway;
