@@ -21,6 +21,6 @@ public final class AuthenticationSupport {
         if (authentication == null || !(authentication.getPrincipal() instanceof AuthenticatedUser user)) {
             throw new IllegalStateException("Authentication principal is not an AuthenticatedUser");
         }
-        return user.scope().get();
+        return user.scope();
     }
 }

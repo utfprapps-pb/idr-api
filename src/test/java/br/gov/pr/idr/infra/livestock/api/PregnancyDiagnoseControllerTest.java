@@ -58,7 +58,7 @@ class PregnancyDiagnoseControllerTest {
 
     private static final UsernamePasswordAuthenticationToken AUTH =
             new UsernamePasswordAuthenticationToken(
-                    new AuthenticatedUser("tecnico@idr.com", PropertySearchScope::unrestricted), null, List.of());
+                    new AuthenticatedUser("tecnico@idr.com", PropertySearchScope.unrestricted()), null, List.of());
 
     @BeforeEach
     void setUp() {

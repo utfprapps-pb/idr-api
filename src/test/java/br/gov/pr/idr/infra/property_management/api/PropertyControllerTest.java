@@ -165,7 +165,7 @@ class PropertyControllerTest {
         final var pagination = new Pagination<>(0, 10, 1L, List.of(output));
         when(searchPropertyUseCase.execute(any())).thenReturn(pagination);
         final var auth = new UsernamePasswordAuthenticationToken(
-                new AuthenticatedUser("tecnico@idr.com", PropertySearchScope::unrestricted), null, List.of());
+                new AuthenticatedUser("tecnico@idr.com", PropertySearchScope.unrestricted()), null, List.of());
 
         mockMvc.perform(get("/v1/properties/search").principal(auth))
                 .andExpect(status().isOk())

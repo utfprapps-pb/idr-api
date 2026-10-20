@@ -1,6 +1,7 @@
 package br.gov.pr.idr.infra.iam.security.jwt;
 
 import br.gov.pr.idr.infra.iam.security.AuthenticatedUser;
+import br.gov.pr.idr.infra.iam.user.persistence.UserJPAEntity;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,11 +41,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         final var username = jwtService.extractUsername(token);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            final var userDetails = userDetailsService.loadUserByUsername(username);
+            if (!(userDetailsService.loadUserByUsername(username) instanceof UserJPAEntity user)) {
+                throw new IllegalStateException("UserDetailsService deve devolver UserJPAEntity");
+            }
             final var authToken = new UsernamePasswordAuthenticationToken(
-                    AuthenticatedUser.from(userDetails),
+                    AuthenticatedUser.from(user),
                     null,
-                    userDetails.getAuthorities()
+                    user.getAuthorities()
             );
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);

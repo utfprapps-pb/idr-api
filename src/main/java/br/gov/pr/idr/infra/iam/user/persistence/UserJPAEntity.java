@@ -122,7 +122,7 @@ public class UserJPAEntity implements UserDetails {
         );
     }
 
-    private Set<Permission> getDomainPermissions() {
+    public Set<Permission> getDomainPermissions() {
         return this.userPermissions.stream().map(PermissionJPAEntity::toDomain)
                 .collect(Collectors.toSet());
     }
