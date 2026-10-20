@@ -1,5 +1,7 @@
 package br.gov.pr.idr.infra.property_management.api;
 
+import br.gov.pr.idr.domain.property_management.property.PropertySearchScope;
+import br.gov.pr.idr.infra.iam.security.AuthenticatedUser;
 import br.gov.pr.idr.application.property_management.property.create.CreatePropertyOutput;
 import br.gov.pr.idr.application.property_management.property.create.CreatePropertyUseCase;
 import br.gov.pr.idr.application.property_management.property.delete.DeletePropertyUseCase;
@@ -162,7 +164,8 @@ class PropertyControllerTest {
                 BigDecimal.TEN, BigDecimal.ONE, UUID.randomUUID(), UUID.randomUUID());
         final var pagination = new Pagination<>(0, 10, 1L, List.of(output));
         when(searchPropertyUseCase.execute(any())).thenReturn(pagination);
-        final var auth = new UsernamePasswordAuthenticationToken("tecnico@idr.com", null, List.of());
+        final var auth = new UsernamePasswordAuthenticationToken(
+                new AuthenticatedUser("tecnico@idr.com", PropertySearchScope::unrestricted), null, List.of());
 
         mockMvc.perform(get("/v1/properties/search").principal(auth))
                 .andExpect(status().isOk())

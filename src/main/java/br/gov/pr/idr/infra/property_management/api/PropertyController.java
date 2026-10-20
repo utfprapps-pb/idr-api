@@ -121,8 +121,8 @@ public class PropertyController {
             @RequestParam(defaultValue = "name") final String sort,
             @RequestParam(defaultValue = "asc") final String direction) {
         final var query = SearchQuery.from(page, perPage, terms, sort, direction);
-        final var username = AuthenticationSupport.username(authentication);
-        return searchPropertyUseCase.execute(SearchPropertyCommand.from(username, query))
+        final var scope = AuthenticationSupport.scope(authentication);
+        return searchPropertyUseCase.execute(SearchPropertyCommand.from(scope, query))
                 .map(SearchPropertyResponse::from);
     }
 
