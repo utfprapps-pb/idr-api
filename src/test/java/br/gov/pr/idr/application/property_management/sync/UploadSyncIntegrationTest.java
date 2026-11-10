@@ -212,6 +212,8 @@ class UploadSyncIntegrationTest {
             throw new UnsupportedOperationException();
         }
         @Override public boolean existsById(final PropertyID id) { return false; }
+        @Override public boolean isAccessibleBy(final PropertyID id,
+                final br.gov.pr.idr.domain.property_management.property.PropertySearchScope scope) { return false; }
         @Override public void deleteById(final PropertyID id) { }
     }
 

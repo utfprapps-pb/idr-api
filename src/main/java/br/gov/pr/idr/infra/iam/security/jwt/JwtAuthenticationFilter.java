@@ -22,7 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -70,7 +70,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             response.setStatus(HttpStatus.FORBIDDEN.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             objectMapper.writeValue(response.getWriter(), new ErrorResponse(
-                    LocalDateTime.now(),
+                    Instant.now(),
                     HttpStatus.FORBIDDEN.value(),
                     "Seu cadastro está inativo, solicite há um administrador para ativá-lo",
                     List.of()

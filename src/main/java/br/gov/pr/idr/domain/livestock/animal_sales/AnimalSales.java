@@ -1,0 +1,104 @@
+package br.gov.pr.idr.domain.livestock.animal_sales;
+
+import br.gov.pr.idr.domain.livestock.animal.AnimalID;
+import br.gov.pr.idr.domain.livestock.animal_sales.vo.Destination;
+import br.gov.pr.idr.domain.livestock.animal_sales.vo.Reason;
+import br.gov.pr.idr.domain.shared.tactical.AggregateRoot;
+import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
+import br.gov.pr.idr.domain.shared.tactical.validation.ValidationHandler;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+/**
+ * Venda de um animal: data, motivo, destino, valor e peso. Motivo e destino são enums com valores em português,
+ * que o front traduz. O valor não é validado, como no legado.
+ */
+public class AnimalSales extends AggregateRoot<AnimalSalesID> {
+
+    private final AnimalID animalId;
+    private LocalDate dateSale;
+    private Reason reason;
+    private BigDecimal value;
+    private Destination destination;
+    private BigDecimal weight;
+    private Long version;
+
+    protected AnimalSales(final AnimalSalesID id, final AnimalID animalId, final LocalDate dateSale,
+                           final Reason reason, final BigDecimal value, final Destination destination,
+                           final BigDecimal weight) {
+        super(id);
+        this.animalId = animalId;
+        this.dateSale = dateSale;
+        this.reason = reason;
+        this.value = value;
+        this.destination = destination;
+        this.weight = weight;
+    }
+
+    public static AnimalSales with(final AnimalSalesID id, final AnimalID animalId, final LocalDate dateSale,
+                                    final Reason reason, final BigDecimal value, final Destination destination,
+                                    final BigDecimal weight) {
+        return new AnimalSales(id, animalId, dateSale, reason, value, destination, weight);
+    }
+
+    public static AnimalSales create(final AnimalID animalId, final LocalDate dateSale, final Reason reason,
+                                      final BigDecimal value, final Destination destination,
+                                      final BigDecimal weight) {
+        final var animalSales = new AnimalSales(AnimalSalesID.unique(), animalId, dateSale, reason, value,
+                destination, weight);
+        animalSales.selfValidate();
+        return animalSales;
+    }
+
+    public AnimalSales update(final LocalDate dateSale, final Reason reason, final BigDecimal value,
+                               final Destination destination, final BigDecimal weight) {
+        this.dateSale = dateSale;
+        this.reason = reason;
+        this.value = value;
+        this.destination = destination;
+        this.weight = weight;
+        selfValidate();
+        return this;
+    }
+
+    @Override
+    public void validate(ValidationHandler handler) {
+        if (this.animalId == null) {
+            handler.append(DomainError.from("O animal da venda é obrigatório"));
+        }
+    }
+
+    public AnimalID getAnimalId() {
+        return animalId;
+    }
+
+    public LocalDate getDateSale() {
+        return dateSale;
+    }
+
+    public Reason getReason() {
+        return reason;
+    }
+
+    public BigDecimal getValue() {
+        return value;
+    }
+
+    public Destination getDestination() {
+        return destination;
+    }
+
+    public BigDecimal getWeight() {
+        return weight;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public AnimalSales withVersion(final Long version) {
+        this.version = version;
+        return this;
+    }
+}

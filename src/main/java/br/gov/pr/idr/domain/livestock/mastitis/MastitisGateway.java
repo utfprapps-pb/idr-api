@@ -1,0 +1,20 @@
+package br.gov.pr.idr.domain.livestock.mastitis;
+
+import br.gov.pr.idr.domain.livestock.animal.AnimalID;
+import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
+import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
+
+import java.util.Optional;
+
+public interface MastitisGateway {
+
+    Mastitis save(final Mastitis mastitis);
+
+    Optional<Mastitis> findByIdAndAnimalId(final MastitisID id, final AnimalID animalId);
+
+    Mastitis update(final Mastitis mastitis);
+
+    void deleteById(final MastitisID id);
+
+    Pagination<Mastitis> search(final AnimalID animalId, final SearchQuery query);
+}

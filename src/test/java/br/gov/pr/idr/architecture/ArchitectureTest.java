@@ -23,6 +23,8 @@ class ArchitectureTest {
     private static final String APPLICATION = "..application..";
     private static final String INFRA       = "..infra..";
     private static final String LEGACY      = "..legacy..";
+    private static final String LIVESTOCK           = "..livestock..";
+    private static final String INVENTORY_RESOURCE  = "..inventory_resource..";
 
     private static JavaClasses classes;
 
@@ -104,6 +106,32 @@ class ArchitectureTest {
                     .that().resideInAPackage(INFRA)
                     .should().dependOnClassesThat().resideInAPackage(LEGACY)
                     .because("A camada Infra não deve depender de código legado")
+                    .allowEmptyShould(true)
+                    .check(classes);
+        }
+
+        @Test
+        @DisplayName("Livestock não deve depender de Inventory Resource")
+        void livestockShouldNotDependOnInventoryResource() {
+            noClasses()
+                    .that().resideInAPackage(LIVESTOCK)
+                    .should().dependOnClassesThat().resideInAPackage(INVENTORY_RESOURCE)
+                    .because("A dependência entre os dois contextos é unidirecional: " +
+                             "inventory_resource (Medication) pode depender de livestock " +
+                             "(AnimalAccessPolicy/AnimalID), nunca o inverso")
+                    .allowEmptyShould(true)
+                    .check(classes);
+        }
+
+        @Test
+        @DisplayName("Application de livestock e inventory_resource não deve depender da application de outros contextos")
+        void livestockApplicationShouldNotDependOnOtherContextsApplication() {
+            noClasses()
+                    .that().resideInAnyPackage("..application.livestock..", "..application.inventory_resource..")
+                    .should().dependOnClassesThat().resideInAnyPackage(
+                            "..application.property_management..", "..application.iam..")
+                    .because("O acesso à propriedade chega resolvido no Command (PropertySearchScope) e é checado " +
+                             "pela porta PropertyGateway; livestock não conhece use cases nem policies de outros contextos")
                     .allowEmptyShould(true)
                     .check(classes);
         }

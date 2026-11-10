@@ -20,5 +20,8 @@ public interface PropertyGateway {
 
     boolean existsById(final PropertyID id);
 
+    /** Se a propriedade está dentro do escopo, com os mesmos critérios da busca ({@link #search}). */
+    boolean isAccessibleBy(final PropertyID id, final PropertySearchScope scope);
+
     void deleteById(final PropertyID id);
 }

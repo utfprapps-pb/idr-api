@@ -32,6 +32,15 @@ public interface PropertyJPARepository extends JpaRepository<PropertyJPAEntity, 
                                                @Param("technicianId") UUID technicianId,
                                                Pageable pageable);
 
+    @Query("SELECT COUNT(p) > 0 FROM Property p LEFT JOIN City c ON p.cityId = c.id WHERE p.id = :id AND " +
+            "(c.regionId IN :regionIds OR p.cityId IN :cityIds)")
+    boolean existsByIdAndLocation(@Param("id") UUID id,
+                                  @Param("regionIds") Set<UUID> regionIds,
+                                  @Param("cityIds") Set<UUID> cityIds);
+
+    @Query("SELECT COUNT(p) > 0 FROM Property p WHERE p.id = :id AND :technicianId MEMBER OF p.technicianIds")
+    boolean existsByIdAndTechnician(@Param("id") UUID id, @Param("technicianId") UUID technicianId);
+
     @Query("""
             SELECT new br.gov.pr.idr.domain.property_management.property.query.GetPropertyQueryResult(
                 p.id, p.name, p.nakedAveragePrice, p.leaseAveragePrice,
