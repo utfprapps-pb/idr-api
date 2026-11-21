@@ -14,6 +14,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import br.gov.pr.idr.infra.shared.error.GlobalExceptionHandler;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -46,7 +49,8 @@ class SecurityConfigTest {
     @BeforeEach
     void setUp() {
         final var corsProperties = new CorsProperties(List.of("https://idr.app.pb.utfpr.edu.br", "http://localhost:5173"));
-        config = new SecurityConfig(jwtService, jwtProperties, userDetailsService, issueRefreshTokenUseCase, corsProperties);
+        config = new SecurityConfig(jwtService, jwtProperties, userDetailsService, issueRefreshTokenUseCase, corsProperties,
+                mock(HandlerExceptionResolver.class));
     }
 
     @Test
@@ -97,7 +101,10 @@ class SecurityConfigTest {
     @DisplayName("filterChain")
     class FilterChainTests {
 
+        /** MVC real para o SecurityConfig receber o handlerExceptionResolver e responder pelo GlobalExceptionHandler. */
+        @EnableWebMvc
         static class TestBeans {
+            @Bean GlobalExceptionHandler globalExceptionHandler() { return new GlobalExceptionHandler(); }
             @Bean JwtService jwtService() { return mock(JwtService.class); }
             @Bean JwtProperties jwtProperties() {
                 return new JwtProperties("test-secret-hmac384-must-be-long-enough-32chars", 3_600_000L, 7L);

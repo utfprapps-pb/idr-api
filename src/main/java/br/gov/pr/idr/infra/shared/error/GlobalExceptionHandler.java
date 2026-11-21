@@ -16,6 +16,10 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -88,6 +92,29 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ProblemDetail handlePropertyReference(final PropertyReferenceException ex) {
         return ProblemType.VALIDACAO.toProblemDetail(HttpStatus.BAD_REQUEST,
                 "Campo de ordenação inválido: " + ex.getPropertyName());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ProblemDetail handleBadCredentials(final BadCredentialsException ex) {
+        return ProblemType.CREDENCIAIS_INVALIDAS.toProblemDetail(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos");
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ProblemDetail handleDisabled(final DisabledException ex) {
+        return ProblemType.CADASTRO_INATIVO.toProblemDetail(HttpStatus.FORBIDDEN,
+                "Seu cadastro está inativo, solicite a um administrador para ativá-lo");
+    }
+
+    /** Sem token, token inválido ou expirado, usuário do token removido. */
+    @ExceptionHandler(AuthenticationException.class)
+    public ProblemDetail handleAuthentication(final AuthenticationException ex) {
+        return ProblemType.NAO_AUTENTICADO.toProblemDetail(HttpStatus.UNAUTHORIZED, null);
+    }
+
+    /** Autenticado sem a autoridade exigida pela rota ({@code hasAuthority}). */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ProblemDetail handleAccessDenied(final AccessDeniedException ex) {
+        return ProblemType.ACESSO_NEGADO.toProblemDetail(HttpStatus.FORBIDDEN, null);
     }
 
     @ExceptionHandler(NotFoundException.class)

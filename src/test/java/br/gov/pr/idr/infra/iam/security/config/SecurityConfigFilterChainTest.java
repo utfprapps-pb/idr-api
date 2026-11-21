@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import br.gov.pr.idr.infra.shared.error.GlobalExceptionHandler;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,7 +32,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("SecurityConfig — filterChain")
 class SecurityConfigFilterChainTest {
 
+    /** MVC real para o SecurityConfig receber o handlerExceptionResolver e responder pelo GlobalExceptionHandler. */
+    @EnableWebMvc
     static class TestBeans {
+        @Bean GlobalExceptionHandler globalExceptionHandler() { return new GlobalExceptionHandler(); }
         @Bean JwtService jwtService() { return mock(JwtService.class); }
         @Bean JwtProperties jwtProperties() {
             return new JwtProperties("test-secret-hmac384-must-be-long-enough-32chars", 3_600_000L, 7L);

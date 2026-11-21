@@ -5,7 +5,6 @@ import br.gov.pr.idr.infra.shared.testing.ApiTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -31,7 +30,8 @@ class MedicationApiTest extends ApiTestSupport {
     void shouldRequireProduct() throws Exception {
         perform(post(MIMOSA + "/medications").content(medication(null)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.timestamp").value(matchesPattern("[0-9]{4}-[0-9]{2}-[0-9]{2}T.*Z")));
+                .andExpect(jsonPath("$.type").value("urn:idr:problem:validacao"))
+                .andExpect(jsonPath("$.errors[0].field").value("productId"));
     }
 
     @Test

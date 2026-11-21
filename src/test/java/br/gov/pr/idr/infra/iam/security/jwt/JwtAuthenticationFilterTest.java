@@ -14,10 +14,10 @@ import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 import java.util.List;
 import java.util.UUID;
@@ -74,40 +74,20 @@ class JwtAuthenticationFilterTest {
     }
 
     @Test
-    @DisplayName("unsuccessfulAuthentication com DisabledException deve retornar 403")
-    void shouldReturn403WhenDisabled() throws Exception {
-        final var request = new MockHttpServletRequest();
+    @DisplayName("falha de login (inclusive usuário inativo) é repassada ao AuthenticationFailureHandler")
+    void failureIsDelegatedToFailureHandler() throws Exception {
+        final var failureHandler = mock(AuthenticationFailureHandler.class);
+        filter.setAuthenticationFailureHandler(failureHandler);
+        final var request = new MockHttpServletRequest("POST", "/login");
+        request.setContent("{\"username\":\"joao\",\"password\":\"Senha@123\"}".getBytes());
         final var response = new MockHttpServletResponse();
         final var ex = new DisabledException("conta inativa");
+        when(authenticationManager.authenticate(any())).thenThrow(ex);
 
-        filter.unsuccessfulAuthentication(request, response, ex);
+        filter.doFilter(request, response, new MockFilterChain());
 
-        assertEquals(403, response.getStatus());
-        assertTrue(response.getContentAsString().contains("inativo"));
-    }
-
-    @Test
-    @DisplayName("unsuccessfulAuthentication com outra exceção deve delegar ao super")
-    void shouldDelegateToSuperForOtherExceptions() throws Exception {
-        final var request = new MockHttpServletRequest();
-        final var response = new MockHttpServletResponse();
-        final var ex = new BadCredentialsException("credenciais inválidas");
-
-        filter.unsuccessfulAuthentication(request, response, ex);
-
-        assertEquals(401, response.getStatus());
-    }
-
-    @Test
-    @DisplayName("unsuccessfulAuthentication com DisabledException deve propagar exceção quando resposta falha ao escrever")
-    void shouldPropagateExceptionWhenResponseWriterFailsOnDisabled() throws Exception {
-        final var request = new MockHttpServletRequest();
-        final var response = mock(HttpServletResponse.class);
-        when(response.getWriter()).thenThrow(new IOException("falha ao obter writer"));
-        final var ex = new DisabledException("conta inativa");
-
-        assertThrows(Exception.class, () -> filter.unsuccessfulAuthentication(request, response, ex));
-        verify(response).setStatus(403);
+        verify(failureHandler).onAuthenticationFailure(request, response, ex);
+        assertEquals("", response.getContentAsString());
     }
 
     @Test

@@ -17,6 +17,10 @@ import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.data.core.TypeInformation;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -220,6 +224,39 @@ class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.detail").value("Refresh token inválido ou expirado."));
     }
 
+    @Test
+    @DisplayName("senha errada no login: 401 credenciais-invalidas")
+    void badCredentialsIs401() throws Exception {
+        expectProblem(mockMvc.perform(get("/throw/bad-credentials")), 401, URN + "credenciais-invalidas",
+                "Credenciais inválidas", "/throw/bad-credentials")
+                .andExpect(jsonPath("$.detail").value("Usuário ou senha inválidos"));
+    }
+
+    @Test
+    @DisplayName("usuário inativo no login: 403 cadastro-inativo")
+    void disabledIs403() throws Exception {
+        expectProblem(mockMvc.perform(get("/throw/disabled")), 403, URN + "cadastro-inativo", "Cadastro inativo",
+                "/throw/disabled")
+                .andExpect(jsonPath("$.detail")
+                        .value("Seu cadastro está inativo, solicite a um administrador para ativá-lo"));
+    }
+
+    @Test
+    @DisplayName("não autenticado: 401 nao-autenticado sem detail")
+    void insufficientAuthenticationIs401() throws Exception {
+        expectProblem(mockMvc.perform(get("/throw/unauthenticated")), 401, URN + "nao-autenticado",
+                "Não autenticado", "/throw/unauthenticated")
+                .andExpect(jsonPath("$.detail").doesNotExist());
+    }
+
+    @Test
+    @DisplayName("sem autoridade: 403 acesso-negado sem detail")
+    void accessDeniedIs403() throws Exception {
+        expectProblem(mockMvc.perform(get("/throw/access-denied")), 403, URN + "acesso-negado", "Acesso negado",
+                "/throw/access-denied")
+                .andExpect(jsonPath("$.detail").doesNotExist());
+    }
+
     @RestController
     @RequestMapping("/throw")
     static class ThrowingController {
@@ -274,6 +311,26 @@ class GlobalExceptionHandlerTest {
         @GetMapping("/refresh")
         void refresh() {
             throw InvalidRefreshTokenException.with("Refresh token inválido ou expirado.");
+        }
+
+        @GetMapping("/bad-credentials")
+        void badCredentials() {
+            throw new BadCredentialsException("Bad credentials");
+        }
+
+        @GetMapping("/disabled")
+        void disabled() {
+            throw new DisabledException("User is disabled");
+        }
+
+        @GetMapping("/unauthenticated")
+        void unauthenticated() {
+            throw new InsufficientAuthenticationException("Full authentication is required");
+        }
+
+        @GetMapping("/access-denied")
+        void accessDenied() {
+            throw new AccessDeniedException("Access Denied");
         }
 
         @GetMapping("/generic")

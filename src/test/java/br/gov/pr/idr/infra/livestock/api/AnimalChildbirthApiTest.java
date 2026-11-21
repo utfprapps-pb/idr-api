@@ -67,7 +67,7 @@ class AnimalChildbirthApiTest extends ApiTestSupport {
                 .andReturn();
 
         perform(get(CHARMOSA_PATH + "/childbirths/" + idOf(created)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -82,7 +82,7 @@ class AnimalChildbirthApiTest extends ApiTestSupport {
     void shouldRejectAnimalOutsideTheProperty() throws Exception {
         perform(get(
                         "/properties/c0000000-0000-0000-0000-000000000002/animals/e0000000-0000-0000-0000-000000000001/childbirths/search"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
