@@ -97,6 +97,6 @@ class AnimalChildbirthApiTest extends ApiTestSupport {
     @DisplayName("exige autenticação")
     void shouldRequireAuthentication() throws Exception {
         mockMvc.perform(get(MIMOSA + "/childbirths/search"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 }

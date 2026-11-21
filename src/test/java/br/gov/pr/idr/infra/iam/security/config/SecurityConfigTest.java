@@ -123,8 +123,7 @@ class SecurityConfigTest {
                     .andExpect(status().is(not(401)));
 
             mockMvc.perform(get("/v1/users/me"))
-                    .andExpect(status().is(org.hamcrest.Matchers.anyOf(
-                            org.hamcrest.Matchers.is(401), org.hamcrest.Matchers.is(403))));
+                    .andExpect(status().isUnauthorized());
         }
     }
 }
