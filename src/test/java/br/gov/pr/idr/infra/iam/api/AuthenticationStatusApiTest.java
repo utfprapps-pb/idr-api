@@ -177,6 +177,9 @@ class AuthenticationStatusApiTest extends ApiTestSupport {
                 .andExpect(status().isBadRequest())
                 .andExpect(problem("validacao"))
                 .andExpect(jsonPath("$.detail").value("Corpo da requisição ausente ou inválido"));
+        mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content("null"))
+                .andExpect(status().isBadRequest())
+                .andExpect(problem("validacao"));
     }
 
     @Test
