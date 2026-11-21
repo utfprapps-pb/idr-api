@@ -6,8 +6,7 @@ import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.iam.refresh_token.RefreshToken;
 import br.gov.pr.idr.domain.iam.refresh_token.RefreshTokenGateway;
-import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
-import br.gov.pr.idr.domain.shared.tactical.validation.NotificationValidation;
+import br.gov.pr.idr.domain.iam.refresh_token.exceptions.InvalidRefreshTokenException;
 
 @CommandUseCase
 public class RotateRefreshTokenUseCase extends UseCase<RotateRefreshTokenCommand, RotateRefreshTokenOutput> {
@@ -23,12 +22,11 @@ public class RotateRefreshTokenUseCase extends UseCase<RotateRefreshTokenCommand
 
     @Override
     public RotateRefreshTokenOutput execute(final RotateRefreshTokenCommand command) {
-        final var notification = NotificationValidation.create();
         final var existing = refreshTokenGateway.findByToken(command.token())
-                                                .orElseThrow(() -> new NotificationException(
-                                                        "Refresh token não encontrado.", notification));
+                                                .orElseThrow(() -> InvalidRefreshTokenException.with(
+                                                        "Refresh token não encontrado."));
         if (existing.isRevoked() || existing.isExpired()) {
-            throw new NotificationException("Refresh token inválido ou expirado.", notification);
+            throw InvalidRefreshTokenException.with("Refresh token inválido ou expirado.");
         }
         this.revokeRefreshTokenUseCase.execute(RevokeRefreshTokenCommand.from(existing.getUserId()));
         final var entity = RefreshToken.create(existing.getUserId(), existing.getUsername(), command.expirationDays());

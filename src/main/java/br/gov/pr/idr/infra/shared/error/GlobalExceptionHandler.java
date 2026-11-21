@@ -1,5 +1,6 @@
 package br.gov.pr.idr.infra.shared.error;
 
+import br.gov.pr.idr.domain.iam.refresh_token.exceptions.InvalidRefreshTokenException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.ForbiddenException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
@@ -92,6 +93,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ProblemDetail handleNotFound(final NotFoundException ex) {
         return ProblemType.NAO_ENCONTRADO.toProblemDetail(HttpStatus.NOT_FOUND, ex.getContext());
+    }
+
+    @ExceptionHandler(InvalidRefreshTokenException.class)
+    public ProblemDetail handleInvalidRefreshToken(final InvalidRefreshTokenException ex) {
+        return ProblemType.REFRESH_TOKEN_INVALIDO.toProblemDetail(HttpStatus.BAD_REQUEST, ex.getContext());
     }
 
     @ExceptionHandler(UnprocessableEntityException.class)

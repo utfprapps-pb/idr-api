@@ -1,5 +1,6 @@
 package br.gov.pr.idr.infra.shared.error;
 
+import br.gov.pr.idr.domain.iam.refresh_token.exceptions.InvalidRefreshTokenException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.DomainException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.ForbiddenException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
@@ -211,6 +212,14 @@ class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.detail").value("Tipo de conteúdo text/plain não suportado"));
     }
 
+    @Test
+    @DisplayName("refresh token inválido: 400 com type próprio")
+    void invalidRefreshTokenIs400WithOwnType() throws Exception {
+        expectProblem(mockMvc.perform(get("/throw/refresh")), 400, URN + "refresh-token-invalido", "Sessão expirada",
+                "/throw/refresh")
+                .andExpect(jsonPath("$.detail").value("Refresh token inválido ou expirado."));
+    }
+
     @RestController
     @RequestMapping("/throw")
     static class ThrowingController {
@@ -260,6 +269,11 @@ class GlobalExceptionHandlerTest {
 
         @GetMapping("/param")
         void param(@RequestParam final int page) {
+        }
+
+        @GetMapping("/refresh")
+        void refresh() {
+            throw InvalidRefreshTokenException.with("Refresh token inválido ou expirado.");
         }
 
         @GetMapping("/generic")
