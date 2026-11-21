@@ -44,6 +44,30 @@ class ProblemDetailSecurityHandlerTest {
     }
 
     @Test
+    @DisplayName("resolver sem resposta (ex.: Accept não suportado): entry point ainda responde 401, não 200 vazio")
+    void commenceFallsBackTo401() throws Exception {
+        handler.commence(request, response, new InsufficientAuthenticationException("x"));
+
+        org.junit.jupiter.api.Assertions.assertEquals(401, response.getStatus());
+    }
+
+    @Test
+    @DisplayName("resolver sem resposta: AccessDeniedHandler ainda responde 403")
+    void handleFallsBackTo403() throws Exception {
+        handler.handle(request, response, new AccessDeniedException("x"));
+
+        org.junit.jupiter.api.Assertions.assertEquals(403, response.getStatus());
+    }
+
+    @Test
+    @DisplayName("resolver sem resposta: falha de login ainda responde 401")
+    void onAuthenticationFailureFallsBackTo401() throws Exception {
+        handler.onAuthenticationFailure(request, response, new BadCredentialsException("x"));
+
+        org.junit.jupiter.api.Assertions.assertEquals(401, response.getStatus());
+    }
+
+    @Test
     @DisplayName("AuthenticationFailureHandler repassa a falha de login")
     void onAuthenticationFailureDelegatesToResolver() throws Exception {
         final var ex = new BadCredentialsException("Bad credentials");

@@ -273,7 +273,9 @@ class GlobalExceptionHandlerTest {
     @Test
     @DisplayName("500 gerado pelo próprio Spring MVC é registrado no log")
     void mvcServerErrorIsLogged(final CapturedOutput output) throws Exception {
-        mockMvc.perform(get("/throw/missing-var")).andExpect(status().isInternalServerError());
+        expectProblem(mockMvc.perform(get("/throw/missing-var")), 500, URN + "erro-interno", "Erro interno",
+                "/throw/missing-var")
+                .andExpect(jsonPath("$.detail").value("Erro inesperado, tente novamente mais tarde"));
 
         org.assertj.core.api.Assertions.assertThat(output.getOut() + output.getErr())
                 .contains("MissingPathVariableException");

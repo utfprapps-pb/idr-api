@@ -83,6 +83,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
         if (statusCode.is5xxServerError()) {
             log.error("Erro interno do Spring MVC", ex);
+            if (resolvedBody instanceof ProblemDetail problem) {
+                // Mesmo contrato do handler genérico: categoria erro-interno, sem detalhes internos.
+                problem.setType(ProblemType.ERRO_INTERNO.type());
+                problem.setTitle(ProblemType.ERRO_INTERNO.title());
+                problem.setDetail(INTERNAL_ERROR_DETAIL);
+            }
         }
         return super.handleExceptionInternal(ex, resolvedBody, headers, statusCode, request);
     }

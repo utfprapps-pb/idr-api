@@ -57,6 +57,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throw new HttpMessageNotReadableException("Corpo da requisição ausente ou inválido", e,
                     new ServletServerHttpRequest(request));
         }
+        if (credentials == null) {
+            // Corpo "null": o Jackson devolve null sem lançar exceção.
+            throw new HttpMessageNotReadableException("Corpo da requisição ausente ou inválido",
+                    new ServletServerHttpRequest(request));
+        }
         final var authToken = UsernamePasswordAuthenticationToken.unauthenticated(
                 credentials.username(),
                 credentials.password()

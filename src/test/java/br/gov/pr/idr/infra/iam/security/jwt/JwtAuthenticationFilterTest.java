@@ -75,6 +75,17 @@ class JwtAuthenticationFilterTest {
     }
 
     @Test
+    @DisplayName("attemptAuthentication com corpo JSON null: 400 (HttpMessageNotReadableException), não NPE")
+    void shouldRejectNullBody() {
+        final var request = new MockHttpServletRequest();
+        request.setContent("null".getBytes());
+        final var response = new MockHttpServletResponse();
+
+        assertThrows(HttpMessageNotReadableException.class, () -> filter.attemptAuthentication(request, response));
+        verifyNoInteractions(authenticationManager);
+    }
+
+    @Test
     @DisplayName("falha de login (inclusive usuário inativo) é repassada ao AuthenticationFailureHandler")
     void failureIsDelegatedToFailureHandler() throws Exception {
         final var failureHandler = mock(AuthenticationFailureHandler.class);
