@@ -21,7 +21,11 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,6 +51,30 @@ class GetAnimalByIdUseCaseTest {
 
         assertEquals("Mimosa", output.identifier());
         assertEquals("Holandesa", output.breedName());
+    }
+
+    @Test
+    void shouldReturnMotherIdentifier() {
+        final var motherId = AnimalID.unique();
+        final var animal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), motherId, breedId,
+                null, "Charmosa", null, null, null, null, null, null, null);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
+        when(nameLookup.animalIdentifier(motherId)).thenReturn("Mimosa");
+
+        final var output = useCase.execute(new GetAnimalByIdCommand(propertyId, animalId, PropertySearchScope.unrestricted()));
+
+        assertEquals(motherId.id(), output.animalMotherId());
+        assertEquals("Mimosa", output.animalMotherIdentifier());
+    }
+
+    @Test
+    void shouldReturnNullMotherIdentifierWithoutMother() {
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(existingAnimal);
+
+        final var output = useCase.execute(new GetAnimalByIdCommand(propertyId, animalId, PropertySearchScope.unrestricted()));
+
+        assertNull(output.animalMotherIdentifier());
+        verify(nameLookup, never()).animalIdentifier(any());
     }
 
     @Test

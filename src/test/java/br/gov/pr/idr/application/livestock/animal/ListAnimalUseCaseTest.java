@@ -35,6 +35,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -67,6 +68,32 @@ class ListAnimalUseCaseTest {
 
         assertEquals(1, output.total());
         assertEquals("Gir", output.items().get(0).breedName());
+    }
+
+    @Test
+    void shouldResolveMotherIdentifiersInOneLookup() {
+        final var motherA = AnimalID.unique();
+        final var motherB = AnimalID.unique();
+        final var animals = List.of(
+                Animal.with(AnimalID.unique(), PropertyID.from(propertyId), motherA, breedId,
+                        null, "A", null, null, null, null, null, null, null),
+                Animal.with(AnimalID.unique(), PropertyID.from(propertyId), motherB, breedId,
+                        null, "B", null, null, null, null, null, null, null),
+                Animal.with(AnimalID.unique(), PropertyID.from(propertyId), null, breedId,
+                        null, "C", null, null, null, null, null, null, null));
+        when(animalGateway.search(eq(PropertyID.from(propertyId)), any()))
+                .thenReturn(new Pagination<>(0, 10, 3, animals));
+        when(nameLookup.breedNames(Set.of(breedId))).thenReturn(Map.of(breedId, "Gir"));
+        when(nameLookup.animalIdentifiers(Set.of(motherA, motherB)))
+                .thenReturn(Map.of(motherA, "Mimosa", motherB, "Estrela"));
+
+        final var output = useCase.execute(new ListAnimalCommand(propertyId, PropertySearchScope.unrestricted(),
+                SearchQuery.from(0, 10, "", "identifier", "asc")));
+
+        assertEquals("Mimosa", output.items().get(0).animalMotherIdentifier());
+        assertEquals("Estrela", output.items().get(1).animalMotherIdentifier());
+        assertEquals(null, output.items().get(2).animalMotherIdentifier());
+        verify(nameLookup, times(1)).animalIdentifiers(any());
     }
 
     @Test

@@ -55,6 +55,22 @@ class FindAnimalByIdentifierUseCaseTest {
     }
 
     @Test
+    void shouldReturnMotherIdentifierWhenFound() {
+        final var breedId = BreedID.unique();
+        final var motherId = AnimalID.unique();
+        final var animal = Animal.with(AnimalID.unique(), PropertyID.from(propertyId), motherId, breedId,
+                null, "Charmosa", null, null, null, null, null, null, null);
+        when(animalGateway.findByPropertyIdAndIdentifier(PropertyID.from(propertyId), "Charmosa"))
+                .thenReturn(Optional.of(animal));
+        when(nameLookup.animalIdentifier(motherId)).thenReturn("Mimosa");
+
+        final var output = useCase.execute(
+                new FindAnimalByIdentifierCommand(propertyId, "Charmosa", PropertySearchScope.unrestricted()));
+
+        assertEquals("Mimosa", output.orElseThrow().animalMotherIdentifier());
+    }
+
+    @Test
     void shouldReturnAnimalWhenFoundWithinAuthorizedProperty() {
         final var breedId = BreedID.unique();
         final var animal = Animal.with(AnimalID.unique(), PropertyID.from(propertyId), null, breedId,

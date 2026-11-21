@@ -6,9 +6,12 @@ import br.gov.pr.idr.application.shared.stereotype.QueryUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
+import br.gov.pr.idr.domain.livestock.animal.AnimalID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @QueryUseCase
@@ -33,6 +36,12 @@ public class ListAnimalUseCase extends UseCase<ListAnimalCommand, Pagination<Lis
         final var breedNames = nameLookup.breedNames(
                 page.items().stream().map(Animal::getBreedId).collect(Collectors.toSet()));
 
-        return page.map(animal -> ListAnimalOutput.from(animal, breedNames.get(animal.getBreedId())));
+        final var motherIds = page.items().stream().map(Animal::getAnimalMotherId).flatMap(Optional::stream)
+                .collect(Collectors.toSet());
+        final Map<AnimalID, String> motherIdentifiers = motherIds.isEmpty() ? Map.of()
+                : nameLookup.animalIdentifiers(motherIds);
+
+        return page.map(animal -> ListAnimalOutput.from(animal, breedNames.get(animal.getBreedId()),
+                animal.getAnimalMotherId().map(motherIdentifiers::get).orElse(null)));
     }
 }

@@ -9,6 +9,7 @@ public record ListAnimalOutput(
         UUID id,
         UUID propertyId,
         UUID animalMotherId,
+        String animalMotherIdentifier,
         UUID breedId,
         String breedName,
         String type,
@@ -22,11 +23,13 @@ public record ListAnimalOutput(
         Float ecc
 ) {
 
-    public static ListAnimalOutput from(final Animal entity, final String breedName) {
+    public static ListAnimalOutput from(final Animal entity, final String breedName,
+                                    final String animalMotherIdentifier) {
         return new ListAnimalOutput(
                 entity.getId().id(),
                 entity.getPropertyId().id(),
                 entity.getAnimalMotherId().map(id -> id.id()).orElse(null),
+                animalMotherIdentifier,
                 entity.getBreedId().id(),
                 breedName,
                 entity.getType(),

@@ -147,7 +147,7 @@ class AnimalControllerTest {
     void shouldGetAnimalById() throws Exception {
         final var propertyId = UUID.randomUUID();
         final var id = UUID.randomUUID();
-        final var output = new GetAnimalByIdOutput(id, propertyId, null, UUID.randomUUID(), "Holandesa", "Bovino", "Mimosa",
+        final var output = new GetAnimalByIdOutput(id, propertyId, null, null, UUID.randomUUID(), "Holandesa", "Bovino", "Mimosa",
                 "F", "Normal", LocalDate.of(2020, 1, 1), 30f, 180f, 220f, 3.5f);
         when(getAnimalByIdUseCase.execute(any())).thenReturn(output);
 
@@ -166,7 +166,7 @@ class AnimalControllerTest {
             "nunca retornando animais de outra propriedade (prova da correção da falha de segurança)")
     void shouldSearchAnimalsScopedByPropertyIdInPath() throws Exception {
         final var propertyA = UUID.randomUUID();
-        final var animalFromPropertyA = new ListAnimalOutput(UUID.randomUUID(), propertyA, null,
+        final var animalFromPropertyA = new ListAnimalOutput(UUID.randomUUID(), propertyA, null, null,
                 UUID.randomUUID(), "Holandesa", "Bovino", "Mimosa", "F", "Normal", LocalDate.of(2020, 1, 1), 30f, 180f,
                 220f, 3.5f);
         final var pagination = new Pagination<>(0, 10, 1L, List.of(animalFromPropertyA));
@@ -204,7 +204,7 @@ class AnimalControllerTest {
     @DisplayName("GET /properties/{propertyId}/animals/findAnimal/{identifier} deve retornar animal e 200")
     void shouldFindAnimalByIdentifier() throws Exception {
         final var propertyId = UUID.randomUUID();
-        final var output = new GetAnimalByIdOutput(UUID.randomUUID(), propertyId, null, UUID.randomUUID(),
+        final var output = new GetAnimalByIdOutput(UUID.randomUUID(), propertyId, null, null, UUID.randomUUID(),
                 "Holandesa", "Bovino", "Mimosa", "F", "Normal", LocalDate.of(2020, 1, 1), 30f, 180f, 220f, 3.5f);
         when(findAnimalByIdentifierUseCase.execute(any())).thenReturn(Optional.of(output));
 
