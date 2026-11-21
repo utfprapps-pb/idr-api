@@ -31,25 +31,21 @@ public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnim
         referencePolicy.ensureAnimalInProperty(command.animalMotherId(), PropertyID.from(command.propertyId()),
                 "mãe");
 
+        // Semântica de PUT: os campos de identificação são substituídos (nulo apaga); as medidas não fazem
+        // parte da edição e são preservadas.
         final var updatedAnimal = existingAnimal.update(
-                orCurrent(command.animalMotherId() == null ? null : AnimalID.from(command.animalMotherId()),
-                        existingAnimal.getAnimalMotherId().orElse(null)),
+                command.animalMotherId() == null ? null : AnimalID.from(command.animalMotherId()),
                 BreedID.from(command.breedId()),
-                orCurrent(command.type(), existingAnimal.getType()),
+                command.type(),
                 command.identifier(),
-                orCurrent(command.gender(), existingAnimal.getGender()),
-                orCurrent(command.bornCondition(), existingAnimal.getBornCondition()),
-                orCurrent(command.bornDate(), existingAnimal.getBornDate()),
-                orCurrent(command.bornWeight(), existingAnimal.getBornWeight()),
-                orCurrent(command.previousWeight(), existingAnimal.getPreviousWeight()),
-                orCurrent(command.currentWeight(), existingAnimal.getCurrentWeight()),
-                orCurrent(command.ecc(), existingAnimal.getEcc()));
+                command.gender(),
+                command.bornCondition(),
+                command.bornDate(),
+                command.bornWeight(),
+                existingAnimal.getPreviousWeight(),
+                existingAnimal.getCurrentWeight(),
+                existingAnimal.getEcc());
 
         return UpdateAnimalOutput.from(animalGateway.update(updatedAnimal));
-    }
-
-    /** Semântica de PATCH: campo ausente (null) na requisição mantém o valor atual. */
-    private static <T> T orCurrent(final T incoming, final T current) {
-        return incoming != null ? incoming : current;
     }
 }

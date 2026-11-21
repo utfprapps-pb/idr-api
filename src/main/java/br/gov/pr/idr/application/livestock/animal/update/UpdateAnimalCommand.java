@@ -16,9 +16,6 @@ public record UpdateAnimalCommand(
         String gender,
         String bornCondition,
         LocalDate bornDate,
-        Float bornWeight,
-        Float previousWeight,
-        Float currentWeight,
-        Float ecc
+        Float bornWeight
 ) {
 }

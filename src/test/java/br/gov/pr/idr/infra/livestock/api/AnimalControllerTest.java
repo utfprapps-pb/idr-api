@@ -39,6 +39,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -96,8 +97,8 @@ class AnimalControllerTest {
     }
 
     @Test
-    @DisplayName("PATCH /properties/{propertyId}/animals/{id} deve atualizar animal e retornar 200")
-    void shouldUpdateAnimal() throws Exception {
+    @DisplayName("PUT /properties/{propertyId}/animals/{id} deve atualizar animal e retornar 200")
+    void shouldUpdateAnimalWithPut() throws Exception {
         final var propertyId = UUID.randomUUID();
         final var id = UUID.randomUUID();
         final var breedId = UUID.randomUUID();
@@ -105,12 +106,23 @@ class AnimalControllerTest {
                 "Normal", LocalDate.of(2020, 1, 1), 30f, 180f, 220f, 3.5f);
         when(updateAnimalUseCase.execute(any())).thenReturn(output);
 
-        mockMvc.perform(patch("/properties/" + propertyId + "/animals/" + id)
+        mockMvc.perform(put("/properties/" + propertyId + "/animals/" + id)
                         .principal(AUTH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createBody(breedId)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.identifier").value("Charmosa"));
+    }
+
+    @Test
+    @DisplayName("PATCH /properties/{propertyId}/animals/{id} não existe mais e não chega ao use case")
+    void shouldRejectPatch() throws Exception {
+        mockMvc.perform(patch("/properties/" + UUID.randomUUID() + "/animals/" + UUID.randomUUID())
+                        .principal(AUTH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(createBody(UUID.randomUUID())))
+                .andExpect(result -> assertNotEquals(200, result.getResponse().getStatus()));
+        verifyNoInteractions(updateAnimalUseCase);
     }
 
     @Test

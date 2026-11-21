@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -53,7 +54,7 @@ class UpdateAnimalUseCaseTest {
 
     private UpdateAnimalCommand validCommand() {
         return new UpdateAnimalCommand(propertyId, animalId, PropertySearchScope.unrestricted(), null, breedId, "T", "I", "F",
-                "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+                "Vivo", LocalDate.now(), 1f);
     }
 
     @Test
@@ -63,38 +64,72 @@ class UpdateAnimalUseCaseTest {
         when(animalGateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
 
         final var output = useCase.execute(new UpdateAnimalCommand(propertyId, animalId, PropertySearchScope.unrestricted(),
-                null, breedId, "T2", "I2", "M", "Morto", LocalDate.now(), 2f, 2f, 2f, 2f));
+                null, breedId, "T2", "I2", "M", "Morto", LocalDate.now(), 2f));
 
         assertEquals(propertyId, output.propertyId());
         assertEquals("I2", output.identifier());
     }
 
+    private Animal animalWithData(final AnimalID motherId) {
+        return Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), motherId, BreedID.unique(),
+                "Grande", "Mimosa", "Fêmea", "Vivo", LocalDate.of(2019, 6, 23), 12f, 45f, 62f, 3.5f);
+    }
+
     @Test
-    @DisplayName("PATCH parcial: campos ausentes mantêm o valor atual (form envia só identificador e raça)")
-    void shouldKeepCurrentValuesForFieldsAbsentFromRequest() {
-        final var motherId = AnimalID.unique();
-        final var bornDate = LocalDate.of(2019, 6, 23);
-        final var animalWithData = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), motherId,
-                BreedID.unique(), "type 1", "Mimosa", "F", "Vivo", bornDate, 12f, 45f, 62f, 32f);
-        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animalWithData);
+    @DisplayName("PUT: campo opcional enviado nulo é apagado, inclusive a mãe")
+    void shouldClearOptionalFieldsSentAsNull() {
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted()))
+                .thenReturn(animalWithData(AnimalID.unique()));
         when(breedGateway.existsById(any())).thenReturn(true);
         when(animalGateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
 
-        final var output = useCase.execute(new UpdateAnimalCommand(propertyId, animalId, PropertySearchScope.unrestricted(),
-                null, breedId, null, "Mimosa Editada", null, null, null, null, null, null, null));
+        final var output = useCase.execute(new UpdateAnimalCommand(propertyId, animalId,
+                PropertySearchScope.unrestricted(), null, breedId, null, "Mimosa", null, null, null, null));
 
-        assertEquals("Mimosa Editada", output.identifier());
-        assertEquals(breedId, output.breedId());
-        assertEquals(motherId.id(), output.animalMotherId());
-        assertEquals("type 1", output.type());
-        assertEquals("F", output.gender());
-        assertEquals("Vivo", output.bornCondition());
-        assertEquals(bornDate, output.bornDate());
-        assertEquals(12f, output.bornWeight());
+        assertNull(output.animalMotherId());
+        assertNull(output.type());
+        assertNull(output.gender());
+        assertNull(output.bornCondition());
+        assertNull(output.bornDate());
+        assertNull(output.bornWeight());
+        verify(animalGateway, never()).existsByIdAndPropertyId(any(), any());
+    }
+
+    @Test
+    @DisplayName("PUT: peso anterior, peso atual e ECC são preservados")
+    void shouldPreserveMeasuresOnUpdate() {
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted()))
+                .thenReturn(animalWithData(null));
+        when(breedGateway.existsById(any())).thenReturn(true);
+        when(animalGateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        final var output = useCase.execute(validCommand());
+
         assertEquals(45f, output.previousWeight());
         assertEquals(62f, output.currentWeight());
-        assertEquals(32f, output.ecc());
-        verify(animalGateway, never()).existsByIdAndPropertyId(any(), any());
+        assertEquals(3.5f, output.ecc());
+    }
+
+    @Test
+    @DisplayName("PUT: campos de identificação são substituídos pelos enviados")
+    void shouldReplaceIdentificationFields() {
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted()))
+                .thenReturn(animalWithData(null));
+        when(breedGateway.existsById(any())).thenReturn(true);
+        when(animalGateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
+        final var bornDate = LocalDate.of(2020, 1, 31);
+
+        final var output = useCase.execute(new UpdateAnimalCommand(propertyId, animalId,
+                PropertySearchScope.unrestricted(), null, breedId, "Média", "Estrela", "Macho", "Morto", bornDate,
+                30f));
+
+        assertEquals(breedId, output.breedId());
+        assertEquals("Média", output.type());
+        assertEquals("Estrela", output.identifier());
+        assertEquals("Macho", output.gender());
+        assertEquals("Morto", output.bornCondition());
+        assertEquals(bornDate, output.bornDate());
+        assertEquals(30f, output.bornWeight());
     }
 
     @Test
@@ -117,7 +152,7 @@ class UpdateAnimalUseCaseTest {
         when(breedGateway.existsById(any())).thenReturn(true);
         when(animalGateway.existsByIdAndPropertyId(any(), any())).thenReturn(false);
         final var command = new UpdateAnimalCommand(propertyId, animalId, PropertySearchScope.unrestricted(), UUID.randomUUID(),
-                breedId, "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+                breedId, "T", "I", "F", "Vivo", LocalDate.now(), 1f);
         assertThrows(NotificationException.class, () -> useCase.execute(command));
     }
 
@@ -131,7 +166,7 @@ class UpdateAnimalUseCaseTest {
                 .thenReturn(false);
 
         final var command = new UpdateAnimalCommand(propertyId, animalId, PropertySearchScope.unrestricted(), motherId,
-                breedId, "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+                breedId, "T", "I", "F", "Vivo", LocalDate.now(), 1f);
         assertThrows(NotificationException.class, () -> useCase.execute(command));
     }
 
@@ -141,7 +176,7 @@ class UpdateAnimalUseCaseTest {
         when(breedGateway.existsById(any())).thenReturn(true);
 
         final var command = new UpdateAnimalCommand(propertyId, animalId, PropertySearchScope.unrestricted(), animalId,
-                breedId, "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+                breedId, "T", "I", "F", "Vivo", LocalDate.now(), 1f);
         when(animalGateway.existsByIdAndPropertyId(AnimalID.from(animalId), PropertyID.from(propertyId)))
                 .thenReturn(true);
         assertThrows(NotificationException.class, () -> useCase.execute(command));

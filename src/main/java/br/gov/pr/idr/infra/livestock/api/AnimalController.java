@@ -54,7 +54,7 @@ public class AnimalController {
         return ResponseEntity.ok(CreateAnimalResponse.from(output));
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UpdateAnimalResponse> update(@PathVariable UUID propertyId,
                                                         @PathVariable UUID id,
                                                         final Authentication authentication,
@@ -62,8 +62,7 @@ public class AnimalController {
         final var scope = AuthenticationSupport.scope(authentication);
         final var command = new UpdateAnimalCommand(propertyId, id, scope, request.animalMotherId(),
                 request.breedId(), request.type(), request.identifier(), request.gender(),
-                request.bornCondition(), request.bornDate(), request.bornWeight(), request.previousWeight(),
-                request.currentWeight(), request.ecc());
+                request.bornCondition(), request.bornDate(), request.bornWeight());
         final var output = updateAnimalUseCase.execute(command);
         return ResponseEntity.ok(UpdateAnimalResponse.from(output));
     }
