@@ -9,6 +9,8 @@ import br.gov.pr.idr.domain.livestock.animal.AnimalID;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 
+import java.util.Objects;
+
 @CommandUseCase
 public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnimalOutput> {
 
@@ -28,8 +30,13 @@ public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnim
         final var existingAnimal = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
                 command.scope());
         referencePolicy.ensureBreedExists(command.breedId());
-        referencePolicy.ensureAnimalInProperty(command.animalMotherId(), PropertyID.from(command.propertyId()),
-                "mãe");
+        // A mãe só é revalidada quando muda: o vínculo já gravado com uma mãe excluída depois não pode
+        // impedir a edição dos outros campos.
+        final var currentMotherId = existingAnimal.getAnimalMotherId().map(AnimalID::id).orElse(null);
+        if (!Objects.equals(command.animalMotherId(), currentMotherId)) {
+            referencePolicy.ensureAnimalInProperty(command.animalMotherId(), PropertyID.from(command.propertyId()),
+                    "mãe");
+        }
 
         // Semântica de PUT: os campos de identificação são substituídos (nulo apaga); as medidas não fazem
         // parte da edição e são preservadas.

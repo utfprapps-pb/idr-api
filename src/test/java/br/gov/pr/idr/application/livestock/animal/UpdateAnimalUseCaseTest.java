@@ -133,6 +133,24 @@ class UpdateAnimalUseCaseTest {
     }
 
     @Test
+    @DisplayName("PUT: mãe inalterada não é revalidada (permite editar filho de mãe excluída)")
+    void shouldNotRevalidateUnchangedMother() {
+        final var motherId = AnimalID.unique();
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted()))
+                .thenReturn(animalWithData(motherId));
+        when(breedGateway.existsById(any())).thenReturn(true);
+        when(animalGateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        final var output = useCase.execute(new UpdateAnimalCommand(propertyId, animalId,
+                PropertySearchScope.unrestricted(), motherId.id(), breedId, null, "Mimosa Editada", null, null,
+                null, null));
+
+        assertEquals(motherId.id(), output.animalMotherId());
+        assertEquals("Mimosa Editada", output.identifier());
+        verify(animalGateway, never()).existsByIdAndPropertyId(any(), any());
+    }
+
+    @Test
     void shouldThrowForbiddenWhenAccessGuardDenies() {
         when(accessPolicy.ensureAccessToAnimal(any(), any(), any())).thenThrow(ForbiddenException.with("x"));
         assertThrows(ForbiddenException.class, () -> useCase.execute(validCommand()));
