@@ -226,8 +226,8 @@ class AnimalPurchasesControllerTest {
     }
 
     @Test
-    @DisplayName("deve retornar 400 quando o Use Case lança NotFoundException (compra não pertence ao animal)")
-    void shouldReturn400WhenAnimalPurchasesNotFound() throws Exception {
+    @DisplayName("deve retornar 404 quando o Use Case lança NotFoundException (compra não pertence ao animal)")
+    void shouldReturn404WhenAnimalPurchasesNotFound() throws Exception {
         final var propertyId = UUID.randomUUID();
         final var animalId = UUID.randomUUID();
         final var id = UUID.randomUUID();
@@ -235,6 +235,6 @@ class AnimalPurchasesControllerTest {
                 .thenThrow(NotFoundException.with("Compra não encontrada"));
 
         mockMvc.perform(get(basePath(propertyId, animalId) + "/" + id).principal(AUTH))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 }

@@ -229,13 +229,13 @@ class AnimalControllerTest {
     }
 
     @Test
-    @DisplayName("deve retornar 400 quando o Use Case lança NotFoundException (animal não pertence à propriedade)")
-    void shouldReturn400WhenAnimalNotFound() throws Exception {
+    @DisplayName("deve retornar 404 quando o Use Case lança NotFoundException (animal não pertence à propriedade)")
+    void shouldReturn404WhenAnimalNotFound() throws Exception {
         final var propertyId = UUID.randomUUID();
         final var id = UUID.randomUUID();
         when(getAnimalByIdUseCase.execute(any())).thenThrow(NotFoundException.with("Animal não encontrado"));
 
         mockMvc.perform(get("/properties/" + propertyId + "/animals/" + id).principal(AUTH))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 }

@@ -90,7 +90,7 @@ class AnimalChildbirthApiTest extends ApiTestSupport {
     void shouldRejectUnknownSortField() throws Exception {
         perform(get(MIMOSA + "/childbirths/search?sort=foo"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Campo de ordenação inválido"));
+                .andExpect(jsonPath("$.detail").value(org.hamcrest.Matchers.startsWith("Campo de ordenação inválido")));
     }
 
     @Test

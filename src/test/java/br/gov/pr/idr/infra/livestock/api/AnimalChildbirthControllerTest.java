@@ -234,8 +234,8 @@ class AnimalChildbirthControllerTest {
     }
 
     @Test
-    @DisplayName("deve retornar 400 quando o Use Case lança NotFoundException (parto não pertence ao animal)")
-    void shouldReturn400WhenAnimalChildbirthNotFound() throws Exception {
+    @DisplayName("deve retornar 404 quando o Use Case lança NotFoundException (parto não pertence ao animal)")
+    void shouldReturn404WhenAnimalChildbirthNotFound() throws Exception {
         final var propertyId = UUID.randomUUID();
         final var animalId = UUID.randomUUID();
         final var id = UUID.randomUUID();
@@ -243,6 +243,6 @@ class AnimalChildbirthControllerTest {
                 .thenThrow(NotFoundException.with("Doença não encontrada"));
 
         mockMvc.perform(get(basePath(propertyId, animalId) + "/" + id).principal(AUTH))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 }
