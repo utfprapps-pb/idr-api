@@ -21,6 +21,10 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -45,6 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ExtendWith(OutputCaptureExtension.class)
 @DisplayName("GlobalExceptionHandler: erros no formato Problem Details (RFC 9457)")
 class GlobalExceptionHandlerTest {
 
@@ -257,6 +262,23 @@ class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.detail").doesNotExist());
     }
 
+    @Test
+    @DisplayName("falha de infraestrutura no login: 500 erro-interno, não credenciais inválidas")
+    void internalAuthenticationServiceIs500() throws Exception {
+        expectProblem(mockMvc.perform(get("/throw/internal-auth")), 500, URN + "erro-interno", "Erro interno",
+                "/throw/internal-auth")
+                .andExpect(jsonPath("$.detail").value("Erro inesperado, tente novamente mais tarde"));
+    }
+
+    @Test
+    @DisplayName("500 gerado pelo próprio Spring MVC é registrado no log")
+    void mvcServerErrorIsLogged(final CapturedOutput output) throws Exception {
+        mockMvc.perform(get("/throw/missing-var")).andExpect(status().isInternalServerError());
+
+        org.assertj.core.api.Assertions.assertThat(output.getOut() + output.getErr())
+                .contains("MissingPathVariableException");
+    }
+
     @RestController
     @RequestMapping("/throw")
     static class ThrowingController {
@@ -331,6 +353,15 @@ class GlobalExceptionHandlerTest {
         @GetMapping("/access-denied")
         void accessDenied() {
             throw new AccessDeniedException("Access Denied");
+        }
+
+        @GetMapping("/internal-auth")
+        void internalAuth() {
+            throw new InternalAuthenticationServiceException("Connection refused");
+        }
+
+        @GetMapping("/missing-var")
+        void missingVar(@PathVariable("id") final String id) {
         }
 
         @GetMapping("/generic")

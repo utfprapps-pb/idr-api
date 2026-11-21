@@ -213,7 +213,9 @@ class AnimalControllerTest {
         when(findAnimalByIdentifierUseCase.execute(any())).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/properties/" + propertyId + "/animals/findAnimal/Inexistente").principal(AUTH))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.type")
+                        .value("urn:idr:problem:nao-encontrado"));
     }
 
     @Test

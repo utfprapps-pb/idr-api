@@ -171,6 +171,15 @@ class AuthenticationStatusApiTest extends ApiTestSupport {
     }
 
     @Test
+    @DisplayName("login com corpo inválido: 400 validacao, não o /error do Boot")
+    void loginWithMalformedBodyIsValidation() throws Exception {
+        mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content("{"))
+                .andExpect(status().isBadRequest())
+                .andExpect(problem("validacao"))
+                .andExpect(jsonPath("$.detail").value("Corpo da requisição ausente ou inválido"));
+    }
+
+    @Test
     @DisplayName("token válido de usuário removido do banco retorna 401, não 500")
     void removedUserTokenIsUnauthorized() throws Exception {
         mockMvc.perform(withBearer(get(PROTECTED), tokenOfRemovedUser()))

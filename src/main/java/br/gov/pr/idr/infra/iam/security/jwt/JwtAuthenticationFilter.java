@@ -10,9 +10,13 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
+
+import java.io.IOException;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,11 +46,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    @SneakyThrows
     @NullMarked
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
-        final var credentials = objectMapper.readValue(request.getInputStream(), AuthLoginRequest.class);
+        final AuthLoginRequest credentials;
+        try {
+            credentials = objectMapper.readValue(request.getInputStream(), AuthLoginRequest.class);
+        } catch (IOException e) {
+            // Corpo ausente ou JSON inválido: vira 400 validacao no GlobalExceptionHandler.
+            throw new HttpMessageNotReadableException("Corpo da requisição ausente ou inválido", e,
+                    new ServletServerHttpRequest(request));
+        }
         final var authToken = UsernamePasswordAuthenticationToken.unauthenticated(
                 credentials.username(),
                 credentials.password()

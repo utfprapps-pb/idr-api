@@ -1,5 +1,6 @@
 package br.gov.pr.idr.infra.livestock.api;
 
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
 import br.gov.pr.idr.application.livestock.animal.create.CreateAnimalCommand;
 import br.gov.pr.idr.application.livestock.animal.create.CreateAnimalUseCase;
 import br.gov.pr.idr.application.livestock.animal.delete.DeleteAnimalCommand;
@@ -109,6 +110,7 @@ public class AnimalController {
         final var command = new FindAnimalByIdentifierCommand(propertyId, identifier, scope);
         return findAnimalByIdentifierUseCase.execute(command)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseThrow(() -> NotFoundException.with(
+                        "Animal com o identificador %s não encontrado".formatted(identifier)));
     }
 }

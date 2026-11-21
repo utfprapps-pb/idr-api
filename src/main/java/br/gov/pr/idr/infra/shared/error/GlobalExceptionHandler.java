@@ -19,6 +19,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -80,6 +81,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             problem.setType(ProblemType.VALIDACAO.type());
             problem.setTitle(ProblemType.VALIDACAO.title());
         }
+        if (statusCode.is5xxServerError()) {
+            log.error("Erro interno do Spring MVC", ex);
+        }
         return super.handleExceptionInternal(ex, resolvedBody, headers, statusCode, request);
     }
 
@@ -103,6 +107,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ProblemDetail handleDisabled(final DisabledException ex) {
         return ProblemType.CADASTRO_INATIVO.toProblemDetail(HttpStatus.FORBIDDEN,
                 "Seu cadastro está inativo, solicite a um administrador para ativá-lo");
+    }
+
+    /** Falha de infraestrutura durante o login (ex.: banco fora do ar): não é erro de credencial. */
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    public ProblemDetail handleInternalAuthenticationService(final InternalAuthenticationServiceException ex) {
+        return handleGeneric(ex);
     }
 
     /** Sem token, token inválido ou expirado, usuário do token removido. */

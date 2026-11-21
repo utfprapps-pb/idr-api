@@ -1,6 +1,7 @@
 package br.gov.pr.idr.infra.iam.security.config;
 
 import br.gov.pr.idr.application.iam.refresh_token.issue.IssueRefreshTokenUseCase;
+import br.gov.pr.idr.infra.iam.security.FilterExceptionResolverFilter;
 import br.gov.pr.idr.infra.iam.security.ProblemDetailSecurityHandler;
 import br.gov.pr.idr.infra.iam.security.jwt.JwtAuthenticationFilter;
 import br.gov.pr.idr.infra.iam.security.jwt.JwtAuthorizationFilter;
@@ -25,6 +26,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -44,6 +46,7 @@ public class SecurityConfig {
     private final IssueRefreshTokenUseCase issueRefreshTokenUseCase;
     private final CorsProperties corsProperties;
     private final ProblemDetailSecurityHandler problemDetailSecurityHandler;
+    private final HandlerExceptionResolver handlerExceptionResolver;
 
     public SecurityConfig(
             JwtService jwtService,
@@ -59,6 +62,7 @@ public class SecurityConfig {
         this.issueRefreshTokenUseCase = issueRefreshTokenUseCase;
         this.corsProperties = corsProperties;
         this.problemDetailSecurityHandler = new ProblemDetailSecurityHandler(handlerExceptionResolver);
+        this.handlerExceptionResolver = handlerExceptionResolver;
     }
 
     @Bean
@@ -99,6 +103,7 @@ public class SecurityConfig {
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint(problemDetailSecurityHandler)
                         .accessDeniedHandler(problemDetailSecurityHandler))
+                .addFilterBefore(new FilterExceptionResolverFilter(handlerExceptionResolver), LogoutFilter.class)
                 .addFilter(authenticationFilter)
                 .addFilterBefore(new JwtAuthorizationFilter(jwtService, userDetailsService), UsernamePasswordAuthenticationFilter.class);
 

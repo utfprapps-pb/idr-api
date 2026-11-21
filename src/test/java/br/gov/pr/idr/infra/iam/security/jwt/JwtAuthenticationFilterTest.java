@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -69,7 +70,7 @@ class JwtAuthenticationFilterTest {
         request.setContent("{invalid-json".getBytes());
         final var response = new MockHttpServletResponse();
 
-        assertThrows(Exception.class, () -> filter.attemptAuthentication(request, response));
+        assertThrows(HttpMessageNotReadableException.class, () -> filter.attemptAuthentication(request, response));
         verifyNoInteractions(authenticationManager);
     }
 
