@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.data.core.TypeInformation;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -47,8 +49,13 @@ class GlobalExceptionHandlerTest {
 
     @BeforeEach
     void setUp() {
+        final var messageSource = new ResourceBundleMessageSource();
+        messageSource.setBasename("messages");
+        messageSource.setDefaultEncoding("UTF-8");
+        final var handler = new GlobalExceptionHandler();
+        handler.setMessageSource(messageSource);
         mockMvc = MockMvcBuilders.standaloneSetup(new ThrowingController())
-                .setControllerAdvice(new GlobalExceptionHandler())
+                .setControllerAdvice(handler)
                 .build();
     }
 
@@ -170,6 +177,40 @@ class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.detail").value("Animal não encontrado"));
     }
 
+    @Test
+    @DisplayName("UUID inválido no path: 400 validacao com texto em português")
+    void invalidUuidInPathHasPortugueseDetail() throws Exception {
+        expectProblem(mockMvc.perform(get("/throw/uuid/abc")), 400, URN + "validacao", "Erro de validação",
+                "/throw/uuid/abc")
+                .andExpect(jsonPath("$.detail").value("Valor inválido para o parâmetro 'id': 'abc'"));
+    }
+
+    @Test
+    @DisplayName("parâmetro obrigatório ausente: 400 validacao com texto em português")
+    void missingParamHasPortugueseDetail() throws Exception {
+        expectProblem(mockMvc.perform(get("/throw/param")), 400, URN + "validacao", "Erro de validação",
+                "/throw/param")
+                .andExpect(jsonPath("$.detail").value("Parâmetro obrigatório 'page' ausente"));
+    }
+
+    @Test
+    @DisplayName("método não suportado: título e texto em português")
+    void unsupportedMethodHasPortugueseTitle() throws Exception {
+        mockMvc.perform(delete("/throw/not-found"))
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(jsonPath("$.title").value("Método não permitido"))
+                .andExpect(jsonPath("$.detail").value("Método DELETE não suportado"));
+    }
+
+    @Test
+    @DisplayName("Content-Type não suportado: 415 com título em português")
+    void unsupportedMediaTypeHasPortugueseDetail() throws Exception {
+        mockMvc.perform(post("/throw/valid").contentType(MediaType.TEXT_PLAIN).content("x"))
+                .andExpect(status().isUnsupportedMediaType())
+                .andExpect(jsonPath("$.title").value("Tipo de conteúdo não suportado"))
+                .andExpect(jsonPath("$.detail").value("Tipo de conteúdo text/plain não suportado"));
+    }
+
     @RestController
     @RequestMapping("/throw")
     static class ThrowingController {
@@ -215,6 +256,10 @@ class GlobalExceptionHandlerTest {
 
         @GetMapping("/uuid/{id}")
         void uuid(@PathVariable final UUID id) {
+        }
+
+        @GetMapping("/param")
+        void param(@RequestParam final int page) {
         }
 
         @GetMapping("/generic")

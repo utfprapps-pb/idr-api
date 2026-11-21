@@ -7,6 +7,7 @@ import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.UnprocessableEntityException;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -33,6 +35,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     static final String ERRORS = "errors";
     static final String INTERNAL_ERROR_DETAIL = "Erro inesperado, tente novamente mais tarde";
+    private static final String ABOUT_BLANK = "about:blank";
 
     @Override
     protected @Nullable ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -52,6 +55,31 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             final WebRequest request) {
         final var problem = ProblemType.VALIDACAO.toProblemDetail(status, "Corpo da requisição ausente ou inválido");
         return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+    /**
+     * Os 400 gerados pelo próprio Spring (tipo de parâmetro errado, parâmetro ausente) não têm categoria própria e
+     * saem como {@code about:blank}; aqui passam a ser {@code validacao}, mantendo o {@code detail} do
+     * {@code messages.properties}.
+     */
+    @Override
+    protected @Nullable ResponseEntity<Object> handleExceptionInternal(
+            final Exception ex, final @Nullable Object body, final HttpHeaders headers, final HttpStatusCode statusCode,
+            final WebRequest request) {
+        // Alguns handlers da classe base passam body nulo e deixam o super montá-lo; monta aqui para poder ajustar.
+        final Object resolvedBody = body == null && ex instanceof ErrorResponse errorResponse
+                ? errorResponse.updateAndGetBody(getMessageSource(), LocaleContextHolder.getLocale())
+                : body;
+        if (statusCode.value() == HttpStatus.BAD_REQUEST.value() && resolvedBody instanceof ProblemDetail problem
+                && isAboutBlank(problem)) {
+            problem.setType(ProblemType.VALIDACAO.type());
+            problem.setTitle(ProblemType.VALIDACAO.title());
+        }
+        return super.handleExceptionInternal(ex, resolvedBody, headers, statusCode, request);
+    }
+
+    private static boolean isAboutBlank(final ProblemDetail problem) {
+        return problem.getType() == null || ABOUT_BLANK.equals(problem.getType().toString());
     }
 
     /** Campo de {@code sort} desconhecido numa busca: erro do cliente, sem expor a entidade consultada. */
