@@ -1,7 +1,7 @@
 services:
   idr-db:
     container_name: idr-db
-    image: postgres
+    image: postgres:18
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
@@ -16,7 +16,7 @@ services:
 
   idr-api:
     container_name: idr-api
-    image: maven:3.8.3-openjdk-17
+    image: maven:3.9-eclipse-temurin-25
     working_dir: /home/java/app
     restart: always
     command: mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
