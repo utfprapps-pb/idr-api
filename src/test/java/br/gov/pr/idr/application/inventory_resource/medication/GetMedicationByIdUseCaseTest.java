@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
@@ -42,7 +43,7 @@ class GetMedicationByIdUseCaseTest {
     private final Animal animal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null,
             BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final Medication existingMedication = Medication.with(MedicationID.from(medicationId),
-            AnimalID.from(animalId), ProductID.unique(), LocalDate.now(), "10ml", "IM");
+            AnimalID.from(animalId), ProductID.unique(), "Ivomec", "Ivermectina", LocalDate.now(), "10ml", "IM");
 
     @Test
     void shouldReturnMedicationWhenItBelongsToAnimal() {
@@ -53,6 +54,25 @@ class GetMedicationByIdUseCaseTest {
                 PropertySearchScope.unrestricted()));
 
         assertEquals("10ml", output.appliedDose());
+        assertEquals("Ivomec", output.productName());
+        assertEquals("Ivermectina", output.activePrinciple());
+    }
+
+    @Test
+    @DisplayName("devolve productId nulo quando a medicação não tem produto do catálogo")
+    void shouldReturnMedicationWithoutCatalogProduct() {
+        final var typedMedication = Medication.with(MedicationID.from(medicationId), AnimalID.from(animalId), null,
+                "Vermífugo caseiro", null, LocalDate.now(), "10ml", "Oral");
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
+        when(gateway.findByIdAndAnimalId(MedicationID.from(medicationId), AnimalID.from(animalId)))
+                .thenReturn(Optional.of(typedMedication));
+
+        final var output = useCase.execute(new GetMedicationByIdCommand(propertyId, animalId, medicationId,
+                PropertySearchScope.unrestricted()));
+
+        assertNull(output.productId());
+        assertEquals("Vermífugo caseiro", output.productName());
+        assertNull(output.activePrinciple());
     }
 
     @Test

@@ -9,6 +9,8 @@ public record CreateMedicationOutput(
         UUID id,
         UUID animalId,
         UUID productId,
+        String productName,
+        String activePrinciple,
         LocalDate applicationDate,
         String appliedDose,
         String applicationWay
@@ -18,7 +20,9 @@ public record CreateMedicationOutput(
         return new CreateMedicationOutput(
                 entity.getId().id(),
                 entity.getAnimalId().id(),
-                entity.getProductId().id(),
+                entity.getProductId() == null ? null : entity.getProductId().id(),
+                entity.getProductName(),
+                entity.getActivePrinciple(),
                 entity.getApplicationDate(),
                 entity.getAppliedDose(),
                 entity.getApplicationWay()

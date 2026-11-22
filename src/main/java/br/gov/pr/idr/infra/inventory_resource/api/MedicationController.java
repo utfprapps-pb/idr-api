@@ -45,7 +45,8 @@ public class MedicationController {
                                                              @RequestBody @Valid CreateMedicationRequest request) {
         final var scope = AuthenticationSupport.scope(authentication);
         final var command = new CreateMedicationCommand(propertyId, animalId, scope, request.productId(),
-                request.applicationDate(), request.appliedDose(), request.applicationWay());
+                request.productName(), request.activePrinciple(), request.applicationDate(), request.appliedDose(),
+                request.applicationWay());
         final var output = createMedicationUseCase.execute(command);
         return ResponseEntity.ok(CreateMedicationResponse.from(output));
     }
@@ -58,7 +59,8 @@ public class MedicationController {
                                                              @RequestBody @Valid UpdateMedicationRequest request) {
         final var scope = AuthenticationSupport.scope(authentication);
         final var command = new UpdateMedicationCommand(propertyId, animalId, id, scope, request.productId(),
-                request.applicationDate(), request.appliedDose(), request.applicationWay());
+                request.productName(), request.activePrinciple(), request.applicationDate(), request.appliedDose(),
+                request.applicationWay());
         final var output = updateMedicationUseCase.execute(command);
         return ResponseEntity.ok(UpdateMedicationResponse.from(output));
     }

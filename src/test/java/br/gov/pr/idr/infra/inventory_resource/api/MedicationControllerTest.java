@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -74,7 +76,8 @@ class MedicationControllerTest {
     private String createBody(final UUID productId, final String applicationDate, final String appliedDose,
                                final String applicationWay) {
         return """
-                {"productId":"%s","applicationDate":"%s","appliedDose":"%s","applicationWay":"%s"}
+                {"productId":"%s","productName":"Ivomec","activePrinciple":"Ivermectina",
+                "applicationDate":"%s","appliedDose":"%s","applicationWay":"%s"}
                 """.formatted(productId, applicationDate, appliedDose, applicationWay);
     }
 
@@ -84,8 +87,8 @@ class MedicationControllerTest {
         final var propertyId = UUID.randomUUID();
         final var animalId = UUID.randomUUID();
         final var productId = UUID.randomUUID();
-        final var output = new CreateMedicationOutput(UUID.randomUUID(), animalId, productId,
-                LocalDate.of(2024, 3, 10), "10ml", "Intramuscular");
+        final var output = new CreateMedicationOutput(UUID.randomUUID(), animalId, productId, "Ivomec",
+                "Ivermectina", LocalDate.of(2024, 3, 10), "10ml", "Intramuscular");
         when(createMedicationUseCase.execute(any())).thenReturn(output);
 
         mockMvc.perform(post(basePath(propertyId, animalId))
@@ -94,7 +97,10 @@ class MedicationControllerTest {
                         .content(createBody(productId, "2024-03-10", "10ml", "Intramuscular")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.appliedDose").value("10ml"))
-                .andExpect(jsonPath("$.animalId").value(animalId.toString()));
+                .andExpect(jsonPath("$.animalId").value(animalId.toString()))
+                .andExpect(jsonPath("$.productId").value(productId.toString()))
+                .andExpect(jsonPath("$.productName").value("Ivomec"))
+                .andExpect(jsonPath("$.activePrinciple").value("Ivermectina"));
 
         final var captor = ArgumentCaptor.forClass(CreateMedicationCommand.class);
         verify(createMedicationUseCase).execute(captor.capture());
@@ -105,6 +111,34 @@ class MedicationControllerTest {
         assertEquals(LocalDate.of(2024, 3, 10), captor.getValue().applicationDate());
         assertEquals("10ml", captor.getValue().appliedDose());
         assertEquals("Intramuscular", captor.getValue().applicationWay());
+        assertEquals("Ivomec", captor.getValue().productName());
+        assertEquals("Ivermectina", captor.getValue().activePrinciple());
+    }
+
+    @Test
+    @DisplayName("POST .../medications sem productId repassa o produto digitado ao Use Case")
+    void shouldCreateMedicationWithoutCatalogProduct() throws Exception {
+        final var propertyId = UUID.randomUUID();
+        final var animalId = UUID.randomUUID();
+        final var output = new CreateMedicationOutput(UUID.randomUUID(), animalId, null, "Vermífugo caseiro", null,
+                LocalDate.of(2024, 3, 10), "10ml", "Oral");
+        when(createMedicationUseCase.execute(any())).thenReturn(output);
+
+        mockMvc.perform(post(basePath(propertyId, animalId))
+                        .principal(AUTH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"productName":"Vermífugo caseiro","applicationDate":"2024-03-10",\
+                                "appliedDose":"10ml","applicationWay":"Oral"}"""))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.productId").value(nullValue()))
+                .andExpect(jsonPath("$.productName").value("Vermífugo caseiro"));
+
+        final var captor = ArgumentCaptor.forClass(CreateMedicationCommand.class);
+        verify(createMedicationUseCase).execute(captor.capture());
+        assertNull(captor.getValue().productId());
+        assertEquals("Vermífugo caseiro", captor.getValue().productName());
+        assertNull(captor.getValue().activePrinciple());
     }
 
     @Test
@@ -114,8 +148,8 @@ class MedicationControllerTest {
         final var animalId = UUID.randomUUID();
         final var id = UUID.randomUUID();
         final var productId = UUID.randomUUID();
-        final var output = new UpdateMedicationOutput(id, animalId, productId, LocalDate.of(2024, 4, 1),
-                "20ml", "Oral");
+        final var output = new UpdateMedicationOutput(id, animalId, productId, "Ivomec", "Ivermectina",
+                LocalDate.of(2024, 4, 1), "20ml", "Oral");
         when(updateMedicationUseCase.execute(any())).thenReturn(output);
 
         mockMvc.perform(put(basePath(propertyId, animalId) + "/" + id)
@@ -133,6 +167,8 @@ class MedicationControllerTest {
         assertEquals(id, captor.getValue().medicationId());
         assertEquals(PropertySearchScope.unrestricted(), captor.getValue().scope());
         assertEquals(productId, captor.getValue().productId());
+        assertEquals("Ivomec", captor.getValue().productName());
+        assertEquals("Ivermectina", captor.getValue().activePrinciple());
     }
 
     @Test
@@ -161,8 +197,8 @@ class MedicationControllerTest {
         final var animalId = UUID.randomUUID();
         final var id = UUID.randomUUID();
         final var productId = UUID.randomUUID();
-        final var output = new GetMedicationByIdOutput(id, animalId, productId, LocalDate.of(2024, 3, 10),
-                "10ml", "Intramuscular");
+        final var output = new GetMedicationByIdOutput(id, animalId, productId, "Ivomec", "Ivermectina",
+                LocalDate.of(2024, 3, 10), "10ml", "Intramuscular");
         when(getMedicationByIdUseCase.execute(any())).thenReturn(output);
 
         mockMvc.perform(get(basePath(propertyId, animalId) + "/" + id).principal(AUTH))
@@ -182,15 +218,17 @@ class MedicationControllerTest {
         final var propertyId = UUID.randomUUID();
         final var animalId = UUID.randomUUID();
         final var productId = UUID.randomUUID();
-        final var medicationFromAnimal = new ListMedicationOutput(UUID.randomUUID(), animalId, productId,
-                LocalDate.of(2024, 3, 10), "10ml", "Intramuscular");
+        final var medicationFromAnimal = new ListMedicationOutput(UUID.randomUUID(), animalId, productId, "Ivomec",
+                "Ivermectina", LocalDate.of(2024, 3, 10), "10ml", "Intramuscular");
         final var pagination = new Pagination<>(0, 10, 1L, List.of(medicationFromAnimal));
         when(listMedicationUseCase.execute(any())).thenReturn(pagination);
 
         mockMvc.perform(get(basePath(propertyId, animalId) + "/search").principal(AUTH))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.total").value(1))
-                .andExpect(jsonPath("$.items[0].animalId").value(animalId.toString()));
+                .andExpect(jsonPath("$.items[0].animalId").value(animalId.toString()))
+                .andExpect(jsonPath("$.items[0].productName").value("Ivomec"))
+                .andExpect(jsonPath("$.items[0].activePrinciple").value("Ivermectina"));
 
         final var captor = ArgumentCaptor.forClass(ListMedicationCommand.class);
         verify(listMedicationUseCase).execute(captor.capture());

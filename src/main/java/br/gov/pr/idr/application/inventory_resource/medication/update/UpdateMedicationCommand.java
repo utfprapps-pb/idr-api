@@ -11,6 +11,8 @@ public record UpdateMedicationCommand(
         UUID medicationId,
         PropertySearchScope scope,
         UUID productId,
+        String productName,
+        String activePrinciple,
         LocalDate applicationDate,
         String appliedDose,
         String applicationWay

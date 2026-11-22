@@ -41,8 +41,8 @@ class MedicationPostgresGatewayTest {
     MedicationPostgresGateway gateway;
 
     private Medication validMedication(final AnimalID animalId) {
-        return Medication.create(animalId, ProductID.unique(), LocalDate.of(2024, 3, 10), "10ml",
-                "Intramuscular");
+        return Medication.create(animalId, ProductID.unique(), "Ivomec", "Ivermectina", LocalDate.of(2024, 3, 10),
+                "10ml", "Intramuscular");
     }
 
     @Test
@@ -131,6 +131,23 @@ class MedicationPostgresGatewayTest {
         assertEquals(medication.getProductId(), result.get().getProductId());
         assertEquals(medication.getApplicationDate(), result.get().getApplicationDate());
         assertEquals(medication.getApplicationWay(), result.get().getApplicationWay());
+        assertEquals(medication.getProductName(), result.get().getProductName());
+        assertEquals(medication.getActivePrinciple(), result.get().getActivePrinciple());
+    }
+
+    @Test
+    @DisplayName("roundtrip da entidade JPA aceita medicação sem produto do catálogo")
+    void shouldRoundtripMedicationWithoutCatalogProduct() {
+        final var medication = Medication.create(AnimalID.unique(), null, "Vermífugo caseiro", null,
+                LocalDate.of(2024, 3, 10), "10ml", "Oral");
+
+        final var entity = MedicationJPAEntity.from(medication);
+        final var aggregate = entity.toAggregate();
+
+        assertNull(entity.getProductId());
+        assertNull(aggregate.getProductId());
+        assertEquals("Vermífugo caseiro", aggregate.getProductName());
+        assertNull(aggregate.getActivePrinciple());
     }
 
     @Test

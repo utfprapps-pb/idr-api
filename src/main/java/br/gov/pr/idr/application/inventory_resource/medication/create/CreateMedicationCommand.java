@@ -10,6 +10,8 @@ public record CreateMedicationCommand(
         UUID animalId,
         PropertySearchScope scope,
         UUID productId,
+        String productName,
+        String activePrinciple,
         LocalDate applicationDate,
         String appliedDose,
         String applicationWay
