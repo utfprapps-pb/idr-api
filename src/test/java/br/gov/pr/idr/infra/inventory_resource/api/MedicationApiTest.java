@@ -111,4 +111,28 @@ class MedicationApiTest extends ApiTestSupport {
                 .andExpect(jsonPath("$.productName").value("Vermífugo caseiro"))
                 .andExpect(jsonPath("$.activePrinciple").value("Digitado pelo cliente"));
     }
+
+    @Test
+    @DisplayName("produto digitado em branco conta como ausente e devolve 400 de obrigatoriedade")
+    void shouldRejectBlankTypedProductName() throws Exception {
+        perform(post(MIMOSA + "/medications").content(medication(null, "   ")))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.type").value("urn:idr:problem:validacao"))
+                .andExpect(jsonPath("$.errors[0].message").value("O produto da medicação é obrigatório"));
+    }
+
+    @Test
+    @DisplayName("grava o produto e o princípio ativo digitados sem os espaços das pontas")
+    void shouldTrimTypedProduct() throws Exception {
+        final var body = """
+                {"productId":null,"productName":"  Vermífugo caseiro ","activePrinciple":"  ",                "applicationDate":"2024-06-10","appliedDose":"10 ml","applicationWay":"Oral"}""";
+        final var created = perform(post(MIMOSA + "/medications").content(body))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        perform(get(MIMOSA + "/medications/" + idOf(created)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.productName").value("Vermífugo caseiro"))
+                .andExpect(jsonPath("$.activePrinciple").value(nullValue()));
+    }
 }

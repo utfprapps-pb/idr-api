@@ -12,7 +12,8 @@ import java.util.UUID;
 /**
  * Define o produto registrado numa medicação. Com {@code productId}, o produto precisa existir no catálogo e o nome
  * e o princípio ativo são copiados dele (o que o cliente mandou nesses campos é ignorado). Sem {@code productId},
- * vale o que foi digitado; a obrigatoriedade do nome é validada pelo agregado {@code Medication}.
+ * vale o que foi digitado, sem espaços nas pontas e com texto em branco tratado como ausente ({@code null}); a
+ * obrigatoriedade do nome é validada pelo agregado {@code Medication}.
  */
 public final class MedicationProductPolicy {
 
@@ -24,7 +25,7 @@ public final class MedicationProductPolicy {
                                             final UUID productId, final String typedProductName,
                                             final String typedActivePrinciple) {
         if (productId == null) {
-            return new MedicationProduct(null, typedProductName, typedActivePrinciple);
+            return new MedicationProduct(null, normalize(typedProductName), normalize(typedActivePrinciple));
         }
 
         final var id = ProductID.from(productId);
@@ -36,6 +37,10 @@ public final class MedicationProductPolicy {
                         .orElse(null);
 
         return new MedicationProduct(id, product.getName(), activePrinciple);
+    }
+
+    private static String normalize(final String typed) {
+        return typed == null || typed.isBlank() ? null : typed.strip();
     }
 
     public record MedicationProduct(ProductID productId, String productName, String activePrinciple) {
