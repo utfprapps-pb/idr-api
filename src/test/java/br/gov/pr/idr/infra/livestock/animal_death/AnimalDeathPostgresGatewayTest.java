@@ -174,4 +174,32 @@ class AnimalDeathPostgresGatewayTest {
 
         assertTrue(gateway.existsByAnimalId(animalId));
     }
+
+    @Test
+    @DisplayName("search filtra pela data do evento (deathDate) quando terms é uma data ISO")
+    void shouldFilterSearchByEventDateWhenTermsIsIsoDate() {
+        final var animalId = AnimalID.unique();
+        final var date = LocalDate.of(2024, 3, 10);
+        when(repository.findAllByAnimalIdAndDeathDate(eq(animalId.id()), eq(date), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of()));
+
+        final var result = gateway.search(animalId, SearchQuery.from(0, 10, " 2024-03-10 ", "deathDate", "asc"));
+
+        assertEquals(0, result.total());
+        verify(repository).findAllByAnimalIdAndDeathDate(eq(animalId.id()), eq(date), any(Pageable.class));
+        verify(repository, never()).findAllByAnimalId(any(), any(Pageable.class));
+    }
+
+    @Test
+    @DisplayName("search ignora terms que não é data e devolve todos os eventos do animal")
+    void shouldIgnoreNonDateTermsInSearch() {
+        final var animalId = AnimalID.unique();
+        when(repository.findAllByAnimalId(eq(animalId.id()), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of()));
+
+        gateway.search(animalId, SearchQuery.from(0, 10, "texto livre", "deathDate", "asc"));
+
+        verify(repository).findAllByAnimalId(eq(animalId.id()), any(Pageable.class));
+        verify(repository, never()).findAllByAnimalIdAndDeathDate(any(), any(), any(Pageable.class));
+    }
 }

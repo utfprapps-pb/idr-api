@@ -49,7 +49,9 @@ public class AnimalPurchasesPostgresGateway implements AnimalPurchasesGateway {
     @Override
     public Pagination<AnimalPurchases> search(final AnimalID animalId, final SearchQuery query) {
         final var pageRequest = PageRequestFactory.from(query, "datePurchase");
-        final var page = repository.findAllByAnimalId(animalId.id(), pageRequest);
+        final var page = PageRequestFactory.dateTerm(query.terms())
+                .map(date -> repository.findAllByAnimalIdAndDatePurchase(animalId.id(), date, pageRequest))
+                .orElseGet(() -> repository.findAllByAnimalId(animalId.id(), pageRequest));
         return PaginationFactory.from(page, AnimalPurchasesJPAEntity::toAggregate);
     }
 }

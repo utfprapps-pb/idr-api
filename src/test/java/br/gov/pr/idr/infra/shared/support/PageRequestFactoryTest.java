@@ -6,6 +6,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("PageRequestFactory")
@@ -54,5 +57,24 @@ class PageRequestFactoryTest {
 
         assertEquals(0, pageRequest.getPageNumber());
         assertEquals(10, pageRequest.getPageSize());
+    }
+
+    @Test
+    @DisplayName("dateTerm devolve a data quando terms é uma data ISO válida, ignorando espaços nas pontas")
+    void shouldParseIsoDateTerm() {
+        assertEquals(Optional.of(LocalDate.of(2024, 3, 10)), PageRequestFactory.dateTerm("2024-03-10"));
+        assertEquals(Optional.of(LocalDate.of(2024, 3, 10)), PageRequestFactory.dateTerm("  2024-03-10 "));
+    }
+
+    @Test
+    @DisplayName("dateTerm devolve vazio quando terms é nulo, em branco ou não é uma data ISO válida")
+    void shouldReturnEmptyDateTermWhenNotIsoDate() {
+        assertTrue(PageRequestFactory.dateTerm(null).isEmpty());
+        assertTrue(PageRequestFactory.dateTerm("").isEmpty());
+        assertTrue(PageRequestFactory.dateTerm("   ").isEmpty());
+        assertTrue(PageRequestFactory.dateTerm("Touro").isEmpty());
+        assertTrue(PageRequestFactory.dateTerm("10/03/2024").isEmpty());
+        assertTrue(PageRequestFactory.dateTerm("2024-02-30").isEmpty());
+        assertTrue(PageRequestFactory.dateTerm("2024-3-10").isEmpty());
     }
 }
