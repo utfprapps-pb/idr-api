@@ -37,8 +37,14 @@ public class UpdateMedicationUseCase extends UseCase<UpdateMedicationCommand, Up
         final var medication = medicationGateway.findByIdAndAnimalId(id, AnimalID.from(command.animalId()))
                 .orElseThrow(() -> NotFoundException.with(Medication.class, id));
 
-        final var product = MedicationProductPolicy.resolve(productGateway, activePrincipleGateway,
-                command.productId(), command.productName(), command.activePrinciple());
+        // Produto do catálogo inalterado: mantém o registro do momento sem consultar o catálogo, que pode ter
+        // renomeado ou excluído o produto depois (mesma regra da mãe no animal).
+        final var currentProductId = medication.getProductId() == null ? null : medication.getProductId().id();
+        final var product = command.productId() != null && command.productId().equals(currentProductId)
+                ? new MedicationProductPolicy.MedicationProduct(medication.getProductId(),
+                        medication.getProductName(), medication.getActivePrinciple())
+                : MedicationProductPolicy.resolve(productGateway, activePrincipleGateway, command.productId(),
+                        command.productName(), command.activePrinciple());
         final var updatedMedication = medication.update(product.productId(), product.productName(),
                 product.activePrinciple(), command.applicationDate(), command.appliedDose(),
                 command.applicationWay());

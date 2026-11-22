@@ -120,6 +120,22 @@ class UpdateMedicationUseCaseTest {
     }
 
     @Test
+    @DisplayName("produto do catálogo inalterado mantém o registro do momento, mesmo se o produto foi excluído ou renomeado")
+    void shouldKeepSnapshotWhenProductUnchanged() {
+        givenExistingMedication();
+        when(gateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
+        final var sameProductId = existingMedication.getProductId().id();
+
+        final var output = useCase.execute(command(sameProductId, "Nome do cliente", "Princípio do cliente"));
+
+        assertEquals(sameProductId, output.productId());
+        assertEquals("Produto antigo", output.productName());
+        assertEquals("Princípio antigo", output.activePrinciple());
+        assertEquals("20ml", output.appliedDose());
+        verifyNoInteractions(productGateway, activePrincipleGateway);
+    }
+
+    @Test
     void shouldThrowWhenProductDoesNotExist() {
         givenExistingMedication();
         when(productGateway.findById(any())).thenReturn(Optional.empty());
