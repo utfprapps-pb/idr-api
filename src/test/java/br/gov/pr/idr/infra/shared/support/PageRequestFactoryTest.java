@@ -27,6 +27,30 @@ class PageRequestFactoryTest {
     }
 
     @Test
+    @DisplayName("desempata pelo id depois do campo pedido, para a paginação não repetir nem pular registros")
+    void shouldTieBreakById() {
+        final var query = SearchQuery.from(1, 100, "", "identifier", "desc");
+
+        final var orders = PageRequestFactory.from(query, "identifier").getSort().toList();
+
+        assertEquals(2, orders.size());
+        assertEquals("identifier", orders.get(0).getProperty());
+        assertEquals(Sort.Direction.DESC, orders.get(0).getDirection());
+        assertEquals("id", orders.get(1).getProperty());
+    }
+
+    @Test
+    @DisplayName("ordenando pelo próprio id não repete o desempate")
+    void shouldNotDuplicateIdSort() {
+        final var query = SearchQuery.from(0, 10, "", "id", "asc");
+
+        final var orders = PageRequestFactory.from(query, "name").getSort().toList();
+
+        assertEquals(1, orders.size());
+        assertEquals("id", orders.get(0).getProperty());
+    }
+
+    @Test
     @DisplayName("deve criar PageRequest com ordenação descendente")
     void shouldCreatePageRequestWithDescSort() {
         final var query = SearchQuery.from(1, 5, "termo", "description", "desc");

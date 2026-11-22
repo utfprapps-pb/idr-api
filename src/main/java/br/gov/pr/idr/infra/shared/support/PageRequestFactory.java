@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public final class PageRequestFactory {
 
+    private static final String ID = "id";
+
     private PageRequestFactory() {}
 
     public static PageRequest from(final SearchQuery query, final String defaultSort) {
@@ -18,7 +20,11 @@ public final class PageRequestFactory {
                 ? Sort.Direction.DESC
                 : Sort.Direction.ASC;
         final var sortField = query.sort() != null ? query.sort() : defaultSort;
-        return PageRequest.of(query.page(), query.perPage(), Sort.by(direction, sortField));
+        final var sort = Sort.by(direction, sortField);
+        // Desempate pelo id: com campos repetidos (ex.: identificador do animal), o banco não garante a mesma
+        // ordem entre páginas, e a paginação poderia repetir ou pular registros.
+        return PageRequest.of(query.page(), query.perPage(),
+                ID.equals(sortField) ? sort : sort.and(Sort.by(Sort.Direction.ASC, ID)));
     }
 
     public static PageRequest from(final SearchQuery query) {
