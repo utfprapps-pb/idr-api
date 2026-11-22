@@ -3,10 +3,8 @@ package br.gov.pr.idr.application.property_management.property.update;
 import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.iam.user.UserID;
-import br.gov.pr.idr.domain.property_management.city.City;
 import br.gov.pr.idr.domain.property_management.city.CityGateway;
 import br.gov.pr.idr.domain.property_management.city.CityID;
-import br.gov.pr.idr.domain.property_management.producer.Producer;
 import br.gov.pr.idr.domain.property_management.producer.ProducerGateway;
 import br.gov.pr.idr.domain.property_management.producer.ProducerID;
 import br.gov.pr.idr.domain.property_management.property.Property;
@@ -17,6 +15,9 @@ import br.gov.pr.idr.domain.property_management.property.attachment.PropertyAtta
 import br.gov.pr.idr.domain.property_management.property.collaborator.PropertyCollaborator;
 import br.gov.pr.idr.domain.property_management.property.vo.Coord;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
+import br.gov.pr.idr.domain.shared.tactical.validation.NotificationValidation;
+import br.gov.pr.idr.domain.shared.tactical.validation.DomainError;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import br.gov.pr.idr.domain.shared.storage.StorageGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,11 +52,11 @@ public class UpdatePropertyUseCase extends UseCase<UpdatePropertyCommand, Update
                 .orElseThrow(() -> NotFoundException.with(Property.class, propertyId));
 
         if (!cityGateway.existsById(cityId)) {
-            throw NotFoundException.with(City.class, cityId);
+            throw referenceNotFound("cityId", "Cidade não encontrada");
         }
 
         if (!producerGateway.existsById(producerId)) {
-            throw NotFoundException.with(Producer.class, producerId);
+            throw referenceNotFound("producerId", "Produtor não encontrado");
         }
 
         final var coord = Coord.from(command.latitude(), command.longitude());
@@ -106,5 +107,12 @@ public class UpdatePropertyUseCase extends UseCase<UpdatePropertyCommand, Update
                 log.warn("Falha ao remover arquivo do storage para a chave {}: {}", key, e.getMessage());
             }
         });
+    }
+
+    /** Id do corpo da requisição que não existe: erro de validação (400) no campo, não 404 da rota. */
+    private static NotificationException referenceNotFound(final String field, final String message) {
+        final var validation = NotificationValidation.create();
+        validation.append(DomainError.from(field, message));
+        return new NotificationException(message, validation);
     }
 }

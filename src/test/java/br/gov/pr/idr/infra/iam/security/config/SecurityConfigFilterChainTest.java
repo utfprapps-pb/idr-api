@@ -8,8 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import br.gov.pr.idr.infra.shared.error.GlobalExceptionHandler;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,6 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.not;
 import static org.mockito.Mockito.mock;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,7 +32,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("SecurityConfig — filterChain")
 class SecurityConfigFilterChainTest {
 
+    /** MVC real para o SecurityConfig receber o handlerExceptionResolver e responder pelo GlobalExceptionHandler. */
+    @EnableWebMvc
     static class TestBeans {
+        @Bean GlobalExceptionHandler globalExceptionHandler() { return new GlobalExceptionHandler(); }
         @Bean JwtService jwtService() { return mock(JwtService.class); }
         @Bean JwtProperties jwtProperties() {
             return new JwtProperties("test-secret-hmac384-must-be-long-enough-32chars", 3_600_000L, 7L);
@@ -79,31 +86,42 @@ class SecurityConfigFilterChainTest {
     @DisplayName("GET /v1/users/me deve exigir autenticação (retorna 401 sem token)")
     void getUsersMeRequiresAuth() throws Exception {
         mockMvc.perform(get("/v1/users/me"))
-                .andExpect(status().is(org.hamcrest.Matchers.anyOf(
-                        org.hamcrest.Matchers.is(401), org.hamcrest.Matchers.is(403))));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
-    @DisplayName("GET /v1/users/search deve exigir autenticação")
+    @DisplayName("GET /v1/users/search deve exigir autenticação (retorna 401 sem token)")
     void getUsersSearchRequiresAuth() throws Exception {
         mockMvc.perform(get("/v1/users/search"))
-                .andExpect(status().is(org.hamcrest.Matchers.anyOf(
-                        org.hamcrest.Matchers.is(401), org.hamcrest.Matchers.is(403))));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
     @DisplayName("GET /v1/users/{id} deve exigir authority ADMIN (retorna 401 sem token)")
     void getUserByIdRequiresAdmin() throws Exception {
         mockMvc.perform(get("/v1/users/" + java.util.UUID.randomUUID()))
-                .andExpect(status().is(org.hamcrest.Matchers.anyOf(
-                        org.hamcrest.Matchers.is(401), org.hamcrest.Matchers.is(403))));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
-    @DisplayName("DELETE /v1/properties/{id} deve exigir autenticação")
+    @DisplayName("DELETE /v1/properties/{id} deve exigir autenticação (retorna 401 sem token)")
     void deletePropertyRequiresAuth() throws Exception {
         mockMvc.perform(delete("/v1/properties/" + java.util.UUID.randomUUID()))
-                .andExpect(status().is(org.hamcrest.Matchers.anyOf(
-                        org.hamcrest.Matchers.is(401), org.hamcrest.Matchers.is(403))));
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("token rejeitado pelo JwtService (expirado, assinatura inválida, malformado) retorna 401")
+    void rejectedTokenReturnsUnauthorized() throws Exception {
+        mockMvc.perform(get("/v1/users/me").header("Authorization", "Bearer token-rejeitado"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("autenticado sem authority ADMIN em GET /v1/users/{id} continua 403")
+    void authenticatedWithoutAdminIsForbidden() throws Exception {
+        mockMvc.perform(get("/v1/users/" + java.util.UUID.randomUUID())
+                        .with(user("tecnico").authorities(new SimpleGrantedAuthority("TECNICO"))))
+                .andExpect(status().isForbidden());
     }
 }

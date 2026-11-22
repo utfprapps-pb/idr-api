@@ -5,25 +5,24 @@ import br.gov.pr.idr.application.iam.refresh_token.issue.IssueRefreshTokenUseCas
 import br.gov.pr.idr.infra.iam.user.models.auth.AuthLoginRequest;
 import br.gov.pr.idr.infra.iam.user.models.auth.AuthLoginResponse;
 import br.gov.pr.idr.infra.iam.user.persistence.UserJPAEntity;
-import br.gov.pr.idr.infra.shared.error.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
+
+import java.io.IOException;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.time.Instant;
-import java.util.List;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -47,37 +46,27 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    @SneakyThrows
     @NullMarked
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
-        final var credentials = objectMapper.readValue(request.getInputStream(), AuthLoginRequest.class);
+        final AuthLoginRequest credentials;
+        try {
+            credentials = objectMapper.readValue(request.getInputStream(), AuthLoginRequest.class);
+        } catch (IOException e) {
+            // Corpo ausente ou JSON inválido: vira 400 validacao no GlobalExceptionHandler.
+            throw new HttpMessageNotReadableException("Corpo da requisição ausente ou inválido", e,
+                    new ServletServerHttpRequest(request));
+        }
+        if (credentials == null) {
+            // Corpo "null": o Jackson devolve null sem lançar exceção.
+            throw new HttpMessageNotReadableException("Corpo da requisição ausente ou inválido",
+                    new ServletServerHttpRequest(request));
+        }
         final var authToken = UsernamePasswordAuthenticationToken.unauthenticated(
                 credentials.username(),
                 credentials.password()
         );
         return getAuthenticationManager().authenticate(authToken);
-    }
-
-    @Override
-    @SneakyThrows
-    protected void unsuccessfulAuthentication(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            AuthenticationException failed
-    ) {
-        if (failed instanceof DisabledException) {
-            response.setStatus(HttpStatus.FORBIDDEN.value());
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            objectMapper.writeValue(response.getWriter(), new ErrorResponse(
-                    Instant.now(),
-                    HttpStatus.FORBIDDEN.value(),
-                    "Seu cadastro está inativo, solicite há um administrador para ativá-lo",
-                    List.of()
-            ));
-            return;
-        }
-        super.unsuccessfulAuthentication(request, response, failed);
     }
 
     @Override
