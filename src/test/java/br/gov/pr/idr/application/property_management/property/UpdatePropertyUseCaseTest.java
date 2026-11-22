@@ -10,6 +10,7 @@ import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.property_management.property.attachment.PropertyAttachment;
 import br.gov.pr.idr.domain.property_management.property.vo.Coord;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
+import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.UnprocessableEntityException;
 import br.gov.pr.idr.domain.shared.storage.StorageGateway;
 import org.junit.jupiter.api.DisplayName;
@@ -93,25 +94,29 @@ class UpdatePropertyUseCaseTest {
     }
 
     @Test
-    @DisplayName("deve lançar NotFoundException quando cidade não existe")
+    @DisplayName("referência inexistente no corpo vira 400 com erro no campo cityId")
     void shouldThrowWhenCityNotFound() {
         when(propertyGateway.findById(any())).thenReturn(Optional.of(stubProperty()));
         when(cityGateway.existsById(any())).thenReturn(false);
         final var cmd = validCommand();
 
-        assertThrows(NotFoundException.class, () -> useCase.execute(cmd));
+        final var ex = assertThrows(NotificationException.class, () -> useCase.execute(cmd));
+        assertEquals("cityId", ex.getErrors().getFirst().field());
+        assertEquals("Cidade não encontrada", ex.getErrors().getFirst().message());
         verify(propertyGateway, never()).update(any());
     }
 
     @Test
-    @DisplayName("deve lançar NotFoundException quando produtor não existe")
+    @DisplayName("referência inexistente no corpo vira 400 com erro no campo producerId")
     void shouldThrowWhenProducerNotFound() {
         when(propertyGateway.findById(any())).thenReturn(Optional.of(stubProperty()));
         when(cityGateway.existsById(any())).thenReturn(true);
         when(producerGateway.existsById(any())).thenReturn(false);
         final var cmd = validCommand();
 
-        assertThrows(NotFoundException.class, () -> useCase.execute(cmd));
+        final var ex = assertThrows(NotificationException.class, () -> useCase.execute(cmd));
+        assertEquals("producerId", ex.getErrors().getFirst().field());
+        assertEquals("Produtor não encontrado", ex.getErrors().getFirst().message());
         verify(propertyGateway, never()).update(any());
     }
 

@@ -10,7 +10,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -41,7 +43,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         final var username = jwtService.extractUsername(token);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            if (!(userDetailsService.loadUserByUsername(username) instanceof UserJPAEntity user)) {
+            final UserDetails userDetails;
+            try {
+                userDetails = userDetailsService.loadUserByUsername(username);
+            } catch (UsernameNotFoundException e) {
+                // Token válido de usuário removido: segue sem autenticar e o entry point responde 401.
+                filterChain.doFilter(request, response);
+                return;
+            }
+            if (!(userDetails instanceof UserJPAEntity user)) {
                 throw new IllegalStateException("UserDetailsService deve devolver UserJPAEntity");
             }
             final var authToken = new UsernamePasswordAuthenticationToken(

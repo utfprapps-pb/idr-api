@@ -14,6 +14,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 import java.util.Set;
@@ -99,6 +100,24 @@ class JwtAuthorizationFilterTest {
 
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verifyNoInteractions(userDetailsService);
+    }
+
+    @Test
+    @DisplayName("token válido de usuário removido segue sem autenticar (o entry point responde 401)")
+    void userRemovedContinuesUnauthenticated() throws Exception {
+        final var request = new MockHttpServletRequest();
+        request.addHeader("Authorization", "Bearer valid.token.here");
+        final var response = new MockHttpServletResponse();
+        final var chain = new MockFilterChain();
+
+        when(jwtService.extractUsername("valid.token.here")).thenReturn("removido");
+        when(userDetailsService.loadUserByUsername("removido"))
+                .thenThrow(new UsernameNotFoundException("User not found: removido"));
+
+        filter.doFilterInternal(request, response, chain);
+
+        assertNotNull(chain.getRequest());
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
 
     @Test

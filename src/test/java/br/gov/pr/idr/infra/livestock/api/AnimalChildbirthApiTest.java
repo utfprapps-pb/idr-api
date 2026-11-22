@@ -67,7 +67,7 @@ class AnimalChildbirthApiTest extends ApiTestSupport {
                 .andReturn();
 
         perform(get(CHARMOSA_PATH + "/childbirths/" + idOf(created)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -82,7 +82,7 @@ class AnimalChildbirthApiTest extends ApiTestSupport {
     void shouldRejectAnimalOutsideTheProperty() throws Exception {
         perform(get(
                         "/properties/c0000000-0000-0000-0000-000000000002/animals/e0000000-0000-0000-0000-000000000001/childbirths/search"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -90,13 +90,13 @@ class AnimalChildbirthApiTest extends ApiTestSupport {
     void shouldRejectUnknownSortField() throws Exception {
         perform(get(MIMOSA + "/childbirths/search?sort=foo"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Campo de ordenação inválido"));
+                .andExpect(jsonPath("$.detail").value(org.hamcrest.Matchers.startsWith("Campo de ordenação inválido")));
     }
 
     @Test
     @DisplayName("exige autenticação")
     void shouldRequireAuthentication() throws Exception {
         mockMvc.perform(get(MIMOSA + "/childbirths/search"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 }

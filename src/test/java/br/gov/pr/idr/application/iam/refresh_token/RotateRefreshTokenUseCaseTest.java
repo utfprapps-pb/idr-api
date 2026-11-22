@@ -6,7 +6,7 @@ import br.gov.pr.idr.application.iam.refresh_token.rotate.RotateRefreshTokenUseC
 import br.gov.pr.idr.domain.iam.refresh_token.RefreshToken;
 import br.gov.pr.idr.domain.iam.refresh_token.RefreshTokenGateway;
 import br.gov.pr.idr.domain.iam.refresh_token.RefreshTokenID;
-import br.gov.pr.idr.domain.shared.tactical.exceptions.NotificationException;
+import br.gov.pr.idr.domain.iam.refresh_token.exceptions.InvalidRefreshTokenException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,8 +51,9 @@ class RotateRefreshTokenUseCaseTest {
     void shouldThrowWhenTokenNotFound() {
         when(refreshTokenGateway.findByToken("unknown")).thenReturn(Optional.empty());
 
-        assertThrows(NotificationException.class,
+        final var ex = assertThrows(InvalidRefreshTokenException.class,
                 () -> useCase.execute(RotateRefreshTokenCommand.from("unknown", 7L)));
+        assertEquals("Refresh token não encontrado.", ex.getContext());
     }
 
     @Test
@@ -62,8 +63,9 @@ class RotateRefreshTokenUseCaseTest {
                 UUID.randomUUID(), "joao", Instant.now().plus(7, ChronoUnit.DAYS), Instant.now(), true);
         when(refreshTokenGateway.findByToken("tok")).thenReturn(Optional.of(revoked));
 
-        assertThrows(NotificationException.class,
+        final var ex = assertThrows(InvalidRefreshTokenException.class,
                 () -> useCase.execute(RotateRefreshTokenCommand.from("tok", 7L)));
+        assertEquals("Refresh token inválido ou expirado.", ex.getContext());
     }
 
     @Test
@@ -73,7 +75,8 @@ class RotateRefreshTokenUseCaseTest {
                 UUID.randomUUID(), "joao", Instant.now().minus(1, ChronoUnit.DAYS), Instant.now(), false);
         when(refreshTokenGateway.findByToken("tok")).thenReturn(Optional.of(expired));
 
-        assertThrows(NotificationException.class,
+        final var ex = assertThrows(InvalidRefreshTokenException.class,
                 () -> useCase.execute(RotateRefreshTokenCommand.from("tok", 7L)));
+        assertEquals("Refresh token inválido ou expirado.", ex.getContext());
     }
 }

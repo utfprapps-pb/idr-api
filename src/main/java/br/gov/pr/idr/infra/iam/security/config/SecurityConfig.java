@@ -1,6 +1,8 @@
 package br.gov.pr.idr.infra.iam.security.config;
 
 import br.gov.pr.idr.application.iam.refresh_token.issue.IssueRefreshTokenUseCase;
+import br.gov.pr.idr.infra.iam.security.FilterExceptionResolverFilter;
+import br.gov.pr.idr.infra.iam.security.ProblemDetailSecurityHandler;
 import br.gov.pr.idr.infra.iam.security.jwt.JwtAuthenticationFilter;
 import br.gov.pr.idr.infra.iam.security.jwt.JwtAuthorizationFilter;
 import br.gov.pr.idr.infra.iam.security.jwt.JwtService;
@@ -9,6 +11,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,7 +26,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
@@ -40,19 +45,24 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final IssueRefreshTokenUseCase issueRefreshTokenUseCase;
     private final CorsProperties corsProperties;
+    private final ProblemDetailSecurityHandler problemDetailSecurityHandler;
+    private final HandlerExceptionResolver handlerExceptionResolver;
 
     public SecurityConfig(
             JwtService jwtService,
             JwtProperties jwtProperties,
             UserDetailsService userDetailsService,
             IssueRefreshTokenUseCase issueRefreshTokenUseCase,
-            CorsProperties corsProperties
+            CorsProperties corsProperties,
+            @Qualifier("handlerExceptionResolver") HandlerExceptionResolver handlerExceptionResolver
     ) {
         this.jwtService = jwtService;
         this.jwtProperties = jwtProperties;
         this.userDetailsService = userDetailsService;
         this.issueRefreshTokenUseCase = issueRefreshTokenUseCase;
         this.corsProperties = corsProperties;
+        this.problemDetailSecurityHandler = new ProblemDetailSecurityHandler(handlerExceptionResolver);
+        this.handlerExceptionResolver = handlerExceptionResolver;
     }
 
     @Bean
@@ -68,6 +78,9 @@ public class SecurityConfig {
         final var provider = new DaoAuthenticationProvider(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         final var authenticationManager = new ProviderManager(provider);
+        final var authenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtService, objectMapper(),
+                issueRefreshTokenUseCase, jwtProperties.refreshTokenExpirationDays());
+        authenticationFilter.setAuthenticationFailureHandler(problemDetailSecurityHandler);
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -87,7 +100,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/v1/users/*/active").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .addFilter(new JwtAuthenticationFilter(authenticationManager, jwtService, objectMapper(), issueRefreshTokenUseCase, jwtProperties.refreshTokenExpirationDays()))
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint(problemDetailSecurityHandler)
+                        .accessDeniedHandler(problemDetailSecurityHandler))
+                .addFilterBefore(new FilterExceptionResolverFilter(handlerExceptionResolver), LogoutFilter.class)
+                .addFilter(authenticationFilter)
                 .addFilterBefore(new JwtAuthorizationFilter(jwtService, userDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

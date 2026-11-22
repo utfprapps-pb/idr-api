@@ -60,4 +60,23 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.accessToken").value("new-access-token"))
                 .andExpect(jsonPath("$.refreshToken").value("new-refresh-token"));
     }
+
+    @Test
+    @DisplayName("refresh de usuário removido: 400 refresh-token-invalido, não 401 nao-autenticado")
+    void refreshOfRemovedUserIsInvalidRefreshToken() throws Exception {
+        final var output = new RotateRefreshTokenOutput("removido", "new-refresh-token");
+        when(jwtProperties.refreshTokenExpirationDays()).thenReturn(7L);
+        when(rotateRefreshTokenUseCase.execute(any())).thenReturn(output);
+        when(userDetailsService.loadUserByUsername("removido"))
+                .thenThrow(new org.springframework.security.core.userdetails.UsernameNotFoundException("x"));
+        final var standalone = MockMvcBuilders.standaloneSetup(controller)
+                .setControllerAdvice(new br.gov.pr.idr.infra.shared.error.GlobalExceptionHandler())
+                .build();
+
+        standalone.perform(post("/v1/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"token\":\"old-refresh-token\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.type").value("urn:idr:problem:refresh-token-invalido"));
+    }
 }
