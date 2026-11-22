@@ -39,7 +39,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -115,13 +114,15 @@ class AnimalControllerTest {
     }
 
     @Test
-    @DisplayName("PATCH /properties/{propertyId}/animals/{id} não existe mais e não chega ao use case")
+    @DisplayName("PATCH /properties/{propertyId}/animals/{id} não existe mais: 405 em Problem Details, sem chegar ao use case")
     void shouldRejectPatch() throws Exception {
         mockMvc.perform(patch("/properties/" + UUID.randomUUID() + "/animals/" + UUID.randomUUID())
                         .principal(AUTH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createBody(UUID.randomUUID())))
-                .andExpect(result -> assertNotEquals(200, result.getResponse().getStatus()));
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.status").value(405));
         verifyNoInteractions(updateAnimalUseCase);
     }
 
