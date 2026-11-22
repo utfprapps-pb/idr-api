@@ -135,4 +135,13 @@ class MedicationApiTest extends ApiTestSupport {
                 .andExpect(jsonPath("$.productName").value("Vermífugo caseiro"))
                 .andExpect(jsonPath("$.activePrinciple").value(nullValue()));
     }
+
+    @Test
+    @DisplayName("produto digitado acima de 255 caracteres devolve 400 de validação, não 500")
+    void shouldRejectTypedProductNameTooLong() throws Exception {
+        perform(post(MIMOSA + "/medications").content(medication(null, "a".repeat(256))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.type").value("urn:idr:problem:validacao"))
+                .andExpect(jsonPath("$.errors[0].field").value("productName"));
+    }
 }

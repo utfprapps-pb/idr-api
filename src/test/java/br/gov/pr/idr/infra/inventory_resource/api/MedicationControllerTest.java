@@ -279,4 +279,70 @@ class MedicationControllerTest {
         mockMvc.perform(get(basePath(propertyId, animalId) + "/" + id).principal(AUTH))
                 .andExpect(status().isNotFound());
     }
+
+    private static String typedBody(final String productName, final String activePrinciple) {
+        return """
+                {"productId":null,"productName":"%s","activePrinciple":"%s",
+                "applicationDate":"2024-03-10","appliedDose":"10ml","applicationWay":"Oral"}
+                """.formatted(productName, activePrinciple);
+    }
+
+    @Test
+    @DisplayName("POST .../medications com produto acima de 255 caracteres devolve 400 com o campo em errors")
+    void shouldRejectCreateWithProductNameTooLong() throws Exception {
+        mockMvc.perform(post(basePath(UUID.randomUUID(), UUID.randomUUID()))
+                        .principal(AUTH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(typedBody("a".repeat(256), "Ivermectina")))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.type").value("urn:idr:problem:validacao"))
+                .andExpect(jsonPath("$.errors[0].field").value("productName"))
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("O produto da medicação deve ter no máximo 255 caracteres"));
+        verifyNoInteractions(createMedicationUseCase);
+    }
+
+    @Test
+    @DisplayName("POST .../medications com princípio ativo acima de 255 caracteres devolve 400 com o campo em errors")
+    void shouldRejectCreateWithActivePrincipleTooLong() throws Exception {
+        mockMvc.perform(post(basePath(UUID.randomUUID(), UUID.randomUUID()))
+                        .principal(AUTH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(typedBody("Ivomec", "a".repeat(256))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[0].field").value("activePrinciple"))
+                .andExpect(jsonPath("$.errors[0].message")
+                        .value("O princípio ativo da medicação deve ter no máximo 255 caracteres"));
+        verifyNoInteractions(createMedicationUseCase);
+    }
+
+    @Test
+    @DisplayName("PUT .../medications/{id} com produto ou princípio ativo acima de 255 caracteres devolve 400")
+    void shouldRejectUpdateWithTypedFieldsTooLong() throws Exception {
+        mockMvc.perform(put(basePath(UUID.randomUUID(), UUID.randomUUID()) + "/" + UUID.randomUUID())
+                        .principal(AUTH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(typedBody("a".repeat(256), "b".repeat(256))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.type").value("urn:idr:problem:validacao"))
+                .andExpect(jsonPath("$.errors.length()").value(2))
+                .andExpect(jsonPath("$.errors[?(@.field == 'productName')]").exists())
+                .andExpect(jsonPath("$.errors[?(@.field == 'activePrinciple')]").exists());
+        verifyNoInteractions(updateMedicationUseCase);
+    }
+
+    @Test
+    @DisplayName("POST .../medications aceita produto e princípio ativo com exatamente 255 caracteres")
+    void shouldAcceptTypedFieldsWithMaxLength() throws Exception {
+        final var animalId = UUID.randomUUID();
+        when(createMedicationUseCase.execute(any())).thenReturn(new CreateMedicationOutput(UUID.randomUUID(),
+                animalId, null, "a".repeat(255), "b".repeat(255), LocalDate.of(2024, 3, 10), "10ml", "Oral"));
+
+        mockMvc.perform(post(basePath(UUID.randomUUID(), animalId))
+                        .principal(AUTH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(typedBody("a".repeat(255), "b".repeat(255))))
+                .andExpect(status().isOk());
+    }
 }
