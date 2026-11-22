@@ -35,7 +35,7 @@ class ProductPostgresGatewayTest {
     @InjectMocks ProductPostgresGateway gateway;
 
     private Product validProduct() {
-        return Product.create("Vacina X", "Vacina contra febre aftosa", "Intramuscular",
+        return Product.create("Vacina X", "Vacina contra febre aftosa",
                 ActivePrincipleID.unique(), ProductCategoryID.unique());
     }
 
@@ -50,7 +50,6 @@ class ProductPostgresGatewayTest {
         assertEquals(product.getId(), aggregate.getId());
         assertEquals(product.getName(), aggregate.getName());
         assertEquals(product.getDescription(), aggregate.getDescription());
-        assertEquals(product.getApplicationWay(), aggregate.getApplicationWay());
         assertEquals(product.getActivePrincipleId(), aggregate.getActivePrincipleId());
         assertEquals(product.getCategoryId(), aggregate.getCategoryId());
     }
@@ -134,7 +133,7 @@ class ProductPostgresGatewayTest {
         final var activePrincipleId = UUID.randomUUID();
         final var categoryId = UUID.randomUUID();
         final var queryResult = new ListProductQueryResult(
-                productId, "Vacina X", "Vacina contra febre aftosa", "Intramuscular",
+                productId, "Vacina X", "Vacina contra febre aftosa",
                 activePrincipleId, "Aftosa Antígeno", categoryId, "Vacinas"
         );
         final var page = new PageImpl<>(List.of(queryResult));
@@ -154,7 +153,7 @@ class ProductPostgresGatewayTest {
     void shouldKeepProductRowWhenCatalogRefsDoNotMatchAnyRow() {
         final var productId = UUID.randomUUID();
         final var queryResult = new ListProductQueryResult(
-                productId, "Vacina Órfã", "Descrição", "Oral",
+                productId, "Vacina Órfã", "Descrição",
                 null, null, null, null
         );
         final var page = new PageImpl<>(List.of(queryResult));

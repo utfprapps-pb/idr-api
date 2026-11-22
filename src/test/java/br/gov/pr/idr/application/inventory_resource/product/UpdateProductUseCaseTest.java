@@ -40,14 +40,14 @@ class UpdateProductUseCaseTest {
 
     @Test
     void shouldUpdateWhenActivePrincipleAndCategoryExist() {
-        final var product = Product.create("P1", "D1", "W1",
+        final var product = Product.create("P1", "D1",
                 ActivePrincipleID.from(activePrincipleId), ProductCategoryID.from(categoryId));
         when(productGateway.findById(any())).thenReturn(Optional.of(product));
         when(activePrincipleGateway.existsById(any())).thenReturn(true);
         when(productCategoryGateway.existsById(any())).thenReturn(true);
         when(productGateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
 
-        final var output = useCase.execute(new UpdateProductCommand(productId, "P2", "D2", "W2",
+        final var output = useCase.execute(new UpdateProductCommand(productId, "P2", "D2",
                 activePrincipleId, categoryId));
 
         assertEquals("P2", output.name());
@@ -59,32 +59,32 @@ class UpdateProductUseCaseTest {
         when(productGateway.findById(any())).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> useCase.execute(
-                new UpdateProductCommand(productId, "P2", "D2", "W2", activePrincipleId, categoryId)));
+                new UpdateProductCommand(productId, "P2", "D2", activePrincipleId, categoryId)));
         verify(productGateway, never()).update(any());
     }
 
     @Test
     void shouldThrowWhenActivePrincipleDoesNotExist() {
-        final var product = Product.create("P1", "D1", "W1",
+        final var product = Product.create("P1", "D1",
                 ActivePrincipleID.from(activePrincipleId), ProductCategoryID.from(categoryId));
         when(productGateway.findById(any())).thenReturn(Optional.of(product));
         when(activePrincipleGateway.existsById(any())).thenReturn(false);
 
         assertThrows(NotificationException.class, () -> useCase.execute(
-                new UpdateProductCommand(productId, "P2", "D2", "W2", activePrincipleId, categoryId)));
+                new UpdateProductCommand(productId, "P2", "D2", activePrincipleId, categoryId)));
         verify(productGateway, never()).update(any());
     }
 
     @Test
     void shouldThrowWhenCategoryDoesNotExist() {
-        final var product = Product.create("P1", "D1", "W1",
+        final var product = Product.create("P1", "D1",
                 ActivePrincipleID.from(activePrincipleId), ProductCategoryID.from(categoryId));
         when(productGateway.findById(any())).thenReturn(Optional.of(product));
         when(activePrincipleGateway.existsById(any())).thenReturn(true);
         when(productCategoryGateway.existsById(any())).thenReturn(false);
 
         assertThrows(NotificationException.class, () -> useCase.execute(
-                new UpdateProductCommand(productId, "P2", "D2", "W2", activePrincipleId, categoryId)));
+                new UpdateProductCommand(productId, "P2", "D2", activePrincipleId, categoryId)));
         verify(productGateway, never()).update(any());
     }
 }

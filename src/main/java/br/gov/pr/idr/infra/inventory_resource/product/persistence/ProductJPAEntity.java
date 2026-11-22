@@ -35,9 +35,6 @@ public class ProductJPAEntity extends SyncableJPAEntity {
     @Column(nullable = false)
     private String description;
 
-    @Column(name = "application_way", nullable = false)
-    private String applicationWay;
-
     @Column(name = "active_principle_id", nullable = false)
     private UUID activePrincipleId;
 
@@ -49,7 +46,6 @@ public class ProductJPAEntity extends SyncableJPAEntity {
                 product.getId().id(),
                 product.getName(),
                 product.getDescription(),
-                product.getApplicationWay(),
                 product.getActivePrincipleId().id(),
                 product.getCategoryId().id()
         );
@@ -62,7 +58,6 @@ public class ProductJPAEntity extends SyncableJPAEntity {
                 ProductID.from(this.id),
                 this.name,
                 this.description,
-                this.applicationWay,
                 ActivePrincipleID.from(this.activePrincipleId),
                 ProductCategoryID.from(this.categoryId)
         );

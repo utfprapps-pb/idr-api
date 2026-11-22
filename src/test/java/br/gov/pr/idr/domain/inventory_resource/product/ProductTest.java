@@ -13,7 +13,7 @@ class ProductTest {
 
     @Test
     void shouldCreateWithValidFields() {
-        final var product = Product.create("Produto 1", "Desc", "Via 1",
+        final var product = Product.create("Produto 1", "Desc",
                 ActivePrincipleID.unique(), ProductCategoryID.unique());
         assertNotNull(product.getId());
         assertEquals("Produto 1", product.getName());
@@ -21,19 +21,19 @@ class ProductTest {
 
     @Test
     void shouldFailWhenNameIsBlank() {
-        assertThrows(NotificationException.class, () -> Product.create("", "Desc", "Via 1",
+        assertThrows(NotificationException.class, () -> Product.create("", "Desc",
                 ActivePrincipleID.unique(), ProductCategoryID.unique()));
     }
 
     @Test
     void shouldFailWhenActivePrincipleIdIsNull() {
-        assertThrows(NotificationException.class, () -> Product.create("Produto 1", "Desc", "Via 1",
+        assertThrows(NotificationException.class, () -> Product.create("Produto 1", "Desc",
                 null, ProductCategoryID.unique()));
     }
 
     @Test
     void shouldFailWhenCategoryIdIsNull() {
-        assertThrows(NotificationException.class, () -> Product.create("Produto 1", "Desc", "Via 1",
+        assertThrows(NotificationException.class, () -> Product.create("Produto 1", "Desc",
                 ActivePrincipleID.unique(), null));
     }
 }
