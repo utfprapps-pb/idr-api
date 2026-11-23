@@ -419,6 +419,11 @@ insert into property_collaborator (id, name, property_id, hours_per_day) values 
 insert into livestock_breed (id, breed_name, version) values ('6f8b8953-72ab-4525-afdf-2ee4d0561b5e', 'Holandês', 0);
 insert into livestock_breed (id, breed_name, version) values ('47250d36-f280-4046-a95a-31fab0104441', 'Girolando', 0);
 insert into livestock_breed (id, breed_name, version) values ('890e552a-58ff-4d2d-940b-915bbdec5a58', 'Jersey', 0);
+insert into livestock_animal_size (id, size_name, version) values ('a5000000-0000-0000-0000-000000000001', 'Pequena', 0);
+insert into livestock_animal_size (id, size_name, version) values ('a5000000-0000-0000-0000-000000000002', 'Média', 0);
+insert into livestock_animal_size (id, size_name, version) values ('a5000000-0000-0000-0000-000000000003', 'Grande', 0);
+insert into livestock_animal_size (id, size_name, version) values ('a5000000-0000-0000-0000-000000000004', 'Holandês-Zebu', 0);
+insert into livestock_animal_size (id, size_name, version) values ('a5000000-0000-0000-0000-000000000005', 'Bubalina', 0);
 insert into livestock_animal (id, property_id, animal_mother_id, breed_id, type, identifier, gender, born_condition, born_date, born_weight, previous_weight, current_weight, ecc, version) values ('e0000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000001', null, '6f8b8953-72ab-4525-afdf-2ee4d0561b5e', 'Grande', 'Mimosa', 'Fêmea', 'Vivo', '2019-06-23', 12, 45, 62, 32, 0);
 insert into livestock_animal (id, property_id, animal_mother_id, breed_id, type, identifier, gender, born_condition, born_date, born_weight, previous_weight, current_weight, ecc, version) values ('e0000000-0000-0000-0000-000000000002', 'c0000000-0000-0000-0000-000000000001', 'e0000000-0000-0000-0000-000000000001', '47250d36-f280-4046-a95a-31fab0104441', 'Média', 'Charmosa', 'Fêmea', 'Vivo', '2023-06-23', 10, 36, 54, 36, 0);
 insert into livestock_animal (id, property_id, animal_mother_id, breed_id, type, identifier, gender, born_condition, born_date, born_weight, previous_weight, current_weight, ecc, version) values ('e0000000-0000-0000-0000-000000000003', 'c0000000-0000-0000-0000-000000000001', 'e0000000-0000-0000-0000-000000000001', '47250d36-f280-4046-a95a-31fab0104441', 'Pequena', 'Leitosa', 'Macho', 'Vivo', '2022-05-16', 16, 26, 62, 36, 0);
