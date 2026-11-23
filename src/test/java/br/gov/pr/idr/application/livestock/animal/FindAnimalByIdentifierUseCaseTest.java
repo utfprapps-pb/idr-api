@@ -74,7 +74,7 @@ class FindAnimalByIdentifierUseCaseTest {
     void shouldReturnAnimalWhenFoundWithinAuthorizedProperty() {
         final var breedId = BreedID.unique();
         final var animal = Animal.with(AnimalID.unique(), PropertyID.from(propertyId), null, breedId,
-                "T", "Mimosa", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+                null, "Mimosa", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
         when(animalGateway.findByPropertyIdAndIdentifier(PropertyID.from(propertyId), "Mimosa"))
                 .thenReturn(Optional.of(animal));
         when(nameLookup.breedName(breedId)).thenReturn("Jersey");

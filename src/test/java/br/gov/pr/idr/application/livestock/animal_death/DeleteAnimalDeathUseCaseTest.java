@@ -41,7 +41,7 @@ class DeleteAnimalDeathUseCaseTest {
     private final UUID animalId = UUID.randomUUID();
     private final UUID animalDeathId = UUID.randomUUID();
     private final Animal animal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null,
-            BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+            BreedID.unique(), null, "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final AnimalDeath existingAnimalDeath = AnimalDeath.with(
             AnimalDeathID.from(animalDeathId), AnimalID.from(animalId), "Picada de cobra", LocalDate.now());
 

@@ -11,9 +11,9 @@ public interface AnimalSizeJPARepository extends JpaRepository<AnimalSizeJPAEnti
         JpaSpecificationExecutor<AnimalSizeJPAEntity> {
 
     /** Projeção fechada: seleciona só id e nome. */
-    List<SizeNameView> findByIdIn(Collection<UUID> ids);
+    List<AnimalSizeNameView> findByIdIn(Collection<UUID> ids);
 
-    interface SizeNameView {
+    interface AnimalSizeNameView {
         UUID getId();
 
         String getSizeName();

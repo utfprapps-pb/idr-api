@@ -37,7 +37,7 @@ class DeleteAnimalUseCaseTest {
     private final UUID propertyId = UUID.randomUUID();
     private final UUID animalId = UUID.randomUUID();
     private final Animal existingAnimal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null,
-            BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+            BreedID.unique(), null, "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
 
     @Test
     void shouldDeleteWhenAuthorized() {

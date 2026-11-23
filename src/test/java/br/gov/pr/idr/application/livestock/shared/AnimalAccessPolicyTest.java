@@ -53,7 +53,7 @@ class AnimalAccessPolicyTest {
     }
 
     private Animal animalOf(final PropertyID ownerPropertyId) {
-        return Animal.with(animalId, ownerPropertyId, null, BreedID.unique(), "Bovino", "IDENT-1",
+        return Animal.with(animalId, ownerPropertyId, null, BreedID.unique(), null, "IDENT-1",
                 "F", "NORMAL", null, null, null, null, null);
     }
 

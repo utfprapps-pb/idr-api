@@ -42,7 +42,7 @@ class AnimalPostgresGatewayTest {
     AnimalPostgresGateway gateway;
 
     private Animal validAnimal(final PropertyID propertyId) {
-        return Animal.create(propertyId, null, BreedID.unique(), "Bovino", "Mimosa", "F", "Normal",
+        return Animal.create(propertyId, null, BreedID.unique(), null, "Mimosa", "F", "Normal",
                 LocalDate.of(2020, 1, 1), 30f, 180f, 220f, 3.5f);
     }
 

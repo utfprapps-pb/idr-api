@@ -53,7 +53,7 @@ class CreateMedicationUseCaseTest {
     private final UUID productId = UUID.randomUUID();
     private final ActivePrincipleID activePrincipleId = ActivePrincipleID.unique();
     private final Animal animal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null,
-            BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+            BreedID.unique(), null, "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final Product catalogProduct = Product.with(ProductID.from(productId), "Ivomec", "Antiparasitário",
             activePrincipleId, ProductCategoryID.unique());
 

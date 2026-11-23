@@ -48,7 +48,7 @@ public class AnimalController {
                                                          @RequestBody @Valid CreateAnimalRequest request) {
         final var scope = AuthenticationSupport.scope(authentication);
         final var command = new CreateAnimalCommand(propertyId, scope, request.animalMotherId(),
-                request.breedId(), request.type(), request.identifier(), request.gender(),
+                request.breedId(), request.sizeId(), request.identifier(), request.gender(),
                 request.bornCondition(), request.bornDate(), request.bornWeight(), request.previousWeight(),
                 request.currentWeight(), request.ecc());
         final var output = createAnimalUseCase.execute(command);
@@ -62,7 +62,7 @@ public class AnimalController {
                                                         @RequestBody @Valid UpdateAnimalRequest request) {
         final var scope = AuthenticationSupport.scope(authentication);
         final var command = new UpdateAnimalCommand(propertyId, id, scope, request.animalMotherId(),
-                request.breedId(), request.type(), request.identifier(), request.gender(),
+                request.breedId(), request.sizeId(), request.identifier(), request.gender(),
                 request.bornCondition(), request.bornDate(), request.bornWeight());
         final var output = updateAnimalUseCase.execute(command);
         return ResponseEntity.ok(UpdateAnimalResponse.from(output));

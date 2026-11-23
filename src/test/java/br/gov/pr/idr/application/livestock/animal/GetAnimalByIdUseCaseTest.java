@@ -7,6 +7,7 @@ import br.gov.pr.idr.application.livestock.animal.retrieve.get.GetAnimalByIdUseC
 import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeID;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.shared.tactical.exceptions.NotFoundException;
@@ -40,7 +41,7 @@ class GetAnimalByIdUseCaseTest {
     private final UUID animalId = UUID.randomUUID();
     private final BreedID breedId = BreedID.unique();
     private final Animal existingAnimal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null,
-            breedId, "T", "Mimosa", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+            breedId, null, "Mimosa", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
 
     @Test
     void shouldReturnAnimalWhenAuthorized() {
@@ -51,6 +52,31 @@ class GetAnimalByIdUseCaseTest {
 
         assertEquals("Mimosa", output.identifier());
         assertEquals("Holandesa", output.breedName());
+    }
+
+    @Test
+    void shouldReturnSizeName() {
+        final var sizeId = AnimalSizeID.unique();
+        final var animal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null, breedId,
+                sizeId, "Mimosa", null, null, null, null, null, null, null);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(animal);
+        when(nameLookup.sizeName(sizeId)).thenReturn("Grande");
+
+        final var output = useCase.execute(new GetAnimalByIdCommand(propertyId, animalId, PropertySearchScope.unrestricted()));
+
+        assertEquals(sizeId.id(), output.sizeId());
+        assertEquals("Grande", output.sizeName());
+    }
+
+    @Test
+    void shouldReturnNullSizeWithoutSize() {
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted())).thenReturn(existingAnimal);
+
+        final var output = useCase.execute(new GetAnimalByIdCommand(propertyId, animalId, PropertySearchScope.unrestricted()));
+
+        assertNull(output.sizeId());
+        assertNull(output.sizeName());
+        verify(nameLookup, never()).sizeName(any());
     }
 
     @Test

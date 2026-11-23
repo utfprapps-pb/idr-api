@@ -2,6 +2,8 @@ package br.gov.pr.idr.application.livestock.shared;
 
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeGateway;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeID;
 import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
@@ -11,23 +13,33 @@ import br.gov.pr.idr.domain.shared.tactical.validation.NotificationValidation;
 import java.util.UUID;
 
 /**
- * Validações entre agregados das referências de livestock: a raça precisa existir e o animal referenciado (mãe,
+ * Validações entre agregados das referências de livestock: a raça e o porte precisam existir e o animal referenciado (mãe,
  * bezerro) precisa ser da mesma propriedade. Referência {@code null} não é checada aqui; a obrigatoriedade e a
  * autorreferência ficam com o próprio agregado.
  */
 public final class LivestockReferencePolicy {
 
     private final BreedGateway breedGateway;
+    private final AnimalSizeGateway animalSizeGateway;
     private final AnimalGateway animalGateway;
 
-    public LivestockReferencePolicy(final BreedGateway breedGateway, final AnimalGateway animalGateway) {
+    public LivestockReferencePolicy(final BreedGateway breedGateway, final AnimalSizeGateway animalSizeGateway,
+                                    final AnimalGateway animalGateway) {
         this.breedGateway = breedGateway;
+        this.animalSizeGateway = animalSizeGateway;
         this.animalGateway = animalGateway;
     }
 
     public void ensureBreedExists(final UUID breedId) {
         if (breedId != null && !breedGateway.existsById(BreedID.from(breedId))) {
             throw new NotificationException("Raça com o ID %s não encontrada".formatted(breedId),
+                    NotificationValidation.create());
+        }
+    }
+
+    public void ensureAnimalSizeExists(final UUID sizeId) {
+        if (sizeId != null && !animalSizeGateway.existsById(AnimalSizeID.from(sizeId))) {
+            throw new NotificationException("Porte com o ID %s não encontrado".formatted(sizeId),
                     NotificationValidation.create());
         }
     }

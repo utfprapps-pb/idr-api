@@ -42,7 +42,7 @@ class GetAnimalSalesByIdUseCaseTest {
     private final UUID animalId = UUID.randomUUID();
     private final UUID animalSalesId = UUID.randomUUID();
     private final Animal animal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null,
-            BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+            BreedID.unique(), null, "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final AnimalSales existingAnimalSales = AnimalSales.with(
             AnimalSalesID.from(animalSalesId), AnimalID.from(animalId), LocalDate.of(2024, 1, 1),
             Reason.VOLUNTARIA, BigDecimal.valueOf(1500), Destination.ABATE, BigDecimal.valueOf(450));

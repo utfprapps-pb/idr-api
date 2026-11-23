@@ -45,7 +45,7 @@ class DeleteAnimalChildbirthUseCaseTest {
     private final UUID animalId = UUID.randomUUID();
     private final UUID animalChildbirthId = UUID.randomUUID();
     private final Animal animal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null,
-            BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+            BreedID.unique(), null, "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final AnimalChildbirth existingAnimalChildbirth = AnimalChildbirth.with(
             AnimalChildbirthID.from(animalChildbirthId), AnimalID.from(animalId), LocalDate.of(2024, 3, 10), ChildbirthGender.FEMALE, new BigDecimal("35.5"), ChildbirthCondition.ALIVE, BreedID.unique(), null);
 

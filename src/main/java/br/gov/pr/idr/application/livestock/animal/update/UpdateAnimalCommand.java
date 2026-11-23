@@ -11,7 +11,7 @@ public record UpdateAnimalCommand(
         PropertySearchScope scope,
         UUID animalMotherId,
         UUID breedId,
-        String type,
+        UUID sizeId,
         String identifier,
         String gender,
         String bornCondition,

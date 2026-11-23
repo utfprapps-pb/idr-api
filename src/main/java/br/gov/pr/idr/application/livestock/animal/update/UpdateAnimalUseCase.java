@@ -6,6 +6,7 @@ import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeID;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 
@@ -30,6 +31,7 @@ public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnim
         final var existingAnimal = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
                 command.scope());
         referencePolicy.ensureBreedExists(command.breedId());
+        referencePolicy.ensureAnimalSizeExists(command.sizeId());
         // A mãe só é revalidada quando muda: o vínculo já gravado com uma mãe excluída depois não pode
         // impedir a edição dos outros campos.
         final var currentMotherId = existingAnimal.getAnimalMotherId().map(AnimalID::id).orElse(null);
@@ -43,7 +45,7 @@ public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnim
         final var updatedAnimal = existingAnimal.update(
                 command.animalMotherId() == null ? null : AnimalID.from(command.animalMotherId()),
                 BreedID.from(command.breedId()),
-                command.type(),
+                command.sizeId() == null ? null : AnimalSizeID.from(command.sizeId()),
                 command.identifier(),
                 command.gender(),
                 command.bornCondition(),

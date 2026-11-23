@@ -15,7 +15,7 @@ class AnimalTest {
 
     @Test
     void shouldCreateWithValidFields() {
-        final var animal = Animal.create(PropertyID.unique(), null, BreedID.unique(), "Leiteiro", "Mimosa",
+        final var animal = Animal.create(PropertyID.unique(), null, BreedID.unique(), null, "Mimosa",
                 "F", "Vivo", LocalDate.of(2024, 1, 1), 30f, 40f, 50f, 3.5f);
         assertNotNull(animal.getId());
         assertEquals("Mimosa", animal.getIdentifier());
@@ -24,37 +24,37 @@ class AnimalTest {
 
     @Test
     void shouldFailWhenPropertyIdIsNull() {
-        assertThrows(NotificationException.class, () -> Animal.create(null, null, BreedID.unique(), "T",
+        assertThrows(NotificationException.class, () -> Animal.create(null, null, BreedID.unique(), null,
                 "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f));
     }
 
     @Test
     void shouldFailWhenBreedIdIsNull() {
-        assertThrows(NotificationException.class, () -> Animal.create(PropertyID.unique(), null, null, "T",
+        assertThrows(NotificationException.class, () -> Animal.create(PropertyID.unique(), null, null, null,
                 "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f));
     }
 
     @Test
     void shouldFailWhenIdentifierIsBlank() {
-        assertThrows(NotificationException.class, () -> Animal.create(PropertyID.unique(), null, BreedID.unique(), "T",
+        assertThrows(NotificationException.class, () -> Animal.create(PropertyID.unique(), null, BreedID.unique(), null,
                 " ", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f));
     }
 
     @Test
     void shouldFailWhenMotherIsTheAnimalItself() {
-        final var animal = Animal.create(PropertyID.unique(), null, BreedID.unique(), "T", "I",
+        final var animal = Animal.create(PropertyID.unique(), null, BreedID.unique(), null, "I",
                 "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
-        assertThrows(NotificationException.class, () -> animal.update(animal.getId(), BreedID.unique(), "T",
+        assertThrows(NotificationException.class, () -> animal.update(animal.getId(), BreedID.unique(), null,
                 "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f));
     }
 
     @Test
     void updateShouldNotChangePropertyId() {
-        final var original = Animal.create(PropertyID.unique(), null, BreedID.unique(), "T", "I",
+        final var original = Animal.create(PropertyID.unique(), null, BreedID.unique(), null, "I",
                 "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
         final var propertyIdBefore = original.getPropertyId();
 
-        original.update(null, BreedID.unique(), "T2", "I2", "M", "Morto", LocalDate.now(), 2f, 2f, 2f, 2f);
+        original.update(null, BreedID.unique(), null, "I2", "M", "Morto", LocalDate.now(), 2f, 2f, 2f, 2f);
 
         assertEquals(propertyIdBefore, original.getPropertyId());
     }

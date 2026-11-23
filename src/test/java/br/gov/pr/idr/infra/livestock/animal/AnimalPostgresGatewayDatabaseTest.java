@@ -31,7 +31,7 @@ class AnimalPostgresGatewayDatabaseTest {
     }
 
     private Animal savedAnimalIn(final PropertyID propertyId) {
-        final var animal = gateway.save(Animal.with(AnimalID.unique(), propertyId, null, BreedID.unique(), "T",
+        final var animal = gateway.save(Animal.with(AnimalID.unique(), propertyId, null, BreedID.unique(), null,
                 "Teste", "F", "Vivo", LocalDate.of(2020, 1, 1), 1f, 1f, 1f, 1f));
         entityManager.flush();
         return animal;

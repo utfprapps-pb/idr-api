@@ -41,7 +41,7 @@ class CreateAnimalSalesUseCaseTest {
     private final UUID propertyId = UUID.randomUUID();
     private final UUID animalId = UUID.randomUUID();
     private final Animal animal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null,
-            BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+            BreedID.unique(), null, "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
 
     private CreateAnimalSalesCommand validCreateCommand() {
         return new CreateAnimalSalesCommand(propertyId, animalId, PropertySearchScope.unrestricted(),
