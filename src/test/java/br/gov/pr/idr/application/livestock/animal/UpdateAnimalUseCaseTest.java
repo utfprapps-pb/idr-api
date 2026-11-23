@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -153,6 +154,26 @@ class UpdateAnimalUseCaseTest {
         assertEquals(motherId.id(), output.animalMotherId());
         assertEquals("Mimosa Editada", output.identifier());
         verify(animalGateway, never()).existsByIdAndPropertyId(any(), any());
+    }
+
+    @Test
+    @DisplayName("PUT: porte inalterado não é revalidado (porte excluído depois não impede editar o resto)")
+    void shouldNotRevalidateUnchangedSize() {
+        final var sizeId = AnimalSizeID.unique();
+        final var animal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null, BreedID.unique(),
+                sizeId, "Mimosa", "Fêmea", "Vivo", LocalDate.of(2019, 6, 23), 12f, 45f, 62f, 3.5f);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted()))
+                .thenReturn(animal);
+        when(breedGateway.existsById(any())).thenReturn(true);
+        when(animalGateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        final var output = useCase.execute(new UpdateAnimalCommand(propertyId, animalId,
+                PropertySearchScope.unrestricted(), null, breedId, sizeId.id(), "Estrela", "Fêmea", "Vivo",
+                LocalDate.of(2019, 6, 23), 12f));
+
+        assertEquals(sizeId.id(), output.sizeId());
+        assertEquals("Estrela", output.identifier());
+        verifyNoInteractions(animalSizeGateway);
     }
 
     @Test
