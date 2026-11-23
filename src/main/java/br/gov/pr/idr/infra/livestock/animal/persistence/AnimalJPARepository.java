@@ -18,6 +18,8 @@ public interface AnimalJPARepository extends JpaRepository<AnimalJPAEntity, UUID
 
     boolean existsByIdAndPropertyId(UUID id, UUID propertyId);
 
+    boolean existsBySizeId(UUID sizeId);
+
     /** Projeção fechada: seleciona só id e identificador. */
     List<AnimalIdentifierView> findByIdIn(Collection<UUID> ids);
 
