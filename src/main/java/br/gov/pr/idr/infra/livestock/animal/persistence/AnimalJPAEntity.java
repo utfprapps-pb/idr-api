@@ -2,6 +2,7 @@ package br.gov.pr.idr.infra.livestock.animal.persistence;
 
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeID;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.infra.shared.persistence.SyncableJPAEntity;
@@ -39,7 +40,8 @@ public class AnimalJPAEntity extends SyncableJPAEntity {
     @Column(name = "breed_id", nullable = false)
     private UUID breedId;
 
-    private String type;
+    @Column(name = "size_id")
+    private UUID sizeId;
 
     @Column(nullable = false)
     private String identifier;
@@ -64,7 +66,7 @@ public class AnimalJPAEntity extends SyncableJPAEntity {
                 animal.getPropertyId().id(),
                 animal.getAnimalMotherId().map(AnimalID::id).orElse(null),
                 animal.getBreedId().id(),
-                animal.getType(),
+                animal.getSizeId().map(AnimalSizeID::id).orElse(null),
                 animal.getIdentifier(),
                 animal.getGender(),
                 animal.getBornCondition(),
@@ -84,7 +86,7 @@ public class AnimalJPAEntity extends SyncableJPAEntity {
                 PropertyID.from(this.propertyId),
                 this.animalMotherId == null ? null : AnimalID.from(this.animalMotherId),
                 BreedID.from(this.breedId),
-                this.type,
+                this.sizeId == null ? null : AnimalSizeID.from(this.sizeId),
                 this.identifier,
                 this.gender,
                 this.bornCondition,

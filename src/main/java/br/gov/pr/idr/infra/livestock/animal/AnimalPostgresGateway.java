@@ -3,6 +3,7 @@ package br.gov.pr.idr.infra.livestock.animal;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
@@ -36,6 +37,11 @@ public class AnimalPostgresGateway implements AnimalGateway {
     @Override
     public boolean existsByIdAndPropertyId(final AnimalID id, final PropertyID propertyId) {
         return repository.existsByIdAndPropertyId(id.id(), propertyId.id());
+    }
+
+    @Override
+    public boolean existsBySizeId(final AnimalSizeID sizeId) {
+        return repository.existsBySizeId(sizeId.id());
     }
 
     @Override

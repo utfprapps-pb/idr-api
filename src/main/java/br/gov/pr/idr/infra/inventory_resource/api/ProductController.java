@@ -33,7 +33,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<CreateProductResponse> create(@RequestBody @Valid CreateProductRequest request) {
         final var command = CreateProductCommand.from(request.name(), request.description(),
-                request.applicationWay(), request.activePrincipleId(), request.categoryId());
+                request.activePrincipleId(), request.categoryId());
         final var output = createProductUseCase.execute(command);
         return ResponseEntity.ok(CreateProductResponse.from(output));
     }
@@ -42,7 +42,7 @@ public class ProductController {
     public ResponseEntity<UpdateProductResponse> update(@PathVariable UUID id,
                                                           @RequestBody @Valid UpdateProductRequest request) {
         final var command = UpdateProductCommand.from(id, request.name(), request.description(),
-                request.applicationWay(), request.activePrincipleId(), request.categoryId());
+                request.activePrincipleId(), request.categoryId());
         final var output = updateProductUseCase.execute(command);
         return ResponseEntity.ok(UpdateProductResponse.from(output));
     }

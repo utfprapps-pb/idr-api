@@ -6,8 +6,11 @@ import br.gov.pr.idr.application.shared.stereotype.CommandUseCase;
 import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeID;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
+
+import java.util.Objects;
 
 @CommandUseCase
 public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnimalOutput> {
@@ -27,29 +30,36 @@ public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnim
     public UpdateAnimalOutput execute(final UpdateAnimalCommand command) {
         final var existingAnimal = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
                 command.scope());
-        referencePolicy.ensureBreedExists(command.breedId());
-        referencePolicy.ensureAnimalInProperty(command.animalMotherId(), PropertyID.from(command.propertyId()),
-                "mãe");
+        // Raça, porte e mãe só são revalidados quando mudam: uma referência excluída depois não pode
+        // impedir a edição dos outros campos.
+        if (!Objects.equals(command.breedId(), existingAnimal.getBreedId().id())) {
+            referencePolicy.ensureBreedExists(command.breedId());
+        }
+        final var currentSizeId = existingAnimal.getSizeId().map(AnimalSizeID::id).orElse(null);
+        if (!Objects.equals(command.sizeId(), currentSizeId)) {
+            referencePolicy.ensureAnimalSizeExists(command.sizeId());
+        }
+        final var currentMotherId = existingAnimal.getAnimalMotherId().map(AnimalID::id).orElse(null);
+        if (!Objects.equals(command.animalMotherId(), currentMotherId)) {
+            referencePolicy.ensureAnimalInProperty(command.animalMotherId(), PropertyID.from(command.propertyId()),
+                    "mãe");
+        }
 
+        // Semântica de PUT: os campos de identificação são substituídos (nulo apaga); as medidas não fazem
+        // parte da edição e são preservadas.
         final var updatedAnimal = existingAnimal.update(
-                orCurrent(command.animalMotherId() == null ? null : AnimalID.from(command.animalMotherId()),
-                        existingAnimal.getAnimalMotherId().orElse(null)),
+                command.animalMotherId() == null ? null : AnimalID.from(command.animalMotherId()),
                 BreedID.from(command.breedId()),
-                orCurrent(command.type(), existingAnimal.getType()),
+                command.sizeId() == null ? null : AnimalSizeID.from(command.sizeId()),
                 command.identifier(),
-                orCurrent(command.gender(), existingAnimal.getGender()),
-                orCurrent(command.bornCondition(), existingAnimal.getBornCondition()),
-                orCurrent(command.bornDate(), existingAnimal.getBornDate()),
-                orCurrent(command.bornWeight(), existingAnimal.getBornWeight()),
-                orCurrent(command.previousWeight(), existingAnimal.getPreviousWeight()),
-                orCurrent(command.currentWeight(), existingAnimal.getCurrentWeight()),
-                orCurrent(command.ecc(), existingAnimal.getEcc()));
+                command.gender(),
+                command.bornCondition(),
+                command.bornDate(),
+                command.bornWeight(),
+                existingAnimal.getPreviousWeight(),
+                existingAnimal.getCurrentWeight(),
+                existingAnimal.getEcc());
 
         return UpdateAnimalOutput.from(animalGateway.update(updatedAnimal));
-    }
-
-    /** Semântica de PATCH: campo ausente (null) na requisição mantém o valor atual. */
-    private static <T> T orCurrent(final T incoming, final T current) {
-        return incoming != null ? incoming : current;
     }
 }

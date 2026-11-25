@@ -33,12 +33,11 @@ public class UpdateProductUseCase extends UseCase<UpdateProductCommand, UpdatePr
         final var categoryId = ProductCategoryID.from(command.categoryId());
         final var name = command.name();
         final var description = command.description();
-        final var applicationWay = command.applicationWay();
         final var notification = NotificationValidation.create();
 
         final var product = productGateway.findById(productId).orElseThrow(
                 () -> NotFoundException.with("Produto com o id %s não encontrado".formatted(productId.id())))
-                .update(name, description, applicationWay, activePrincipleId, categoryId);
+                .update(name, description, activePrincipleId, categoryId);
 
         if (!activePrincipleGateway.existsById(activePrincipleId)) {
             throw new NotificationException(

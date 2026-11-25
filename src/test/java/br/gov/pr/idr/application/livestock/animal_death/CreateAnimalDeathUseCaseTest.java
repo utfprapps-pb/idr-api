@@ -39,7 +39,7 @@ class CreateAnimalDeathUseCaseTest {
     private final UUID propertyId = UUID.randomUUID();
     private final UUID animalId = UUID.randomUUID();
     private final Animal animal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null,
-            BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+            BreedID.unique(), null, "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
 
     private CreateAnimalDeathCommand validCreateCommand() {
         return new CreateAnimalDeathCommand(propertyId, animalId, PropertySearchScope.unrestricted(), "Picada de cobra",

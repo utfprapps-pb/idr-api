@@ -165,4 +165,32 @@ class InseminationPostgresGatewayTest {
 
         assertEquals(0, resultForB.total());
     }
+
+    @Test
+    @DisplayName("search filtra pela data do evento (iaDate) quando terms é uma data ISO")
+    void shouldFilterSearchByEventDateWhenTermsIsIsoDate() {
+        final var animalId = AnimalID.unique();
+        final var date = LocalDate.of(2024, 3, 10);
+        when(repository.findAllByAnimalIdAndIaDate(eq(animalId.id()), eq(date), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of()));
+
+        final var result = gateway.search(animalId, SearchQuery.from(0, 10, " 2024-03-10 ", "iaDate", "asc"));
+
+        assertEquals(0, result.total());
+        verify(repository).findAllByAnimalIdAndIaDate(eq(animalId.id()), eq(date), any(Pageable.class));
+        verify(repository, never()).findAllByAnimalId(any(), any(Pageable.class));
+    }
+
+    @Test
+    @DisplayName("search ignora terms que não é data e devolve todos os eventos do animal")
+    void shouldIgnoreNonDateTermsInSearch() {
+        final var animalId = AnimalID.unique();
+        when(repository.findAllByAnimalId(eq(animalId.id()), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of()));
+
+        gateway.search(animalId, SearchQuery.from(0, 10, "texto livre", "iaDate", "asc"));
+
+        verify(repository).findAllByAnimalId(eq(animalId.id()), any(Pageable.class));
+        verify(repository, never()).findAllByAnimalIdAndIaDate(any(), any(), any(Pageable.class));
+    }
 }

@@ -42,7 +42,7 @@ class UpdateInseminationUseCaseTest {
     private final UUID animalId = UUID.randomUUID();
     private final UUID inseminationId = UUID.randomUUID();
     private final Animal animal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null,
-            BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+            BreedID.unique(), null, "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final Insemination existingInsemination = Insemination.with(InseminationID.from(inseminationId),
             AnimalID.from(animalId), LocalDate.now(), "Touro 1");
 

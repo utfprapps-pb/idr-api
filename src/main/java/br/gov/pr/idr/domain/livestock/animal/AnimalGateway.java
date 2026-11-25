@@ -1,5 +1,6 @@
 package br.gov.pr.idr.domain.livestock.animal;
 
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.shared.tactical.search.Pagination;
 import br.gov.pr.idr.domain.shared.tactical.search.SearchQuery;
@@ -14,6 +15,9 @@ public interface AnimalGateway {
 
     /** Se o animal existe e pertence à propriedade informada, sem carregá-lo. */
     boolean existsByIdAndPropertyId(final AnimalID id, final PropertyID propertyId);
+
+    /** Se algum animal (não excluído) usa o porte informado. */
+    boolean existsBySizeId(final AnimalSizeID sizeId);
 
     Animal update(final Animal animal);
 

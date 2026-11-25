@@ -41,8 +41,8 @@ class MedicationPostgresGatewayTest {
     MedicationPostgresGateway gateway;
 
     private Medication validMedication(final AnimalID animalId) {
-        return Medication.create(animalId, ProductID.unique(), LocalDate.of(2024, 3, 10), "10ml",
-                "Intramuscular");
+        return Medication.create(animalId, ProductID.unique(), "Ivomec", "Ivermectina", LocalDate.of(2024, 3, 10),
+                "10ml", "Intramuscular");
     }
 
     @Test
@@ -131,6 +131,23 @@ class MedicationPostgresGatewayTest {
         assertEquals(medication.getProductId(), result.get().getProductId());
         assertEquals(medication.getApplicationDate(), result.get().getApplicationDate());
         assertEquals(medication.getApplicationWay(), result.get().getApplicationWay());
+        assertEquals(medication.getProductName(), result.get().getProductName());
+        assertEquals(medication.getActivePrinciple(), result.get().getActivePrinciple());
+    }
+
+    @Test
+    @DisplayName("roundtrip da entidade JPA aceita medicação sem produto do catálogo")
+    void shouldRoundtripMedicationWithoutCatalogProduct() {
+        final var medication = Medication.create(AnimalID.unique(), null, "Vermífugo caseiro", null,
+                LocalDate.of(2024, 3, 10), "10ml", "Oral");
+
+        final var entity = MedicationJPAEntity.from(medication);
+        final var aggregate = entity.toAggregate();
+
+        assertNull(entity.getProductId());
+        assertNull(aggregate.getProductId());
+        assertEquals("Vermífugo caseiro", aggregate.getProductName());
+        assertNull(aggregate.getActivePrinciple());
     }
 
     @Test
@@ -168,5 +185,33 @@ class MedicationPostgresGatewayTest {
         final var resultForB = gateway.search(animalB, query);
 
         assertEquals(0, resultForB.total());
+    }
+
+    @Test
+    @DisplayName("search filtra pela data do evento (applicationDate) quando terms é uma data ISO")
+    void shouldFilterSearchByEventDateWhenTermsIsIsoDate() {
+        final var animalId = AnimalID.unique();
+        final var date = LocalDate.of(2024, 3, 10);
+        when(repository.findAllByAnimalIdAndApplicationDate(eq(animalId.id()), eq(date), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of()));
+
+        final var result = gateway.search(animalId, SearchQuery.from(0, 10, " 2024-03-10 ", "applicationDate", "asc"));
+
+        assertEquals(0, result.total());
+        verify(repository).findAllByAnimalIdAndApplicationDate(eq(animalId.id()), eq(date), any(Pageable.class));
+        verify(repository, never()).findAllByAnimalId(any(), any(Pageable.class));
+    }
+
+    @Test
+    @DisplayName("search ignora terms que não é data e devolve todos os eventos do animal")
+    void shouldIgnoreNonDateTermsInSearch() {
+        final var animalId = AnimalID.unique();
+        when(repository.findAllByAnimalId(eq(animalId.id()), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of()));
+
+        gateway.search(animalId, SearchQuery.from(0, 10, "texto livre", "applicationDate", "asc"));
+
+        verify(repository).findAllByAnimalId(eq(animalId.id()), any(Pageable.class));
+        verify(repository, never()).findAllByAnimalIdAndApplicationDate(any(), any(), any(Pageable.class));
     }
 }

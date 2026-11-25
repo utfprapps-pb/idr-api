@@ -33,8 +33,15 @@ public class MedicationJPAEntity extends SyncableJPAEntity {
     @Column(name = "animal_id", nullable = false)
     private UUID animalId;
 
-    @Column(name = "product_id", nullable = false)
+    /** Produto do catálogo; nulo quando o produto foi digitado. */
+    @Column(name = "product_id")
     private UUID productId;
+
+    @Column(name = "product_name", nullable = false)
+    private String productName;
+
+    @Column(name = "active_principle")
+    private String activePrinciple;
 
     @Column(name = "application_date")
     private LocalDate applicationDate;
@@ -49,7 +56,9 @@ public class MedicationJPAEntity extends SyncableJPAEntity {
         final var entity = new MedicationJPAEntity(
                 medication.getId().id(),
                 medication.getAnimalId().id(),
-                medication.getProductId().id(),
+                medication.getProductId() == null ? null : medication.getProductId().id(),
+                medication.getProductName(),
+                medication.getActivePrinciple(),
                 medication.getApplicationDate(),
                 medication.getAppliedDose(),
                 medication.getApplicationWay()
@@ -62,7 +71,9 @@ public class MedicationJPAEntity extends SyncableJPAEntity {
         final var aggregate = Medication.with(
                 MedicationID.from(this.id),
                 AnimalID.from(this.animalId),
-                ProductID.from(this.productId),
+                this.productId == null ? null : ProductID.from(this.productId),
+                this.productName,
+                this.activePrinciple,
                 this.applicationDate,
                 this.appliedDose,
                 this.applicationWay

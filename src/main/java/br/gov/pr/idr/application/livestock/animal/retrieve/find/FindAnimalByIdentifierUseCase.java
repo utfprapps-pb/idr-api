@@ -30,6 +30,8 @@ public class FindAnimalByIdentifierUseCase
         accessPolicy.ensureAccessToProperty(command.propertyId(), command.scope());
         return animalGateway.findByPropertyIdAndIdentifier(PropertyID.from(command.propertyId()),
                 command.identifier()).map(animal -> GetAnimalByIdOutput.from(animal,
-                nameLookup.breedName(animal.getBreedId())));
+                nameLookup.breedName(animal.getBreedId()),
+                animal.getSizeId().map(nameLookup::sizeName).orElse(null),
+                animal.getAnimalMotherId().map(nameLookup::animalIdentifier).orElse(null)));
     }
 }

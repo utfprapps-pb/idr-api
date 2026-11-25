@@ -35,7 +35,7 @@ class CreateProductUseCaseTest {
         when(productCategoryGateway.existsById(any())).thenReturn(true);
         when(productGateway.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
-        final var output = useCase.execute(new CreateProductCommand("P1", "D1", "W1",
+        final var output = useCase.execute(new CreateProductCommand("P1", "D1",
                 UUID.randomUUID(), UUID.randomUUID()));
 
         assertEquals("P1", output.name());
@@ -45,7 +45,7 @@ class CreateProductUseCaseTest {
     void shouldThrowWhenActivePrincipleDoesNotExist() {
         when(activePrincipleGateway.existsById(any())).thenReturn(false);
         assertThrows(NotificationException.class, () -> useCase.execute(
-                new CreateProductCommand("P1", "D1", "W1", UUID.randomUUID(), UUID.randomUUID())));
+                new CreateProductCommand("P1", "D1", UUID.randomUUID(), UUID.randomUUID())));
         verify(productGateway, never()).save(any());
     }
 
@@ -54,6 +54,6 @@ class CreateProductUseCaseTest {
         when(activePrincipleGateway.existsById(any())).thenReturn(true);
         when(productCategoryGateway.existsById(any())).thenReturn(false);
         assertThrows(NotificationException.class, () -> useCase.execute(
-                new CreateProductCommand("P1", "D1", "W1", UUID.randomUUID(), UUID.randomUUID())));
+                new CreateProductCommand("P1", "D1", UUID.randomUUID(), UUID.randomUUID())));
     }
 }

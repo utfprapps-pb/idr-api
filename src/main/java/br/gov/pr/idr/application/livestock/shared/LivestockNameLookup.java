@@ -1,6 +1,7 @@
 package br.gov.pr.idr.application.livestock.shared;
 
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeID;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 
 import java.util.Collection;
@@ -18,10 +19,17 @@ public interface LivestockNameLookup {
 
     Map<BreedID, String> breedNames(final Collection<BreedID> ids);
 
+    Map<AnimalSizeID, String> sizeNames(final Collection<AnimalSizeID> ids);
+
     Map<AnimalID, String> animalIdentifiers(final Collection<AnimalID> ids);
 
     default String breedName(final BreedID id) {
         return breedNames(Set.of(id)).get(id);
+    }
+
+    /** Porte não informado ({@code null}) devolve {@code null} sem consulta. */
+    default String sizeName(final AnimalSizeID id) {
+        return id == null ? null : sizeNames(Set.of(id)).get(id);
     }
 
     default String animalIdentifier(final AnimalID id) {

@@ -2,7 +2,10 @@ package br.gov.pr.idr.infra.livestock.shared;
 
 import br.gov.pr.idr.application.livestock.shared.LivestockNameLookup;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeID;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
+import br.gov.pr.idr.infra.livestock.animalsize.persistence.AnimalSizeJPARepository;
+import br.gov.pr.idr.infra.livestock.animalsize.persistence.AnimalSizeJPARepository.AnimalSizeNameView;
 import br.gov.pr.idr.infra.livestock.animal.persistence.AnimalJPARepository;
 import br.gov.pr.idr.infra.livestock.animal.persistence.AnimalJPARepository.AnimalIdentifierView;
 import br.gov.pr.idr.infra.livestock.breed.persistence.BreedJPARepository;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 public class PostgresLivestockNameLookup implements LivestockNameLookup {
 
     private final BreedJPARepository breedRepository;
+    private final AnimalSizeJPARepository animalSizeRepository;
     private final AnimalJPARepository animalRepository;
 
     @Override
@@ -29,6 +33,15 @@ public class PostgresLivestockNameLookup implements LivestockNameLookup {
         }
         return breedRepository.findByIdIn(ids.stream().map(BreedID::id).toList()).stream()
                 .collect(Collectors.toMap(view -> BreedID.from(view.getId()), BreedNameView::getBreedName));
+    }
+
+    @Override
+    public Map<AnimalSizeID, String> sizeNames(final Collection<AnimalSizeID> ids) {
+        if (ids.isEmpty()) {
+            return Map.of();
+        }
+        return animalSizeRepository.findByIdIn(ids.stream().map(AnimalSizeID::id).toList()).stream()
+                .collect(Collectors.toMap(view -> AnimalSizeID.from(view.getId()), AnimalSizeNameView::getSizeName));
     }
 
     @Override

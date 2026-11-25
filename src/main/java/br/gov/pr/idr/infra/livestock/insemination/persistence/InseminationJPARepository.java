@@ -4,12 +4,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface InseminationJPARepository extends JpaRepository<InseminationJPAEntity, UUID> {
 
     Page<InseminationJPAEntity> findAllByAnimalId(UUID animalId, Pageable pageable);
+
+    Page<InseminationJPAEntity> findAllByAnimalIdAndIaDate(UUID animalId, LocalDate iaDate, Pageable pageable);
 
     Optional<InseminationJPAEntity> findByIdAndAnimalId(UUID id, UUID animalId);
 }

@@ -7,6 +7,7 @@ import br.gov.pr.idr.application.shared.stereotype.UseCase;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeID;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 
@@ -29,11 +30,13 @@ public class CreateAnimalUseCase extends UseCase<CreateAnimalCommand, CreateAnim
         accessPolicy.ensureAccessToProperty(command.propertyId(), command.scope());
         final var propertyId = PropertyID.from(command.propertyId());
         referencePolicy.ensureBreedExists(command.breedId());
+        referencePolicy.ensureAnimalSizeExists(command.sizeId());
         referencePolicy.ensureAnimalInProperty(command.animalMotherId(), propertyId, "mãe");
 
         final var animal = Animal.create(propertyId,
                 command.animalMotherId() == null ? null : AnimalID.from(command.animalMotherId()),
-                BreedID.from(command.breedId()), command.type(), command.identifier(), command.gender(),
+                BreedID.from(command.breedId()),
+                command.sizeId() == null ? null : AnimalSizeID.from(command.sizeId()), command.identifier(), command.gender(),
                 command.bornCondition(), command.bornDate(), command.bornWeight(), command.previousWeight(),
                 command.currentWeight(), command.ecc());
 

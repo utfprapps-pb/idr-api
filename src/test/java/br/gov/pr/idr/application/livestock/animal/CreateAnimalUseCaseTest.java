@@ -7,6 +7,8 @@ import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
 import br.gov.pr.idr.application.livestock.shared.LivestockReferencePolicy;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeGateway;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeID;
 import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.domain.property_management.producer.ProducerID;
@@ -26,11 +28,13 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,12 +43,13 @@ class CreateAnimalUseCaseTest {
 
     @Mock AnimalGateway animalGateway;
     @Mock BreedGateway breedGateway;
+    @Mock AnimalSizeGateway animalSizeGateway;
     @Mock AnimalAccessPolicy accessPolicy;
     CreateAnimalUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        useCase = new CreateAnimalUseCase(animalGateway, new LivestockReferencePolicy(breedGateway, animalGateway),
+        useCase = new CreateAnimalUseCase(animalGateway, new LivestockReferencePolicy(breedGateway, animalSizeGateway, animalGateway),
                 accessPolicy);
     }
 
@@ -52,7 +57,7 @@ class CreateAnimalUseCaseTest {
     private final UUID breedId = UUID.randomUUID();
 
     private CreateAnimalCommand validCommand() {
-        return new CreateAnimalCommand(propertyId, PropertySearchScope.unrestricted(), null, breedId, "Leiteiro", "Mimosa", "F",
+        return new CreateAnimalCommand(propertyId, PropertySearchScope.unrestricted(), null, breedId, null, "Mimosa", "F",
                 "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     }
 
@@ -61,13 +66,51 @@ class CreateAnimalUseCaseTest {
         when(breedGateway.existsById(any())).thenReturn(true);
         when(animalGateway.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
-        final var command = new CreateAnimalCommand(propertyId, PropertySearchScope.unrestricted(), null, breedId, "Leiteiro",
+        final var command = new CreateAnimalCommand(propertyId, PropertySearchScope.unrestricted(), null, breedId, null,
                 "Mimosa", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
 
         final var output = useCase.execute(command);
 
         assertEquals("Mimosa", output.identifier());
         verify(animalGateway).save(any());
+    }
+
+    @Test
+    void shouldCreateWithExistingSize() {
+        final var sizeId = UUID.randomUUID();
+        when(breedGateway.existsById(any())).thenReturn(true);
+        when(animalSizeGateway.existsById(AnimalSizeID.from(sizeId))).thenReturn(true);
+        when(animalGateway.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        final var output = useCase.execute(new CreateAnimalCommand(propertyId, PropertySearchScope.unrestricted(),
+                null, breedId, sizeId, "Mimosa", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f));
+
+        assertEquals(sizeId, output.sizeId());
+    }
+
+    @Test
+    void shouldThrowWhenSizeDoesNotExist() {
+        final var sizeId = UUID.randomUUID();
+        when(breedGateway.existsById(any())).thenReturn(true);
+        when(animalSizeGateway.existsById(AnimalSizeID.from(sizeId))).thenReturn(false);
+
+        final var ex = assertThrows(NotificationException.class, () -> useCase.execute(new CreateAnimalCommand(
+                propertyId, PropertySearchScope.unrestricted(), null, breedId, sizeId, "Mimosa", "F", "Vivo",
+                LocalDate.now(), 1f, 1f, 1f, 1f)));
+
+        assertEquals("Porte com o ID %s não encontrado".formatted(sizeId), ex.getMessage());
+        verify(animalGateway, never()).save(any());
+    }
+
+    @Test
+    void shouldNotCheckSizeWhenNull() {
+        when(breedGateway.existsById(any())).thenReturn(true);
+        when(animalGateway.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        final var output = useCase.execute(validCommand());
+
+        assertNull(output.sizeId());
+        verifyNoInteractions(animalSizeGateway);
     }
 
     @Test
@@ -88,7 +131,7 @@ class CreateAnimalUseCaseTest {
         when(breedGateway.existsById(any())).thenReturn(true);
         when(animalGateway.existsByIdAndPropertyId(any(), any())).thenReturn(false);
         final var command = new CreateAnimalCommand(propertyId, PropertySearchScope.unrestricted(), UUID.randomUUID(), breedId,
-                "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+                null, "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
         assertThrows(NotificationException.class, () -> useCase.execute(command));
     }
 
@@ -101,7 +144,7 @@ class CreateAnimalUseCaseTest {
                 .thenReturn(false);
 
         final var command = new CreateAnimalCommand(propertyId, PropertySearchScope.unrestricted(), motherId, breedId,
-                "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+                null, "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
         assertThrows(NotificationException.class, () -> useCase.execute(command));
     }
 }

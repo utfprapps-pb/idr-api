@@ -39,7 +39,7 @@ class GetAnimalDiseasesByIdUseCaseTest {
     private final UUID animalId = UUID.randomUUID();
     private final UUID animalDiseasesId = UUID.randomUUID();
     private final Animal animal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null,
-            BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+            BreedID.unique(), null, "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final AnimalDiseases existingAnimalDiseases = AnimalDiseases.with(
             AnimalDiseasesID.from(animalDiseasesId), AnimalID.from(animalId), "Febre aftosa",
             LocalDate.of(2024, 1, 1));

@@ -6,7 +6,6 @@ public record UpdateProductCommand(
         UUID productId,
         String name,
         String description,
-        String applicationWay,
         UUID activePrincipleId,
         UUID categoryId
 ) {
@@ -14,9 +13,8 @@ public record UpdateProductCommand(
     public static UpdateProductCommand from(UUID productId,
                                              String name,
                                              String description,
-                                             String applicationWay,
                                              UUID activePrincipleId,
                                              UUID categoryId) {
-        return new UpdateProductCommand(productId, name, description, applicationWay, activePrincipleId, categoryId);
+        return new UpdateProductCommand(productId, name, description, activePrincipleId, categoryId);
     }
 }

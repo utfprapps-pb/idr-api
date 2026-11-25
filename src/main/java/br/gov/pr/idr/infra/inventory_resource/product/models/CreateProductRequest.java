@@ -8,7 +8,6 @@ import java.util.UUID;
 public record CreateProductRequest(
         @NotBlank(message = "Nome não pode ser nulo") String name,
         @NotBlank(message = "Descrição não pode ser nula") String description,
-        @NotBlank(message = "Via de aplicação não pode ser nula") String applicationWay,
         @NotNull(message = "Princípio ativo não pode ser nulo") UUID activePrincipleId,
         @NotNull(message = "Categoria não pode ser nula") UUID categoryId
 ) {

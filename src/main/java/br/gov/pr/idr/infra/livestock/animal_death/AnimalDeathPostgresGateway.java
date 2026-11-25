@@ -54,7 +54,9 @@ public class AnimalDeathPostgresGateway implements AnimalDeathGateway {
     @Override
     public Pagination<AnimalDeath> search(final AnimalID animalId, final SearchQuery query) {
         final var pageRequest = PageRequestFactory.from(query, "deathDate");
-        final var page = repository.findAllByAnimalId(animalId.id(), pageRequest);
+        final var page = PageRequestFactory.dateTerm(query.terms())
+                .map(date -> repository.findAllByAnimalIdAndDeathDate(animalId.id(), date, pageRequest))
+                .orElseGet(() -> repository.findAllByAnimalId(animalId.id(), pageRequest));
         return PaginationFactory.from(page, AnimalDeathJPAEntity::toAggregate);
     }
 }

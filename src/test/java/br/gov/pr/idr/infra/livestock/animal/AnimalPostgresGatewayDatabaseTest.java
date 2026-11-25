@@ -2,6 +2,7 @@ package br.gov.pr.idr.infra.livestock.animal;
 
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeID;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.infra.livestock.animal.persistence.AnimalJPARepository;
@@ -31,7 +32,7 @@ class AnimalPostgresGatewayDatabaseTest {
     }
 
     private Animal savedAnimalIn(final PropertyID propertyId) {
-        final var animal = gateway.save(Animal.with(AnimalID.unique(), propertyId, null, BreedID.unique(), "T",
+        final var animal = gateway.save(Animal.with(AnimalID.unique(), propertyId, null, BreedID.unique(), null,
                 "Teste", "F", "Vivo", LocalDate.of(2020, 1, 1), 1f, 1f, 1f, 1f));
         entityManager.flush();
         return animal;
@@ -46,6 +47,24 @@ class AnimalPostgresGatewayDatabaseTest {
         assertTrue(gateway.existsByIdAndPropertyId(animal.getId(), propertyId));
         assertFalse(gateway.existsByIdAndPropertyId(animal.getId(), PropertyID.unique()));
         assertFalse(gateway.existsByIdAndPropertyId(AnimalID.unique(), propertyId));
+    }
+
+    @Test
+    @DisplayName("existsBySizeId: verdadeiro enquanto um animal ativo usa o porte; animal excluído não conta")
+    void shouldAnswerSizeUsageIgnoringSoftDeletedAnimals() {
+        final var sizeId = AnimalSizeID.unique();
+        final var animal = gateway.save(Animal.with(AnimalID.unique(), PropertyID.unique(), null, BreedID.unique(),
+                sizeId, "Com porte", "F", "Vivo", LocalDate.of(2020, 1, 1), 1f, 1f, 1f, 1f));
+        entityManager.flush();
+
+        assertTrue(gateway.existsBySizeId(sizeId));
+        assertFalse(gateway.existsBySizeId(AnimalSizeID.unique()));
+
+        gateway.deleteById(animal.getId());
+        entityManager.flush();
+        entityManager.clear();
+
+        assertFalse(gateway.existsBySizeId(sizeId));
     }
 
     @Test

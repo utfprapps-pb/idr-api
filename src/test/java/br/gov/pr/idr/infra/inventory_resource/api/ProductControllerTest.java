@@ -55,7 +55,7 @@ class ProductControllerTest {
         mockMvc.perform(post("/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Vacina X\",\"description\":\"Vacina contra febre aftosa\"," +
-                                "\"applicationWay\":\"Intramuscular\",\"activePrincipleId\":\"" + activePrincipleId +
+                                "\"activePrincipleId\":\"" + activePrincipleId +
                                 "\",\"categoryId\":\"" + categoryId + "\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Vacina X"));
@@ -65,7 +65,7 @@ class ProductControllerTest {
     @DisplayName("GET /products/search deve retornar paginação de produtos")
     void shouldListProducts() throws Exception {
         final var result = new ListProductQueryResult(
-                UUID.randomUUID(), "Vacina X", "Descrição", "Intramuscular",
+                UUID.randomUUID(), "Vacina X", "Descrição",
                 UUID.randomUUID(), "Aftosa Antígeno", UUID.randomUUID(), "Vacinas"
         );
         final var pagination = new Pagination<>(0, 10, 1L, List.of(result));
@@ -73,7 +73,8 @@ class ProductControllerTest {
 
         mockMvc.perform(get("/products/search"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.total").value(1));
+                .andExpect(jsonPath("$.total").value(1))
+                .andExpect(jsonPath("$.items[0].applicationWay").doesNotHaveJsonPath());
     }
 
     @Test
@@ -82,17 +83,18 @@ class ProductControllerTest {
         final var id = UUID.randomUUID();
         final var activePrincipleId = UUID.randomUUID();
         final var categoryId = UUID.randomUUID();
-        final var output = new UpdateProductOutput(id, "Vacina Y", "Descrição atualizada", "Oral",
+        final var output = new UpdateProductOutput(id, "Vacina Y", "Descrição atualizada",
                 activePrincipleId, categoryId);
         when(updateProductUseCase.execute(any())).thenReturn(output);
 
         mockMvc.perform(put("/products/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Vacina Y\",\"description\":\"Descrição atualizada\"," +
-                                "\"applicationWay\":\"Oral\",\"activePrincipleId\":\"" + activePrincipleId +
+                                "\"activePrincipleId\":\"" + activePrincipleId +
                                 "\",\"categoryId\":\"" + categoryId + "\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Vacina Y"));
+                .andExpect(jsonPath("$.name").value("Vacina Y"))
+                .andExpect(jsonPath("$.applicationWay").doesNotHaveJsonPath());
     }
 
     @Test

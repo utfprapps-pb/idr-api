@@ -42,7 +42,7 @@ class DeleteAnimalPurchasesUseCaseTest {
     private final UUID animalId = UUID.randomUUID();
     private final UUID animalPurchasesId = UUID.randomUUID();
     private final Animal animal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null,
-            BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+            BreedID.unique(), null, "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final AnimalPurchases existingAnimalPurchases = AnimalPurchases.with(
             AnimalPurchasesID.from(animalPurchasesId), AnimalID.from(animalId), LocalDate.now(),
             LocalDate.now(), BigDecimal.valueOf(1500), BigDecimal.valueOf(450));

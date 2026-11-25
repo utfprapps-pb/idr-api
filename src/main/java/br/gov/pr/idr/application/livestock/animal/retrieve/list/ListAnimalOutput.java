@@ -1,6 +1,7 @@
 package br.gov.pr.idr.application.livestock.animal.retrieve.list;
 
 import br.gov.pr.idr.domain.livestock.animal.Animal;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeID;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -9,9 +10,11 @@ public record ListAnimalOutput(
         UUID id,
         UUID propertyId,
         UUID animalMotherId,
+        String animalMotherIdentifier,
         UUID breedId,
         String breedName,
-        String type,
+        UUID sizeId,
+        String sizeName,
         String identifier,
         String gender,
         String bornCondition,
@@ -22,14 +25,17 @@ public record ListAnimalOutput(
         Float ecc
 ) {
 
-    public static ListAnimalOutput from(final Animal entity, final String breedName) {
+    public static ListAnimalOutput from(final Animal entity, final String breedName, final String sizeName,
+                                    final String animalMotherIdentifier) {
         return new ListAnimalOutput(
                 entity.getId().id(),
                 entity.getPropertyId().id(),
                 entity.getAnimalMotherId().map(id -> id.id()).orElse(null),
+                animalMotherIdentifier,
                 entity.getBreedId().id(),
                 breedName,
-                entity.getType(),
+                entity.getSizeId().map(AnimalSizeID::id).orElse(null),
+                sizeName,
                 entity.getIdentifier(),
                 entity.getGender(),
                 entity.getBornCondition(),

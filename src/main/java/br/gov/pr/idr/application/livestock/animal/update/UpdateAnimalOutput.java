@@ -1,6 +1,7 @@
 package br.gov.pr.idr.application.livestock.animal.update;
 
 import br.gov.pr.idr.domain.livestock.animal.Animal;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeID;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -10,7 +11,7 @@ public record UpdateAnimalOutput(
         UUID propertyId,
         UUID animalMotherId,
         UUID breedId,
-        String type,
+        UUID sizeId,
         String identifier,
         String gender,
         String bornCondition,
@@ -27,7 +28,7 @@ public record UpdateAnimalOutput(
                 entity.getPropertyId().id(),
                 entity.getAnimalMotherId().map(id -> id.id()).orElse(null),
                 entity.getBreedId().id(),
-                entity.getType(),
+                entity.getSizeId().map(AnimalSizeID::id).orElse(null),
                 entity.getIdentifier(),
                 entity.getGender(),
                 entity.getBornCondition(),

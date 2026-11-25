@@ -8,6 +8,7 @@ import br.gov.pr.idr.application.livestock.shared.AnimalAccessPolicy;
 import br.gov.pr.idr.domain.livestock.animal.Animal;
 import br.gov.pr.idr.domain.livestock.animal.AnimalGateway;
 import br.gov.pr.idr.domain.livestock.animal.AnimalID;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeID;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.city.CityID;
 import br.gov.pr.idr.domain.property_management.producer.ProducerID;
@@ -35,6 +36,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -53,7 +55,7 @@ class ListAnimalUseCaseTest {
 
     private Pagination<Animal> somePagination() {
         final var animal = Animal.with(AnimalID.unique(), PropertyID.from(propertyId), null, breedId,
-                "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+                null, "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
         return new Pagination<>(0, 10, 1, List.of(animal));
     }
 
@@ -67,6 +69,57 @@ class ListAnimalUseCaseTest {
 
         assertEquals(1, output.total());
         assertEquals("Gir", output.items().get(0).breedName());
+        assertEquals(null, output.items().get(0).sizeName());
+        verify(nameLookup, never()).sizeNames(any());
+    }
+
+    @Test
+    void shouldResolveSizeNamesInOneLookupSkippingAnimalsWithoutSize() {
+        final var grande = AnimalSizeID.unique();
+        final var animals = List.of(
+                Animal.with(AnimalID.unique(), PropertyID.from(propertyId), null, breedId,
+                        grande, "A", null, null, null, null, null, null, null),
+                Animal.with(AnimalID.unique(), PropertyID.from(propertyId), null, breedId,
+                        null, "B", null, null, null, null, null, null, null));
+        when(animalGateway.search(eq(PropertyID.from(propertyId)), any()))
+                .thenReturn(new Pagination<>(0, 10, 2, animals));
+        when(nameLookup.breedNames(Set.of(breedId))).thenReturn(Map.of(breedId, "Gir"));
+        when(nameLookup.sizeNames(Set.of(grande))).thenReturn(Map.of(grande, "Grande"));
+
+        final var output = useCase.execute(new ListAnimalCommand(propertyId, PropertySearchScope.unrestricted(),
+                SearchQuery.from(0, 10, "", "identifier", "asc")));
+
+        assertEquals("Grande", output.items().get(0).sizeName());
+        assertEquals(grande.id(), output.items().get(0).sizeId());
+        assertEquals(null, output.items().get(1).sizeName());
+        assertEquals(null, output.items().get(1).sizeId());
+        verify(nameLookup, times(1)).sizeNames(any());
+    }
+
+    @Test
+    void shouldResolveMotherIdentifiersInOneLookup() {
+        final var motherA = AnimalID.unique();
+        final var motherB = AnimalID.unique();
+        final var animals = List.of(
+                Animal.with(AnimalID.unique(), PropertyID.from(propertyId), motherA, breedId,
+                        null, "A", null, null, null, null, null, null, null),
+                Animal.with(AnimalID.unique(), PropertyID.from(propertyId), motherB, breedId,
+                        null, "B", null, null, null, null, null, null, null),
+                Animal.with(AnimalID.unique(), PropertyID.from(propertyId), null, breedId,
+                        null, "C", null, null, null, null, null, null, null));
+        when(animalGateway.search(eq(PropertyID.from(propertyId)), any()))
+                .thenReturn(new Pagination<>(0, 10, 3, animals));
+        when(nameLookup.breedNames(Set.of(breedId))).thenReturn(Map.of(breedId, "Gir"));
+        when(nameLookup.animalIdentifiers(Set.of(motherA, motherB)))
+                .thenReturn(Map.of(motherA, "Mimosa", motherB, "Estrela"));
+
+        final var output = useCase.execute(new ListAnimalCommand(propertyId, PropertySearchScope.unrestricted(),
+                SearchQuery.from(0, 10, "", "identifier", "asc")));
+
+        assertEquals("Mimosa", output.items().get(0).animalMotherIdentifier());
+        assertEquals("Estrela", output.items().get(1).animalMotherIdentifier());
+        assertEquals(null, output.items().get(2).animalMotherIdentifier());
+        verify(nameLookup, times(1)).animalIdentifiers(any());
     }
 
     @Test

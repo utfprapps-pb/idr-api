@@ -4,11 +4,11 @@ import br.gov.pr.idr.application.inventory_resource.product.update.UpdateProduct
 
 import java.util.UUID;
 
-public record UpdateProductResponse(UUID id, String name, String description, String applicationWay,
+public record UpdateProductResponse(UUID id, String name, String description,
                                      UUID activePrincipleId, UUID categoryId) {
 
     public static UpdateProductResponse from(final UpdateProductOutput output) {
         return new UpdateProductResponse(output.id(), output.name(), output.description(),
-                output.applicationWay(), output.activePrincipleId(), output.categoryId());
+                output.activePrincipleId(), output.categoryId());
     }
 }

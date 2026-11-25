@@ -38,12 +38,12 @@ class ProductUpdatePersistenceRegressionTest {
     void updateAfterFindByIdInSameTransactionShouldNotThrow() {
         final var gateway = new ProductPostgresGateway(repository);
 
-        final var created = gateway.save(Product.create("Produto 1", "Desc 1", "Via 1",
+        final var created = gateway.save(Product.create("Produto 1", "Desc 1",
                 ActivePrincipleID.unique(), ProductCategoryID.unique()));
 
         final var loaded = gateway.findById(created.getId()).orElseThrow();
 
-        final var updated = loaded.update("Produto 2", "Desc 2", "Via 2",
+        final var updated = loaded.update("Produto 2", "Desc 2",
                 loaded.getActivePrincipleId(), loaded.getCategoryId());
 
         assertDoesNotThrow(() -> {

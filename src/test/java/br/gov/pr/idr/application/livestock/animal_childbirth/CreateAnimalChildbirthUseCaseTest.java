@@ -11,6 +11,7 @@ import br.gov.pr.idr.domain.livestock.animal.AnimalID;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.AnimalChildbirthGateway;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.vo.ChildbirthCondition;
 import br.gov.pr.idr.domain.livestock.animal_childbirth.vo.ChildbirthGender;
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeGateway;
 import br.gov.pr.idr.domain.livestock.breed.BreedGateway;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
@@ -41,6 +42,7 @@ class CreateAnimalChildbirthUseCaseTest {
 
     @Mock AnimalChildbirthGateway gateway;
     @Mock BreedGateway breedGateway;
+    @Mock AnimalSizeGateway animalSizeGateway;
     @Mock AnimalGateway animalGateway;
     @Mock AnimalAccessPolicy accessPolicy;
 
@@ -50,7 +52,7 @@ class CreateAnimalChildbirthUseCaseTest {
     private final Animal mother = animal(animalId, propertyId, "Mimosa");
 
     private static Animal animal(final UUID id, final UUID propertyId, final String identifier) {
-        return Animal.with(AnimalID.from(id), PropertyID.from(propertyId), null, BreedID.unique(), "T",
+        return Animal.with(AnimalID.from(id), PropertyID.from(propertyId), null, BreedID.unique(), null,
                 identifier, "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     }
 
@@ -58,7 +60,7 @@ class CreateAnimalChildbirthUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        useCase = new CreateAnimalChildbirthUseCase(gateway, new LivestockReferencePolicy(breedGateway, animalGateway), accessPolicy);
+        useCase = new CreateAnimalChildbirthUseCase(gateway, new LivestockReferencePolicy(breedGateway, animalSizeGateway, animalGateway), accessPolicy);
     }
 
     private CreateAnimalChildbirthCommand command(final UUID calfId) {

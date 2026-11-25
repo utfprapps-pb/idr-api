@@ -9,6 +9,8 @@ public record CreateMedicationResponse(
         UUID id,
         UUID animalId,
         UUID productId,
+        String productName,
+        String activePrinciple,
         LocalDate applicationDate,
         String appliedDose,
         String applicationWay
@@ -19,6 +21,8 @@ public record CreateMedicationResponse(
                 output.id(),
                 output.animalId(),
                 output.productId(),
+                output.productName(),
+                output.activePrinciple(),
                 output.applicationDate(),
                 output.appliedDose(),
                 output.applicationWay()

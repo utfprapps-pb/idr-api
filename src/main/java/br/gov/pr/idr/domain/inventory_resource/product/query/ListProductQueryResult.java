@@ -5,7 +5,6 @@ import java.util.UUID;
 public record ListProductQueryResult(UUID id,
                                       String name,
                                       String description,
-                                      String applicationWay,
                                       ActivePrincipleRef activePrinciple,
                                       ProductCategoryRef category) {
 
@@ -15,10 +14,10 @@ public record ListProductQueryResult(UUID id,
     public record ProductCategoryRef(UUID id, String description) {
     }
 
-    public ListProductQueryResult(UUID id, String name, String description, String applicationWay,
+    public ListProductQueryResult(UUID id, String name, String description,
                                    UUID activePrincipleId, String activePrincipleName,
                                    UUID categoryId, String categoryDescription) {
-        this(id, name, description, applicationWay,
+        this(id, name, description,
                 new ActivePrincipleRef(activePrincipleId, activePrincipleName),
                 new ProductCategoryRef(categoryId, categoryDescription));
     }

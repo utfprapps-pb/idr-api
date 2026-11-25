@@ -55,7 +55,7 @@ class ListAnimalChildbirthUseCaseTest {
     private final Animal mother = animal(animalId, propertyId, "Mimosa");
 
     private static Animal animal(final UUID id, final UUID propertyId, final String identifier) {
-        return Animal.with(AnimalID.from(id), PropertyID.from(propertyId), null, BreedID.unique(), "T",
+        return Animal.with(AnimalID.from(id), PropertyID.from(propertyId), null, BreedID.unique(), null,
                 identifier, "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     }
 

@@ -1,5 +1,6 @@
 package br.gov.pr.idr.domain.livestock.animal;
 
+import br.gov.pr.idr.domain.livestock.animalsize.AnimalSizeID;
 import br.gov.pr.idr.domain.livestock.breed.BreedID;
 import br.gov.pr.idr.domain.property_management.property.PropertyID;
 import br.gov.pr.idr.domain.shared.tactical.AggregateRoot;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 /**
  * Animal do rebanho de uma propriedade. A propriedade é fixa desde a criação; raça e identificador são obrigatórios.
+ * O porte ({@code sizeId}) é opcional e independe da raça.
  * A mãe ({@code animalMotherId}) é opcional e, quando informada, deve ser outro animal da mesma propriedade.
  */
 public class Animal extends AggregateRoot<AnimalID> {
@@ -18,7 +20,7 @@ public class Animal extends AggregateRoot<AnimalID> {
     private final PropertyID propertyId;
     private AnimalID animalMotherId;
     private BreedID breedId;
-    private String type;
+    private AnimalSizeID sizeId;
     private String identifier;
     private String gender;
     private String bornCondition;
@@ -30,14 +32,14 @@ public class Animal extends AggregateRoot<AnimalID> {
     private Long version;
 
     protected Animal(final AnimalID id, final PropertyID propertyId, final AnimalID animalMotherId,
-                      final BreedID breedId, final String type, final String identifier, final String gender,
-                      final String bornCondition, final LocalDate bornDate, final Float bornWeight,
+                      final BreedID breedId, final AnimalSizeID sizeId, final String identifier,
+                      final String gender, final String bornCondition, final LocalDate bornDate, final Float bornWeight,
                       final Float previousWeight, final Float currentWeight, final Float ecc) {
         super(id);
         this.propertyId = propertyId;
         this.animalMotherId = animalMotherId;
         this.breedId = breedId;
-        this.type = type;
+        this.sizeId = sizeId;
         this.identifier = identifier;
         this.gender = gender;
         this.bornCondition = bornCondition;
@@ -49,31 +51,31 @@ public class Animal extends AggregateRoot<AnimalID> {
     }
 
     public static Animal with(final AnimalID id, final PropertyID propertyId, final AnimalID animalMotherId,
-                               final BreedID breedId, final String type, final String identifier,
+                               final BreedID breedId, final AnimalSizeID sizeId, final String identifier,
                                final String gender, final String bornCondition, final LocalDate bornDate,
                                final Float bornWeight, final Float previousWeight, final Float currentWeight,
                                final Float ecc) {
-        return new Animal(id, propertyId, animalMotherId, breedId, type, identifier, gender, bornCondition,
+        return new Animal(id, propertyId, animalMotherId, breedId, sizeId, identifier, gender, bornCondition,
                 bornDate, bornWeight, previousWeight, currentWeight, ecc);
     }
 
     public static Animal create(final PropertyID propertyId, final AnimalID animalMotherId, final BreedID breedId,
-                                 final String type, final String identifier, final String gender,
+                                 final AnimalSizeID sizeId, final String identifier, final String gender,
                                  final String bornCondition, final LocalDate bornDate, final Float bornWeight,
                                  final Float previousWeight, final Float currentWeight, final Float ecc) {
-        final var animal = new Animal(AnimalID.unique(), propertyId, animalMotherId, breedId, type, identifier,
+        final var animal = new Animal(AnimalID.unique(), propertyId, animalMotherId, breedId, sizeId, identifier,
                 gender, bornCondition, bornDate, bornWeight, previousWeight, currentWeight, ecc);
         animal.selfValidate();
         return animal;
     }
 
-    public Animal update(final AnimalID animalMotherId, final BreedID breedId, final String type,
+    public Animal update(final AnimalID animalMotherId, final BreedID breedId, final AnimalSizeID sizeId,
                           final String identifier, final String gender, final String bornCondition,
                           final LocalDate bornDate, final Float bornWeight, final Float previousWeight,
                           final Float currentWeight, final Float ecc) {
         this.animalMotherId = animalMotherId;
         this.breedId = breedId;
-        this.type = type;
+        this.sizeId = sizeId;
         this.identifier = identifier;
         this.gender = gender;
         this.bornCondition = bornCondition;
@@ -114,8 +116,8 @@ public class Animal extends AggregateRoot<AnimalID> {
         return breedId;
     }
 
-    public String getType() {
-        return type;
+    public Optional<AnimalSizeID> getSizeId() {
+        return Optional.ofNullable(sizeId);
     }
 
     public String getIdentifier() {

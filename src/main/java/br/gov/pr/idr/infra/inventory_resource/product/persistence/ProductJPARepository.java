@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface ProductJPARepository extends JpaRepository<ProductJPAEntity, UUID> {
 
     @Query("SELECT new br.gov.pr.idr.domain.inventory_resource.product.query.ListProductQueryResult(" +
-            "p.id, p.name, p.description, p.applicationWay, ap.id, ap.name, pc.id, pc.description) " +
+            "p.id, p.name, p.description, ap.id, ap.name, pc.id, pc.description) " +
             "FROM ProductJPAEntity p " +
             "LEFT JOIN ActivePrincipleJPAEntity ap ON p.activePrincipleId = ap.id " +
             "LEFT JOIN ProductCategoryJPAEntity pc ON p.categoryId = pc.id " +

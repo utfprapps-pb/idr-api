@@ -39,7 +39,7 @@ class GetMastitisByIdUseCaseTest {
     private final UUID animalId = UUID.randomUUID();
     private final UUID mastitisId = UUID.randomUUID();
     private final Animal animal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null,
-            BreedID.unique(), "T", "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
+            BreedID.unique(), null, "I", "F", "Vivo", LocalDate.now(), 1f, 1f, 1f, 1f);
     private final Mastitis existingMastitis = Mastitis.with(MastitisID.from(mastitisId), AnimalID.from(animalId),
             LocalDate.now(), "Clinica", "+", "Positivo", "Negativo", "Positivo", "Negativo");
 
