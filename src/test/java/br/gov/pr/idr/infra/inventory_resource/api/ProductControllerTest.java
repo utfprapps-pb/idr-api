@@ -74,7 +74,7 @@ class ProductControllerTest {
         mockMvc.perform(get("/products/search"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.total").value(1))
-                .andExpect(jsonPath("$.items[0].applicationWay").doesNotExist());
+                .andExpect(jsonPath("$.items[0].applicationWay").doesNotHaveJsonPath());
     }
 
     @Test
@@ -94,7 +94,7 @@ class ProductControllerTest {
                                 "\",\"categoryId\":\"" + categoryId + "\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Vacina Y"))
-                .andExpect(jsonPath("$.applicationWay").doesNotExist());
+                .andExpect(jsonPath("$.applicationWay").doesNotHaveJsonPath());
     }
 
     @Test

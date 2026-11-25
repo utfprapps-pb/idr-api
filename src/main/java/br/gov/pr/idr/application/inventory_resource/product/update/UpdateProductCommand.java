@@ -13,7 +13,7 @@ public record UpdateProductCommand(
     public static UpdateProductCommand from(UUID productId,
                                              String name,
                                              String description,
-                                                                                  UUID activePrincipleId,
+                                             UUID activePrincipleId,
                                              UUID categoryId) {
         return new UpdateProductCommand(productId, name, description, activePrincipleId, categoryId);
     }

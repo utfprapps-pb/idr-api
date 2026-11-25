@@ -11,7 +11,7 @@ public record CreateProductCommand(
 
     public static CreateProductCommand from(String name,
                                              String description,
-                                                                                  UUID activePrincipleId,
+                                             UUID activePrincipleId,
                                              UUID categoryId) {
         return new CreateProductCommand(name, description, activePrincipleId, categoryId);
     }
