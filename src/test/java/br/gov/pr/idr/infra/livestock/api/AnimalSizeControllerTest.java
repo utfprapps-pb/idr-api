@@ -76,6 +76,26 @@ class AnimalSizeControllerTest {
     }
 
     @Test
+    @DisplayName("POST /animal-sizes com nome acima de 255 caracteres deve retornar 400")
+    void shouldRejectCreateWithSizeNameTooLong() throws Exception {
+        mockMvc.perform(post("/animal-sizes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"sizeName\":\"" + "a".repeat(256) + "\"}"))
+                .andExpect(status().isBadRequest());
+        verifyNoInteractions(createAnimalSizeUseCase);
+    }
+
+    @Test
+    @DisplayName("PUT /animal-sizes/{id} com nome acima de 255 caracteres deve retornar 400")
+    void shouldRejectUpdateWithSizeNameTooLong() throws Exception {
+        mockMvc.perform(put("/animal-sizes/" + UUID.randomUUID())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"sizeName\":\"" + "a".repeat(256) + "\"}"))
+                .andExpect(status().isBadRequest());
+        verifyNoInteractions(updateAnimalSizeUseCase);
+    }
+
+    @Test
     @DisplayName("DELETE /animal-sizes/{id} deve deletar porte e retornar 204")
     void shouldDeleteAnimalSize() throws Exception {
         doNothing().when(deleteAnimalSizeUseCase).execute(any());

@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -27,8 +28,10 @@ class UpdateAnimalSizeUseCaseTest {
 
     @Test
     void shouldThrowWhenUpdatingNonExistentAnimalSize() {
+        final var id = UUID.randomUUID();
         when(gateway.findById(any())).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class,
-                () -> useCase.execute(new UpdateAnimalSizeCommand(UUID.randomUUID(), "x")));
+        final var ex = assertThrows(NotFoundException.class,
+                () -> useCase.execute(new UpdateAnimalSizeCommand(id, "x")));
+        assertEquals("Porte com o ID %s não encontrado".formatted(id), ex.getMessage());
     }
 }

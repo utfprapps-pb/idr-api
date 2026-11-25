@@ -57,8 +57,10 @@ class DeleteAnimalSizeUseCaseTest {
 
     @Test
     void shouldThrowWhenDeletingNonExistentAnimalSize() {
+        final var id = UUID.randomUUID();
         when(gateway.existsById(any())).thenReturn(false);
-        assertThrows(NotFoundException.class, () -> useCase.execute(UUID.randomUUID()));
+        final var ex = assertThrows(NotFoundException.class, () -> useCase.execute(id));
+        assertEquals("Porte com o ID %s não encontrado".formatted(id), ex.getMessage());
         verify(gateway, never()).deleteById(any());
         verifyNoInteractions(animalGateway);
     }

@@ -22,7 +22,7 @@ public class UpdateAnimalSizeUseCase extends UseCase<UpdateAnimalSizeCommand, Up
 
         final var animalSize = animalSizeGateway.findById(id)
                 .orElseThrow(() -> NotFoundException.with(
-                        "AnimalSize com o ID %s não encontrada".formatted(id.id())))
+                        "Porte com o ID %s não encontrado".formatted(id.id())))
                 .update(sizeName);
 
         return UpdateAnimalSizeOutput.from(animalSizeGateway.update(animalSize));
