@@ -30,9 +30,11 @@ public class UpdateAnimalUseCase extends UseCase<UpdateAnimalCommand, UpdateAnim
     public UpdateAnimalOutput execute(final UpdateAnimalCommand command) {
         final var existingAnimal = accessPolicy.ensureAccessToAnimal(command.propertyId(), command.animalId(),
                 command.scope());
-        referencePolicy.ensureBreedExists(command.breedId());
-        // Porte e mãe só são revalidados quando mudam: um porte ou uma mãe excluídos depois não podem
+        // Raça, porte e mãe só são revalidados quando mudam: uma referência excluída depois não pode
         // impedir a edição dos outros campos.
+        if (!Objects.equals(command.breedId(), existingAnimal.getBreedId().id())) {
+            referencePolicy.ensureBreedExists(command.breedId());
+        }
         final var currentSizeId = existingAnimal.getSizeId().map(AnimalSizeID::id).orElse(null);
         if (!Objects.equals(command.sizeId(), currentSizeId)) {
             referencePolicy.ensureAnimalSizeExists(command.sizeId());

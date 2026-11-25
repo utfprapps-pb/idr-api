@@ -177,6 +177,24 @@ class UpdateAnimalUseCaseTest {
     }
 
     @Test
+    void shouldNotRevalidateUnchangedBreed() {
+        final var currentBreedId = BreedID.unique();
+        final var animal = Animal.with(AnimalID.from(animalId), PropertyID.from(propertyId), null, currentBreedId,
+                null, "Mimosa", "Fêmea", "Vivo", LocalDate.of(2019, 6, 23), 12f, 45f, 62f, 3.5f);
+        when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted()))
+                .thenReturn(animal);
+        when(animalGateway.update(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        final var output = useCase.execute(new UpdateAnimalCommand(propertyId, animalId,
+                PropertySearchScope.unrestricted(), null, currentBreedId.id(), null, "Estrela", "Fêmea", "Vivo",
+                LocalDate.of(2019, 6, 23), 12f));
+
+        assertEquals(currentBreedId.id(), output.breedId());
+        assertEquals("Estrela", output.identifier());
+        verifyNoInteractions(breedGateway);
+    }
+
+    @Test
     void shouldThrowWhenSizeDoesNotExist() {
         final var sizeId = UUID.randomUUID();
         when(accessPolicy.ensureAccessToAnimal(propertyId, animalId, PropertySearchScope.unrestricted()))
